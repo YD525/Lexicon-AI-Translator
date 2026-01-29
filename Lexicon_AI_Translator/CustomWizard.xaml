@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="CustomTranslationPlatformWizard" Height="650" Width="700" WindowStartupLocation="CenterScreen">
+        Title="CustomTranslationPlatformWizard" Height="700" Width="750" WindowStartupLocation="CenterScreen">
     <Grid Background="#FF424242">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -54,6 +54,11 @@
 
                     </ListBox>
 
+                    <Label Foreground="White">
+                        Test ApiKey
+                    </Label>
+                    <TextBox>
+                    </TextBox>
 
                     <Label Foreground="White">
                         URL
