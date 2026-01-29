@@ -15,6 +15,9 @@ using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
 using PhoenixEngine.EngineManagement;
 using PhoenixEngine.PlatformManagement;
+using PhoenixEngine.RequestManagement;
+using PhoenixEngine.TranslateManage;
+using static PhoenixEngine.EngineManagement.DataTransmission;
 
 namespace LexTranslator
 {
@@ -207,5 +210,108 @@ namespace LexTranslator
                 }
             }
         }
+
+        private void Header_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TestCustomCore != null)
+            {
+                CustomPlatform.Header = Header.Text;
+                TestCustomCore.SetHeader(CustomPlatform.Header);
+                HeaderTags.Items.Clear();
+
+                foreach (var GetTag in TestCustomCore.GetHeaderKeyValues())
+                {
+                    HeaderTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
+                }
+            }
+        }
+
+        private void Payload_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TestCustomCore != null)
+            {
+                CustomPlatform.PayLoad = Payload.Text;
+                TestCustomCore.SetPayLoad(CustomPlatform.PayLoad);
+                PayloadTags.Items.Clear();
+
+                foreach (var GetTag in TestCustomCore.GetPayLoadKeyValues())
+                {
+                    PayloadTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
+                }
+            }
+        }
+
+        private void IsPost_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsPost.IsChecked == true)
+            {
+                CustomPlatform.IsPost = true;
+            }
+            else
+            {
+                CustomPlatform.IsPost = false;
+            }
+        }
+
+        public string ApiKey = "";
+        private void TestApiKey_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ApiKey = TestApiKey.Text;
+        }
+        private void TestCall(object sender, MouseButtonEventArgs e)
+        {
+            PlatformConfig NPlatformConfig = new PlatformConfig();
+            NPlatformConfig.Platform = PhoenixEngine.TranslateManage.PlatformType.CustomPlatform;
+            NPlatformConfig.Enable = true;
+
+            int TestID = 525;
+
+            switch (CurrentPlatformType)
+            {
+                case "Local AI":
+                    {
+                        CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
+                    }
+                    break;
+                case "Cloud AI":
+                    {
+                        if (!Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
+                        {
+                            Phoenix.Config.PlatformConfigs.Add(TestID, NPlatformConfig);
+                        }
+                        NPlatformConfig.CustomInFo = CustomPlatform;
+
+                        AICall GenAICall = new AICall();
+                        CustomAIApi NCustomAIApi = new CustomAIApi();
+                        NCustomAIApi.Init(TestID, new AITranslationMemory(),Phoenix.Config,ProxyCenter.CurrentProxy);
+
+                        NCustomAIApi.QuickTrans(
+                            ApiKey,
+                            new List<ReplaceTag>(),
+                            "Test Str",
+                            Phoenix.From,
+                            Phoenix.To,
+                            false,
+                            0,
+                            string.Empty,
+                            ref GenAICall,
+                            ""
+                            );
+                    }
+                    break;
+                case "Traditional":
+                    {
+                        CustomApi NCustomApi = new CustomApi();
+                    }
+                    break;
+            }
+
+            if (Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
+            {
+                Phoenix.Config.PlatformConfigs.Remove(TestID);
+            }
+        }
+
+      
     }
 }

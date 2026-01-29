@@ -66,7 +66,7 @@
                         <Label Foreground="White">
                             Test ApiKey
                         </Label>
-                        <TextBox Name="TestApiKey" Width="200" VerticalContentAlignment="Center">
+                        <TextBox Name="TestApiKey" TextChanged="TestApiKey_TextChanged" Width="200" VerticalContentAlignment="Center">
                         </TextBox>
                     </StackPanel>
 
@@ -82,8 +82,8 @@
                         <TextBox Name="Url" TextChanged="Url_TextChanged" Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Height="50" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                         </TextBox>
-                        
-                        <ListBox Foreground="White" Name="UrlTags" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F">
+
+                        <ListBox Foreground="White" Name="UrlTags" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="50">
                         </ListBox>
                     </Grid>
                    
@@ -99,11 +99,11 @@
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Height="50" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <TextBox Name="Header" TextChanged="Header_TextChanged" Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Height="50" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                         </TextBox>
 
-                        <ListBox Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F">
+                        <ListBox Name="HeaderTags" Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="50">
                         </ListBox>
                     </Grid>
 
@@ -118,15 +118,18 @@
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Height="50" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <TextBox Name="Payload" TextChanged="Payload_TextChanged" Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Height="100" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                         </TextBox>
 
-                        <ListBox Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F">
+                        <ListBox Name="PayloadTags" Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="100">
                         </ListBox>
                     </Grid>
 
-                    <Border Name="TestCallBtn" CornerRadius="6" BorderThickness="1" BorderBrush="White" Background="#FF2F2F2F" Cursor="Hand" Margin="0 5 0 5">
+                    <CheckBox Name="IsPost" IsChecked="True" Click="IsPost_Click">
+                    </CheckBox>
+
+                    <Border Name="TestCallBtn" CornerRadius="6" BorderThickness="1" BorderBrush="White" Background="#FF2F2F2F" Cursor="Hand" Margin="0 5 0 5" PreviewMouseDown="TestCall">
                         <Label Foreground="White" VerticalAlignment="Center" IsHitTestVisible="False" HorizontalAlignment="Center">
                             Test Call
                         </Label>
