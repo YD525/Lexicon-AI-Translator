@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="CustomWizard" Height="450" Width="500" WindowStartupLocation="CenterScreen">
+        Title="CustomTranslationPlatformWizard" Height="500" Width="500" WindowStartupLocation="CenterScreen">
     <Grid Background="#FF424242">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -26,7 +26,7 @@
         </Grid>
 
         <Grid Grid.Row="1" Margin="5 0 5 0" VerticalAlignment="Center">
-            <Grid Name="View1st">
+            <Grid Name="View1st" Visibility="Hidden">
                 <StackPanel Orientation="Vertical">
                     <TextBox BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" Background="{x:Null}" Foreground="White" CaretBrush="White" TextWrapping="Wrap" AcceptsReturn="True">
                         Select the type of translation platform you want to add. Please make sure to select the correct one from the drop-down menu below, whether it's an AI platform or a traditional translation platform.
@@ -40,7 +40,52 @@
                         </ComboBox>
                     </StackPanel>
                 </StackPanel>
-              
+            </Grid>
+
+            <Grid Name="View2nd" Visibility="Visible">
+                <StackPanel Orientation="Vertical">
+                    <TextBox BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" Background="{x:Null}" Foreground="White" CaretBrush="White" TextWrapping="Wrap" AcceptsReturn="True">
+                        You need to configure the request URL, header, and payload (Request Body). You can refer to the SDK documentation of the translation platform you want to integrate with to fill in these fields appropriately. After filling them in, click the test button to verify whether the interface can return a response normally.
+                    </TextBox>
+                    
+                    <Label Foreground="White">
+                        URL
+                    </Label>
+                    <TextBox VerticalContentAlignment="Center">
+
+                    </TextBox>
+
+
+                    <Label Foreground="White">
+                        Header
+                    </Label>
+
+                    <TextBox  TextWrapping="Wrap" AcceptsReturn="True" Height="50" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    </TextBox>
+
+
+                    <Label Foreground="White">
+                        Payload (Request Body)
+                    </Label>
+                    <TextBox TextWrapping="Wrap" AcceptsReturn="True" Height="50" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    </TextBox>
+
+                    <Border Name="TestCallBtn" CornerRadius="6" BorderThickness="1" BorderBrush="White" Background="#FF2F2F2F" Cursor="Hand" Margin="0 5 0 5">
+                        <Label Foreground="White" VerticalAlignment="Center" IsHitTestVisible="False" HorizontalAlignment="Center">
+                            Test Call
+                        </Label>
+                    </Border>
+                    
+                    <Label Foreground="White">
+                        Response
+                    </Label>
+                    <TextBox IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" Height="50" Foreground="White" Background="{x:Null}" BorderThickness="0" BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    </TextBox>
+
+                </StackPanel>
             </Grid>
         </Grid>
 
