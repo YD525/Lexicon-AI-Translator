@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -106,6 +107,10 @@ namespace LexTranslator
         public string CurrentPlatformType = "";
         private CustomPlatformInFo CustomPlatform = null;
         private CustomReqCore TestCustomCore = null;
+        private ReqQueryRuleItem QueryRule = null;
+
+        public string TagType = "";
+        public string TagKey = "";
         private void Next(object sender, MouseButtonEventArgs e)
         {
             if (Step == 1)
@@ -164,6 +169,37 @@ namespace LexTranslator
                 }
             }
 
+            if (Step == 2)
+            {
+                if (CurrentResponse.Length == 0)
+                {
+                    MessageBoxExtend.Show(this, "Please click TestCall first to ensure the API returns a normal response.");
+                    return;
+                }
+
+                P_Response.Text = CurrentResponse;
+                var GetKeyValues = CustomPlatformHelper.GetJsonValues(CurrentResponse);
+
+                QueryRule = new ReqQueryRuleItem();
+
+                if (GetKeyValues.Count == 0)
+                {
+                    QueryRule.ByJson = false;
+                    IsJson.IsChecked = false;
+                }
+                else
+                {
+                    QueryRule.ByJson = true;
+                    IsJson.IsChecked = true;
+
+                    P_ResponseTags.Items.Clear();
+
+                    foreach (var GetItem in GetKeyValues)
+                    {
+                        P_ResponseTags.Items.Add(string.Format("{0}->{1}", GetItem.Key, GetItem.Value));
+                    }
+                }
+            }
 
             if (Step < 3)
             {
@@ -179,12 +215,21 @@ namespace LexTranslator
                 Step--;
                 SyncUI();
             }
+
+            if (Step == 2)
+            {
+                CurrentResponse = string.Empty;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CustomPlatform = null;
             CurrentPlatformType = string.Empty;
+
+            TagType = string.Empty;
+            TagKey = string.Empty;
+
             SyncUI();
         }
 
@@ -205,11 +250,24 @@ namespace LexTranslator
                 TestCustomCore.SetUrl(CustomPlatform.Url);
                 UrlTags.Items.Clear();
 
-                foreach (var GetTag in TestCustomCore.GetUrlKeyValues())
+                var TagData = TestCustomCore.GetUrlKeyValues();
+
+                foreach (var GetTag in TagData)
                 {
                     UrlTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
                 }
+
+                 CustomPlatform.Url_Tags = CustomKeyValueToTags(TagData);
             }
+        }
+        public List<ReqReplaceTag> CustomKeyValueToTags(List<ReqCustomKeyValue>Array)
+        {
+            List<ReqReplaceTag> ReqTags = new List<ReqReplaceTag>();
+            foreach (var Get in Array)
+            {
+                ReqTags.Add(new ReqReplaceTag(Get.Key,Get.Value));
+            }
+            return ReqTags;
         }
 
         private void Header_TextChanged(object sender, TextChangedEventArgs e)
@@ -220,10 +278,14 @@ namespace LexTranslator
                 TestCustomCore.SetHeader(CustomPlatform.Header);
                 HeaderTags.Items.Clear();
 
-                foreach (var GetTag in TestCustomCore.GetHeaderKeyValues())
+                var TagData = TestCustomCore.GetHeaderKeyValues();
+
+                foreach (var GetTag in TagData)
                 {
                     HeaderTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
                 }
+
+                CustomPlatform.Header_Tags = CustomKeyValueToTags(TagData);
             }
         }
 
@@ -235,10 +297,14 @@ namespace LexTranslator
                 TestCustomCore.SetPayLoad(CustomPlatform.PayLoad);
                 PayloadTags.Items.Clear();
 
-                foreach (var GetTag in TestCustomCore.GetPayLoadKeyValues())
+                var TagData = TestCustomCore.GetPayLoadKeyValues();
+
+                foreach (var GetTag in TagData)
                 {
                     PayloadTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
                 }
+
+                CustomPlatform.PayLoad_Tags = CustomKeyValueToTags(TagData);
             }
         }
 
@@ -259,6 +325,8 @@ namespace LexTranslator
         {
             ApiKey = TestApiKey.Text;
         }
+
+        public string CurrentResponse = "";
         private void TestCall(object sender, MouseButtonEventArgs e)
         {
             PlatformConfig NPlatformConfig = new PlatformConfig();
@@ -305,6 +373,7 @@ namespace LexTranslator
                             );
 
                         Response.Text = GenAICall.ReceiveString;
+                        CurrentResponse = GenAICall.ReceiveString;
                     }
                     break;
                 case "Traditional":
@@ -320,6 +389,144 @@ namespace LexTranslator
             }
         }
 
-      
+        private void UrlTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string GetSelectValue = ConvertHelper.ObjToStr(UrlTags.SelectedValue);
+            if (GetSelectValue.Trim().Length > 0)
+            {
+                TagType = "Url";
+                TagKey = GetSelectValue.Substring(0,GetSelectValue.IndexOf("->"));
+
+                BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
+            }
+        }
+
+        private void HeaderTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string GetSelectValue = ConvertHelper.ObjToStr(HeaderTags.SelectedValue);
+            if (GetSelectValue.Trim().Length > 0)
+            {
+                TagType = "Header";
+                TagKey = GetSelectValue.Substring(0,GetSelectValue.IndexOf("->"));
+
+                BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
+            }
+        }
+
+        private void PayloadTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string GetSelectValue = ConvertHelper.ObjToStr(PayloadTags.SelectedValue);
+            if (GetSelectValue.Trim().Length > 0)
+            {
+                TagType = "Payload";
+                TagKey = GetSelectValue.Substring(0,GetSelectValue.IndexOf("->"));
+
+                BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
+            }
+        }
+
+        public void ChangeBindingState(string NewValue)
+        {
+            switch (TagType)
+            {
+                case "Url":
+                    {
+                        for (int i = 0; i < UrlTags.Items.Count; i++)
+                        {
+                            string GetValue = UrlTags.Items[i].ToString();
+                            string GetKey = GetValue.Substring(0, GetValue.IndexOf("->"));
+
+                            if (GetKey.Equals(TagKey))
+                            {
+                                UrlTags.Items[i] = GetKey + "->" + NewValue;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case "Header":
+                    {
+                        for (int i = 0; i < HeaderTags.Items.Count; i++)
+                        {
+                            string GetValue = HeaderTags.Items[i].ToString();
+                            string GetKey = GetValue.Substring(0, GetValue.IndexOf("->"));
+
+                            if (GetKey.Equals(TagKey))
+                            {
+                                HeaderTags.Items[i] = GetKey + "->" + NewValue;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case "Payload":
+                    {
+                        for (int i = 0; i < PayloadTags.Items.Count; i++)
+                        {
+                            string GetValue = PayloadTags.Items[i].ToString();
+                            string GetKey = GetValue.Substring(0, GetValue.IndexOf("->"));
+
+                            if (GetKey.Equals(TagKey))
+                            {
+                                PayloadTags.Items[i] = GetKey + "->" + NewValue;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void BindingTag(object sender, SelectionChangedEventArgs e)
+        {
+            string GetAutomaticField = ConvertHelper.ObjToStr(AutomaticFields.SelectedValue);
+
+            if (GetAutomaticField.Length > 0)
+            {
+                switch (TagType)
+                {
+                    case "Url":
+                        {
+                            for (int i = 0; i < CustomPlatform.Url_Tags.Count; i++)
+                            {
+                                if (CustomPlatform.Url_Tags[i].Key.Equals(TagKey))
+                                {
+                                    CustomPlatform.Url_Tags[i].SetValue(GetAutomaticField,ReqEncodeType.Null);
+                                    ChangeBindingState(GetAutomaticField);
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case "Header":
+                        {
+                            for (int i = 0; i < CustomPlatform.Header_Tags.Count; i++)
+                            {
+                                if (CustomPlatform.Header_Tags[i].Key.Equals(TagKey))
+                                {
+                                    CustomPlatform.Header_Tags[i].SetValue(GetAutomaticField, ReqEncodeType.Null);
+                                    ChangeBindingState(GetAutomaticField);
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case "Payload":
+                        {
+                            for (int i = 0; i < CustomPlatform.PayLoad_Tags.Count; i++)
+                            {
+                                if (CustomPlatform.PayLoad_Tags[i].Key.Equals(TagKey))
+                                {
+                                    CustomPlatform.PayLoad_Tags[i].SetValue(GetAutomaticField, ReqEncodeType.Null);
+                                    ChangeBindingState(GetAutomaticField);
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+            
+        }
     }
 }

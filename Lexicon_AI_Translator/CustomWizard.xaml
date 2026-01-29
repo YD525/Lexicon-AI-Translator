@@ -55,10 +55,16 @@
                     <TextBox BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" Background="{x:Null}" Foreground="White" CaretBrush="White" TextWrapping="Wrap" AcceptsReturn="True">
                         You need to configure the request URL, header, and payload (Request Body). Refer to the SDK documentation for the translation platform you want to integrate with to fill in these fields appropriately. After filling them in, you need to select the object to be included in the automatic fields on the right side of each field and click the "Automatic Fields" list. This will set the specific placeholders in the designated fields. Click the "test" button to verify whether the interface can return a response normally.
                     </TextBox>
-                    <Label Foreground="White" Margin="0 5 0 0">
-                        Automatic Fields
-                    </Label>
-                    <ListBox Foreground="White" Background="#FF5F5F5F" Name="AutomaticFields" VerticalContentAlignment="Center" Height="50">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Foreground="White" Margin="0 5 0 0">
+                            Automatic Fields
+                        </Label>
+                        <Label Foreground="White" Margin="5 5 0 0" Name="BindingInFo">
+                            Select:
+                        </Label>
+                    </StackPanel>
+
+                    <ListBox SelectionChanged="BindingTag" Foreground="White" Background="#FF5F5F5F" Name="AutomaticFields" VerticalContentAlignment="Center" Height="50">
 
                     </ListBox>
 
@@ -83,7 +89,7 @@
 
                         </TextBox>
 
-                        <ListBox Foreground="White" Name="UrlTags" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="50">
+                        <ListBox Foreground="White" Name="UrlTags" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="50" SelectionChanged="UrlTags_SelectionChanged">
                         </ListBox>
                     </Grid>
                    
@@ -103,7 +109,7 @@
 
                         </TextBox>
 
-                        <ListBox Name="HeaderTags" Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="50">
+                        <ListBox Name="HeaderTags" Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="50" SelectionChanged="HeaderTags_SelectionChanged">
                         </ListBox>
                     </Grid>
 
@@ -122,11 +128,11 @@
 
                         </TextBox>
 
-                        <ListBox Name="PayloadTags" Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="100">
+                        <ListBox Name="PayloadTags" Foreground="White" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="100" SelectionChanged="PayloadTags_SelectionChanged">
                         </ListBox>
                     </Grid>
 
-                    <CheckBox Name="IsPost" IsChecked="True" Click="IsPost_Click">
+                    <CheckBox Name="IsPost" IsChecked="True" Click="IsPost_Click" Foreground="White">
                         IsPost
                     </CheckBox>
 
@@ -164,16 +170,16 @@
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Height="300" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <TextBox Name="P_Response" Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Height="300" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                         </TextBox>
 
-                        <ListBox Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F">
+                        <ListBox Foreground="White" Name="P_ResponseTags" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F">
                         </ListBox>
                     </Grid>
 
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox Foreground="White" Margin="0 5 0 5" IsChecked="True">
+                        <CheckBox Foreground="White" Margin="0 5 0 5" IsChecked="True" Name="IsJson">
                             IsJson
                         </CheckBox>
                         <Label Foreground="#FF04B7E5">
