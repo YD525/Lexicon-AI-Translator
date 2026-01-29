@@ -275,11 +275,17 @@ namespace LexTranslator
                     break;
                 case "Cloud AI":
                     {
+                        NPlatformConfig.CustomInFo = CustomPlatform;
+
                         if (!Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
                         {
                             Phoenix.Config.PlatformConfigs.Add(TestID, NPlatformConfig);
                         }
-                        NPlatformConfig.CustomInFo = CustomPlatform;
+                        else
+                        {
+                            throw (new Exception("Adding more than 500 platforms is not supported."));
+                        }
+                       
 
                         AICall GenAICall = new AICall();
                         CustomAIApi NCustomAIApi = new CustomAIApi();
