@@ -137,7 +137,7 @@
 
                     <TextBox BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" Background="{x:Null}" Foreground="White" CaretBrush="White" TextWrapping="Wrap" AcceptsReturn="True">
                         We now need to define a rule to extract the content returned by the request.
-                        Note that if the returned content is JSON, you only need to select FieldName and leave the other fields blank. If the returned content is not JSON, the following two methods are provided: extracting the content between the left and right sides of the string and extracting only the content to the right of a specific string.
+                        Note that if the returned content is JSON, you only need to select FieldName and leave the other fields blank. If the returned content is not JSON, the following two methods are provided: Extract Between,Extract After.
                     </TextBox>
 
                     <Label Foreground="White" Margin="0 5 0 0">
