@@ -127,6 +127,7 @@
                     </Grid>
 
                     <CheckBox Name="IsPost" IsChecked="True" Click="IsPost_Click">
+                        IsPost
                     </CheckBox>
 
                     <Border Name="TestCallBtn" CornerRadius="6" BorderThickness="1" BorderBrush="White" Background="#FF2F2F2F" Cursor="Hand" Margin="0 5 0 5" PreviewMouseDown="TestCall">
@@ -138,7 +139,7 @@
                     <Label Foreground="White">
                         Response
                     </Label>
-                    <TextBox IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" Height="50" Foreground="White" Background="{x:Null}" BorderThickness="0" BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <TextBox Name="Response" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" Height="50" Foreground="White" Background="{x:Null}" BorderThickness="0" BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                     </TextBox>
 

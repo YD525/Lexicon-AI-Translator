@@ -146,6 +146,7 @@ namespace LexTranslator
                             AutomaticFields.Items.Clear();
                             AutomaticFields.Items.Add("{API_KEY}");
                             AutomaticFields.Items.Add("{AI_Prompt}");
+                            AutomaticFields.Items.Add("{AI_Model}");
 
                             CustomPlatform.Type = CustomPlatformType.CloudAI;
                         }
@@ -154,8 +155,8 @@ namespace LexTranslator
                         {
                             AutomaticFields.Items.Clear();
                             AutomaticFields.Items.Add("{API_KEY}");
-                            AutomaticFields.Items.Add("{From}");
-                            AutomaticFields.Items.Add("{To}");
+                            AutomaticFields.Items.Add("{P_From}");
+                            AutomaticFields.Items.Add("{P_To}");
 
                             CustomPlatform.Type = CustomPlatformType.Traditional;
                         }
@@ -285,7 +286,6 @@ namespace LexTranslator
                         {
                             throw (new Exception("Adding more than 500 platforms is not supported."));
                         }
-                       
 
                         AICall GenAICall = new AICall();
                         CustomAIApi NCustomAIApi = new CustomAIApi();
@@ -303,6 +303,8 @@ namespace LexTranslator
                             ref GenAICall,
                             ""
                             );
+
+                        Response.Text = GenAICall.ReceiveString;
                     }
                     break;
                 case "Traditional":
