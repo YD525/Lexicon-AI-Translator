@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -101,6 +102,7 @@ namespace LexTranslator
         }
         public string CurrentPlatformType = "";
         private CustomPlatformInFo CustomPlatform = null;
+        private CustomReqCore TestCustomCore = null;
         private void Next(object sender, MouseButtonEventArgs e)
         {
             if (Step == 1)
@@ -108,6 +110,7 @@ namespace LexTranslator
                 if (CustomPlatform == null)
                 {
                     CustomPlatform = new CustomPlatformInFo();
+                    TestCustomCore = new CustomReqCore();
                     CustomPlatform.CustomID = Phoenix.Config.PlatformConfigs.Count + 1;
                 }
 
@@ -122,6 +125,38 @@ namespace LexTranslator
                 {
                     MessageBoxExtend.Show(this, "Please select the platform type.");
                     return;
+                }
+
+                switch (CurrentPlatformType)
+                {
+                    case "Local AI":
+                        {
+                            AutomaticFields.Items.Clear();
+                            AutomaticFields.Items.Add("{API_KEY}");
+                            AutomaticFields.Items.Add("{AI_Prompt}");
+
+                            CustomPlatform.Type = CustomPlatformType.LocalAI;
+                        }
+                    break;
+                    case "Cloud AI":
+                        {
+                            AutomaticFields.Items.Clear();
+                            AutomaticFields.Items.Add("{API_KEY}");
+                            AutomaticFields.Items.Add("{AI_Prompt}");
+
+                            CustomPlatform.Type = CustomPlatformType.CloudAI;
+                        }
+                    break;
+                    case "Traditional":
+                        {
+                            AutomaticFields.Items.Clear();
+                            AutomaticFields.Items.Add("{API_KEY}");
+                            AutomaticFields.Items.Add("{From}");
+                            AutomaticFields.Items.Add("{To}");
+
+                            CustomPlatform.Type = CustomPlatformType.Traditional;
+                        }
+                    break;
                 }
             }
 
@@ -155,6 +190,21 @@ namespace LexTranslator
             if (GetSelectValue.Length > 0)
             {
                 CurrentPlatformType = GetSelectValue;
+            }
+        }
+
+        private void Url_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TestCustomCore != null)
+            {
+                CustomPlatform.Url = HttpUtility.UrlDecode(Url.Text);
+                TestCustomCore.SetUrl(CustomPlatform.Url);
+                UrlTags.Items.Clear();
+
+                foreach (var GetTag in TestCustomCore.GetUrlKeyValues())
+                {
+                    UrlTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
+                }
             }
         }
     }
