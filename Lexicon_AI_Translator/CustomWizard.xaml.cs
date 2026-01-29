@@ -31,6 +31,45 @@ namespace LexTranslator
         {
             StepLab.Content = string.Format("{0}/3", Step);
 
+            switch (Step)
+            {
+                case 1:
+                    {
+                        Tittle.Content = "Add Platform";
+                    }
+                break;
+                case 2:
+                    {
+                        Tittle.Content = "Config Request body";
+                    }
+                break;
+                case 3:
+                    {
+                        Tittle.Content = "Identify the content returned by the request";
+                    }
+                break;
+            }
+
+            if (Step == 3)
+            {
+                NextBtn.Visibility = Visibility.Collapsed;
+                FinishBtn.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                NextBtn.Visibility = Visibility.Visible;
+                FinishBtn.Visibility = Visibility.Collapsed;
+            }
+
+            if (Step == 1)
+            {
+                BackBtn.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                BackBtn.Visibility = Visibility.Visible;
+            }
+
             foreach (var GetView in Views.Children)
             {
                 if (GetView is Grid)
@@ -64,11 +103,6 @@ namespace LexTranslator
                 Step--;
                 SyncUI();
             }
-        }
-
-        private void NextBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-
         }
     }
 }
