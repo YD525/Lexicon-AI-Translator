@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
+using PhoenixEngine.EngineManagement;
+using PhoenixEngine.PlatformManagement;
 
 namespace LexTranslator
 {
@@ -36,6 +38,16 @@ namespace LexTranslator
                 case 1:
                     {
                         Tittle.Content = "Add Platform";
+
+                        PlatformType.Items.Clear();
+                        PlatformType.Items.Add("Local AI");
+                        PlatformType.Items.Add("Cloud AI");
+                        PlatformType.Items.Add("Traditional");
+
+                        if (CurrentPlatformType.Length > 0)
+                        {
+                            PlatformType.SelectedValue = CurrentPlatformType;
+                        }
                     }
                 break;
                 case 2:
@@ -87,8 +99,33 @@ namespace LexTranslator
                 }
             }
         }
+        public string CurrentPlatformType = "";
+        private CustomPlatformInFo CustomPlatform = null;
         private void Next(object sender, MouseButtonEventArgs e)
         {
+            if (Step == 1)
+            {
+                if (CustomPlatform == null)
+                {
+                    CustomPlatform = new CustomPlatformInFo();
+                    CustomPlatform.CustomID = Phoenix.Config.PlatformConfigs.Count + 1;
+                }
+
+                CustomPlatform.Name = PlatformName.Text;
+
+                if (CustomPlatform.Name.Length == 0)
+                {
+                    MessageBoxExtend.Show(this, "Please set the platform name.");
+                    return;
+                }
+                if (CurrentPlatformType.Length == 0)
+                {
+                    MessageBoxExtend.Show(this, "Please select the platform type.");
+                    return;
+                }
+            }
+
+
             if (Step < 3)
             {
                 Step++;
@@ -102,6 +139,22 @@ namespace LexTranslator
             {
                 Step--;
                 SyncUI();
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            CustomPlatform = null;
+            CurrentPlatformType = string.Empty;
+            SyncUI();
+        }
+
+        private void PlatformType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var GetSelectValue = ConvertHelper.ObjToStr(PlatformType.SelectedValue);
+            if (GetSelectValue.Length > 0)
+            {
+                CurrentPlatformType = GetSelectValue;
             }
         }
     }

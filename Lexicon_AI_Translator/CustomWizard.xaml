@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="CustomTranslationPlatformWizard" Height="700" Width="750" WindowStartupLocation="CenterScreen">
+        Title="CustomTranslationPlatformWizard" Height="700" Width="750" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Grid Background="#FF424242">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -35,7 +35,7 @@
                         <Label Foreground="White">
                             Platform Type
                         </Label>
-                        <ComboBox Width="100" VerticalContentAlignment="Center">
+                        <ComboBox Width="100" VerticalContentAlignment="Center" Name="PlatformType" SelectionChanged="PlatformType_SelectionChanged">
                             AI Platform
                         </ComboBox>
                     </StackPanel>
@@ -43,7 +43,7 @@
                         <Label Foreground="White">
                             Platform Name
                         </Label>
-                        <TextBox Width="100" VerticalContentAlignment="Center">
+                        <TextBox Width="100" VerticalContentAlignment="Center" Name="PlatformName">
                            
                         </TextBox>
                     </StackPanel>
