@@ -170,7 +170,13 @@ namespace LexTranslator
                 }
             }
 
-            if (Step == 2)
+            if (Step < 3)
+            {
+                Step++;
+                SyncUI();
+            }
+
+            if (Step == 3)
             {
                 if (CurrentResponse.Length == 0)
                 {
@@ -202,19 +208,14 @@ namespace LexTranslator
                             if (MatchTranslationJson(GetItem.Value))
                             {
                                 QueryRule.FieldName = GetItem.Key;
+                                FieldName.Content = string.Format("FieldName:{0}", GetItem.Key);
                                 MessageBoxExtend.Show(this, "The fields have been automatically retrieved; please click Finish to end this wizard.");
                             }
                         }
-                        
+
                         P_ResponseTags.Items.Add(string.Format("{0}->{1}", GetItem.Key, GetItem.Value));
                     }
                 }
-            }
-
-            if (Step < 3)
-            {
-                Step++;
-                SyncUI();
             }
         }
 
@@ -568,6 +569,36 @@ namespace LexTranslator
         private void SplitStr_TextChanged(object sender, TextChangedEventArgs e)
         {
             QueryRule.SplitStr = SplitStr.Text.Trim();
+        }
+
+        private void TestGetResponseBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            string TransStr = "";
+            if (QueryRule.ByJson)
+            {
+                var GetTags = CustomPlatformHelper.GetJsonValues(CurrentResponse);
+
+                for (int i = 0; i < GetTags.Count; i++)
+                {
+                    if (GetTags[i].Key.Equals(QueryRule.FieldName))
+                    {
+                        TransStr = GetTags[i].Value;
+                        break;
+                    }
+                }
+            }
+            else
+            if (QueryRule.SplitStr.Trim().Length > 0)
+            {
+                TransStr = CurrentResponse.Substring(CurrentResponse.LastIndexOf(QueryRule.SplitStr) + QueryRule.SplitStr.Length);
+            }
+            else
+            if (QueryRule.LeftStr.Trim().Length > 0)
+            {
+                TransStr = ConvertHelper.StringDivision(CurrentResponse, QueryRule.LeftStr, QueryRule.RightStr);
+            }
+            
+            MessageBoxExtend.Show(this, TransStr);
         }
     }
 }

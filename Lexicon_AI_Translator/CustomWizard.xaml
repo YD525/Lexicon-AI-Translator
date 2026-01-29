@@ -209,7 +209,7 @@
                         </TextBox>
                     </StackPanel>
 
-                    <Border Name="TestGetResponseBtn" CornerRadius="6" BorderThickness="1" BorderBrush="White" Background="#FF2F2F2F" Cursor="Hand" Margin="0 5 0 5">
+                    <Border Name="TestGetResponseBtn" PreviewMouseDown="TestGetResponseBtn_PreviewMouseDown" CornerRadius="6" BorderThickness="1" BorderBrush="White" Background="#FF2F2F2F" Cursor="Hand" Margin="0 5 0 5">
                         <Label Foreground="White" VerticalAlignment="Center" IsHitTestVisible="False" HorizontalAlignment="Center">
                             Test Call
                         </Label>
