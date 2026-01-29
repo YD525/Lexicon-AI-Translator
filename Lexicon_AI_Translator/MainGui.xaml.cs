@@ -195,8 +195,7 @@ namespace LexTranslator
                 SyncCGLocation();
             }
 
-            TestNode.StartTest();
-            new CustomWizard().Show();
+            //new CustomWizard().Show();
         }
 
 

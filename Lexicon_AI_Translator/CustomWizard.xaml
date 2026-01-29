@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="CustomTranslationPlatformWizard" Height="700" Width="750" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+        Title="CustomTranslationPlatformWizard" Height="700" Width="750" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid Background="#FF424242">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>

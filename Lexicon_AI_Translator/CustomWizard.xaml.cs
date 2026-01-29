@@ -621,13 +621,24 @@ namespace LexTranslator
             Phoenix.Config.PlatformConfigs.Add(CustomPlatform.CustomID, NPlatformConfig);
             Phoenix.SaveConfig();
 
+            CloseThis();
+        }
+
+        public void CloseThis()
+        {
             CustomPlatform = null;
             CurrentPlatformType = string.Empty;
             QueryRule = null;
             TagType = string.Empty;
             TagKey = string.Empty;
+            CurrentPlatformType = string.Empty;
 
             this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CloseThis();
         }
     }
 }
