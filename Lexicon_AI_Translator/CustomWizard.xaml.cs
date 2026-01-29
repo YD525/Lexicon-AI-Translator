@@ -600,5 +600,34 @@ namespace LexTranslator
             
             MessageBoxExtend.Show(this, TransStr);
         }
+
+        private void FinishBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            PlatformConfig NPlatformConfig = new PlatformConfig();
+            NPlatformConfig.Platform = PhoenixEngine.TranslateManage.PlatformType.CustomPlatform;
+            NPlatformConfig.Enable = false;
+
+            CustomPlatform.QueryRule = QueryRule;
+            
+            NPlatformConfig.ApiKeys.Add(ApiKey);
+
+            while(Phoenix.Config.PlatformConfigs.ContainsKey(CustomPlatform.CustomID))
+            {
+                CustomPlatform.CustomID = Phoenix.Config.PlatformConfigs.Count + 1;
+            }
+
+            NPlatformConfig.CustomInFo = CustomPlatform;
+
+            Phoenix.Config.PlatformConfigs.Add(CustomPlatform.CustomID, NPlatformConfig);
+            Phoenix.SaveConfig();
+
+            CustomPlatform = null;
+            CurrentPlatformType = string.Empty;
+            QueryRule = null;
+            TagType = string.Empty;
+            TagKey = string.Empty;
+
+            this.Close();
+        }
     }
 }
