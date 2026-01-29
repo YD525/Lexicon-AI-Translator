@@ -174,7 +174,7 @@
 
                         </TextBox>
 
-                        <ListBox Foreground="White" Name="P_ResponseTags" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F">
+                        <ListBox SelectionChanged="P_ResponseTags_SelectionChanged" Foreground="White" Name="P_ResponseTags" Grid.Column="1" BorderBrush="{x:Null}" Background="#FF5F5F5F" Height="300" ScrollViewer.VerticalScrollBarVisibility="Auto">
                         </ListBox>
                     </Grid>
 
@@ -182,7 +182,7 @@
                         <CheckBox Foreground="White" Margin="0 5 0 5" IsChecked="True" Name="IsJson">
                             IsJson
                         </CheckBox>
-                        <Label Foreground="#FF04B7E5">
+                        <Label Foreground="#FF04B7E5" Name="FieldName">
                             FieldName:
                         </Label>
                     </StackPanel>
@@ -195,9 +195,9 @@
                         <Label Foreground="White">
                             Extract Between
                         </Label>
-                        <TextBox Width="100" Margin="0 0 5 0">
+                        <TextBox Width="100" Margin="0 0 5 0" Name="LeftStr" TextChanged="LeftStr_TextChanged">
                         </TextBox>
-                        <TextBox Width="100">
+                        <TextBox Width="100" Name="RightStr" TextChanged="RightStr_TextChanged">
                         </TextBox>
                     </StackPanel>
 
@@ -205,7 +205,7 @@
                         <Label Foreground="White">
                             Extract After
                         </Label>
-                        <TextBox Width="100">
+                        <TextBox Width="100" Name="SplitStr" TextChanged="SplitStr_TextChanged">
                         </TextBox>
                     </StackPanel>
 

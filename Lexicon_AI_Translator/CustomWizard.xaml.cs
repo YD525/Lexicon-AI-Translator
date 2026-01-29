@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
@@ -196,6 +197,15 @@ namespace LexTranslator
 
                     foreach (var GetItem in GetKeyValues)
                     {
+                        if (CustomPlatform.Type == CustomPlatformType.LocalAI || CustomPlatform.Type == CustomPlatformType.CloudAI)
+                        {
+                            if (MatchTranslationJson(GetItem.Value))
+                            {
+                                QueryRule.FieldName = GetItem.Key;
+                                MessageBoxExtend.Show(this, "The fields have been automatically retrieved; please click Finish to end this wizard.");
+                            }
+                        }
+                        
                         P_ResponseTags.Items.Add(string.Format("{0}->{1}", GetItem.Key, GetItem.Value));
                     }
                 }
@@ -527,6 +537,37 @@ namespace LexTranslator
                 }
             }
             
+        }
+
+        public bool MatchTranslationJson(string Input)
+        {
+            return Regex.IsMatch(Input,@"^\s*\{\s*""translation""\s*:\s*""(?:\\.|[^""\\])*""\s*\}\s*$");
+        }
+
+        private void P_ResponseTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string GetSelectValue = ConvertHelper.ObjToStr(P_ResponseTags.SelectedValue);
+            if (GetSelectValue.Trim().Length > 0)
+            {
+                string GetKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
+                FieldName.Content = string.Format("FieldName:{0}", GetKey);
+                QueryRule.FieldName = GetKey;
+            }
+        }
+
+        private void LeftStr_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            QueryRule.LeftStr = LeftStr.Text.Trim();
+        }
+
+        private void RightStr_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            QueryRule.RightStr = RightStr.Text.Trim();
+        }
+
+        private void SplitStr_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            QueryRule.SplitStr = SplitStr.Text.Trim();
         }
     }
 }
