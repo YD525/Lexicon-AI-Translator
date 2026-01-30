@@ -19,6 +19,19 @@
         </Setter>
     </Style>
 
+    <Style x:Key="TriangleArrowStyle" TargetType="Polygon">
+        <Setter Property="Points" Value="50,10 10,80 90,80"/>
+        <Setter Property="Fill" Value="White"/>
+        <Setter Property="Stroke" Value="Black"/>
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <RotateTransform Angle="90"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="BorderWinBackground" TargetType="Border">
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>

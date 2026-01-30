@@ -196,6 +196,7 @@ namespace LexTranslator
             }
 
             //new CustomWizard().Show();
+            new NodeStyleWin().Show();
         }
 
 
