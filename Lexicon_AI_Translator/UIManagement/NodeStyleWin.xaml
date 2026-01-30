@@ -9,7 +9,17 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <Grid Margin="0 1 0 1">
-                <Grid Name="Node" Height="40" Background="#FF2B2B2B">
+                <Grid Panel.ZIndex="2" Background="Black" Opacity="0.6">
+                    
+                </Grid>
+                <Grid Panel.ZIndex="3">
+                    <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 10 0">
+                        <Label Foreground="White">
+                            Enable
+                        </Label>
+                    </Border>
+                </Grid>
+                <Grid Panel.ZIndex="1" Name="Node" Height="40" Background="#FF2B2B2B">
                     <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
                         ChatGpt
                     </Label>
