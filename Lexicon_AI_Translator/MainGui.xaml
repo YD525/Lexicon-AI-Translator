@@ -125,7 +125,7 @@
 
             <Grid Grid.Row="1">
                 <!--LeftMenu-->
-                <Border Style="{DynamicResource LeftMenu}" Name="LeftMenu" Height="0">
+                <Border Style="{DynamicResource LeftMenu}" Name="LeftMenu" Height="auto">
                     <Grid Name="Nodes">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>

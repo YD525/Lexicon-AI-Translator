@@ -1,0 +1,29 @@
+﻿<Window x:Class="LexTranslator.UIManagement.NodeStyleWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LexTranslator.UIManagement"
+        mc:Ignorable="d"
+        Title="NodeStyleWin" Height="450" Width="500" Background="Black">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <Grid Margin="0 1 0 1">
+                <Grid Name="Node" Height="40" Background="#FF2B2B2B">
+                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                        ChatGpt
+                    </Label>
+                    <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
+                </Grid>
+            </Grid>
+          
+            <Grid Height="40" Background="#FF2B2B2B">
+                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                    ChatGpt
+                </Label>
+                <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
+            </Grid>
+        </StackPanel>
+       
+    </Grid>
+</Window>

@@ -149,6 +149,9 @@
     <Compile Include="UIManagement\LineRenderer.cs" />
     <Compile Include="UIManagement\LogHelper.cs" />
     <Compile Include="UIManagement\MutiWinHelper.cs" />
+    <Compile Include="UIManagement\NodeStyleWin.xaml.cs">
+      <DependentUpon>NodeStyleWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIManagement\RowStyleWin.xaml.cs">
       <DependentUpon>RowStyleWin.xaml</DependentUpon>
     </Compile>
@@ -221,6 +224,10 @@
     <Page Include="Themes\RetroStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UIManagement\NodeStyleWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIManagement\RowStyleWin.xaml">
       <Generator>MSBuild:Compile</Generator>
