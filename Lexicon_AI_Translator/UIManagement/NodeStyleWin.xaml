@@ -40,11 +40,7 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             PreTranslate Node
                         </Label>
-                        <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0" Cursor="Hand">
-                            <Label Foreground="White" VerticalAlignment="Center">
-                                Disable
-                            </Label>
-                        </Border>
+                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
@@ -93,11 +89,7 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             ChatGpt
                         </Label>
-                        <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0" Cursor="Hand">
-                            <Label Foreground="White" VerticalAlignment="Center">
-                                Disable
-                            </Label>
-                        </Border>
+                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
@@ -125,11 +117,7 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             ChatGpt
                         </Label>
-                        <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0" Cursor="Hand">
-                            <Label Foreground="White" VerticalAlignment="Center">
-                                Disable
-                            </Label>
-                        </Border>
+                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
@@ -187,11 +175,7 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             DeepL
                         </Label>
-                        <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0" Cursor="Hand">
-                            <Label Foreground="White" VerticalAlignment="Center">
-                                Disable
-                            </Label>
-                        </Border>
+                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
