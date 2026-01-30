@@ -5,19 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator.UIManagement"
         mc:Ignorable="d"
-        Title="NodeStyleWin" Height="450" Width="500" Background="#FFC7C7C7">
+        Title="NodeStyleWin" Height="450" Width="500" Background="Black">
     <Grid>
         <StackPanel Orientation="Vertical">
+            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
+                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                    Engine Nodes
+                </Label>
+                <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0">
+                    <Label Foreground="White" FontSize="10" VerticalAlignment="Center">
+                        0 / 1 Enabled
+                    </Label>
+                </Border>
+            </Grid>
+            
             <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
                 <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
                     Cloud AI Nodes
                 </Label>
                 <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0">
                     <Label Foreground="White" FontSize="10" VerticalAlignment="Center">
-                        2 / 5 Enabled
+                        1 / 3 Enabled
                     </Label>
                 </Border>
             </Grid>
+            <Grid Margin="0 0 0 1">
+                <Grid Panel.ZIndex="2" Visibility="Hidden">
+                    <Grid Panel.ZIndex="3" Background="Black" Opacity="0.6">
+
+                    </Grid>
+                    <Grid Panel.ZIndex="5">
+                        <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Label Foreground="White">
+                                Enable
+                            </Label>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <Grid Panel.ZIndex="1" Height="40" Background="#FF2B2B2B">
+                    <StackPanel Orientation="Horizontal">
+                        <Grid Width="5" Background="#FF3B8DFF" Margin="0 5 0 5">
+                        </Grid>
+                        <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
+                            ChatGpt
+                        </Label>
+                    </StackPanel>
+
+                    <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
+
+                    <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.6">
+                        <Label Foreground="White">
+                            Disable
+                        </Label>
+                    </Border>
+                </Grid>
+            </Grid>
+
             <Grid Margin="0 0 0 1">
                 <Grid Panel.ZIndex="2" Visibility="Visible">
                     <Grid Panel.ZIndex="3" Background="Black" Opacity="0.6">
@@ -31,29 +75,52 @@
                         </Border>
                     </Grid>
                 </Grid>
-               
-                <Grid Panel.ZIndex="1" Name="Node" Height="40" Background="#FF2B2B2B">
-                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                        ChatGpt
-                    </Label>
+
+                <Grid Panel.ZIndex="1" Height="40" Background="#FF2B2B2B">
+                    <StackPanel Orientation="Horizontal">
+                        <Grid Width="5" Background="Black" Margin="0 5 0 5">
+                        </Grid>
+                        <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
+                            ChatGpt
+                        </Label>
+                    </StackPanel>
+
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
+
+                    <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.6">
+                        <Label Foreground="White">
+                            Disable
+                        </Label>
+                    </Border>
                 </Grid>
             </Grid>
-          
-            <Grid Height="40" Background="#FF2B2B2B">
-                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                    ChatGpt
-                </Label>
-                <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
-            </Grid>
 
-            <Grid Height="40" Background="#FF222222">
-                <Border Width="20" Height="20" CornerRadius="6" BorderThickness="1" BorderBrush="#EAEAEA" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand">
-                    <Viewbox Width="12" Height="12">
-                        <Path Stroke="#EAEAEA" StrokeThickness="1.2" StrokeStartLineCap="Square" StrokeEndLineCap="Square" Data="M 6,1 L 6,11 M 1,6 L 11,6"/>
-                    </Viewbox>
+
+            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
+                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                    Local AI Nodes
+                </Label>
+                <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0">
+                    <Label Foreground="White" FontSize="10" VerticalAlignment="Center">
+                        0 / 1 Enabled
+                    </Label>
                 </Border>
             </Grid>
+
+            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
+                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                    Traditional Nodes
+                </Label>
+                <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0">
+                    <Label Foreground="White" FontSize="10" VerticalAlignment="Center">
+                        0 / 1 Enabled
+                    </Label>
+                </Border>
+            </Grid>
+
+
+
+
         </StackPanel>
        
     </Grid>
