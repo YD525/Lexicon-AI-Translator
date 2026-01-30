@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator.UIManagement"
         mc:Ignorable="d"
-        Title="NodeStyleWin" Height="450" Width="500" Background="Black">
+        Title="NodeStyleWin" Height="450" Width="500" Background="#FFC7C7C7">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Grid Height="30" Background="#FF353535">
+            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
                 <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
                     Cloud AI Nodes
                 </Label>
-                <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="1,0,0,1">
-                    <Label Foreground="#7CFF7C" FontSize="10" VerticalAlignment="Center">
+                <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0">
+                    <Label Foreground="White" FontSize="10" VerticalAlignment="Center">
                         2 / 5 Enabled
                     </Label>
                 </Border>
@@ -24,7 +24,7 @@
 
                     </Grid>
                     <Grid Panel.ZIndex="5">
-                        <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 10 0">
+                        <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Label Foreground="White">
                                 Enable
                             </Label>
@@ -45,6 +45,14 @@
                     ChatGpt
                 </Label>
                 <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
+            </Grid>
+
+            <Grid Height="40" Background="#FF222222">
+                <Border Width="20" Height="20" CornerRadius="6" BorderThickness="1" BorderBrush="#EAEAEA" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand">
+                    <Viewbox Width="12" Height="12">
+                        <Path Stroke="#EAEAEA" StrokeThickness="1.2" StrokeStartLineCap="Square" StrokeEndLineCap="Square" Data="M 6,1 L 6,11 M 1,6 L 11,6"/>
+                    </Viewbox>
+                </Border>
             </Grid>
         </StackPanel>
        
