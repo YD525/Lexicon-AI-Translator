@@ -323,48 +323,48 @@ namespace LexTranslator.UIManage
             {
                 if (!LeftMenuIsShow) return;
 
-                DeFine.WorkingWin.Dispatcher.Invoke(() =>
-                {
-                    var IndicatorOn = (Style)Application.Current.FindResource("IndicatorOnStyle");
-                    var IndicatorOff = (Style)Application.Current.FindResource("IndicatorOffStyle");
+                //DeFine.WorkingWin.Dispatcher.Invoke(() =>
+                //{
+                //    var IndicatorOn = (Style)Application.Current.FindResource("IndicatorOnStyle");
+                //    var IndicatorOff = (Style)Application.Current.FindResource("IndicatorOffStyle");
 
-                    var platformToLightMap = new Dictionary<PlatformType, ContentControl>
-            {
-                { PlatformType.ChatGpt, DeFine.WorkingWin.ChatGptLight },
-                { PlatformType.Gemini, DeFine.WorkingWin.GeminiLight },
-                { PlatformType.DeepSeek, DeFine.WorkingWin.DeepSeekLight },
-                { PlatformType.LMLocalAI, DeFine.WorkingWin.LMLocalAILight },
-                { PlatformType.DeepL, DeFine.WorkingWin.DeepLLight },
-                { PlatformType.PhoenixEngine, DeFine.WorkingWin.PreTranslateLight }
-            };
+                //    var platformToLightMap = new Dictionary<PlatformType, ContentControl>
+                //    {
+                //        { PlatformType.ChatGpt, DeFine.WorkingWin.ChatGptLight },
+                //        { PlatformType.Gemini, DeFine.WorkingWin.GeminiLight },
+                //        { PlatformType.DeepSeek, DeFine.WorkingWin.DeepSeekLight },
+                //        { PlatformType.LMLocalAI, DeFine.WorkingWin.LMLocalAILight },
+                //        { PlatformType.DeepL, DeFine.WorkingWin.DeepLLight },
+                //        { PlatformType.PhoenixEngine, DeFine.WorkingWin.PreTranslateLight }
+                //    };
 
-                    if (!platformToLightMap.TryGetValue(Sign, out var lightControl) || lightControl == null)
-                    {
-                        return;
-                    }
+                //    if (!platformToLightMap.TryGetValue(Sign, out var lightControl) || lightControl == null)
+                //    {
+                //        return;
+                //    }
 
-                    lightControl.Style = IndicatorOn;
-                    _LastOnTime[Sign.ToString()] = DateTime.UtcNow;
+                //    lightControl.Style = IndicatorOn;
+                //    _LastOnTime[Sign.ToString()] = DateTime.UtcNow;
 
-                    if (_NodeTimers.TryGetValue(Sign.ToString(), out var oldTimer))
-                    {
-                        oldTimer.Stop();
-                    }
+                //    if (_NodeTimers.TryGetValue(Sign.ToString(), out var oldTimer))
+                //    {
+                //        oldTimer.Stop();
+                //    }
 
-                    var timer = new DispatcherTimer
-                    {
-                        Interval = TimeSpan.FromMilliseconds(500)
-                    };
+                //    var timer = new DispatcherTimer
+                //    {
+                //        Interval = TimeSpan.FromMilliseconds(500)
+                //    };
 
-                    timer.Tick += (s, e) =>
-                    {
-                        lightControl.Style = IndicatorOff;
-                        timer.Stop();
-                    };
+                //    timer.Tick += (s, e) =>
+                //    {
+                //        lightControl.Style = IndicatorOff;
+                //        timer.Stop();
+                //    };
 
-                    _NodeTimers[Sign.ToString()] = timer;
-                    timer.Start();
-                });
+                //    _NodeTimers[Sign.ToString()] = timer;
+                //    timer.Start();
+                //});
             }
             catch { }
         }
@@ -602,6 +602,13 @@ namespace LexTranslator.UIManage
                 return (T)XamlReader.Load(xmlReader);
             }
             catch { return null; }
+        }
+
+
+        public static void SyncNodes()
+        { 
+        
+        
         }
 
     }

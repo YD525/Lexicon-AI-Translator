@@ -469,18 +469,18 @@ namespace LexTranslator
 
         private void ContextGeneration_Click(object sender, RoutedEventArgs e)
         {
-            if (ContextGeneration.IsChecked == true)
-            {
-                RightContextIndicator.Visibility = Visibility.Visible;
-                Phoenix.Config.ContextEnable = true;
-            }
-            else
-            {
-                RightContextIndicator.Visibility = Visibility.Collapsed;
-                Phoenix.Config.ContextEnable = false;
-            }
+            //if (ContextGeneration.IsChecked == true)
+            //{
+            //    RightContextIndicator.Visibility = Visibility.Visible;
+            //    Phoenix.Config.ContextEnable = true;
+            //}
+            //else
+            //{
+            //    RightContextIndicator.Visibility = Visibility.Collapsed;
+            //    Phoenix.Config.ContextEnable = false;
+            //}
 
-            Phoenix.SaveConfig();
+            //Phoenix.SaveConfig();
         }
 
 
@@ -1651,13 +1651,13 @@ namespace LexTranslator
 
             if (Phoenix.Config.ContextEnable)
             {
-                ContextGeneration.IsChecked = true;
-                RightContextIndicator.Visibility = Visibility.Visible;
+                //ContextGeneration.IsChecked = true;
+                //RightContextIndicator.Visibility = Visibility.Visible;
             }
             else
             {
-                ContextGeneration.IsChecked = false;
-                RightContextIndicator.Visibility = Visibility.Collapsed;
+                //ContextGeneration.IsChecked = false;
+                //RightContextIndicator.Visibility = Visibility.Collapsed;
             }
 
             SyncNodeStates();
@@ -3144,9 +3144,9 @@ namespace LexTranslator
         private double CalcLeftMenuHeight()
         {
             double AutoHeight = 0;
-            foreach (var GetRow in Nodes.RowDefinitions)
+            foreach (FrameworkElement GetRow in Nodes.Children)
             {
-                AutoHeight += GetRow.Height.Value;
+                AutoHeight += GetRow.ActualHeight;
             }
             return AutoHeight;
         }
@@ -3545,14 +3545,14 @@ namespace LexTranslator
             if (SContextEnable.IsChecked == true)
             {
                 Phoenix.Config.ContextEnable = true;
-                ContextGeneration.IsChecked = true;
-                RightContextIndicator.Visibility = Visibility.Visible;
+                //ContextGeneration.IsChecked = true;
+                //RightContextIndicator.Visibility = Visibility.Visible;
             }
             else
             {
                 Phoenix.Config.ContextEnable = false;
-                ContextGeneration.IsChecked = false;
-                RightContextIndicator.Visibility = Visibility.Collapsed;
+                //ContextGeneration.IsChecked = false;
+                //RightContextIndicator.Visibility = Visibility.Collapsed;
             }
         }
 

@@ -30,7 +30,16 @@ namespace LexTranslator.UIManagement
         public Grid GenNodeTree(string Tittle, CustomPlatformType Type)
         {
             Grid NewHeaderTag = UIHelper.CloneElement(HeaderTag);
-            Label GetTittle = NewHeaderTag.Children[0] as Label;
+            Label GetTittle = (NewHeaderTag.Children[0] as Border).Child as Label;
+            GetTittle.Content = Tittle;
+            GetTittle.Tag = Type;
+            return NewHeaderTag;
+        }
+
+        public Grid GenMainNodeTree(string Tittle, CustomPlatformType Type)
+        {
+            Grid NewHeaderTag = UIHelper.CloneElement(MainHeaderTag);
+            Label GetTittle = (NewHeaderTag.Children[1] as Border).Child as Label;
             GetTittle.Content = Tittle;
             GetTittle.Tag = Type;
             return NewHeaderTag;
