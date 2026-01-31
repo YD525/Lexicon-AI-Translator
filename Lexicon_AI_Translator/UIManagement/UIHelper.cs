@@ -20,6 +20,9 @@ using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManagement;
 using System.Globalization;
 using System.Linq;
+using System.IO;
+using System.Xml;
+using System.Windows.Markup;
 
 namespace LexTranslator.UIManage
 {
@@ -584,6 +587,23 @@ namespace LexTranslator.UIManage
 
             return LinePanel;
         }
+
+
+        public static T CloneElement<T>(T source) where T : UIElement
+        {
+            try
+            {
+                if (source == null) return null;
+
+                string xaml = XamlWriter.Save(source);
+                StringReader stringReader = new StringReader(xaml);
+                XmlReader xmlReader = XmlReader.Create(stringReader);
+
+                return (T)XamlReader.Load(xmlReader);
+            }
+            catch { return null; }
+        }
+
     }
 
     public enum TextLayout

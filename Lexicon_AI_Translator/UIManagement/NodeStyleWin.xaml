@@ -8,7 +8,7 @@
         Title="NodeStyleWin" Height="450" Width="500" Background="Black">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
+            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1" Name="HeaderTag">
                 <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
                     Engine Nodes
                 </Label>
@@ -19,8 +19,8 @@
                 </Border>
             </Grid>
 
-            <Grid Margin="0 0 0 1" Height="40">
-                <Grid Panel.ZIndex="2" Visibility="Hidden">
+            <Grid Margin="0 0 0 1" Height="40" Name="Node">
+                <Grid Panel.ZIndex="2" Visibility="Visible">
                     <Grid Panel.ZIndex="3" Background="Black" Opacity="0.6">
 
                     </Grid>
@@ -40,12 +40,10 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             PreTranslate Node
                         </Label>
-                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
+                        <TextBlock Cursor="Hand" Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
-
-                    
                 </Grid>
             </Grid>
 
@@ -89,7 +87,7 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             ChatGpt
                         </Label>
-                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
+                        <TextBlock Cursor="Hand" Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
@@ -117,7 +115,7 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             ChatGpt
                         </Label>
-                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
+                        <TextBlock Cursor="Hand" Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
@@ -175,7 +173,7 @@
                         <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
                             DeepL
                         </Label>
-                        <TextBlock Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
+                        <TextBlock Cursor="Hand" Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
                     </StackPanel>
 
                     <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>

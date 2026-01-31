@@ -195,7 +195,7 @@ namespace LexTranslator
                 SyncCGLocation();
             }
 
-            //new CustomWizard().Show();
+            new CustomWizard().Show();
             new NodeStyleWin().Show();
         }
 
