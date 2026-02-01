@@ -140,8 +140,6 @@
     <Compile Include="SkyrimManagement\EspReader.cs" />
     <Compile Include="SkyrimManagement\FileAttributesHelper.cs" />
     <Compile Include="SkyrimManagement\MCMReader.cs" />
-    <Compile Include="SkyrimManagement\PexDecompiler.cs" />
-    <Compile Include="SkyrimManagement\PexReader.cs" />
     <Compile Include="SkyrimManagement\RamCacheReader.cs" />
     <Compile Include="SkyrimManagement\SkyrimHelper.cs" />
     <Compile Include="SkyrimManagement\StringsFileReader.cs" />
