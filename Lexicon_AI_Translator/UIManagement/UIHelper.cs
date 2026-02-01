@@ -26,6 +26,9 @@ using System.Windows.Markup;
 using System.Security.Cryptography.X509Certificates;
 using PhoenixEngine.PlatformManagement;
 using System.Diagnostics.Eventing.Reader;
+using static LexTranslator.UIManagement.NodeStyleWin;
+using System.Runtime.CompilerServices;
+using System.Windows.Media.Media3D;
 
 namespace LexTranslator.UIManage
 {
@@ -36,7 +39,7 @@ namespace LexTranslator.UIManage
         private DoubleAnimation _Animation;
 
         private readonly double _Speed = 120;
-        private double _PendingTo; 
+        private double _PendingTo;
 
         public ScanAnimator(TranslateTransform scanTransform, FrameworkElement processBar, double speed = 120)
         {
@@ -76,8 +79,8 @@ namespace LexTranslator.UIManage
                 From = from,
                 To = to,
                 Duration = TimeSpan.FromSeconds(durationSeconds),
-                AutoReverse = false,               
-                RepeatBehavior = new RepeatBehavior(1), 
+                AutoReverse = false,
+                RepeatBehavior = new RepeatBehavior(1),
                 FillBehavior = FillBehavior.Stop
             };
 
@@ -114,7 +117,7 @@ namespace LexTranslator.UIManage
         }
 
         public static Grid SelectLine = null;
-  
+
         public static double DefLineHeight = 42;
         public static double DefFontSize = 15;
 
@@ -129,7 +132,7 @@ namespace LexTranslator.UIManage
             if (string.IsNullOrEmpty(Text))
                 return 0;
 
-  
+
             if (Text.Length < 16)
                 return Text.Length * FontSize * 0.6;
 
@@ -146,7 +149,7 @@ namespace LexTranslator.UIManage
             return Font.WidthIncludingTrailingWhitespace;
         }
 
-        public static FakeGrid CreatFakeLine(string Type,string Key,string SourceText,string TransText,double Score)
+        public static FakeGrid CreatFakeLine(string Type, string Key, string SourceText, string TransText, double Score)
         {
             double AutoHeight = DefLineHeight;
 
@@ -178,7 +181,7 @@ namespace LexTranslator.UIManage
 
         public static Grid CreatLine(double Height, string Type, string Key, string SourceText, string TransText, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreatLine(Height, new PhoenixEngine.TranslateManage.TranslationUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText,"", Phoenix.From, Phoenix.To,Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreatLine(Height, new PhoenixEngine.TranslateManage.TranslationUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, "", Phoenix.From, Phoenix.To, Score));
             return MainGrid;
         }
 
@@ -315,59 +318,93 @@ namespace LexTranslator.UIManage
             AutoCancelSelectIDETrd?.Cancel();
         }
 
-        private static readonly Dictionary<string, DispatcherTimer> _NodeTimers = new Dictionary<string, DispatcherTimer>();
-        private static readonly Dictionary<string, DateTime> _LastOnTime = new Dictionary<string, DateTime>();
-
         public static bool LeftMenuIsShow = false;
 
-        public static void NodeCallCallback(PlatformType Sign)
+        static class NodeLightController
+        {
+            private static readonly ConditionalWeakTable<Grid, CancellationTokenSource> _lightMap
+                = new ConditionalWeakTable<Grid, CancellationTokenSource>();
+
+            public static void Blink(Grid grid, ContentControl light, int ms)
+            {
+                if (_lightMap.TryGetValue(grid, out var oldCts))
+                {
+                    oldCts.Cancel();
+                    _lightMap.Remove(grid);
+                }
+
+                var cts = new CancellationTokenSource();
+                _lightMap.Add(grid, cts);
+
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        await Task.Delay(ms, cts.Token);
+                        if (cts.IsCancellationRequested) return;
+
+                        grid.Dispatcher.Invoke(() =>
+                        {
+                            var off = (Style)Application.Current.FindResource("IndicatorOffStyle");
+                            light.Style = off;
+                        });
+                    }
+                    catch (TaskCanceledException) { }
+                });
+            }
+        }
+
+        public static void NodeCallCallback(int CustomID, PlatformType Sign)
         {
             try
             {
                 if (!LeftMenuIsShow) return;
 
-                //DeFine.WorkingWin.Dispatcher.Invoke(() =>
-                //{
-                //    var IndicatorOn = (Style)Application.Current.FindResource("IndicatorOnStyle");
-                //    var IndicatorOff = (Style)Application.Current.FindResource("IndicatorOffStyle");
+                DeFine.WorkingWin.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        var IndicatorOn = (Style)Application.Current.FindResource("IndicatorOnStyle");
+                        var IndicatorOff = (Style)Application.Current.FindResource("IndicatorOffStyle");
 
-                //    var platformToLightMap = new Dictionary<PlatformType, ContentControl>
-                //    {
-                //        { PlatformType.ChatGpt, DeFine.WorkingWin.ChatGptLight },
-                //        { PlatformType.Gemini, DeFine.WorkingWin.GeminiLight },
-                //        { PlatformType.DeepSeek, DeFine.WorkingWin.DeepSeekLight },
-                //        { PlatformType.LMLocalAI, DeFine.WorkingWin.LMLocalAILight },
-                //        { PlatformType.DeepL, DeFine.WorkingWin.DeepLLight },
-                //        { PlatformType.PhoenixEngine, DeFine.WorkingWin.PreTranslateLight }
-                //    };
+                        for (int i = 0; i < DeFine.WorkingWin.Nodes.Children.Count; i++)
+                        {
+                            if (DeFine.WorkingWin.Nodes.Children[i] is Grid)
+                            {
+                                Grid SetGrid = DeFine.WorkingWin.Nodes.Children[i] as Grid;
+                                if (SetGrid.Children[0] is Grid)
+                                {
+                                    HeaderInFo GetHeader = SetGrid.Tag as HeaderInFo;
+                                    if (GetHeader.CustomID <= 0 && GetHeader.MainType == PlatformType.Null)
+                                    {
+                                        if (Sign == PlatformType.PhoenixEngine)
+                                        {
+                                            ContentControl GetLight = DeFine.NodeStyleWin.GetNodeLight(SetGrid);
+                                            GetLight.Style = IndicatorOn;
+                                            NodeLightController.Blink(SetGrid, GetLight, 1000);
+                                        }
+                                    }
+                                    else
+                                    if (GetHeader.CustomID <= 0 && GetHeader.MainType == Sign)
+                                    {
+                                        ContentControl GetLight = DeFine.NodeStyleWin.GetNodeLight(SetGrid);
+                                        GetLight.Style = IndicatorOn;
+                                        NodeLightController.Blink(SetGrid, GetLight, 1000);
+                                    }
+                                    else
+                                    if (GetHeader.CustomID > 0 && GetHeader.CustomID == CustomID)
+                                    {
+                                        ContentControl GetLight = DeFine.NodeStyleWin.GetNodeLight(SetGrid);
+                                        GetLight.Style = IndicatorOn;
+                                        NodeLightController.Blink(SetGrid, GetLight, 1000);
+                                    }
+                                }
 
-                //    if (!platformToLightMap.TryGetValue(Sign, out var lightControl) || lightControl == null)
-                //    {
-                //        return;
-                //    }
-
-                //    lightControl.Style = IndicatorOn;
-                //    _LastOnTime[Sign.ToString()] = DateTime.UtcNow;
-
-                //    if (_NodeTimers.TryGetValue(Sign.ToString(), out var oldTimer))
-                //    {
-                //        oldTimer.Stop();
-                //    }
-
-                //    var timer = new DispatcherTimer
-                //    {
-                //        Interval = TimeSpan.FromMilliseconds(500)
-                //    };
-
-                //    timer.Tick += (s, e) =>
-                //    {
-                //        lightControl.Style = IndicatorOff;
-                //        timer.Stop();
-                //    };
-
-                //    _NodeTimers[Sign.ToString()] = timer;
-                //    timer.Start();
-                //});
+                            }
+                        }
+                    }
+                    catch { }
+                });
             }
             catch { }
         }
@@ -376,7 +413,7 @@ namespace LexTranslator.UIManage
         {
             if (DeFine.GlobalLocalSetting.TextDisplay == TextLayout.LTR)
             {
-                 DeFine.WorkingWin.ToStr.FlowDirection = FlowDirection.LeftToRight;
+                DeFine.WorkingWin.ToStr.FlowDirection = FlowDirection.LeftToRight;
             }
             else
             {
@@ -422,14 +459,14 @@ namespace LexTranslator.UIManage
         }
 
 
-        public static Grid CreatMatchLine(string From,string Type,string Translated)
+        public static Grid CreatMatchLine(string From, string Type, string Translated)
         {
             Grid NewLine = new Grid();
             NewLine.Tag = Translated;
             NewLine.Height = 38;
             NewLine.Cursor = Cursors.Hand;
 
-            NewLine.MouseEnter += new MouseEventHandler((object sender, MouseEventArgs e) => 
+            NewLine.MouseEnter += new MouseEventHandler((object sender, MouseEventArgs e) =>
             {
                 var GetLastGrid = (Grid)sender;
                 ((Grid)((Grid)sender).Children[0]).Background = new SolidColorBrush((Color)Application.Current.Resources["LineASelected"]);
@@ -442,18 +479,18 @@ namespace LexTranslator.UIManage
             });
 
             RowDefinition Row1st = new RowDefinition();
-            Row1st.Height = new GridLength(1,GridUnitType.Star);
+            Row1st.Height = new GridLength(1, GridUnitType.Star);
             RowDefinition Row2nd = new RowDefinition();
-            Row2nd.Height = new GridLength(1,GridUnitType.Pixel);
+            Row2nd.Height = new GridLength(1, GridUnitType.Pixel);
 
             NewLine.RowDefinitions.Add(Row1st);
             NewLine.RowDefinitions.Add(Row2nd);
 
             NewLine.Style = (Style)Application.Current.FindResource("LineStyle");
-            NewLine.Margin = new Thickness(0,0,0,1);
+            NewLine.Margin = new Thickness(0, 0, 0, 1);
 
             ColumnDefinition Column1st = new ColumnDefinition();
-            Column1st.Width = new GridLength(1,GridUnitType.Star);
+            Column1st.Width = new GridLength(1, GridUnitType.Star);
             ColumnDefinition Column2nd = new ColumnDefinition();
             Column2nd.Width = new GridLength(1, GridUnitType.Star);
             ColumnDefinition Column3rd = new ColumnDefinition();
@@ -476,7 +513,7 @@ namespace LexTranslator.UIManage
             FromLab.Style = LabelStyle;
 
             NewLine.Children.Add(FromLab);
-            Grid.SetColumn(FromLab,0);
+            Grid.SetColumn(FromLab, 0);
 
             Label TypeLab = new Label();
             TypeLab.Content = Type;
@@ -484,20 +521,23 @@ namespace LexTranslator.UIManage
             TypeLab.Style = LabelStyle;
             Brush DefaultBrush = (Brush)TypeLab.Foreground;
 
-            TypeLab.MouseEnter += new MouseEventHandler((object sender, MouseEventArgs e) => {
+            TypeLab.MouseEnter += new MouseEventHandler((object sender, MouseEventArgs e) =>
+            {
                 TypeLab.Foreground = new SolidColorBrush((Color)Application.Current.Resources["LineASelected"]);
             });
 
-            TypeLab.MouseLeave += new MouseEventHandler((object sender, MouseEventArgs e) => {
+            TypeLab.MouseLeave += new MouseEventHandler((object sender, MouseEventArgs e) =>
+            {
                 TypeLab.Foreground = DefaultBrush;
             });
 
-            TypeLab.MouseLeftButtonDown+= new MouseButtonEventHandler((object sender, MouseButtonEventArgs e) =>{
+            TypeLab.MouseLeftButtonDown += new MouseButtonEventHandler((object sender, MouseButtonEventArgs e) =>
+            {
                 DeFine.WorkingWin.TransViewList?.Goto(ConvertHelper.ObjToStr(TypeLab.Content));
             });
 
             NewLine.Children.Add(TypeLab);
-            Grid.SetColumn(TypeLab,1);
+            Grid.SetColumn(TypeLab, 1);
 
             TextBox TranslatedLab = new TextBox();
             TranslatedLab.Margin = new Thickness(5);
@@ -513,11 +553,13 @@ namespace LexTranslator.UIManage
             TranslatedLab.HorizontalContentAlignment = HorizontalAlignment.Center;
             TranslatedLab.Cursor = Cursors.Hand;
 
-            TranslatedLab.MouseEnter += new MouseEventHandler((object sender, MouseEventArgs e) => {
+            TranslatedLab.MouseEnter += new MouseEventHandler((object sender, MouseEventArgs e) =>
+            {
                 TranslatedLab.Foreground = new SolidColorBrush((Color)Application.Current.Resources["LineASelected"]);
             });
 
-            TranslatedLab.MouseLeave += new MouseEventHandler((object sender, MouseEventArgs e) => {
+            TranslatedLab.MouseLeave += new MouseEventHandler((object sender, MouseEventArgs e) =>
+            {
                 TranslatedLab.Foreground = DefaultBrush;
             });
 
@@ -528,10 +570,10 @@ namespace LexTranslator.UIManage
             else
             {
                 TranslatedLab.Foreground = new SolidColorBrush(Colors.Black);
-            }     
+            }
 
             NewLine.Children.Add(TranslatedLab);
-            Grid.SetColumn(TranslatedLab,2);
+            Grid.SetColumn(TranslatedLab, 2);
 
             NewLine.PreviewMouseDown += MatchLine_PreviewMouseDown;
 
@@ -617,7 +659,7 @@ namespace LexTranslator.UIManage
             List<PlatformConfig> TraditionalPlatforms = new List<PlatformConfig>();
 
             for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
-            { 
+            {
                 var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
                 if (Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.CustomPlatform)
                 {
@@ -644,12 +686,12 @@ namespace LexTranslator.UIManage
             DeFine.WorkingWin.Nodes.Children.Clear();
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenMainNodeTree("Engine Nodes"));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node",PlatformType.Null,CustomPlatformType.Null,0,Phoenix.Config.PreTranslateEnable));
+            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node", PlatformType.Null, CustomPlatformType.Null, 0, Phoenix.Config.PreTranslateEnable));
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Cloud AI Nodes"));
             foreach (var Get in CloudAIPlatforms)
             {
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(),Get.Platform,CustomPlatformType.CloudAI,0,Get.Enable));
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), Get.Platform, CustomPlatformType.CloudAI, 0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -658,7 +700,7 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.CloudAI)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type,Get.CustomInFo.CustomID,Get.Enable));
+                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
                     }
                 }
             }
@@ -673,7 +715,7 @@ namespace LexTranslator.UIManage
                 {
                     AutoName = "LM Studio";
                 }
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(AutoName,Get.Platform, CustomPlatformType.LocalAI,0, Get.Enable));
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(AutoName, Get.Platform, CustomPlatformType.LocalAI, 0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -691,7 +733,7 @@ namespace LexTranslator.UIManage
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Traditional Nodes"));
             foreach (var Get in TraditionalPlatforms)
             {
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(),Get.Platform, CustomPlatformType.Traditional,0, Get.Enable));
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), Get.Platform, CustomPlatformType.Traditional, 0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)

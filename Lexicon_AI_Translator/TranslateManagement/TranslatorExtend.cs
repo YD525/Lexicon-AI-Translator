@@ -33,7 +33,7 @@ namespace LexTranslator.TranslateManage
                     {
                         PreTranslateCall GetCall = (PreTranslateCall)Any;
 
-                        UIHelper.NodeCallCallback(GetCall.Platform);
+                        UIHelper.NodeCallCallback(0,GetCall.Platform);
                     }
                 }
             }));
@@ -57,7 +57,7 @@ namespace LexTranslator.TranslateManage
                     {
                         AICall GetCall = (AICall)Any;
 
-                        UIHelper.NodeCallCallback(GetCall.Platform);
+                        UIHelper.NodeCallCallback(GetCall.CustomID,GetCall.Platform);
 
                         LogHelper.SetInputLog(GetCall.Platform.ToString() + "->\n" + GetCall.SendString);
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);
@@ -68,7 +68,7 @@ namespace LexTranslator.TranslateManage
                     {
                         PlatformCall GetCall = (PlatformCall)Any;
 
-                        UIHelper.NodeCallCallback(GetCall.Platform);
+                        UIHelper.NodeCallCallback(GetCall.CustomID,GetCall.Platform);
 
                         LogHelper.SetInputLog(GetCall.Platform.ToString() + "->\n" + GetCall.SendString);
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);

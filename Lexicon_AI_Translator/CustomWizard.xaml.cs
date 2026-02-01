@@ -194,6 +194,15 @@ namespace LexTranslator
                 }
             }
 
+            if (Step == 2)
+            {
+                if (CurrentResponse.Length == 0)
+                {
+                    MessageBoxExtend.Show(this, "Please click TestCall first to ensure the API returns a normal response.");
+                    return;
+                }
+            }
+
             if (Step < 3)
             {
                 Step++;
@@ -202,12 +211,6 @@ namespace LexTranslator
 
             if (Step == 3)
             {
-                if (CurrentResponse.Length == 0)
-                {
-                    MessageBoxExtend.Show(this, "Please click TestCall first to ensure the API returns a normal response.");
-                    return;
-                }
-
                 P_Response.Text = CurrentResponse;
                 var GetKeyValues = CustomPlatformHelper.GetJsonValues(CurrentResponse);
 
