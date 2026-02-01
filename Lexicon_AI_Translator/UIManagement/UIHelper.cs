@@ -25,6 +25,7 @@ using System.Xml;
 using System.Windows.Markup;
 using System.Security.Cryptography.X509Certificates;
 using PhoenixEngine.PlatformManagement;
+using System.Diagnostics.Eventing.Reader;
 
 namespace LexTranslator.UIManage
 {
@@ -611,6 +612,10 @@ namespace LexTranslator.UIManage
         {
             List<PlatformConfig> CustomPlatforms = new List<PlatformConfig>();
 
+            List<PlatformConfig> LocalAIPlatforms = new List<PlatformConfig>();
+            List<PlatformConfig> CloudAIPlatforms = new List<PlatformConfig>();
+            List<PlatformConfig> TraditionalPlatforms = new List<PlatformConfig>();
+
             for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
             { 
                 var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
@@ -618,16 +623,33 @@ namespace LexTranslator.UIManage
                 {
                     CustomPlatforms.Add(Phoenix.Config.PlatformConfigs[GetKey]);
                 }
+                else
+                if (Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.LMLocalAI)
+                {
+                    LocalAIPlatforms.Add(Phoenix.Config.PlatformConfigs[GetKey]);
+                }
+                else
+                if (Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.ChatGpt
+                    || Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.Gemini
+                    || Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.DeepSeek)
+                {
+                    CloudAIPlatforms.Add(Phoenix.Config.PlatformConfigs[GetKey]);
+                }
+                else
+                {
+                    TraditionalPlatforms.Add(Phoenix.Config.PlatformConfigs[GetKey]);
+                }
             }
 
             DeFine.WorkingWin.Nodes.Children.Clear();
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenMainNodeTree("Engine Nodes"));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node",CustomPlatformType.Null));
+            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node",CustomPlatformType.Null, Phoenix.Config.PreTranslateEnable));
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Cloud AI Nodes"));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("ChatGpt", CustomPlatformType.CloudAI));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("Gemini", CustomPlatformType.CloudAI));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("DeepSeek", CustomPlatformType.CloudAI));
+            foreach (var Get in CloudAIPlatforms)
+            {
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), CustomPlatformType.CloudAI,Get.Enable));
+            }
 
             foreach (var Get in CustomPlatforms)
             {
@@ -635,15 +657,23 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.CloudAI)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type));
+                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type,Get.Enable));
                     }
                 }
             }
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode());
+            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.CloudAI));
 
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Local AI Nodes"));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("LocalAI", CustomPlatformType.LocalAI));
+            foreach (var Get in LocalAIPlatforms)
+            {
+                string AutoName = Get.Platform.ToString();
+                if (AutoName == "LMLocalAI")
+                {
+                    AutoName = "LM Studio";
+                }
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(AutoName, CustomPlatformType.LocalAI, Get.Enable));
+            }
 
             foreach (var Get in CustomPlatforms)
             {
@@ -651,14 +681,17 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.LocalAI)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type));
+                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type,Get.Enable));
                     }
                 }
             }
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode());
+            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.LocalAI));
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Traditional Nodes"));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("DeepL", CustomPlatformType.Traditional));
+            foreach (var Get in TraditionalPlatforms)
+            {
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), CustomPlatformType.Traditional, Get.Enable));
+            }
 
             foreach (var Get in CustomPlatforms)
             {
@@ -666,11 +699,12 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.Traditional)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type));
+                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type,Get.Enable));
                     }
                 }
             }
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode());
+
+            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.Traditional));
         }
 
     }

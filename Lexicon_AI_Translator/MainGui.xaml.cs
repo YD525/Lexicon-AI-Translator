@@ -196,8 +196,6 @@ namespace LexTranslator
             }
 
             UIHelper.SyncNodes();
-
-            new CustomWizard().Show();
         }
 
 

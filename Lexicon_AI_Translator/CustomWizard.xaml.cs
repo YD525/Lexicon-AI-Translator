@@ -33,6 +33,28 @@ namespace LexTranslator
             InitializeComponent();
         }
 
+        public void SelectPlatformType(CustomPlatformType Type)
+        {
+            switch (Type)
+            {
+                case CustomPlatformType.CloudAI:
+                    {
+                        PlatformType.SelectedValue = "Cloud AI";
+                    }
+                break;
+                case CustomPlatformType.LocalAI:
+                    {
+                        PlatformType.SelectedValue = "Local AI";
+                    }
+                break;
+                case CustomPlatformType.Traditional:
+                    {
+                        PlatformType.SelectedValue = "Traditional";
+                    }
+                break;
+            }
+        }
+
         public int Step = 1;
 
         public void SyncUI()
@@ -621,10 +643,11 @@ namespace LexTranslator
             Phoenix.Config.PlatformConfigs.Add(CustomPlatform.CustomID, NPlatformConfig);
             Phoenix.SaveConfig();
 
-            CloseThis();
+            ClearValue();
+            this.Close();
         }
 
-        public void CloseThis()
+        public void ClearValue()
         {
             CustomPlatform = null;
             CurrentPlatformType = string.Empty;
@@ -632,13 +655,11 @@ namespace LexTranslator
             TagType = string.Empty;
             TagKey = string.Empty;
             CurrentPlatformType = string.Empty;
-
-            this.Close();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            CloseThis();
+            ClearValue();
         }
     }
 }

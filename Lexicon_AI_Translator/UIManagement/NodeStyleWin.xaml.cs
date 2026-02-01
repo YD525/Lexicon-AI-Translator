@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using LexTranslator.UIManage;
 using PhoenixEngine.PlatformManagement;
@@ -77,10 +78,20 @@ namespace LexTranslator.UIManagement
             return NodeBody.Children[1] as ContentControl;
         }
 
-        public Grid GenNode(string PlatformName, CustomPlatformType Type)
+        public Grid GenNode(string PlatformName, CustomPlatformType Type,bool Enable)
         {
             Grid NodeGrid = UIHelper.CloneElement(Node);
             Grid GetMask = NodeGrid.Children[0] as Grid;
+
+            Border GetEnableBtn = (GetMask.Children[1] as Grid).Children[0] as Border;
+
+            GetEnableBtn.PreviewMouseDown += GetEnableBtn_PreviewMouseDown;
+
+            if (Enable)
+            {
+                GetMask.Visibility = Visibility.Collapsed;
+            }
+
             Grid NodeBody = NodeGrid.Children[1] as Grid;
 
             StackPanel GetStackPanel = NodeBody.Children[0] as StackPanel;
@@ -94,10 +105,35 @@ namespace LexTranslator.UIManagement
             return NodeGrid;
         }
 
-        public Grid GenEmptyNode()
+        private void GetEnableBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+          
+        }
+
+        public Grid GenEmptyNode(CustomPlatformType Type)
         {
             Grid EmptyNodeGrid = UIHelper.CloneElement(EmptyNode);
+
+            Border GetAddBtn = EmptyNodeGrid.Children[0] as Border;
+            GetAddBtn.Tag = Type;
+
+            GetAddBtn.PreviewMouseDown += GetAddBtn_PreviewMouseDown;
+
             return EmptyNodeGrid;
+        }
+
+        private void GetAddBtn_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            { 
+               Border GetBtnHandle = (Border)sender;
+               CustomPlatformType GetType = (CustomPlatformType)GetBtnHandle.Tag;
+
+                CustomWizard NCustomWizard = new CustomWizard();
+                NCustomWizard.Owner = DeFine.WorkingWin;
+                NCustomWizard.Show();
+                NCustomWizard.SelectPlatformType(GetType);
+            }
         }
     }
 }
