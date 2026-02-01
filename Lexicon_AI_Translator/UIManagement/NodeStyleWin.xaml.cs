@@ -24,6 +24,11 @@ namespace LexTranslator.UIManagement
 
         public void SetHeaderTagEnableInFo(Grid Header, string InFo)
         {
+            if (Header.Children[1] is StackPanel)
+            {
+                Label GetInFoControlHandle = ((Border)((StackPanel)Header.Children[1]).Children[1]).Child as Label;
+                GetInFoControlHandle.Content = InFo;
+            }
             if (Header.Children[1] is Border)
             {
                 Label GetInFoControlHandle = ((Border)Header.Children[1]).Child as Label;
@@ -145,15 +150,113 @@ namespace LexTranslator.UIManagement
                         switch (GetName)
                         {
                             case "Engine Nodes":
-                                { 
+                                {
+                                    if (Phoenix.Config.PreTranslateEnable)
+                                    {
+                                        SetHeaderTagEnableInFo(SetGrid, string.Format("{0} / {1} Enabled", 1, 1));
+                                    }
+                                    else
+                                    {
+                                        SetHeaderTagEnableInFo(SetGrid, string.Format("{0} / {1} Enabled", 0, 1));
+                                    }
                                 }
                             break;
                             case "Cloud AI Nodes":
                                 {
+                                    int TotalCount = 0;
+                                    int EnableCount = 0;
+                                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                                    {
+                                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+
+                                        if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo == null)
+                                        {
+                                            if (Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.Gemini ||
+                                                Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.ChatGpt ||
+                                                Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.DeepSeek)
+                                            {
+                                                TotalCount++;
+                                                if (Phoenix.Config.PlatformConfigs[GetKey].Enable)
+                                                {
+                                                    EnableCount++;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo.Type == CustomPlatformType.CloudAI)
+                                        {
+                                            TotalCount++;
+                                            if (Phoenix.Config.PlatformConfigs[GetKey].Enable)
+                                            {
+                                                EnableCount++;
+                                            }
+                                        }
+                                    }
+                                    SetHeaderTagEnableInFo(SetGrid, string.Format("{0} / {1} Enabled", EnableCount,TotalCount));
                                 }
                             break;
                             case "Local AI Nodes":
                                 {
+                                    int TotalCount = 0;
+                                    int EnableCount = 0;
+                                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                                    {
+                                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+
+                                        if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo == null)
+                                        {
+                                            if (Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.LMLocalAI)
+                                            {
+                                                TotalCount++;
+                                                if (Phoenix.Config.PlatformConfigs[GetKey].Enable)
+                                                {
+                                                    EnableCount++;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo.Type == CustomPlatformType.LocalAI)
+                                        {
+                                            TotalCount++;
+                                            if (Phoenix.Config.PlatformConfigs[GetKey].Enable)
+                                            {
+                                                EnableCount++;
+                                            }
+                                        }
+                                    }
+                                    SetHeaderTagEnableInFo(SetGrid, string.Format("{0} / {1} Enabled", EnableCount, TotalCount));
+                                }
+                            break;
+                            case "Traditional Nodes":
+                                {
+                                    int TotalCount = 0;
+                                    int EnableCount = 0;
+                                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                                    {
+                                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+
+                                        if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo == null)
+                                        {
+                                            if (Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.DeepL)
+                                            {
+                                                TotalCount++;
+                                                if (Phoenix.Config.PlatformConfigs[GetKey].Enable)
+                                                {
+                                                    EnableCount++;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo.Type == CustomPlatformType.Traditional)
+                                        {
+                                            TotalCount++;
+                                            if (Phoenix.Config.PlatformConfigs[GetKey].Enable)
+                                            {
+                                                EnableCount++;
+                                            }
+                                        }
+                                    }
+                                    SetHeaderTagEnableInFo(SetGrid, string.Format("{0} / {1} Enabled", EnableCount, TotalCount));
                                 }
                             break;
                         }
@@ -200,6 +303,7 @@ namespace LexTranslator.UIManagement
             GetMask.Visibility = Visibility.Visible;
 
             Phoenix.SaveConfig();
+            SyncCount();
         }
 
         private void GetEnableBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -240,6 +344,7 @@ namespace LexTranslator.UIManagement
             GetMask.Visibility = Visibility.Collapsed;
 
             Phoenix.SaveConfig();
+            SyncCount();
         }
 
         public Grid GenEmptyNode(CustomPlatformType Type)
