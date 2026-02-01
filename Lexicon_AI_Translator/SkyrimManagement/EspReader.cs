@@ -73,6 +73,14 @@ namespace LexTranslator.SkyrimManagement
         #region P/Invoke 
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr C_GetFieldReport();
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetFieldReportLength();
+
+
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr C_GetVersion();
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -186,6 +194,26 @@ namespace LexTranslator.SkyrimManagement
         public static extern void C_Clear();
 
         #endregion
+
+        public static string GetFieldReport()
+        {
+            int Length = C_GetFieldReportLength();
+            if (Length <= 0)
+            {
+                return "Validator not initialized";
+            }
+
+            IntPtr Ptr = C_GetFieldReport();
+            if (Ptr == IntPtr.Zero)
+            {
+                return "Validator not initialized";
+            }
+
+            byte[] Buffer = new byte[Length];
+            Marshal.Copy(Ptr, Buffer, 0, Length);
+            return Encoding.UTF8.GetString(Buffer);
+        }
+
 
         public static bool SaveEsp(string path)
         {
@@ -528,6 +556,8 @@ namespace LexTranslator.SkyrimManagement
             Records.Clear();
             Types.Clear();
             var State = EspInterop.LoadEsp(Path);
+
+            string Report = EspInterop.GetFieldReport();
 
             EspPath = Path;
 

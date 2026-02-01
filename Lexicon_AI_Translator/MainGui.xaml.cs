@@ -145,8 +145,6 @@ namespace LexTranslator
                 TransViewList.Clear();
             }
 
-            ReloadLanguageMode();
-
             GlobalRamCacheReader = new RamCacheReader();
             //GlobalEspReader = new EspReader();
             GlobalMCMReader = new MCMReader();
@@ -635,32 +633,6 @@ namespace LexTranslator
                 }));
             }
             catch { }
-        }
-
-        public void ReloadLanguageMode()
-        {
-            //LangFrom.Items.Clear();
-            //foreach (var Get in UILanguageHelper.GetSupportedLanguages())
-            //{
-            //    string GetLang = Get.ToString();
-            //    if (GetLang.ToLower() != "null")
-            //        LangFrom.Items.Add(GetLang);
-            //}
-
-            //LangFrom.SelectedValue = DeFine.GlobalLocalSetting.SourceLanguage.ToString();
-
-            //LangTo.Items.Clear();
-            //foreach (var Get in UILanguageHelper.GetSupportedLanguages())
-            //{
-            //    if (Get != Languages.Auto)
-            //    {
-            //        string GetLang = Get.ToString();
-            //        if (GetLang.ToLower() != "null")
-            //            LangTo.Items.Add(GetLang);
-            //    }
-            //}
-
-            //LangTo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
         }
 
         public void LoadAny()
@@ -2007,7 +1979,7 @@ namespace LexTranslator
 
                         Modules.Children.Add(UIHelper.CreatModuleItem("LexTranslator", DeFine.CurrentVersion));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Translation Engine", Phoenix.Version));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("Pex Analysis", PapyrusHeurCore.Version));
+                        Modules.Children.Add(UIHelper.CreatModuleItem("Pex Analysis",PEXHeuristicAnalysis.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Esp Reader",EspInterop.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Pex Reader",PexInterop.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("DSD Convert", DSDConverter.Version));
