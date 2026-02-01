@@ -643,12 +643,12 @@ namespace LexTranslator.UIManage
 
             DeFine.WorkingWin.Nodes.Children.Clear();
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenMainNodeTree("Engine Nodes"));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node",CustomPlatformType.Null, Phoenix.Config.PreTranslateEnable));
+            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node",PlatformType.Null,CustomPlatformType.Null,0,Phoenix.Config.PreTranslateEnable));
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Cloud AI Nodes"));
             foreach (var Get in CloudAIPlatforms)
             {
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), CustomPlatformType.CloudAI,Get.Enable));
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(),Get.Platform,CustomPlatformType.CloudAI,0,Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -657,7 +657,7 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.CloudAI)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type,Get.Enable));
+                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type,Get.CustomInFo.CustomID,Get.Enable));
                     }
                 }
             }
@@ -672,7 +672,7 @@ namespace LexTranslator.UIManage
                 {
                     AutoName = "LM Studio";
                 }
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(AutoName, CustomPlatformType.LocalAI, Get.Enable));
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(AutoName,Get.Platform, CustomPlatformType.LocalAI,0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -681,7 +681,7 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.LocalAI)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type,Get.Enable));
+                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
                     }
                 }
             }
@@ -690,7 +690,7 @@ namespace LexTranslator.UIManage
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Traditional Nodes"));
             foreach (var Get in TraditionalPlatforms)
             {
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), CustomPlatformType.Traditional, Get.Enable));
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(),Get.Platform, CustomPlatformType.Traditional,0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -699,12 +699,14 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.Traditional)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.CustomInFo.Type,Get.Enable));
+                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
                     }
                 }
             }
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.Traditional));
+
+            DeFine.NodeStyleWin.SyncCount();
         }
 
     }

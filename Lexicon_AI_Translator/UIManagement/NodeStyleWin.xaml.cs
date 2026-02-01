@@ -1,9 +1,14 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using LexTranslator.ConvertManager;
 using LexTranslator.UIManage;
+using PhoenixEngine.EngineManagement;
 using PhoenixEngine.PlatformManagement;
+using PhoenixEngine.TranslateManage;
 
 namespace LexTranslator.UIManagement
 {
@@ -29,6 +34,7 @@ namespace LexTranslator.UIManagement
         public Grid GenNodeTree(string Tittle)
         {
             Grid NewHeaderTag = UIHelper.CloneElement(HeaderTag);
+            NewHeaderTag.Tag = Tittle;
             Label GetTittle = NewHeaderTag.Children[0] as Label;
             GetTittle.Content = Tittle;
             return NewHeaderTag;
@@ -37,6 +43,7 @@ namespace LexTranslator.UIManagement
         public Grid GenMainNodeTree(string Tittle)
         {
             Grid NewHeaderTag = UIHelper.CloneElement(MainHeaderTag);
+            NewHeaderTag.Tag = Tittle;
             Label GetTittle = NewHeaderTag.Children[0]  as Label;
             GetTittle.Content = Tittle;
             return NewHeaderTag;
@@ -78,13 +85,29 @@ namespace LexTranslator.UIManagement
             return NodeBody.Children[1] as ContentControl;
         }
 
-        public Grid GenNode(string PlatformName, CustomPlatformType Type,bool Enable)
+        public class HeaderInFo
+        {
+            public PlatformType MainType;
+            public CustomPlatformType Type;
+            public int CustomID;
+
+            public HeaderInFo(PlatformType mainType, CustomPlatformType type, int customID)
+            {
+                MainType = mainType;
+                Type = type;
+                CustomID = customID;
+            }
+        }
+
+        public Grid GenNode(string PlatformName, PlatformType MainType,CustomPlatformType Type,int CustomID, bool Enable)
         {
             Grid NodeGrid = UIHelper.CloneElement(Node);
+            NodeGrid.Tag = new HeaderInFo(MainType,Type,CustomID);
+
             Grid GetMask = NodeGrid.Children[0] as Grid;
 
             Border GetEnableBtn = (GetMask.Children[1] as Grid).Children[0] as Border;
-
+            GetEnableBtn.Tag = NodeGrid;
             GetEnableBtn.PreviewMouseDown += GetEnableBtn_PreviewMouseDown;
 
             if (Enable)
@@ -102,12 +125,121 @@ namespace LexTranslator.UIManagement
             Label GetTittle = GetStackPanel.Children[1] as Label;
             GetTittle.Content = PlatformName;
 
+            TextBlock DisableBtn = GetStackPanel.Children[2] as TextBlock;
+            DisableBtn.Tag = NodeGrid;
+            DisableBtn.PreviewMouseDown += DisableBtn_PreviewMouseDown;
+
             return NodeGrid;
+        }
+
+        public void SyncCount()
+        {
+            foreach (var Get in DeFine.WorkingWin.Nodes.Children)
+            {
+                if (Get is Grid)
+                { 
+                    Grid SetGrid = (Grid)Get;
+                    if (SetGrid.Children[0] is Label)
+                    {
+                        string GetName = ConvertHelper.ObjToStr(SetGrid.Tag);
+                        switch (GetName)
+                        {
+                            case "Engine Nodes":
+                                { 
+                                }
+                            break;
+                            case "Cloud AI Nodes":
+                                {
+                                }
+                            break;
+                            case "Local AI Nodes":
+                                {
+                                }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DisableBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Grid GetNodeGrid = ((TextBlock)sender).Tag as Grid;
+            HeaderInFo GetInFo = GetNodeGrid.Tag as HeaderInFo;
+
+            Grid GetMask = GetNodeGrid.Children[0] as Grid;
+
+            if (GetInFo.MainType == PlatformType.Null && GetInFo.Type == CustomPlatformType.Null && GetInFo.CustomID == 0)
+            {
+                Phoenix.Config.PreTranslateEnable = false;
+            }
+            else
+            {
+                for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                {
+                    var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+
+                    if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo == null
+                        &&
+                        Phoenix.Config.PlatformConfigs[GetKey].Platform == GetInFo.MainType)
+                    {
+                        Phoenix.Config.PlatformConfigs[GetKey].Enable = false;
+                        break;
+                    }
+                    else
+                    if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo != null
+                        &&
+                       Phoenix.Config.PlatformConfigs[GetKey].CustomInFo.CustomID == GetInFo.CustomID)
+                    {
+                        Phoenix.Config.PlatformConfigs[GetKey].Enable = false;
+                        break;
+                    }
+                }
+            }
+
+            GetMask.Visibility = Visibility.Visible;
+
+            Phoenix.SaveConfig();
         }
 
         private void GetEnableBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-          
+            Grid GetNodeGrid = ((Border)sender).Tag as Grid;
+            HeaderInFo GetInFo = GetNodeGrid.Tag as HeaderInFo;
+
+            Grid GetMask = GetNodeGrid.Children[0] as Grid;
+
+            if (GetInFo.MainType == PlatformType.Null && GetInFo.Type == CustomPlatformType.Null && GetInFo.CustomID == 0)
+            {
+                Phoenix.Config.PreTranslateEnable = true;
+            }
+            else
+            {
+                for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                {
+                    var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+
+                    if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo == null
+                        &&
+                        Phoenix.Config.PlatformConfigs[GetKey].Platform == GetInFo.MainType)
+                    {
+                        Phoenix.Config.PlatformConfigs[GetKey].Enable = true;
+                        break;
+                    }
+                    else
+                    if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo != null
+                        &&
+                       Phoenix.Config.PlatformConfigs[GetKey].CustomInFo.CustomID == GetInFo.CustomID)
+                    {
+                        Phoenix.Config.PlatformConfigs[GetKey].Enable = true;
+                        break;
+                    }
+                }
+            }
+
+            GetMask.Visibility = Visibility.Collapsed;
+
+            Phoenix.SaveConfig();
         }
 
         public Grid GenEmptyNode(CustomPlatformType Type)
