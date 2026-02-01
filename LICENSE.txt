@@ -30,6 +30,9 @@ License https://github.com/YD525/PexReader?tab=LGPL-3.0-2-ov-file
 Note: Original author (YD525) is exempt under the Author Exception (Section 2).
 License https://github.com/YD525/EspReader?tab=GPL-3.0-2-ov-file
 
+- PhoenixEngine (CC BY-NC-ND 4.0)
+License https://github.com/YD525/PhoenixEngine?tab=License-1-ov-file
+
 ------------------------------------------------------------
 1. License Overview
 ------------------------------------------------------------
