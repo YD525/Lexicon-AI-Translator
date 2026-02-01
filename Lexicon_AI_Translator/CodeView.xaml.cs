@@ -126,10 +126,10 @@ namespace LexTranslator
 
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                var childHwnd = new WindowInteropHelper(this).Handle;
+                var ChildHwnd = new WindowInteropHelper(this).Handle;
 
                 Win32.SetWindowPos(
-                    childHwnd,
+                    ChildHwnd,
                     DeFine.WorkingWin.MainHwnd,
                     0, 0, 0, 0,
                     Win32.SWP_NOMOVE |

@@ -3607,5 +3607,10 @@ namespace LexTranslator
                 }         
             }
         }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            DeFine.CurrentCodeView.SyncZIndex();
+        }
     }
 }
