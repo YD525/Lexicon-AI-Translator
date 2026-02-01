@@ -45,13 +45,40 @@ namespace LexTranslator.UIManagement
             return NewHeaderTag;
         }
 
+        public CheckBox ContextCheckBox = null;
         public Grid GenMainNodeTree(string Tittle)
         {
             Grid NewHeaderTag = UIHelper.CloneElement(MainHeaderTag);
             NewHeaderTag.Tag = Tittle;
             Label GetTittle = NewHeaderTag.Children[0]  as Label;
             GetTittle.Content = Tittle;
+
+            ContextCheckBox = ((NewHeaderTag.Children[1] as StackPanel).Children[0] as StackPanel).Children[1] as CheckBox;
+
+            if (Phoenix.Config.ContextEnable)
+            {
+                ContextCheckBox.IsChecked = true;
+            }
+            else
+            {
+                ContextCheckBox.IsChecked = false;
+            }
+
+            ContextCheckBox.Click += ContextCheckBox_Click;
+
             return NewHeaderTag;
+        }
+
+        private void ContextCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContextCheckBox.IsChecked == true)
+            {
+                Phoenix.Config.ContextEnable = true;
+            }
+            else
+            {
+                Phoenix.Config.ContextEnable = false;
+            }
         }
 
         public Color GetNodeColor(CustomPlatformType Type)

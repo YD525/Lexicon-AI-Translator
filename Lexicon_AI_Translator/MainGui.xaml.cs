@@ -15,7 +15,6 @@ using PhoenixEngine.ConvertManager;
 using PhoenixEngine.DelegateManagement;
 using PhoenixEngine.EngineManagement;
 using PhoenixEngine.PlatformManagement.LocalAI;
-using PhoenixEngine.RequestManagement;
 using PhoenixEngine.TranslateCore;
 using PhoenixEngine.TranslateManage;
 using PhoenixEngine.TranslateManagement;
@@ -34,7 +33,6 @@ using static LexTranslator.UIManagement.DashBoardService;
 using static PhoenixEngine.Bridges.NativeBridge;
 using PhoenixEngine.SSEManage;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using PhoenixEngine.PlatformManagement;
 using System.Linq;
 
@@ -1648,19 +1646,6 @@ namespace LexTranslator
                 UserTranslationCache.IsChecked = false;
             }
 
-            if (Phoenix.Config.ContextEnable)
-            {
-                //ContextGeneration.IsChecked = true;
-                //RightContextIndicator.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                //ContextGeneration.IsChecked = false;
-                //RightContextIndicator.Visibility = Visibility.Collapsed;
-            }
-
-            SyncNodeStates();
-
             if (DeFine.GlobalLocalSetting.AutoSpeak)
             {
                 AutoSpeak.IsChecked = true;
@@ -2221,239 +2206,6 @@ namespace LexTranslator
         {
             ApplyTranslatedText();
         }
-
-        public void SyncNodeStates()
-        {
-            foreach (var GetNode in Nodes.Children)
-            {
-                if (GetNode is Grid)
-                {
-                    Grid GetNodeGridHandle = (Grid)GetNode;
-                    string GetNodeName = ConvertHelper.ObjToStr(GetNodeGridHandle.Tag);
-
-                    if (GetNodeGridHandle.Children.Count >= 2)
-                    {
-                        if (GetNodeGridHandle.Children[1] is StackPanel)
-                        {
-                            StackPanel GetStackPanel = (StackPanel)GetNodeGridHandle.Children[1];
-
-                            if (GetStackPanel.Children[0] is Grid)
-                            {
-                                Grid GetStateGrid = (Grid)GetStackPanel.Children[0];
-
-                                Style NodeEnable = new Style(typeof(Grid))
-                                {
-                                    BasedOn = (Style)Application.Current.FindResource("NodeEnable")
-                                };
-
-                                Style NodeDisable = new Style(typeof(Grid))
-                                {
-                                    BasedOn = (Style)Application.Current.FindResource("NodeDisable")
-                                };
-
-                                switch (GetNodeName)
-                                {
-                                    case "PreTranslate":
-                                        {
-                                            if (Phoenix.Config.PreTranslateEnable)
-                                            {
-                                                GetStateGrid.Style = NodeEnable;
-                                            }
-                                            else
-                                            {
-                                                GetStateGrid.Style = NodeDisable;
-                                            }
-                                        }
-                                        break;
-                                    case "Gemini":
-                                        {
-                                            if (Phoenix.Config.GetPlatformData(GeminiApi.Type).Enable)
-                                            {
-                                                GetStateGrid.Style = NodeEnable;
-                                            }
-                                            else
-                                            {
-                                                GetStateGrid.Style = NodeDisable;
-                                            }
-                                        }
-                                        break;
-                                    case "ChatGpt":
-                                        {
-                                            if (Phoenix.Config.GetPlatformData(ChatGptApi.Type).Enable)
-                                            {
-                                                GetStateGrid.Style = NodeEnable;
-                                            }
-                                            else
-                                            {
-                                                GetStateGrid.Style = NodeDisable;
-                                            }
-                                        }
-                                        break;
-                                    case "DeepSeek":
-                                        {
-                                            if (Phoenix.Config.GetPlatformData(DeepSeekApi.Type).Enable)
-                                            {
-                                                GetStateGrid.Style = NodeEnable;
-                                            }
-                                            else
-                                            {
-                                                GetStateGrid.Style = NodeDisable;
-                                            }
-                                        }
-                                        break;
-                                    case "LMLocalAI":
-                                        {
-                                            if (Phoenix.Config.GetPlatformData(LMStudio.Type).Enable)
-                                            {
-                                                GetStateGrid.Style = NodeEnable;
-                                            }
-                                            else
-                                            {
-                                                GetStateGrid.Style = NodeDisable;
-                                            }
-                                        }
-                                        break;
-                                    case "DeepL":
-                                        {
-                                            if (Phoenix.Config.GetPlatformData(DeepLApi.Type).Enable)
-                                            {
-                                                GetStateGrid.Style = NodeEnable;
-                                            }
-                                            else
-                                            {
-                                                GetStateGrid.Style = NodeDisable;
-                                            }
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private void ChangeNode(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Grid)
-            {
-                Grid GetNodeGridHandle = (Grid)sender;
-                string GetNodeName = ConvertHelper.ObjToStr(GetNodeGridHandle.Tag);
-
-                if (GetNodeGridHandle.Children.Count >= 2)
-                {
-                    if (GetNodeGridHandle.Children[1] is StackPanel)
-                    {
-                        StackPanel GetStackPanel = (StackPanel)GetNodeGridHandle.Children[1];
-                        Grid GetStateGrid = (Grid)GetStackPanel.Children[0];
-
-                        Style NodeEnable = new Style(typeof(Grid))
-                        {
-                            BasedOn = (Style)Application.Current.FindResource("NodeEnable")
-                        };
-
-                        Style NodeDisable = new Style(typeof(Grid))
-                        {
-                            BasedOn = (Style)Application.Current.FindResource("NodeDisable")
-                        };
-
-                        switch (GetNodeName)
-                        {
-                            case "PreTranslate":
-                                {
-                                    if (!Phoenix.Config.PreTranslateEnable)
-                                    {
-                                        Phoenix.Config.PreTranslateEnable = true;
-                                        GetStateGrid.Style = NodeEnable;
-                                    }
-                                    else
-                                    {
-                                        Phoenix.Config.PreTranslateEnable = false;
-                                        GetStateGrid.Style = NodeDisable;
-                                    }
-                                }
-                                break;
-                            case "Gemini":
-                                {
-                                    int SetKey = (int)GeminiApi.Type;
-                                    if (!Phoenix.Config.PlatformConfigs[SetKey].Enable)
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = true;
-                                        GetStateGrid.Style = NodeEnable;
-                                    }
-                                    else
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = false;
-                                        GetStateGrid.Style = NodeDisable;
-                                    }
-                                }
-                                break;
-                            case "ChatGpt":
-                                {
-                                    int SetKey = (int)ChatGptApi.Type;
-                                    if (!Phoenix.Config.PlatformConfigs[SetKey].Enable)
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = true;
-                                        GetStateGrid.Style = NodeEnable;
-                                    }
-                                    else
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = false;
-                                        GetStateGrid.Style = NodeDisable;
-                                    }
-                                }
-                                break;
-                            case "DeepSeek":
-                                {
-                                    int SetKey = (int)DeepSeekApi.Type;
-                                    if (!Phoenix.Config.PlatformConfigs[SetKey].Enable)
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = true;
-                                        GetStateGrid.Style = NodeEnable;
-                                    }
-                                    else
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = false;
-                                        GetStateGrid.Style = NodeDisable;
-                                    }
-                                }
-                                break;
-                            case "LMLocalAI":
-                                {
-                                    int SetKey = (int)LMStudio.Type;
-                                    if (!Phoenix.Config.PlatformConfigs[SetKey].Enable)
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = true;
-                                        GetStateGrid.Style = NodeEnable;
-                                    }
-                                    else
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = false;
-                                        GetStateGrid.Style = NodeDisable;
-                                    }
-                                }
-                                break;
-                            case "DeepL":
-                                {
-                                    int SetKey = (int)DeepLApi.Type;
-                                    if (!Phoenix.Config.PlatformConfigs[SetKey].Enable)
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = true;
-                                        GetStateGrid.Style = NodeEnable;
-                                    }
-                                    else
-                                    {
-                                        Phoenix.Config.PlatformConfigs[SetKey].Enable = false;
-                                        GetStateGrid.Style = NodeDisable;
-                                    }
-                                }
-                                break;
-                        }
-                        Phoenix.SaveConfig();
-                    }
-                }
-            }
-        }
-
         private void ProcessBar_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (ScanAnimator != null)
@@ -3544,12 +3296,22 @@ namespace LexTranslator
             if (SContextEnable.IsChecked == true)
             {
                 Phoenix.Config.ContextEnable = true;
+
+                if (DeFine.NodeStyleWin.ContextCheckBox != null)
+                {
+                    DeFine.NodeStyleWin.ContextCheckBox.IsChecked = true;
+                }
                 //ContextGeneration.IsChecked = true;
                 //RightContextIndicator.Visibility = Visibility.Visible;
             }
             else
             {
                 Phoenix.Config.ContextEnable = false;
+
+                if (DeFine.NodeStyleWin.ContextCheckBox != null)
+                {
+                    DeFine.NodeStyleWin.ContextCheckBox.IsChecked = false;
+                }
                 //ContextGeneration.IsChecked = false;
                 //RightContextIndicator.Visibility = Visibility.Collapsed;
             }
