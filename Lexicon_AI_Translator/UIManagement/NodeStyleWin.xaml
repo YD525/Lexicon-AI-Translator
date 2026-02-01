@@ -14,7 +14,6 @@
                 </Label>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    
                     <StackPanel Orientation="Horizontal">
                         <Label Foreground="White" Margin="5 0 0 0" VerticalAlignment="Center">
                             Context Generation
@@ -31,14 +30,14 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Margin="0 0 0 1" Height="40" Name="Node">
+            <Grid Margin="0 0 0 1" Height="35" Name="Node">
                 <Grid Panel.ZIndex="2" Visibility="Visible">
                     <Grid Panel.ZIndex="3" Background="Black" Opacity="0.6">
 
                     </Grid>
                     <Grid Panel.ZIndex="5">
                         <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Label Foreground="White">
+                            <Label Foreground="White" FontSize="10">
                                 Enable
                             </Label>
                         </Border>
@@ -59,7 +58,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Margin="0 0 0 1" Height="40" Background="#FF2B2B2B">
+            <Grid Margin="0 0 0 1" Height="35" Background="#FF2B2B2B" Name="EmptyNode">
                 <Border Width="20" Height="20" CornerRadius="6" BorderThickness="1" BorderBrush="#EAEAEA" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand">
                     <Viewbox Width="12" Height="12">
                         <Path Stroke="#EAEAEA" StrokeThickness="1.2" StrokeStartLineCap="Square" StrokeEndLineCap="Square" Data="M 6,1 L 6,11 M 1,6 L 11,6"/>
@@ -77,129 +76,6 @@
                     </Label>
                 </Border>
             </Grid>
-            
-            <Grid Margin="0 0 0 1" Height="40">
-                <Grid Panel.ZIndex="2" Visibility="Hidden">
-                    <Grid Panel.ZIndex="3" Background="Black" Opacity="0.6">
-
-                    </Grid>
-                    <Grid Panel.ZIndex="5">
-                        <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Label Foreground="White">
-                                Enable
-                            </Label>
-                        </Border>
-                    </Grid>
-                </Grid>
-
-                <Grid Panel.ZIndex="1" Background="#FF2B2B2B">
-                    <StackPanel Orientation="Horizontal">
-                        <Grid Width="5" Background="#FF3B8DFF" Margin="0 5 0 5">
-                        </Grid>
-                        <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
-                            ChatGpt
-                        </Label>
-                        <TextBlock Cursor="Hand" Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
-                    </StackPanel>
-
-                    <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
-                </Grid>
-            </Grid>
-
-            <Grid Margin="0 0 0 1" Height="40">
-                <Grid Panel.ZIndex="2" Visibility="Visible">
-                    <Grid Panel.ZIndex="3" Background="Black" Opacity="0.6">
-
-                    </Grid>
-                    <Grid Panel.ZIndex="5">
-                        <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Label Foreground="White">
-                                Enable
-                            </Label>
-                        </Border>
-                    </Grid>
-                </Grid>
-
-                <Grid Panel.ZIndex="1" Background="#FF2B2B2B">
-                    <StackPanel Orientation="Horizontal">
-                        <Grid Width="5" Background="#FF3B8DFF" Margin="0 5 0 5">
-                        </Grid>
-                        <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
-                            ChatGpt
-                        </Label>
-                        <TextBlock Cursor="Hand" Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
-                    </StackPanel>
-
-                    <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
-                </Grid>
-            </Grid>
-
-            <Grid Margin="0 0 0 1" Height="40" Background="#FF2B2B2B" Name="EmptyNode">
-                <Border Width="20" Height="20" CornerRadius="6" BorderThickness="1" BorderBrush="#EAEAEA" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand">
-                    <Viewbox Width="12" Height="12">
-                        <Path Stroke="#EAEAEA" StrokeThickness="1.2" StrokeStartLineCap="Square" StrokeEndLineCap="Square" Data="M 6,1 L 6,11 M 1,6 L 11,6"/>
-                    </Viewbox>
-                </Border>
-            </Grid>
-
-            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
-                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                    Local AI Nodes
-                </Label>
-                <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0">
-                    <Label Foreground="White" FontSize="10" VerticalAlignment="Center">
-                        0 / 1 Enabled
-                    </Label>
-                </Border>
-            </Grid>
-
-            <Grid Height="30" Background="#FF353535" Margin="0 0 0 1">
-                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                    Traditional Nodes
-                </Label>
-                <Border VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0" Background="#FF232323" CornerRadius="10" Padding="5,0,5,0">
-                    <Label Foreground="White" FontSize="10" VerticalAlignment="Center">
-                        0 / 1 Enabled
-                    </Label>
-                </Border>
-            </Grid>
-
-            <Grid Margin="0 0 0 1" Height="40">
-                <Grid Panel.ZIndex="2" Visibility="Hidden">
-                    <Grid Panel.ZIndex="3" Background="Black" Opacity="0.6">
-
-                    </Grid>
-                    <Grid Panel.ZIndex="5">
-                        <Border Cursor="Hand" BorderThickness="1" BorderBrush="White" CornerRadius="8" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Label Foreground="White">
-                                Enable
-                            </Label>
-                        </Border>
-                    </Grid>
-                </Grid>
-
-                <Grid Panel.ZIndex="1" Background="#FF2B2B2B">
-                    <StackPanel Orientation="Horizontal">
-                        <Grid Width="5" Background="#FFFF2DA4" Margin="0 5 0 5">
-                        </Grid>
-                        <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold" Margin="5 0 0 0">
-                            DeepL
-                        </Label>
-                        <TextBlock Cursor="Hand" Text="Disable" Foreground="White" TextDecorations="Underline" VerticalAlignment="Center" Margin="5 0 0 0" Opacity="0.7"/>
-                    </StackPanel>
-
-                    <ContentControl  Style="{DynamicResource IndicatorOffStyle}"/>
-                </Grid>
-            </Grid>
-
-            <Grid Margin="0 0 0 1" Height="40" Background="#FF2B2B2B">
-                <Border Width="20" Height="20" CornerRadius="6" BorderThickness="1" BorderBrush="#EAEAEA" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand">
-                    <Viewbox Width="12" Height="12">
-                        <Path Stroke="#EAEAEA" StrokeThickness="1.2" StrokeStartLineCap="Square" StrokeEndLineCap="Square" Data="M 6,1 L 6,11 M 1,6 L 11,6"/>
-                    </Viewbox>
-                </Border>
-            </Grid>
-
         </StackPanel>
        
     </Grid>

@@ -198,7 +198,6 @@ namespace LexTranslator
             UIHelper.SyncNodes();
 
             new CustomWizard().Show();
-            new NodeStyleWin().Show();
         }
 
 
@@ -3119,8 +3118,8 @@ namespace LexTranslator
             }
         }
 
-        //Control the speed to a fixed 1200 px/s
-        private const double ExpandAnimationSpeed = 1500;
+        //Control the speed to a fixed 2000 px/s
+        private const double ExpandAnimationSpeed = 2000;
         public void SyncAnimation()
         {
             double AutoHeight = CalcLeftMenuHeight();
@@ -3148,9 +3147,9 @@ namespace LexTranslator
             double AutoHeight = 0;
             foreach (FrameworkElement GetRow in Nodes.Children)
             {
-                AutoHeight += GetRow.ActualHeight;
+                AutoHeight += GetRow.ActualHeight + 1;
             }
-            return AutoHeight + 10;
+            return AutoHeight;
         }
 
 
