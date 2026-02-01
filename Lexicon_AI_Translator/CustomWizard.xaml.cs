@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
+using LexTranslator.UIManage;
 using PhoenixEngine.EngineManagement;
 using PhoenixEngine.PlatformManagement;
 using PhoenixEngine.RequestManagement;
@@ -644,6 +645,10 @@ namespace LexTranslator
             Phoenix.SaveConfig();
 
             ClearValue();
+
+            UIHelper.SyncNodes();
+            Phoenix.ReSetKeyData();
+
             this.Close();
         }
 

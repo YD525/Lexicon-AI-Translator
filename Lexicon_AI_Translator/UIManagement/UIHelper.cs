@@ -642,6 +642,7 @@ namespace LexTranslator.UIManage
             }
 
             DeFine.WorkingWin.Nodes.Children.Clear();
+
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenMainNodeTree("Engine Nodes"));
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node",PlatformType.Null,CustomPlatformType.Null,0,Phoenix.Config.PreTranslateEnable));
 
