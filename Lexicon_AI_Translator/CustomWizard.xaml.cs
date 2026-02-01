@@ -164,8 +164,8 @@ namespace LexTranslator
                     case "Local AI":
                         {
                             AutomaticFields.Items.Clear();
-                            AutomaticFields.Items.Add("{API_KEY}");
                             AutomaticFields.Items.Add("{AI_Prompt}");
+                            AutomaticFields.Items.Add("{AI_Model}");
 
                             CustomPlatform.Type = CustomPlatformType.LocalAI;
                         }
@@ -184,6 +184,7 @@ namespace LexTranslator
                         {
                             AutomaticFields.Items.Clear();
                             AutomaticFields.Items.Add("{API_KEY}");
+                            AutomaticFields.Items.Add("{SourceStr}");
                             AutomaticFields.Items.Add("{P_From}");
                             AutomaticFields.Items.Add("{P_To}");
 
@@ -369,26 +370,43 @@ namespace LexTranslator
 
             int TestID = 525;
 
+            NPlatformConfig.CustomInFo = CustomPlatform;
+
+            if (!Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
+            {
+                Phoenix.Config.PlatformConfigs.Add(TestID, NPlatformConfig);
+            }
+            else
+            {
+                throw (new Exception("Adding more than 500 platforms is not supported."));
+            }
+
             switch (CurrentPlatformType)
             {
                 case "Local AI":
                     {
+                        AICall GenAICall = new AICall();
                         CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
+                        NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config);
+
+                        NCustomLocalAIApi.QuickTrans(
+                            new List<ReplaceTag>(),
+                            "Test Str",
+                            Phoenix.From,
+                            Phoenix.To,
+                            false,
+                            0,
+                            string.Empty,
+                            ref GenAICall,
+                            ""
+                            );
+
+                        Response.Text = GenAICall.ReceiveString;
+                        CurrentResponse = GenAICall.ReceiveString;
                     }
                     break;
                 case "Cloud AI":
                     {
-                        NPlatformConfig.CustomInFo = CustomPlatform;
-
-                        if (!Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
-                        {
-                            Phoenix.Config.PlatformConfigs.Add(TestID, NPlatformConfig);
-                        }
-                        else
-                        {
-                            throw (new Exception("Adding more than 500 platforms is not supported."));
-                        }
-
                         AICall GenAICall = new AICall();
                         CustomAIApi NCustomAIApi = new CustomAIApi();
                         NCustomAIApi.Init(TestID, new AITranslationMemory(),Phoenix.Config,ProxyCenter.CurrentProxy);
@@ -412,7 +430,20 @@ namespace LexTranslator
                     break;
                 case "Traditional":
                     {
+                        PlatformCall GenPlatformCall = new PlatformCall();
                         CustomApi NCustomApi = new CustomApi();
+                        NCustomApi.Init(TestID,Phoenix.Config,ProxyCenter.CurrentProxy);
+
+                        NCustomApi.QuickTrans(
+                            ApiKey,
+                            "Test Str",
+                            Phoenix.From,
+                            Phoenix.To,
+                            ref GenPlatformCall
+                        );
+
+                        Response.Text = GenPlatformCall.ReceiveString;
+                        CurrentResponse = GenPlatformCall.ReceiveString;
                     }
                     break;
             }
