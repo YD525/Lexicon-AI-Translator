@@ -31,12 +31,11 @@ using System.Windows.Threading;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using static LexTranslator.UIManagement.DashBoardService;
 using static PhoenixEngine.Bridges.NativeBridge;
-using PhoenixEngine.SSEManage;
 using System.Windows.Media.Imaging;
 using PhoenixEngine.PlatformManagement;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using PEXInterface;
 
 namespace LexTranslator
 {
@@ -993,7 +992,7 @@ namespace LexTranslator
                     GlobalPexReader.LoadPex(LastSetPath);
 
                     PexDecompiler NPexDecompiler = new PexDecompiler(GlobalPexReader, PexDecompiler.CodeGenStyle.CSharp);
-                    string JsonINeed = NPexDecompiler.GetJson();
+                    string JsonINeed = JsonConvert.SerializeObject(NPexDecompiler);
                     var GetPsc = NPexDecompiler.Decompile();
 
                     double CalcLeft = this.Left + this.ActualWidth + 1;
