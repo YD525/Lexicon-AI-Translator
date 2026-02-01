@@ -53,6 +53,8 @@ namespace LexTranslator.UIManagement
                         {
                             DeFine.CurrentCodeView.WindowState = WindowState.Normal;
                         }
+
+                        DeFine.CurrentCodeView.SyncZIndex();
                     }
                 }));
             }

@@ -559,6 +559,7 @@ namespace LexTranslator.SkyrimManagement
             var State = EspInterop.LoadEsp(Path);
 
             string Report = EspInterop.GetFieldReport();
+            Report =  "Start Heuristic Analysis : " + Path + "\n\n" + Report;
             TranslatorExtend.LogCall(Report);
 
             EspPath = Path;

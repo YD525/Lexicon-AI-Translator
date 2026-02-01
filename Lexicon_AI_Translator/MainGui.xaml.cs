@@ -36,6 +36,7 @@ using System.Windows.Media.Imaging;
 using PhoenixEngine.PlatformManagement;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace LexTranslator
 {
@@ -117,9 +118,13 @@ namespace LexTranslator
         public YDListView TransViewList = null;
 
         private ScanAnimator ScanAnimator = null;
+
+        public IntPtr MainHwnd = IntPtr.Zero;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DeFine.Init(this);
+
+            MainHwnd = new WindowInteropHelper(DeFine.WorkingWin).Handle;
 
             UILanguageHelper.ChangeLanguage(DeFine.GlobalLocalSetting.CurrentUILanguage);
 
@@ -3571,7 +3576,8 @@ namespace LexTranslator
                                 CodeViewTag.Style = (Style)this.FindResource("ExWinHide");
                                 LastSelectExView = string.Empty;
                             }
-                              
+
+                            DeFine.CurrentCodeView.SyncZIndex();
                         }
                     break;
                     case "Extend View":

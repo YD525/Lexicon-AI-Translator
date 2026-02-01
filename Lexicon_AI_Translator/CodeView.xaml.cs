@@ -7,6 +7,10 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit;
 using System.Collections.Generic;
 using System;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
+using System.Windows.Media.TextFormatting;
+using System.Diagnostics;
 
 namespace LexTranslator
 {
@@ -18,6 +22,23 @@ namespace LexTranslator
         public CodeView()
         {
             InitializeComponent();
+        }
+
+        private static class Win32
+        {
+            public static readonly IntPtr HWND_TOP = new IntPtr(0);
+
+            public const uint SWP_NOSIZE = 0x0001;
+            public const uint SWP_NOMOVE = 0x0002;
+            public const uint SWP_NOACTIVATE = 0x0010;
+            public const uint SWP_SHOWWINDOW = 0x0040;
+
+            [DllImport("user32.dll")]
+            public static extern bool SetWindowPos(
+                IntPtr hWnd,
+                IntPtr hWndInsertAfter,
+                int X, int Y, int cx, int cy,
+                uint uFlags);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -88,6 +109,39 @@ namespace LexTranslator
         private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             this.Hide();
+        }
+
+        private readonly Stopwatch SyncWatch = new Stopwatch();
+        private readonly object SyncLock = new object();
+
+        public void SyncZIndex()
+        {
+            lock (SyncLock)
+            {
+                if (SyncWatch.IsRunning && SyncWatch.ElapsedMilliseconds < 100)
+                    return;
+
+                SyncWatch.Restart();
+            }
+
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var childHwnd = new WindowInteropHelper(this).Handle;
+
+                Win32.SetWindowPos(
+                    childHwnd,
+                    DeFine.WorkingWin.MainHwnd,
+                    0, 0, 0, 0,
+                    Win32.SWP_NOMOVE |
+                    Win32.SWP_NOSIZE |
+                    Win32.SWP_NOACTIVATE |
+                    Win32.SWP_SHOWWINDOW);
+            }));
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            SyncZIndex();
         }
     }
 
