@@ -9,6 +9,7 @@ using PhoenixEngine.TranslateManage;
 using LexTranslator.TranslateManagement;
 using static PhoenixEngine.Bridges.NativeBridge;
 using LexTranslator.ConvertManager;
+using LexTranslator.TranslateManage;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -558,6 +559,7 @@ namespace LexTranslator.SkyrimManagement
             var State = EspInterop.LoadEsp(Path);
 
             string Report = EspInterop.GetFieldReport();
+            TranslatorExtend.LogCall(Report);
 
             EspPath = Path;
 
