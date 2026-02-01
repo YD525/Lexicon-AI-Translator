@@ -5,8 +5,6 @@ Copyright (c) 2025 YD525
 Unless otherwise stated, almost all files in this folder are licensed under the
 Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
 
-Note: The PexDecompiler class (see source file header) can be used by SSE Auto Translator under the MIT License.
-
 Exceptions:
 The following components are NOT covered by this license and are subject to their
 own respective licenses:
@@ -22,6 +20,12 @@ License https://system.data.sqlite.org/home/doc/trunk/www/copyright.wiki
 
 - miniz
 License https://github.com/richgel999/miniz?tab=MIT-1-ov-file
+
+- pex-interface
+License https://github.com/YD525/pex-interface?tab=License-1-ov-file
+
+- PexReader
+License https://github.com/YD525/PexReader?tab=LGPL-3.0-2-ov-file
 
 =======================================================================
 
