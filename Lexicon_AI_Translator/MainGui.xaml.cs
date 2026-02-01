@@ -35,6 +35,7 @@ using PhoenixEngine.SSEManage;
 using System.Windows.Media.Imaging;
 using PhoenixEngine.PlatformManagement;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace LexTranslator
 {
@@ -243,6 +244,7 @@ namespace LexTranslator
                 IsDragEnter = false;
             }
         }
+
         private void ModTransView_Drop(object sender, DragEventArgs e)
         {
             if (e != null)
@@ -252,7 +254,13 @@ namespace LexTranslator
 
                     if (OneFile.Length > 0)
                     {
-                        string GetFilePath = OneFile[0];
+                        //Fix Long Path
+                        string GetFilePath = Path.GetFullPath(OneFile[0]);
+                        if (GetFilePath.Length >= 260)
+                        {
+                            GetFilePath = @"\\?\" + GetFilePath;
+                        }
+
                         if (File.Exists(GetFilePath))
                         {
                             new Thread(() =>
@@ -657,12 +665,12 @@ namespace LexTranslator
 
         public void LoadAny()
         {
-            var Dialog = new System.Windows.Forms.OpenFileDialog();
+            var Dialog = new Microsoft.Win32.OpenFileDialog();
             Dialog.Title = "Please select a file";
             Dialog.Filter = "All files|*.*";
             Dialog.Multiselect = false;
 
-            if (Dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (Dialog.ShowDialog() == true)
             {
                 string SelectedFile = Dialog.FileName;
                 LoadAny(SelectedFile);
@@ -899,7 +907,7 @@ namespace LexTranslator
             {
                 this.Dispatcher.Invoke(new Action(() =>
                 {
-                    Caption.Content = string.Format("LexTranslator Lite - {0}", Tittle);
+                    Caption.Content = string.Format("Lex - {0}", Tittle);
                     this.Title = Tittle;
                 }));
             }
@@ -907,8 +915,8 @@ namespace LexTranslator
             {
                 this.Dispatcher.Invoke(new Action(() =>
                 {
-                    Caption.Content = "LexTranslator Lite";
-                    this.Title = "LexTranslator Lite";
+                    Caption.Content = "Lex";
+                    this.Title = "Lex";
                 }));
             }
         }

@@ -90,8 +90,8 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0 0 0">
-                        <Label Name="Caption" FontWeight="DemiBold" Foreground="White" Grid.Column="0">
-                            Lex Translator
+                        <Label Name="Caption" Foreground="White" Grid.Column="0">
+                            Lex
                         </Label>
                     </StackPanel>
 
