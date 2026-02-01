@@ -195,6 +195,8 @@ namespace LexTranslator
                 SyncCGLocation();
             }
 
+            UIHelper.SyncNodes();
+
             new CustomWizard().Show();
             new NodeStyleWin().Show();
         }
@@ -3148,7 +3150,7 @@ namespace LexTranslator
             {
                 AutoHeight += GetRow.ActualHeight;
             }
-            return AutoHeight;
+            return AutoHeight + 10;
         }
 
 

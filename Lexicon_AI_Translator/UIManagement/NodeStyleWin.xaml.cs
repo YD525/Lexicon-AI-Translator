@@ -15,6 +15,7 @@ namespace LexTranslator.UIManagement
         {
             InitializeComponent();
         }
+
         public void SetHeaderTagEnableInFo(Grid Header, string InFo)
         {
             if (Header.Children[1] is Border)
@@ -23,25 +24,20 @@ namespace LexTranslator.UIManagement
                 GetInFoControlHandle.Content = InFo;
             }
         }
-        public CustomPlatformType GetHeaderTagType(Grid Header)
-        {
-            return (CustomPlatformType)(Header.Children[0] as Label).Tag;
-        }
-        public Grid GenNodeTree(string Tittle, CustomPlatformType Type)
+
+        public Grid GenNodeTree(string Tittle)
         {
             Grid NewHeaderTag = UIHelper.CloneElement(HeaderTag);
-            Label GetTittle = (NewHeaderTag.Children[0] as Border).Child as Label;
+            Label GetTittle = NewHeaderTag.Children[0] as Label;
             GetTittle.Content = Tittle;
-            GetTittle.Tag = Type;
             return NewHeaderTag;
         }
 
-        public Grid GenMainNodeTree(string Tittle, CustomPlatformType Type)
+        public Grid GenMainNodeTree(string Tittle)
         {
             Grid NewHeaderTag = UIHelper.CloneElement(MainHeaderTag);
-            Label GetTittle = (NewHeaderTag.Children[1] as Border).Child as Label;
+            Label GetTittle = NewHeaderTag.Children[0]  as Label;
             GetTittle.Content = Tittle;
-            GetTittle.Tag = Type;
             return NewHeaderTag;
         }
 

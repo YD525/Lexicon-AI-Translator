@@ -126,9 +126,11 @@
             <Grid Grid.Row="1">
                 <!--LeftMenu-->
                 <Border Style="{DynamicResource LeftMenu}" Name="LeftMenu" Height="auto">
-                    <StackPanel Name="Nodes">
-                       
-                    </StackPanel>
+                    <Border BorderBrush="#FF01427D" BorderThickness="1">
+                        <StackPanel Name="Nodes">
+
+                        </StackPanel>
+                    </Border>
                 </Border>
 
                 <!--LogView-->
