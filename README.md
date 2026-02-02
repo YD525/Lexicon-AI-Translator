@@ -88,6 +88,8 @@ Being restricted by my own software is simply unacceptable.
 This dual-license ensures that I remain free from my own work,  
 and that the software never becomes a cage for its creator.
 
+No matter what, YD525 will remain LexTranslator’s first guardian~
+
 Selfish? Maybe.  
 Honest? Absolutely.
 
