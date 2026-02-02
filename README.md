@@ -61,11 +61,17 @@ I would like to give special thanks to the developers of
 
 [Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) Without this framework, there would be no earliest version of SSELex.
 
-[Champollion](https://github.com/Orvid/Champollion)  This framework was a huge help!
+[walkswithwolf](https://www.nexusmods.com/profile/walkswithwolf?gameId=110) Help me understand the structure of Skyrim files.
 
+[Champollion](https://github.com/Orvid/Champollion) This framework was a huge help!
+
+[Kanie17](https://www.nexusmods.com/profile/Kanie17/mods) introduced many meaningful feature improvements.
+
+[50809501](https://www.nexusmods.com/profile/50809501) has been continuously maintaining the Chinese dictionary database for SSELex.
+
+[撒倫](https://home.gamer.com.tw/profile/index.php?owner=salunt) offered many meaningful suggestions regarding Traditional Chinese.
 
 Their excellent libraries provide Lex Translator with a stable and solid foundation, allowing us to focus more on developing the translation features.
-
 Acknowledgements: Nexus Mods,9DM,2Game.info,and 泰姆瑞尔MOD组, for their support and encouragement that inspire my creative work.
 
 ---
