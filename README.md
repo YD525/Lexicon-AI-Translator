@@ -90,6 +90,13 @@ and that the software never becomes a cage for its creator.
 
 No matter what, YD525 will remain LexTranslator’s first guardian~
 
+Regarding https://github.com/YD525/PhoenixEngine, will it use GPL-3.0 in the future?  
+Absolutely not.
+
+PhoenixEngine is one of the last core assets maintained by YD525.
+
+Collaborative development is welcome, but any form of contribution or reuse requires explicit permission from the author~.
+
 Selfish? Maybe.  
 Honest? Absolutely.
 
