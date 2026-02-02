@@ -53,13 +53,16 @@ I would like to give special thanks to the developers of
 
 [Cutleast](https://github.com/Cutleast) It helped me solve some problems with reading PEX,ESP files.
 
+[Noggog](https://github.com/Noggog) for helping me understand how StringsFile reads and writes.
+
+[Cutleast](https://github.com/Cutleast), [SkyHorizon3](https://github.com/SkyHorizon3) for helping me resolve the issue with generating specific JSON fields in the DSD file.
+
+[SSEAT](https://github.com/Cutleast/SSE-Auto-Translator) This is a highly automated program that can automatically download pre-translated content, avoiding repeated translation of a single module. It's ideal for use with SSELex, and future integration may be possible.
+
 [Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) This framework was a huge help!You definitely have to try it! I highly recommend the YD525!
 
 [Champollion](https://github.com/Orvid/Champollion)  This framework was a huge help!
 
-[Noggog](https://github.com/Noggog) for helping me understand how StringsFile reads and writes.
-
-[Cutleast](https://github.com/Cutleast), [SkyHorizon3](https://github.com/SkyHorizon3) for helping me resolve the issue with generating specific JSON fields in the DSD file.
 
 Their excellent libraries provide Lex Translator with a stable and solid foundation, allowing us to focus more on developing the translation features.
 
