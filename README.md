@@ -75,6 +75,12 @@ YD525 really loves the software they write — and wants to keep full control ov
 This project is a long-term passion, not a disposable experiment.  
 The dual-license exists to protect that passion and the freedom to move forward without regrets.
 
+LexTranslator has been under continuous development for over a year,  
+and all of the components and dependencies it relies on are also maintained by YD525.
+
+The more seriously something is built — especially when it is developed and maintained without compensation —  
+the stronger the desire becomes to absolutely and unconditionally own it.
+
 Selfish? Maybe.  
 Honest? Absolutely.
 
