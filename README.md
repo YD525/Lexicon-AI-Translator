@@ -76,10 +76,17 @@ This project is a long-term passion, not a disposable experiment.
 The dual-license exists to protect that passion and the freedom to move forward without regrets.
 
 LexTranslator has been under continuous development for over a year,  
-and all of the components and dependencies it relies on are also maintained by YD525.
+and most of the components and dependencies it relies on are maintained by YD525.  
+Cutleast has also provided significant help and motivation throughout the project,  
+offering valuable support along the way.
 
 The more seriously something is built — especially when it is developed and maintained without compensation —  
 the stronger the desire becomes to absolutely and unconditionally own it.
+
+Being restricted by my own software is simply unacceptable.  
+
+This dual-license ensures that I remain free from my own work,  
+and that the software never becomes a cage for its creator.
 
 Selfish? Maybe.  
 Honest? Absolutely.
