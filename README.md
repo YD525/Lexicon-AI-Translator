@@ -96,6 +96,17 @@ If you have any questions or need help, feel free to drop by our Discord — I'm
 [https://discord.gg/GRu7WtgqsB](https://discord.gg/GRu7WtgqsB)
 
 
+## 😼 YD525’s Selfishness
+
+YD525 uses a dual-license model for a very simple reason:  
+YD525 really loves the software they write — and wants to keep full control over it~
+
+This project is a long-term passion, not a disposable experiment.  
+The dual-license exists to protect that passion and the freedom to move forward without regrets.
+
+Selfish? Maybe.  
+Honest? Absolutely.
+
 ---
 
 ## 🖼️ UI Icon
