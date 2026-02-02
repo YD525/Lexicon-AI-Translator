@@ -31,3 +31,9 @@ Submission of a Pull Request does **not** guarantee inclusion in the project.
 Feel free to ask in our Discord:  
 https://discord.gg/GRu7WtgqsB
 
+
+## ✍️ Authorship & Rights
+
+If you contribute code to SSELexicon or any related component, you will be recognized as an author of your contributed code.
+You are free to use, modify, and reuse **your own contributions** in any form or project of your choice, provided that such use does not violate the licenses of this repository or its dependencies.
+If your contribution is substantial, you will be recognized as one of the authors of SSELex and may be granted additional rights accordingly.
