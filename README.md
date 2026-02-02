@@ -59,7 +59,7 @@ I would like to give special thanks to the developers of
 
 [SSEAT](https://github.com/Cutleast/SSE-Auto-Translator) This is a highly automated program that can automatically download pre-translated content, avoiding repeated translation of a single module. It's ideal for use with SSELex, The functions of both parties may also be integrated in the future.
 
-[Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) This framework was a huge help!You definitely have to try it! I highly recommend the YD525!
+[Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) Without this framework, there would be no earliest version of SSELex.
 
 [Champollion](https://github.com/Orvid/Champollion)  This framework was a huge help!
 
