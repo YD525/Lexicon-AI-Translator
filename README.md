@@ -78,24 +78,6 @@ Acknowledgements: Nexus Mods,9DM,2Game.info,and 泰姆瑞尔MOD组, for their su
 
 ---
 
-# ❤️ Personal Note from the Developer
-
-Lex Translator and SSEAT may collaborate in the future, complementing each other’s strengths and addressing their respective weaknesses.
-
-If you find this project helpful,  
-consider giving it a ⭐ star —  
-your support is the driving force behind ongoing development! ❤️
-
-Also, if you're thinking about adapting **Lex Translator** to support other games, you're totally welcome to do so!  
-The `TransItem` class is designed to be generic — you can construct your own instances and plug in custom readers for other game formats.  
-
-Just fork the project and make your own modifications — it's easy to extend.  
-And of course, if you contribute something awesome, your name will be added to the list of contributors. 😊
-
-If you have any questions or need help, feel free to drop by our Discord — I'm always happy to help:  
-[https://discord.gg/GRu7WtgqsB](https://discord.gg/GRu7WtgqsB)
-
-
 ## 😼 YD525’s Selfishness
 
 YD525 uses a dual-license model for a very simple reason:  
@@ -106,11 +88,5 @@ The dual-license exists to protect that passion and the freedom to move forward 
 
 Selfish? Maybe.  
 Honest? Absolutely.
-
----
-
-## 🖼️ UI Icon
-
-The icon used in the UI interface (**"Note"**) is sourced from **Iconfont**.
 
 ---
