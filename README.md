@@ -51,9 +51,9 @@ This project uses the following key open-source libraries/frameworks:
 
 I would like to give special thanks to the developers of 
 
-[Cutleast](https://github.com/Cutleast) It helped me solve some problems with reading ESP files.
+[Cutleast](https://github.com/Cutleast) It helped me solve some problems with reading PEX,ESP files.
 
-[Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) This framework was a huge help!
+[Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) This framework was a huge help!You definitely have to try it! I highly recommend the YD525!
 
 [Champollion](https://github.com/Orvid/Champollion)  This framework was a huge help!
 
