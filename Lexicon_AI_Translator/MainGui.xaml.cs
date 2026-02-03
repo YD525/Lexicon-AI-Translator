@@ -2192,6 +2192,18 @@ namespace LexTranslator
                                             return;
                                         }
 
+                                        if (!Phoenix.CheckAvailableNodes())
+                                        {
+                                            MessageBoxExtend.Show(this, "Please enable at least one translation platform node.");
+                                            CallSucess = false;
+
+                                            if (!IsExpanded)
+                                            {
+                                                ShowLeftMenu(TRun, null);
+                                            }
+                                            return;
+                                        }
+
                                         if (Phoenix.Config.GetPlatformData(LMStudio.Type).Enable)
                                         {
                                             LMStudio.CurrentModel = string.Empty;
