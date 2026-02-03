@@ -46,8 +46,11 @@ namespace LexTranslator
         public static ReplaceWin CurrentReplaceView = new ReplaceWin();
         public static TextEditor ActiveIDE = null;
         public static LocalConfig LocalConfigView = null;
+
         public static RowStyleWin RowStyleWin = new RowStyleWin();
         public static NodeStyleWin NodeStyleWin = new NodeStyleWin();
+        public static PlatformConfigStyleWin PlatformConfigStyleWin = new PlatformConfigStyleWin();
+
         public static ExtendWin ExtendWin = null;
         public static CGView CG = null;
 
