@@ -858,7 +858,7 @@ Fill="White"/>
                             </Grid>
                         </Grid>
 
-                        <Grid Name="SettingView" Style="{DynamicResource FrameStyle}" Visibility="Visible">
+                        <Grid Name="SettingView" Style="{DynamicResource FrameStyle}" Visibility="Hidden">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="5"/>
@@ -979,102 +979,6 @@ Fill="White"/>
                                                 <Label Style="{DynamicResource TittleFont}">
                                                     APIKey Configs
                                                 </Label>
-
-                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
-                                                    <StackPanel Orientation="Vertical" Margin="5">
-                                                        <Label Foreground="White">
-                                                            Gemini
-                                                        </Label>
-                                                        <Label Style="{DynamicResource LinkFont}" MouseDown="OpenUrl_MouseDown" Margin="0 0 0 5">
-                                                            https://aistudio.google.com/apikey
-                                                        </Label>
-
-                                                        <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
-                                                            <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0" VerticalAlignment="Center">
-                                                                Mode:
-                                                            </Label>
-
-                                                            <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" VerticalAlignment="Center" Height="30">
-                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SGeminiModel" TextChanged="SGeminiModel_TextChanged">
-                                                                </TextBox>
-                                                            </Border>
-
-                                                            <ComboBox Name="SGeminiModelSelect" IsTabStop="True" Margin="5 0 0 0" VerticalAlignment="Center" Cursor="Hand" HorizontalAlignment="Stretch" Width="100" Height="30" Style="{StaticResource CustomComboBoxStyle}" SelectionChanged="SGeminiModelSelect_SelectionChanged">
-                                                            </ComboBox>
-                                                        </StackPanel>
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
-                                                                ApiKey:
-                                                            </Label>
-
-                                                            <Border Style="{DynamicResource DefTextBoxBorder}" Width="300">
-                                                                <TextBox Style="{DynamicResource DefApiKeyBox}" Name="SGeminiKey" MouseLeave="SGeminiKey_MouseLeave">
-                                                                </TextBox>
-                                                            </Border>
-
-                                                        </StackPanel>
-                                                    </StackPanel>
-                                                </Border>
-
-                                               
-
-                                            
-
-                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
-                                                    <StackPanel Orientation="Vertical" Margin="5">
-                                                        <Label Style="{DynamicResource LinkFont}" MouseDown="OpenUrl_MouseDown" Margin="0 0 0 5">
-                                                            https://lmstudio.ai/
-                                                        </Label>
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-
-                                                            <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0" VerticalAlignment="Center">
-                                                                Port:
-                                                            </Label>
-
-                                                            <Border Style="{DynamicResource DefTextBoxBorder}" Width="50">
-                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SLMPort" TextChanged="SLMPort_TextChanged" VerticalAlignment="Center" Height="30">
-                                                                </TextBox>
-                                                            </Border>
-
-                                                            <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0" VerticalAlignment="Center">
-                                                                Mode:
-                                                            </Label>
-                                                            <Label Name="CurrentMode">
-                                                            </Label>
-
-                                                        </StackPanel>
-                                                    </StackPanel>
-                                                </Border>
-
-                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
-                                                    <StackPanel Orientation="Vertical" Margin="5">
-                                                        
-                                                        <Label Foreground="White">
-                                                            DeepL
-                                                        </Label>
-                                                        
-                                                        <Label Style="{DynamicResource LinkFont}" MouseDown="OpenUrl_MouseDown" Margin="0 0 0 5">
-                                                            https://www.deepl.com/your-account/keys
-                                                        </Label>
-
-
-                                                        <CheckBox Style="{DynamicResource DefCheckBox}" Margin="0 5 0 5" Name="IsFreeDeepL" Click="IsFreeDeepL_Click" VerticalAlignment="Center">
-                                                            It is a free DeepL key
-                                                        </CheckBox>
-                                                        
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
-                                                                ApiKey:
-                                                            </Label>
-
-                                                            <Border Style="{DynamicResource DefTextBoxBorder}" Width="300">
-                                                                <TextBox Style="{DynamicResource DefApiKeyBox}" Name="SDeepLKey" MouseLeave="SDeepLKey_MouseLeave">
-                                                                </TextBox>
-                                                            </Border>
-
-                                                        </StackPanel>
-                                                    </StackPanel>
-                                                </Border>
 
                                             </StackPanel>
                                         </ScrollViewer>

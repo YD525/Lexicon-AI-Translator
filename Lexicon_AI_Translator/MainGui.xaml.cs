@@ -197,6 +197,8 @@ namespace LexTranslator
             }
 
             UIHelper.SyncNodes();
+
+            new PlatformConfigStyleWin().Show();
         }
 
 
@@ -2969,46 +2971,45 @@ namespace LexTranslator
                 SProxyUserName.Text = Phoenix.Config.ProxyUserName;
                 SProxyPassword.Text = Phoenix.Config.ProxyPassword;
 
-                SGeminiKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(GeminiApi.Type));
-                SGeminiModel.Text = Phoenix.Config.GetPlatformData(GeminiApi.Type).Model;
+                //SGeminiKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(GeminiApi.Type));
+                //SGeminiModel.Text = Phoenix.Config.GetPlatformData(GeminiApi.Type).Model;
 
-                SGeminiModelSelect.Items.Clear();
-                SGeminiModelSelect.Items.Add("gemini-2.5-flash");
-                SGeminiModelSelect.Items.Add("gemini-2.0-flash");
-                SGeminiModelSelect.SelectedValue = null;
+                //SGeminiModelSelect.Items.Clear();
+                //SGeminiModelSelect.Items.Add("gemini-2.5-flash");
+                //SGeminiModelSelect.Items.Add("gemini-2.0-flash");
+                //SGeminiModelSelect.SelectedValue = null;
 
-                SChatGptKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(ChatGptApi.Type));
-                SChatGptModel.Text = Phoenix.Config.GetPlatformData(ChatGptApi.Type).Model;
-                SChatGptModelSelect.Items.Clear();
-                SChatGptModelSelect.Items.Add("gpt-5-nano");
-                SChatGptModelSelect.Items.Add("gpt-5-mini");
-                SChatGptModelSelect.Items.Add("gpt-4.1-nano");
-                SChatGptModelSelect.Items.Add("gpt-4.1-mini");
-                SChatGptModelSelect.Items.Add("gpt-4o-mini");
-                SChatGptModelSelect.SelectedValue = null;
+                //SChatGptKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(ChatGptApi.Type));
+                //SChatGptModel.Text = Phoenix.Config.GetPlatformData(ChatGptApi.Type).Model;
+                //SChatGptModelSelect.Items.Clear();
+                //SChatGptModelSelect.Items.Add("gpt-5-nano");
+                //SChatGptModelSelect.Items.Add("gpt-5-mini");
+                //SChatGptModelSelect.Items.Add("gpt-4.1-nano");
+                //SChatGptModelSelect.Items.Add("gpt-4.1-mini");
+                //SChatGptModelSelect.Items.Add("gpt-4o-mini");
+                //SChatGptModelSelect.SelectedValue = null;
 
 
-                SDeepSeekKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(DeepSeekApi.Type));
-                SDeepSeekModel.Text = Phoenix.Config.GetPlatformData(DeepSeekApi.Type).Model;
-                SDeepSeekModelSelect.Items.Clear();
-                SDeepSeekModelSelect.Items.Add("deepseek-chat");
-                SDeepSeekModelSelect.Items.Add("deepseek-reasoner");
-                SDeepSeekModelSelect.SelectedValue = null;
+                //SDeepSeekKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(DeepSeekApi.Type));
+                //SDeepSeekModel.Text = Phoenix.Config.GetPlatformData(DeepSeekApi.Type).Model;
+                //SDeepSeekModelSelect.Items.Clear();
+                //SDeepSeekModelSelect.Items.Add("deepseek-chat");
+                //SDeepSeekModelSelect.Items.Add("deepseek-reasoner");
+                //SDeepSeekModelSelect.SelectedValue = null;
 
-                SLMPort.Text = PhoenixConfig.GetPlatformData(LMStudio.Type).LocalPort.ToString();
-                SLMModel.Text = LMStudio.CurrentModel;
+                //SLMPort.Text = PhoenixConfig.GetPlatformData(LMStudio.Type).LocalPort.ToString();
+                //SLMModel.Text = LMStudio.CurrentModel;
 
-                SDeepLKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(DeepLApi.Type));
+                //SDeepLKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(DeepLApi.Type));
 
-                if (PhoenixConfig.GetPlatformData(DeepLApi.Type).IsFree)
-                {
-                    IsFreeDeepL.IsChecked = true;
-                }
-                else
-                {
-                    IsFreeDeepL.IsChecked = false;
-                }
-
+                //if (PhoenixConfig.GetPlatformData(DeepLApi.Type).IsFree)
+                //{
+                //    IsFreeDeepL.IsChecked = true;
+                //}
+                //else
+                //{
+                //    IsFreeDeepL.IsChecked = false;
+                //}
             }
             else
             if (Name.Equals("AI Configs"))
@@ -3211,59 +3212,59 @@ namespace LexTranslator
         }
         private void SGeminiModel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.PlatformConfigs[(int)GeminiApi.Type].Model = SGeminiModel.Text;
+            //Phoenix.Config.PlatformConfigs[(int)GeminiApi.Type].Model = SGeminiModel.Text;
         }
         private void SGeminiModelSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetModel = ConvertHelper.ObjToStr(SGeminiModelSelect.SelectedValue);
+            //string GetModel = ConvertHelper.ObjToStr(SGeminiModelSelect.SelectedValue);
 
-            if (GetModel.Trim().Length > 0)
-            {
-                SGeminiModel.Text = GetModel;
-            }
+            //if (GetModel.Trim().Length > 0)
+            //{
+            //    SGeminiModel.Text = GetModel;
+            //}
         }
         private void SChatGptModel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.PlatformConfigs[(int)ChatGptApi.Type].Model = SChatGptModel.Text;
+            //Phoenix.Config.PlatformConfigs[(int)ChatGptApi.Type].Model = SChatGptModel.Text;
         }
         private void SChatGptModelSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetModel = ConvertHelper.ObjToStr(SChatGptModelSelect.SelectedValue);
+            //string GetModel = ConvertHelper.ObjToStr(SChatGptModelSelect.SelectedValue);
 
-            if (GetModel.Trim().Length > 0)
-            {
-                SChatGptModel.Text = GetModel;
-            }
+            //if (GetModel.Trim().Length > 0)
+            //{
+            //    SChatGptModel.Text = GetModel;
+            //}
         }
         private void SDeepSeekModel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.PlatformConfigs[(int)DeepSeekApi.Type].Model = SDeepSeekModel.Text;
+            //Phoenix.Config.PlatformConfigs[(int)DeepSeekApi.Type].Model = SDeepSeekModel.Text;
         }
         private void SDeepSeekModelSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetModel = ConvertHelper.ObjToStr(SDeepSeekModelSelect.SelectedValue);
+            //string GetModel = ConvertHelper.ObjToStr(SDeepSeekModelSelect.SelectedValue);
 
-            if (GetModel.Trim().Length > 0)
-            {
-                SDeepSeekModel.Text = GetModel;
-            }
+            //if (GetModel.Trim().Length > 0)
+            //{
+            //    SDeepSeekModel.Text = GetModel;
+            //}
         }
 
         private void SLMPort_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.PlatformConfigs[(int)LMStudio.Type].LocalPort = ConvertHelper.ObjToInt(SLMPort.Text);
+            //Phoenix.Config.PlatformConfigs[(int)LMStudio.Type].LocalPort = ConvertHelper.ObjToInt(SLMPort.Text);
         }
 
         private void IsFreeDeepL_Click(object sender, RoutedEventArgs e)
         {
-            if (IsFreeDeepL.IsChecked == true)
-            {
-                Phoenix.Config.PlatformConfigs[(int)DeepLApi.Type].IsFree = true;
-            }
-            else
-            {
-                Phoenix.Config.PlatformConfigs[(int)DeepLApi.Type].IsFree = false;
-            }
+            //if (IsFreeDeepL.IsChecked == true)
+            //{
+            //    Phoenix.Config.PlatformConfigs[(int)DeepLApi.Type].IsFree = true;
+            //}
+            //else
+            //{
+            //    Phoenix.Config.PlatformConfigs[(int)DeepLApi.Type].IsFree = false;
+            //}
         }
         private void SContextLimit_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -3328,22 +3329,22 @@ namespace LexTranslator
 
         private void SGeminiKey_MouseLeave(object sender, MouseEventArgs e)
         {
-            SaveApiKey(PlatformType.Gemini, SGeminiKey.Text);
+            //SaveApiKey(PlatformType.Gemini, SGeminiKey.Text);
         }
 
         private void SChatGptKey_MouseLeave(object sender, MouseEventArgs e)
         {
-            SaveApiKey(PlatformType.ChatGpt, SChatGptKey.Text);
+            //SaveApiKey(PlatformType.ChatGpt, SChatGptKey.Text);
         }
 
         private void SDeepSeekKey_MouseLeave(object sender, MouseEventArgs e)
         {
-            SaveApiKey(PlatformType.DeepSeek, SDeepSeekKey.Text);
+            //SaveApiKey(PlatformType.DeepSeek, SDeepSeekKey.Text);
         }
 
         private void SDeepLKey_MouseLeave(object sender, MouseEventArgs e)
         {
-            SaveApiKey(PlatformType.DeepL, SDeepLKey.Text);
+            //SaveApiKey(PlatformType.DeepL, SDeepLKey.Text);
         }
 
         private void SThrottlingRatio_TextChanged(object sender, TextChangedEventArgs e)

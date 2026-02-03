@@ -55,11 +55,11 @@ namespace LexTranslator
         {
             if (WorkingWin != null)
             {
-                WorkingWin.SaveApiKey(PlatformType.Gemini, WorkingWin.SGeminiKey.Text);
-                WorkingWin.SaveApiKey(PlatformType.ChatGpt, WorkingWin.SChatGptKey.Text);
-                WorkingWin.SaveApiKey(PlatformType.DeepSeek, WorkingWin.SDeepSeekKey.Text);
+                //WorkingWin.SaveApiKey(PlatformType.Gemini, WorkingWin.SGeminiKey.Text);
+                //WorkingWin.SaveApiKey(PlatformType.ChatGpt, WorkingWin.SChatGptKey.Text);
+                //WorkingWin.SaveApiKey(PlatformType.DeepSeek, WorkingWin.SDeepSeekKey.Text);
 
-                WorkingWin.SaveApiKey(PlatformType.DeepL, WorkingWin.SDeepLKey.Text);
+                //WorkingWin.SaveApiKey(PlatformType.DeepL, WorkingWin.SDeepLKey.Text);
 
                 WorkingWin.Hide();
             }

@@ -157,6 +157,9 @@
     <Compile Include="UIManagement\NodeStyleWin.xaml.cs">
       <DependentUpon>NodeStyleWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIManagement\PlatformConfigStyleWin.xaml.cs">
+      <DependentUpon>PlatformConfigStyleWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIManagement\RowStyleWin.xaml.cs">
       <DependentUpon>RowStyleWin.xaml</DependentUpon>
     </Compile>
@@ -231,6 +234,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UIManagement\NodeStyleWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\PlatformConfigStyleWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
