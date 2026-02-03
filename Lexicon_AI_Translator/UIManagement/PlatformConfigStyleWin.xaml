@@ -8,6 +8,184 @@
         Title="PlatformConfigStyleWin" Height="750" Width="800">
     <Grid Background="Black">
         <StackPanel Orientation="Vertical" Margin="5 0 5 0" VerticalAlignment="Center">
+
+
+            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="CloudAIConfig">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Margin="-1 -1 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left" Background="White">
+                            <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
+                                <Label VerticalAlignment="Center" FontWeight="Bold">
+                                    ChatGpt
+                                </Label>
+                                <Ellipse Width="8" Height="8" Fill="#FF14C1DC" VerticalAlignment="Center">
+                                </Ellipse>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Grid.Column="1" Background="#FF404040" Margin="0 1 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand">
+                                    Document: http://xxx.com
+                                </Label>
+                                <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
+                                        DeletePlatform
+                                    </Label>
+                                </Border>
+                            </StackPanel>
+
+                        </Grid>
+                        <Border Grid.Column="2" Background="#FF404040" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        </Border>
+                    </Grid>
+
+
+                    <Grid Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
+                                    ApiKey:
+                                </Label>
+                                <TextBox BorderThickness="0" Width="230" Margin="0 5 0 5" VerticalContentAlignment="Center">
+                                </TextBox>
+                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
+                                        Add
+                                    </Label>
+                                </Border>
+
+                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent" Margin="5 5 0 5" Cursor="Hand">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
+                                        Remove
+                                    </Label>
+                                </Border>
+
+                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="5 0 0 0">
+                                    Model:
+                                </Label>
+                                <TextBox BorderThickness="0" Width="100" Margin="0 5 0 5" VerticalContentAlignment="Center">
+                                </TextBox>
+                                <ComboBox Style="{DynamicResource CustomComboBoxStyle}" VerticalAlignment="Stretch"  Width="100" Margin="5 5 0 5">
+                                </ComboBox>
+                            </StackPanel>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Visible" Style="{DynamicResource for_scrollviewer}" Grid.Row="1" >
+                                <ListBox Background="{x:Null}" Foreground="White" BorderThickness="0">
+
+                                </ListBox>
+                            </ScrollViewer>
+
+
+                        </Grid>
+
+                    </Grid>
+
+                </Grid>
+            </Border>
+
+            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="LocalAIConfig">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Margin="-1 -1 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left" Background="White">
+                            <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
+                                <Label VerticalAlignment="Center" FontWeight="Bold">
+                                    LMStudio
+                                </Label>
+                                <Ellipse Width="8" Height="8" Fill="#FF14C1DC" VerticalAlignment="Center">
+                                </Ellipse>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Grid.Column="1" Background="#FF404040" Margin="0 1 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand">
+                                    Document: http://xxx.com
+                                </Label>
+                                <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
+                                        DeletePlatform
+                                    </Label>
+                                </Border>
+                            </StackPanel>
+
+                        </Grid>
+                        <Border Grid.Column="2" Background="#FF404040" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        </Border>
+                    </Grid>
+
+
+                    <Grid Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
+                                    ApiKey:
+                                </Label>
+                                <TextBox BorderThickness="0" Width="230" Margin="0 5 0 5" VerticalContentAlignment="Center">
+                                </TextBox>
+                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
+                                        Add
+                                    </Label>
+                                </Border>
+
+                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent" Margin="5 5 0 5" Cursor="Hand">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
+                                        Remove
+                                    </Label>
+                                </Border>
+
+                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="5 0 0 0">
+                                   Current Model:
+                                </Label>
+
+                                <Label Foreground="White" VerticalAlignment="Center">
+
+                                </Label>
+                            </StackPanel>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Visible" Style="{DynamicResource for_scrollviewer}" Grid.Row="1" >
+                                <ListBox Background="{x:Null}" Foreground="White" BorderThickness="0">
+
+                                </ListBox>
+                            </ScrollViewer>
+
+
+                        </Grid>
+
+                    </Grid>
+
+                </Grid>
+            </Border>
+
             <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="130" Margin="0 5 0 5" Name="TraditionalConfig">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -26,15 +204,23 @@
                                 <Label VerticalAlignment="Center" FontWeight="Bold">
                                     DeepL
                                 </Label>
-                                <Ellipse Width="8" Height="8" Fill="#FF14C1DC" VerticalAlignment="Center">
+                                <Ellipse Width="8" Height="8" Fill="#FFF5668C" VerticalAlignment="Center">
                                 </Ellipse>
                             </StackPanel>
                         </Border>
 
                         <Grid Grid.Column="1" Background="#FF404040" Margin="0 1 0 0">
-                            <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand">
-                                Document: http://xxx.com
-                            </Label>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand">
+                                    Document: http://xxx.com
+                                </Label>
+                                <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
+                                        DeletePlatform
+                                    </Label>
+                                </Border>
+                            </StackPanel>
+
                         </Grid>
                         <Border Grid.Column="2" Background="#FF404040" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
                         </Border>
@@ -72,22 +258,16 @@
 
                             <ScrollViewer VerticalScrollBarVisibility="Visible" Style="{DynamicResource for_scrollviewer}" Grid.Row="1" >
                                 <ListBox Background="{x:Null}" Foreground="White" BorderThickness="0">
-                                    
+
                                 </ListBox>
                             </ScrollViewer>
-                          
+
 
                         </Grid>
-                    
+
                     </Grid>
 
                 </Grid>
-            </Border>
-
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="LocalAI">
-            </Border>
-
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="CloudAI">
             </Border>
         </StackPanel>
        
