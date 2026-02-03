@@ -858,7 +858,7 @@ Fill="White"/>
                             </Grid>
                         </Grid>
 
-                        <Grid Name="SettingView" Style="{DynamicResource FrameStyle}" Visibility="Hidden">
+                        <Grid Name="SettingView" Style="{DynamicResource FrameStyle}" Visibility="Visible">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="5"/>
@@ -982,19 +982,14 @@ Fill="White"/>
 
                                                 <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
                                                     <StackPanel Orientation="Vertical" Margin="5">
+                                                        <Label Foreground="White">
+                                                            Gemini
+                                                        </Label>
                                                         <Label Style="{DynamicResource LinkFont}" MouseDown="OpenUrl_MouseDown" Margin="0 0 0 5">
                                                             https://aistudio.google.com/apikey
                                                         </Label>
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
-                                                                Gemini ApiKey:
-                                                            </Label>
 
-                                                            <Border Style="{DynamicResource DefTextBoxBorder}" Width="300">
-                                                                <TextBox Style="{DynamicResource DefApiKeyBox}" Name="SGeminiKey" MouseLeave="SGeminiKey_MouseLeave">
-                                                                </TextBox>
-                                                            </Border>
-
+                                                        <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
                                                             <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0" VerticalAlignment="Center">
                                                                 Mode:
                                                             </Label>
@@ -1004,72 +999,26 @@ Fill="White"/>
                                                                 </TextBox>
                                                             </Border>
 
-                                                            <ComboBox Name="SGeminiModelSelect" IsTabStop="True" Margin="5 0 0 0" VerticalAlignment="Center" Cursor="Hand" HorizontalAlignment="Stretch" Width="50" Height="30" Style="{StaticResource CustomComboBoxStyle}" SelectionChanged="SGeminiModelSelect_SelectionChanged">
+                                                            <ComboBox Name="SGeminiModelSelect" IsTabStop="True" Margin="5 0 0 0" VerticalAlignment="Center" Cursor="Hand" HorizontalAlignment="Stretch" Width="100" Height="30" Style="{StaticResource CustomComboBoxStyle}" SelectionChanged="SGeminiModelSelect_SelectionChanged">
                                                             </ComboBox>
                                                         </StackPanel>
-                                                    </StackPanel>
-                                                </Border>
-
-                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
-                                                    <StackPanel Orientation="Vertical" Margin="5">
-                                                        <Label Style="{DynamicResource LinkFont}" MouseDown="OpenUrl_MouseDown" Margin="0 0 0 5">
-                                                            https://platform.openai.com/api-keys
-                                                        </Label>
-
                                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                             <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
-                                                                ChatGpt ApiKey:
-                                                            </Label>
-
-                                                            <Border  Style="{DynamicResource DefTextBoxBorder}" Width="300">
-                                                                <TextBox Style="{DynamicResource DefApiKeyBox}" Name="SChatGptKey" MouseLeave="SChatGptKey_MouseLeave">
-                                                                </TextBox>
-                                                            </Border>
-
-                                                            <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0" VerticalAlignment="Center">
-                                                                Mode:
-                                                            </Label>
-
-                                                            <Border Style="{DynamicResource DefTextBoxBorder}" Width="100" VerticalAlignment="Center" Height="30">
-                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SChatGptModel" TextChanged="SChatGptModel_TextChanged">
-                                                                </TextBox>
-                                                            </Border>
-
-                                                            <ComboBox Name="SChatGptModelSelect" IsTabStop="True" Margin="5 0 0 0" VerticalAlignment="Center" Cursor="Hand" HorizontalAlignment="Stretch" Width="50" Height="30" Style="{StaticResource CustomComboBoxStyle}" SelectionChanged="SChatGptModelSelect_SelectionChanged">
-                                                            </ComboBox>
-                                                        </StackPanel>
-                                                    </StackPanel>
-                                                </Border>
-
-                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
-                                                    <StackPanel Orientation="Vertical" Margin="5">
-                                                        <Label Style="{DynamicResource LinkFont}" MouseDown="OpenUrl_MouseDown" Margin="0 0 0 5">
-                                                            https://platform.deepseek.com/api_keys
-                                                        </Label>
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
-                                                                DeepSeek ApiKey:
+                                                                ApiKey:
                                                             </Label>
 
                                                             <Border Style="{DynamicResource DefTextBoxBorder}" Width="300">
-                                                                <TextBox Style="{DynamicResource DefApiKeyBox}" Name="SDeepSeekKey" MouseLeave="SDeepSeekKey_MouseLeave">
+                                                                <TextBox Style="{DynamicResource DefApiKeyBox}" Name="SGeminiKey" MouseLeave="SGeminiKey_MouseLeave">
                                                                 </TextBox>
                                                             </Border>
 
-                                                            <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0" VerticalAlignment="Center">
-                                                                Mode:
-                                                            </Label>
-
-                                                            <Border Style="{DynamicResource DefTextBoxBorder}" Width="100" VerticalAlignment="Center" Height="30">
-                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SDeepSeekModel" TextChanged="SDeepSeekModel_TextChanged">
-                                                                </TextBox>
-                                                            </Border>
-
-                                                            <ComboBox Name="SDeepSeekModelSelect" IsTabStop="True" Margin="5 0 0 0" VerticalAlignment="Center" Cursor="Hand" HorizontalAlignment="Stretch" Width="50" Height="30" Style="{StaticResource CustomComboBoxStyle}" SelectionChanged="SDeepSeekModelSelect_SelectionChanged">
-                                                            </ComboBox>
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>
+
+                                               
+
+                                            
 
                                                 <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
                                                     <StackPanel Orientation="Vertical" Margin="5">
@@ -1090,11 +1039,8 @@ Fill="White"/>
                                                             <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0" VerticalAlignment="Center">
                                                                 Mode:
                                                             </Label>
-
-                                                            <Border Style="{DynamicResource DefTextBoxBorder}" Width="200" VerticalAlignment="Center" Height="30">
-                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SLMModel" IsReadOnly="True">
-                                                                </TextBox>
-                                                            </Border>
+                                                            <Label Name="CurrentMode">
+                                                            </Label>
 
                                                         </StackPanel>
                                                     </StackPanel>
@@ -1102,12 +1048,23 @@ Fill="White"/>
 
                                                 <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Left" Margin="0 5 0 10">
                                                     <StackPanel Orientation="Vertical" Margin="5">
+                                                        
+                                                        <Label Foreground="White">
+                                                            DeepL
+                                                        </Label>
+                                                        
                                                         <Label Style="{DynamicResource LinkFont}" MouseDown="OpenUrl_MouseDown" Margin="0 0 0 5">
                                                             https://www.deepl.com/your-account/keys
                                                         </Label>
+
+
+                                                        <CheckBox Style="{DynamicResource DefCheckBox}" Margin="0 5 0 5" Name="IsFreeDeepL" Click="IsFreeDeepL_Click" VerticalAlignment="Center">
+                                                            It is a free DeepL key
+                                                        </CheckBox>
+                                                        
                                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                             <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
-                                                                DeepL ApiKey:
+                                                                ApiKey:
                                                             </Label>
 
                                                             <Border Style="{DynamicResource DefTextBoxBorder}" Width="300">
@@ -1115,9 +1072,6 @@ Fill="White"/>
                                                                 </TextBox>
                                                             </Border>
 
-                                                            <CheckBox Style="{DynamicResource DefCheckBox}" Margin="5 0 0 0" Name="IsFreeDeepL" Click="IsFreeDeepL_Click" VerticalAlignment="Center">
-                                                                It is a free DeepL key
-                                                            </CheckBox>
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>
