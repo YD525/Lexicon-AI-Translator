@@ -441,7 +441,7 @@ namespace LexTranslator
             }
         }
 
-        private bool IsExpanded = false;
+        public bool IsExpanded = false;
         private void ShowLeftMenu(object sender, MouseButtonEventArgs e)
         {
             if (IsExpanded)
@@ -2183,11 +2183,12 @@ namespace LexTranslator
                                 {
                                     if (ConvertHelper.ObjToStr(TransProcess.Content).StartsWith("STRINGS("))
                                     {
-                                      
                                         if (Phoenix.From == Phoenix.To)
                                         {
                                             MessageBoxExtend.Show(this, "The source language and target language cannot be the same!");
                                             CallSucess = false;
+
+                                            ShowLocalEngineSettingView(null,null);
                                             return;
                                         }
 

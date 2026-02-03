@@ -196,7 +196,7 @@ namespace LexTranslator
         public double WritingAreaHeight { get; set; } = 0;
         public string ViewMode { get; set; } = "Normal";
 
-        public Languages SourceLanguage { get; set; } = Languages.Auto;
+        public Languages SourceLanguage { get; set; } = Languages.English;
         public Languages TargetLanguage { get; set; } = Languages.English;
 
         public bool CanClearCloudTranslationCache { get; set; } = false;

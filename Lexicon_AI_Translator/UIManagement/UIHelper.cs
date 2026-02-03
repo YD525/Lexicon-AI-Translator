@@ -327,29 +327,33 @@ namespace LexTranslator.UIManage
 
             public static void Blink(Grid grid, ContentControl light, int ms)
             {
-                if (_lightMap.TryGetValue(grid, out var oldCts))
-                {
-                    oldCts.Cancel();
-                    _lightMap.Remove(grid);
-                }
+                if (_lightMap.TryGetValue(grid, out _))
+                    return;
 
                 var cts = new CancellationTokenSource();
                 _lightMap.Add(grid, cts);
+
+                light.Dispatcher.Invoke(() =>
+                {
+                    light.Style = (Style)Application.Current.FindResource("IndicatorOnStyle");
+                });
 
                 Task.Run(async () =>
                 {
                     try
                     {
                         await Task.Delay(ms, cts.Token);
-                        if (cts.IsCancellationRequested) return;
 
-                        grid.Dispatcher.Invoke(() =>
+                        light.Dispatcher.Invoke(() =>
                         {
-                            var off = (Style)Application.Current.FindResource("IndicatorOffStyle");
-                            light.Style = off;
+                            light.Style = (Style)Application.Current.FindResource("IndicatorOffStyle");
                         });
                     }
                     catch (TaskCanceledException) { }
+                    finally
+                    {
+                        _lightMap.Remove(grid);
+                    }
                 });
             }
         }
@@ -360,13 +364,15 @@ namespace LexTranslator.UIManage
             {
                 if (!LeftMenuIsShow) return;
 
+                if (!DeFine.WorkingWin.IsExpanded)
+                {
+                    return;
+                }
+
                 DeFine.WorkingWin.Dispatcher.Invoke(() =>
                 {
                     try
                     {
-                        var IndicatorOn = (Style)Application.Current.FindResource("IndicatorOnStyle");
-                        var IndicatorOff = (Style)Application.Current.FindResource("IndicatorOffStyle");
-
                         for (int i = 0; i < DeFine.WorkingWin.Nodes.Children.Count; i++)
                         {
                             if (DeFine.WorkingWin.Nodes.Children[i] is Grid)
@@ -380,7 +386,6 @@ namespace LexTranslator.UIManage
                                         if (Sign == PlatformType.PhoenixEngine)
                                         {
                                             ContentControl GetLight = DeFine.NodeStyleWin.GetNodeLight(SetGrid);
-                                            GetLight.Style = IndicatorOn;
                                             NodeLightController.Blink(SetGrid, GetLight, 1000);
                                         }
                                     }
@@ -388,14 +393,12 @@ namespace LexTranslator.UIManage
                                     if (GetHeader.CustomID <= 0 && GetHeader.MainType == Sign)
                                     {
                                         ContentControl GetLight = DeFine.NodeStyleWin.GetNodeLight(SetGrid);
-                                        GetLight.Style = IndicatorOn;
                                         NodeLightController.Blink(SetGrid, GetLight, 1000);
                                     }
                                     else
                                     if (GetHeader.CustomID > 0 && GetHeader.CustomID == CustomID)
                                     {
                                         ContentControl GetLight = DeFine.NodeStyleWin.GetNodeLight(SetGrid);
-                                        GetLight.Style = IndicatorOn;
                                         NodeLightController.Blink(SetGrid, GetLight, 1000);
                                     }
                                 }
