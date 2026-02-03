@@ -33,7 +33,7 @@ namespace LexTranslator.TranslateManage
                     {
                         PreTranslateCall GetCall = (PreTranslateCall)Any;
 
-                        UIHelper.NodeCallCallback(0,GetCall.Platform);
+                        UIHelper.NodeCallCallback(0, GetCall.Platform);
                     }
                 }
             }));
@@ -57,7 +57,7 @@ namespace LexTranslator.TranslateManage
                     {
                         AICall GetCall = (AICall)Any;
 
-                        UIHelper.NodeCallCallback(GetCall.CustomID,GetCall.Platform);
+                        UIHelper.NodeCallCallback(GetCall.CustomID, GetCall.Platform);
 
                         LogHelper.SetInputLog(GetCall.Platform.ToString() + "->\n" + GetCall.SendString);
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);
@@ -68,7 +68,7 @@ namespace LexTranslator.TranslateManage
                     {
                         PlatformCall GetCall = (PlatformCall)Any;
 
-                        UIHelper.NodeCallCallback(GetCall.CustomID,GetCall.Platform);
+                        UIHelper.NodeCallCallback(GetCall.CustomID, GetCall.Platform);
 
                         LogHelper.SetInputLog(GetCall.Platform.ToString() + "->\n" + GetCall.SendString);
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);
@@ -303,7 +303,7 @@ namespace LexTranslator.TranslateManage
             {
                 return;
             }
-          
+
             if (PreparingTrd != null)
             {
                 try
@@ -319,7 +319,8 @@ namespace LexTranslator.TranslateManage
                 try
                 {
                     MarkLeaderTrd.Abort();
-                } catch { }
+                }
+                catch { }
                 MarkLeaderTrd = null;
             }
 
@@ -545,7 +546,8 @@ namespace LexTranslator.TranslateManage
 
                         Thread.Sleep(1000);
 
-                        GetListView.Parent.Dispatcher.Invoke(new Action(() => {
+                        GetListView.Parent.Dispatcher.Invoke(new Action(() =>
+                        {
                             for (int i = 0; i < TranslationCore.UnitsLeaderToTranslate.Count; i++)
                             {
                                 string GetKey = TranslationCore.UnitsLeaderToTranslate.ElementAt(i).Key;
@@ -635,7 +637,10 @@ namespace LexTranslator.TranslateManage
                         }
                     }
 
-                    Phoenix.SyncTrdCount();
+                    if (Phoenix.Config.AutoSetThreadLimit)
+                    {
+                        Phoenix.SyncTrdCount();
+                    }
 
                     YDListView GetListView = DeFine.WorkingWin.TransViewList;
 
@@ -643,7 +648,7 @@ namespace LexTranslator.TranslateManage
                     {
                         SyncTransStateFreeze = true;
 
-                        MakeReady();                   
+                        MakeReady();
 
                         if (DeFine.GlobalLocalSetting.ForceTranslationConsistency)
                         {
@@ -667,7 +672,12 @@ namespace LexTranslator.TranslateManage
                             }
                         }
 
-                        TranslationCore.Start();
+                        if (TranslationCore != null)
+                        {
+                            TranslationCore.Close();
+                            TranslationCore.Start();
+                        }
+                        
 
                         SyncTransStateFreeze = false;
 
@@ -689,27 +699,36 @@ namespace LexTranslator.TranslateManage
 
                         while (!IsEnd)
                         {
-                            var GetGrid = TranslationCore.DequeueTranslated(out IsEnd);
-
-                            if (GetGrid != null)
+                            try
                             {
-                                var GetFakeGrid = GetListView.KeyToFakeGrid(GetGrid.Key);
-                                if (GetFakeGrid != null)
-                                {
-                                    GetFakeGrid.TransText = GetGrid.TransText;
-                                    GetFakeGrid.SyncUI(GetListView);
-                                    SetTranslatorHistoryCache(GetGrid.Key, GetGrid.TransText, true);
+                                var GetGrid = TranslationCore.DequeueTranslated(out IsEnd);
 
-                                    Phoenix.TranslatedCount++;
-                                    SetTransBarTittle(string.Format("STRINGS({0}/{1})", Phoenix.TranslatedCount, GetListView.Rows));
+                                if (GetGrid != null)
+                                {
+                                    var GetFakeGrid = GetListView.KeyToFakeGrid(GetGrid.Key);
+                                    if (GetFakeGrid != null)
+                                    {
+                                        GetFakeGrid.TransText = GetGrid.TransText;
+                                        GetFakeGrid.SyncUI(GetListView);
+                                        SetTranslatorHistoryCache(GetGrid.Key, GetGrid.TransText, true);
+
+                                        Phoenix.TranslatedCount++;
+                                        SetTransBarTittle(string.Format("STRINGS({0}/{1})", Phoenix.TranslatedCount, GetListView.Rows));
+                                    }
+                                }
+
+                                Thread.Sleep(20);
+
+                                if (WaitStopSign())
+                                {
+                                    return;
                                 }
                             }
+                            catch { }
 
-                            Thread.Sleep(20);
-
-                            if (WaitStopSign())
+                            if (TranslationCore == null)
                             {
-                                return;
+                                break;
                             }
                         }
 

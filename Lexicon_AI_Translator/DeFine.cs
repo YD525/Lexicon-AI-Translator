@@ -191,7 +191,6 @@ namespace LexTranslator
         public string SkyrimPath { get; set; } = "";
 
         public bool ShowCode { get; set; } = true;
-        public bool AutoCompress { get; set; } = true;
         public GameNames GameType { get; set; } = GameNames.Skyrim;
         public double WritingAreaHeight { get; set; } = 0;
         public string ViewMode { get; set; } = "Normal";
@@ -240,7 +239,6 @@ namespace LexTranslator
                             this.SkyrimPath = GetSetting.SkyrimPath;
                             this.ShowCode = GetSetting.ShowCode;
                             this.GameType = GetSetting.GameType;
-                            this.AutoCompress = GetSetting.AutoCompress;
                             this.WritingAreaHeight = GetSetting.WritingAreaHeight;
                             this.ViewMode = GetSetting.ViewMode;
                             this.SourceLanguage = GetSetting.SourceLanguage;

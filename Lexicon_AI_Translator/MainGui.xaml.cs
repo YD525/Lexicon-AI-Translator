@@ -868,14 +868,7 @@ namespace LexTranslator
                 ReloadDebounceTimer.Start();
             }
         }
-        public void ClosetTransTrd()
-        {
-            //StopAny = true;
-            //AutoKeepTag.Background = new SolidColorBrush(Color.FromRgb(11, 116, 209));
-
-            //AutoKeep.Source = new Uri("pack://application:,,,/LexTranslator;component/Material/Keep.svg");
-            //BatchTranslationHelper.Close();
-        }
+        
 
         public void SetTittle(string Tittle = "")
         {
@@ -908,7 +901,6 @@ namespace LexTranslator
 
             SetLog("Load:" + FilePath);
 
-            ClosetTransTrd();
             if (System.IO.File.Exists(FilePath))
             {
                 TranslatorExtend.Close();
@@ -1140,8 +1132,6 @@ namespace LexTranslator
 
                     LoadFileButton.Content = UILanguageHelper.UICache["LoadFileButton"];
 
-                    ClosetTransTrd();
-
                     TransViewList?.Clear();
                     EspReader.Close();
                     GlobalMCMReader?.Close();
@@ -1370,7 +1360,6 @@ namespace LexTranslator
             string GetSelectValue = ConvertHelper.ObjToStr((sender as ComboBox).SelectedValue);
             if (GetSelectValue.Trim().Length > 0)
             {
-                ClosetTransTrd();
                 CurrentSig = GetSelectValue;
                 ReloadData();
             }
@@ -2160,6 +2149,17 @@ namespace LexTranslator
                 TCancel.Visibility = Visibility.Collapsed;
 
                 ThreadInFo.Visibility = Visibility.Collapsed;
+            }
+
+            if (TranslatorExtend.TranslationStatus == StateControl.Run || TranslatorExtend.TranslationStatus == StateControl.Stop)
+            {
+                DeFine.LocalConfigView.SFrom.IsEnabled = false;
+                DeFine.LocalConfigView.STo.IsEnabled = false;
+            }
+            else
+            {
+                DeFine.LocalConfigView.SFrom.IsEnabled = true;
+                DeFine.LocalConfigView.STo.IsEnabled = true;
             }
         }
 
