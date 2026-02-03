@@ -1065,7 +1065,7 @@ Fill="White"/>
                                                             </ComboBox>
                                                         </StackPanel>
 
-                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 10">
+                                                        <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 10">
                                                             <Label Style="{DynamicResource NormalText}">
                                                                 Skyrim Install Path:
                                                             </Label>
@@ -1074,7 +1074,7 @@ Fill="White"/>
                                                                 <TextBox Style="{DynamicResource DefTextBox}" Name="SkyrimPath">
                                                                 </TextBox>
                                                             </Border>
-                                                        </StackPanel>
+                                                        </StackPanel>-->
 
                                                     </StackPanel>
                                                 </Border>
@@ -1125,11 +1125,11 @@ Fill="White"/>
                                                         </Label>
                                                     </Border>
 
-                                                    <Border Background="#FF972DD2" Width="130" CornerRadius="5" Height="30" BorderThickness="1" Margin="10 0 0 0"  PreviewMouseDown="ChangePurpleStyle">
+                                                    <!--<Border Background="#FF972DD2" Width="130" CornerRadius="5" Height="30" BorderThickness="1" Margin="10 0 0 0"  PreviewMouseDown="ChangePurpleStyle">
                                                         <Label Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                             Purple Style
                                                         </Label>
-                                                    </Border>
+                                                    </Border>-->
                                                 </StackPanel>
                                             </StackPanel>
                                         </ScrollViewer>

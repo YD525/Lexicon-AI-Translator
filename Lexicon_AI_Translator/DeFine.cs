@@ -19,7 +19,7 @@ namespace LexTranslator
 {
     public enum GameNames
     {
-        SkyrimLE = 0, SkyrimSE = 1
+        Skyrim = 0
     }
     public class DeFine
     {
@@ -192,7 +192,7 @@ namespace LexTranslator
 
         public bool ShowCode { get; set; } = true;
         public bool AutoCompress { get; set; } = true;
-        public GameNames GameType { get; set; } = GameNames.SkyrimSE;
+        public GameNames GameType { get; set; } = GameNames.Skyrim;
         public double WritingAreaHeight { get; set; } = 0;
         public string ViewMode { get; set; } = "Normal";
 

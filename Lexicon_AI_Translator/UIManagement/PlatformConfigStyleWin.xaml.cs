@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
+using LexTranslator.FileManagement;
 using LexTranslator.UIManage;
 using PhoenixEngine.EngineManagement;
 using PhoenixEngine.PlatformManagement;
@@ -53,6 +54,7 @@ namespace LexTranslator.UIManagement
             else
             {
                 (ControlPanel.Children[0] as Label).Content = Document;
+                (ControlPanel.Children[0] as Label).PreviewMouseDown += OpenUrl;
             }
 
             if (IsSystemNode)
@@ -105,6 +107,21 @@ namespace LexTranslator.UIManagement
             return GetPlatformBorder;
         }
 
+        private void OpenUrl(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Label)
+            {
+                string GetUrl = ConvertHelper.ObjToStr((sender as Label).Content);
+                if (GetUrl.Length > 0)
+                {
+                    if (MessageBoxExtend.Show(DeFine.WorkingWin, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?", MsgAction.YesNo, MsgType.Info) > 0)
+                    {
+                        ExplorerHelper.OpenUrl(GetUrl);
+                    }
+                }
+            }
+        }
+
         public Border GenLocalAIConfig(int Key,string PlatformName, string Document, bool IsSystemNode,int LocalPort,string Model, CustomPlatformType CustomType)
         {
             Border GetPlatformBorder = UIHelper.CloneElement(LocalAIConfig);
@@ -129,6 +146,7 @@ namespace LexTranslator.UIManagement
             else
             {
                 (ControlPanel.Children[0] as Label).Content = Document;
+                (ControlPanel.Children[0] as Label).PreviewMouseDown += OpenUrl;
             }
 
             if (IsSystemNode)
@@ -178,6 +196,7 @@ namespace LexTranslator.UIManagement
             else
             {
                 (ControlPanel.Children[0] as Label).Content = Document;
+                (ControlPanel.Children[0] as Label).PreviewMouseDown += OpenUrl;
             }
 
             if (IsSystemNode)

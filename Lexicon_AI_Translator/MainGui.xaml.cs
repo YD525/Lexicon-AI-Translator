@@ -3129,8 +3129,7 @@ namespace LexTranslator
             if (Name.Equals("Game Configs"))
             {
                 SGame.Items.Clear();
-                SGame.Items.Add(GameNames.SkyrimSE.ToString());
-                SGame.Items.Add(GameNames.SkyrimLE.ToString());
+                SGame.Items.Add(GameNames.Skyrim.ToString());
 
                 SGame.SelectedValue = DeFine.GlobalLocalSetting.GameType.ToString();
 
