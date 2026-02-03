@@ -104,11 +104,11 @@
                 </Grid>
             </Border>
 
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="LocalAIConfig">
+            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="80" Margin="0 5 0 5" Name="LocalAIConfig">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
-                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
 
                     <Grid Margin="-1 -1 0 0">
@@ -153,40 +153,21 @@
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal">
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
-                                    ApiKey:
+                                    Port:
                                 </Label>
                                 <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
                                     <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
                                     </TextBox>
                                 </Border>
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
-                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
-                                        Add
-                                    </Label>
-                                </Border>
-
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent" Margin="5 5 0 5" Cursor="Hand">
-                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
-                                        Remove
-                                    </Label>
-                                </Border>
 
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="5 0 0 0">
-                                   Current Model:
+                                    Current Model:
                                 </Label>
 
                                 <Label Foreground="White" VerticalAlignment="Center">
 
                                 </Label>
                             </StackPanel>
-
-                            <ScrollViewer VerticalScrollBarVisibility="Visible" Style="{DynamicResource for_scrollviewer}" Grid.Row="1" >
-                                <ListBox Background="{x:Null}" Foreground="White" BorderThickness="0">
-
-                                </ListBox>
-                            </ScrollViewer>
-
-
                         </Grid>
 
                     </Grid>

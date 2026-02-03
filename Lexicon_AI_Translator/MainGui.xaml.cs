@@ -2091,7 +2091,7 @@ namespace LexTranslator
                         {
                             case PlatformType.LMLocalAI:
                                 {
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(0, "LM Studio", "https://lmstudio.ai/docs/developer", true, GetPlatform.Model, CustomPlatformType.LocalAI));
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(0, "LM Studio", "https://lmstudio.ai/docs/developer", true, GetPlatform.LocalPort,GetPlatform.Model, CustomPlatformType.LocalAI));
                                 }
                                 break;
                         }
@@ -2101,7 +2101,7 @@ namespace LexTranslator
 
             foreach (var CustomPlatform in LocalAIs)
             {
-                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.Model, CustomPlatformType.LocalAI));
+                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false,CustomPlatform.LocalPort, CustomPlatform.Model, CustomPlatformType.LocalAI));
             }
 
             for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
