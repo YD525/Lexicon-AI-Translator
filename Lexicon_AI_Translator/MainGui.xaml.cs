@@ -2091,7 +2091,7 @@ namespace LexTranslator
                         {
                             case PlatformType.LMLocalAI:
                                 {
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(0, "LM Studio", "https://lmstudio.ai/docs/developer", true, GetPlatform.LocalPort,GetPlatform.Model, CustomPlatformType.LocalAI));
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(0, "LM Studio", "https://lmstudio.ai/docs/developer", true, GetPlatform.LocalPort,LMStudio.CurrentModel, CustomPlatformType.LocalAI));
                                 }
                                 break;
                         }
@@ -3172,15 +3172,6 @@ namespace LexTranslator
 
                 SMaxThread.Text = Phoenix.Config.MaxThreadCount.ToString();
 
-                if (Phoenix.Config.AutoSetThreadLimit)
-                {
-                    SAutoSetThreadLimit.IsChecked = true;
-                }
-                else
-                {
-                    SAutoSetThreadLimit.IsChecked = false;
-                }
-
                 if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
                 {
                     AutoUpdateStringsFileToDatabase.IsChecked = true;
@@ -3381,18 +3372,6 @@ namespace LexTranslator
         private void SMaxThread_TextChanged(object sender, TextChangedEventArgs e)
         {
             Phoenix.Config.MaxThreadCount = ConvertHelper.ObjToInt(SMaxThread.Text);
-        }
-
-        private void SAutoSetThreadLimit_Click(object sender, RoutedEventArgs e)
-        {
-            if (SAutoSetThreadLimit.IsChecked == true)
-            {
-                Phoenix.Config.AutoSetThreadLimit = true;
-            }
-            else
-            {
-                Phoenix.Config.AutoSetThreadLimit = false;
-            }
         }
 
         private void RTLEnable_Click(object sender, RoutedEventArgs e)

@@ -1303,9 +1303,6 @@ Fill="White"/>
                                                                 <TextBox Style="{DynamicResource DefTextBox}" Name="SMaxThread" TextChanged="SMaxThread_TextChanged">
                                                                 </TextBox>
                                                             </Border>
-                                                            <CheckBox Style="{DynamicResource DefCheckBox}" Margin="5 0 0 0" Name="SAutoSetThreadLimit" Click="SAutoSetThreadLimit_Click">
-                                                                Auto Set Limit
-                                                            </CheckBox>
                                                         </StackPanel>
 
                                                         <TextBox Style="{DynamicResource InFoText}"  Margin="5 5 5 10">
