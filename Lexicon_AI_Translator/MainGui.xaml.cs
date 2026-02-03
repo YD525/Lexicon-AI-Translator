@@ -197,8 +197,6 @@ namespace LexTranslator
             }
 
             UIHelper.SyncNodes();
-
-            new PlatformConfigStyleWin().Show();
         }
 
 
@@ -2000,6 +1998,33 @@ namespace LexTranslator
         {
             KeyConfigBlocks.Children.Clear();
 
+            List<PlatformConfig> CloudAIs = new List<PlatformConfig>();
+            List<PlatformConfig> LocalAIs = new List<PlatformConfig>();
+            List<PlatformConfig> TraditionalPlatforms = new List<PlatformConfig>();
+
+            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            {
+                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+
+                if (Phoenix.Config.PlatformConfigs[Key].CustomInFo != null)
+                {
+                    if (Phoenix.Config.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.CloudAI)
+                    {
+                        CloudAIs.Add(Phoenix.Config.PlatformConfigs[Key]);
+                    }
+                    else
+                    if (Phoenix.Config.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.LocalAI)
+                    {
+                        LocalAIs.Add(Phoenix.Config.PlatformConfigs[Key]);
+                    }
+                    else
+                    if (Phoenix.Config.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.Traditional)
+                    {
+                        TraditionalPlatforms.Add(Phoenix.Config.PlatformConfigs[Key]);
+                    }
+                }
+            }
+
             for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
             {
                 var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
@@ -2022,7 +2047,7 @@ namespace LexTranslator
                                     Models.Add("gpt-4.1-mini");
                                     Models.Add("gpt-4o-mini");
 
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig("ChatGpt", "https://platform.openai.com/api-keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI,Models));
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(0,"ChatGpt", "https://platform.openai.com/api-keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
                                 }
                                 break;
                             case PlatformType.Gemini:
@@ -2031,7 +2056,7 @@ namespace LexTranslator
                                     Models.Add("gemini-2.5-flash");
                                     Models.Add("gemini-2.0-flash");
 
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig("Gemini", "https://aistudio.google.com/apikey", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI,Models));
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(0,"Gemini", "https://aistudio.google.com/apikey", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
                                 }
                                 break;
                             case PlatformType.DeepSeek:
@@ -2040,14 +2065,69 @@ namespace LexTranslator
                                     Models.Add("deepseek-chat");
                                     Models.Add("deepseek-reasoner");
 
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig("DeepSeek", "https://platform.deepseek.com/api_keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI,Models));
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(0,"DeepSeek", "https://platform.deepseek.com/api_keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
                                 }
                                 break;
                         }
-
                     }
                 }
+            }
 
+            foreach (var CustomPlatform in CloudAIs)
+            {
+                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatform.Model, CustomPlatformType.CloudAI, new List<string>()));
+            }
+
+            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            {
+                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+                var GetPlatform = Phoenix.Config.PlatformConfigs[Key];
+
+                if (GetPlatform.Platform == PlatformType.LMLocalAI)
+                {
+                    if (GetPlatform.CustomInFo == null)
+                    {
+                        switch (GetPlatform.Platform)
+                        {
+                            case PlatformType.LMLocalAI:
+                                {
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(0, "LM Studio", "https://lmstudio.ai/docs/developer", true, GetPlatform.Model, CustomPlatformType.LocalAI));
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+
+            foreach (var CustomPlatform in LocalAIs)
+            {
+                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.Model, CustomPlatformType.LocalAI));
+            }
+
+            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            {
+                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+                var GetPlatform = Phoenix.Config.PlatformConfigs[Key];
+               
+                if (GetPlatform.Platform == PlatformType.DeepL)
+                {
+                    if (GetPlatform.CustomInFo == null)
+                    {
+                        switch (GetPlatform.Platform)
+                        {
+                            case PlatformType.DeepL:
+                                {
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenTraditionalConfig(0, "DeepL", "https://www.deepl.com/your-account/keys", true, GetPlatform.ApiKeys, CustomPlatformType.Traditional));
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+
+            foreach (var CustomPlatform in TraditionalPlatforms)
+            {
+                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenTraditionalConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatformType.Traditional));
             }
         }
         public void SyncTransStateUI()
@@ -3028,46 +3108,6 @@ namespace LexTranslator
                 SProxyPassword.Text = Phoenix.Config.ProxyPassword;
 
                 SyncPlatformConfig();
-
-                //SGeminiKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(GeminiApi.Type));
-                //SGeminiModel.Text = Phoenix.Config.GetPlatformData(GeminiApi.Type).Model;
-
-                //SGeminiModelSelect.Items.Clear();
-                //SGeminiModelSelect.Items.Add("gemini-2.5-flash");
-                //SGeminiModelSelect.Items.Add("gemini-2.0-flash");
-                //SGeminiModelSelect.SelectedValue = null;
-
-                //SChatGptKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(ChatGptApi.Type));
-                //SChatGptModel.Text = Phoenix.Config.GetPlatformData(ChatGptApi.Type).Model;
-                //SChatGptModelSelect.Items.Clear();
-                //SChatGptModelSelect.Items.Add("gpt-5-nano");
-                //SChatGptModelSelect.Items.Add("gpt-5-mini");
-                //SChatGptModelSelect.Items.Add("gpt-4.1-nano");
-                //SChatGptModelSelect.Items.Add("gpt-4.1-mini");
-                //SChatGptModelSelect.Items.Add("gpt-4o-mini");
-                //SChatGptModelSelect.SelectedValue = null;
-
-
-                //SDeepSeekKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(DeepSeekApi.Type));
-                //SDeepSeekModel.Text = Phoenix.Config.GetPlatformData(DeepSeekApi.Type).Model;
-                //SDeepSeekModelSelect.Items.Clear();
-                //SDeepSeekModelSelect.Items.Add("deepseek-chat");
-                //SDeepSeekModelSelect.Items.Add("deepseek-reasoner");
-                //SDeepSeekModelSelect.SelectedValue = null;
-
-                //SLMPort.Text = PhoenixConfig.GetPlatformData(LMStudio.Type).LocalPort.ToString();
-                //SLMModel.Text = LMStudio.CurrentModel;
-
-                //SDeepLKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(DeepLApi.Type));
-
-                //if (PhoenixConfig.GetPlatformData(DeepLApi.Type).IsFree)
-                //{
-                //    IsFreeDeepL.IsChecked = true;
-                //}
-                //else
-                //{
-                //    IsFreeDeepL.IsChecked = false;
-                //}
             }
             else
             if (Name.Equals("AI Configs"))
@@ -3436,7 +3476,6 @@ namespace LexTranslator
       
 
         public SpeedMonitor CurrentMonitor = null;
-        //ChatGPT,Gemini,Cohere,DeepSeek,Baichuan,LocalAI
         public void UPDateChart(string SendStr = "")
         {
             //if (CurrentMonitor == null)

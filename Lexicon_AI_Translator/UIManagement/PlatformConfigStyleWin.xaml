@@ -61,8 +61,10 @@
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
                                     ApiKey:
                                 </Label>
-                                <TextBox BorderThickness="0" Width="230" Margin="0 5 0 5" VerticalContentAlignment="Center">
-                                </TextBox>
+                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
+                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
+                                    </TextBox>
+                                </Border>
                                 <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
                                     <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
                                         Add
@@ -78,8 +80,12 @@
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="5 0 0 0">
                                     Model:
                                 </Label>
-                                <TextBox BorderThickness="0" Width="100" Margin="0 5 0 5" VerticalContentAlignment="Center">
-                                </TextBox>
+                                
+                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="100">
+                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
+                                    </TextBox>
+                                </Border>
+                                
                                 <ComboBox Style="{DynamicResource CustomComboBoxStyle}" VerticalAlignment="Stretch"  Width="100" Margin="5 5 0 5">
                                 </ComboBox>
                             </StackPanel>
@@ -149,8 +155,10 @@
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
                                     ApiKey:
                                 </Label>
-                                <TextBox BorderThickness="0" Width="230" Margin="0 5 0 5" VerticalContentAlignment="Center">
-                                </TextBox>
+                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
+                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
+                                    </TextBox>
+                                </Border>
                                 <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
                                     <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
                                         Add
@@ -237,8 +245,11 @@
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
                                     ApiKey:
                                 </Label>
-                                <TextBox BorderThickness="0" Width="230" Margin="0 5 0 5" VerticalContentAlignment="Center">
-                                </TextBox>
+                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
+                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
+                                    </TextBox>
+                                </Border>
+                                
                                 <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
                                     <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
                                         Add

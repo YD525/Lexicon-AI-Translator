@@ -27,9 +27,10 @@ namespace LexTranslator.UIManagement
             InitializeComponent();
         }
 
-        public Border GenCloudAIConfig(string PlatformName, string Document, bool IsSystemNode, List<string> Keys, string Model, CustomPlatformType CustomType, List<string> Models)
+        public Border GenCloudAIConfig(int Key,string PlatformName, string Document, bool IsSystemNode, List<string> Keys, string Model, CustomPlatformType CustomType, List<string> Models)
         {
             Border GetPlatformBorder = UIHelper.CloneElement(CloudAIConfig);
+            GetPlatformBorder.Tag = Key;
 
             Grid GetChildGrid = GetPlatformBorder.Child as Grid;
             Grid Header = GetChildGrid.Children[0] as Grid;
@@ -61,7 +62,7 @@ namespace LexTranslator.UIManagement
                 (ControlPanel.Children[1] as Border).Visibility = Visibility.Visible;
             }
 
-            TextBox GetModelTextBox = ((Body.Children[0] as Grid).Children[0] as StackPanel).Children[5] as TextBox;
+            TextBox GetModelTextBox = (((Body.Children[0] as Grid).Children[0] as StackPanel).Children[5] as Border).Child as TextBox;
             ComboBox GetModels = ((Body.Children[0] as Grid).Children[0] as StackPanel).Children[6] as ComboBox;
             GetModels.Items.Clear();
 
@@ -80,12 +81,15 @@ namespace LexTranslator.UIManagement
                 GetKeys.Items.Add(Keys[i]);
             }
 
+            ((Body.Children[0] as Grid).Children[1] as ScrollViewer).PreviewMouseWheel += PlatformConfigStyleWin_PreviewMouseWheel;
+
             return GetPlatformBorder;
         }
 
-        public Border GenLocalAIConfig(string PlatformName, string Document, bool IsSystemNode, List<string> Keys, string Model, CustomPlatformType CustomType)
+        public Border GenLocalAIConfig(int Key,string PlatformName, string Document, bool IsSystemNode,string Model, CustomPlatformType CustomType)
         {
-            Border GetPlatformBorder = UIHelper.CloneElement(CloudAIConfig);
+            Border GetPlatformBorder = UIHelper.CloneElement(LocalAIConfig);
+            GetPlatformBorder.Tag = Key;
 
             Grid GetChildGrid = GetPlatformBorder.Child as Grid;
             Grid Header = GetChildGrid.Children[0] as Grid;
@@ -124,18 +128,27 @@ namespace LexTranslator.UIManagement
             ListBox GetKeys = ((Body.Children[0] as Grid).Children[1] as ScrollViewer).Content as ListBox;
             GetKeys.Items.Clear();
 
-            for (int i = 0; i < Keys.Count; i++)
-            {
-                GetKeys.Items.Add(Keys[i]);
-            }
+            ((Body.Children[0] as Grid).Children[1] as ScrollViewer).PreviewMouseWheel += PlatformConfigStyleWin_PreviewMouseWheel;
 
             return GetPlatformBorder;
         }
 
-
-        public Border GenTraditionalConfig(string PlatformName, string Document, bool IsSystemNode, List<string> Keys,CustomPlatformType CustomType)
+        private void PlatformConfigStyleWin_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            Border GetPlatformBorder = UIHelper.CloneElement(CloudAIConfig);
+            e.Handled = true;
+
+            var Parent = VisualTreeHelper.GetParent((DependencyObject)sender) as UIElement;
+            Parent?.RaiseEvent(
+                new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                {
+                    RoutedEvent = UIElement.MouseWheelEvent
+                });
+        }
+
+        public Border GenTraditionalConfig(int Key,string PlatformName, string Document, bool IsSystemNode, List<string> Keys,CustomPlatformType CustomType)
+        {
+            Border GetPlatformBorder = UIHelper.CloneElement(TraditionalConfig);
+            GetPlatformBorder.Tag = Key;
 
             Grid GetChildGrid = GetPlatformBorder.Child as Grid;
             Grid Header = GetChildGrid.Children[0] as Grid;
@@ -174,6 +187,8 @@ namespace LexTranslator.UIManagement
             {
                 GetKeys.Items.Add(Keys[i]);
             }
+
+            ((Body.Children[0] as Grid).Children[1] as ScrollViewer).PreviewMouseWheel += PlatformConfigStyleWin_PreviewMouseWheel;
 
             return GetPlatformBorder;
         }
