@@ -1972,6 +1972,8 @@ namespace LexTranslator
                         AboutView.Visibility = Visibility.Collapsed;
                         SettingView.Visibility = Visibility.Visible;
                         DashBoardView.Visibility = Visibility.Collapsed;
+
+                        SyncPlatformConfig();
                     }
                     break;
                 case "About":
@@ -1994,6 +1996,60 @@ namespace LexTranslator
             }
         }
 
+        public void SyncPlatformConfig()
+        {
+            KeyConfigBlocks.Children.Clear();
+
+            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            {
+                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+                var GetPlatform = Phoenix.Config.PlatformConfigs[Key];
+
+                if (GetPlatform.Platform == PlatformType.ChatGpt ||
+                   GetPlatform.Platform == PlatformType.Gemini ||
+                   GetPlatform.Platform == PlatformType.DeepSeek)
+                {
+                    if (GetPlatform.CustomInFo == null)
+                    {
+                        switch (GetPlatform.Platform)
+                        {
+                            case PlatformType.ChatGpt:
+                                {
+                                    List<string> Models = new List<string>();
+                                    Models.Add("gpt-5-nano");
+                                    Models.Add("gpt-5-mini");
+                                    Models.Add("gpt-4.1-nano");
+                                    Models.Add("gpt-4.1-mini");
+                                    Models.Add("gpt-4o-mini");
+
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig("ChatGpt", "https://platform.openai.com/api-keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI,Models));
+                                }
+                                break;
+                            case PlatformType.Gemini:
+                                {
+                                    List<string> Models = new List<string>();
+                                    Models.Add("gemini-2.5-flash");
+                                    Models.Add("gemini-2.0-flash");
+
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig("Gemini", "https://aistudio.google.com/apikey", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI,Models));
+                                }
+                                break;
+                            case PlatformType.DeepSeek:
+                                {
+                                    List<string> Models = new List<string>();
+                                    Models.Add("deepseek-chat");
+                                    Models.Add("deepseek-reasoner");
+
+                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig("DeepSeek", "https://platform.deepseek.com/api_keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI,Models));
+                                }
+                                break;
+                        }
+
+                    }
+                }
+
+            }
+        }
         public void SyncTransStateUI()
         {
             TStop.Opacity = 0.5;
@@ -2971,6 +3027,8 @@ namespace LexTranslator
                 SProxyUserName.Text = Phoenix.Config.ProxyUserName;
                 SProxyPassword.Text = Phoenix.Config.ProxyPassword;
 
+                SyncPlatformConfig();
+
                 //SGeminiKey.Text = PhoenixConfig.GetPlatformKeysStr(PhoenixConfig.GetPlatformData(GeminiApi.Type));
                 //SGeminiModel.Text = Phoenix.Config.GetPlatformData(GeminiApi.Type).Model;
 
@@ -3210,62 +3268,7 @@ namespace LexTranslator
         {
             Phoenix.Config.ProxyPassword = SProxyPassword.Text;
         }
-        private void SGeminiModel_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //Phoenix.Config.PlatformConfigs[(int)GeminiApi.Type].Model = SGeminiModel.Text;
-        }
-        private void SGeminiModelSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //string GetModel = ConvertHelper.ObjToStr(SGeminiModelSelect.SelectedValue);
-
-            //if (GetModel.Trim().Length > 0)
-            //{
-            //    SGeminiModel.Text = GetModel;
-            //}
-        }
-        private void SChatGptModel_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //Phoenix.Config.PlatformConfigs[(int)ChatGptApi.Type].Model = SChatGptModel.Text;
-        }
-        private void SChatGptModelSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //string GetModel = ConvertHelper.ObjToStr(SChatGptModelSelect.SelectedValue);
-
-            //if (GetModel.Trim().Length > 0)
-            //{
-            //    SChatGptModel.Text = GetModel;
-            //}
-        }
-        private void SDeepSeekModel_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //Phoenix.Config.PlatformConfigs[(int)DeepSeekApi.Type].Model = SDeepSeekModel.Text;
-        }
-        private void SDeepSeekModelSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //string GetModel = ConvertHelper.ObjToStr(SDeepSeekModelSelect.SelectedValue);
-
-            //if (GetModel.Trim().Length > 0)
-            //{
-            //    SDeepSeekModel.Text = GetModel;
-            //}
-        }
-
-        private void SLMPort_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //Phoenix.Config.PlatformConfigs[(int)LMStudio.Type].LocalPort = ConvertHelper.ObjToInt(SLMPort.Text);
-        }
-
-        private void IsFreeDeepL_Click(object sender, RoutedEventArgs e)
-        {
-            //if (IsFreeDeepL.IsChecked == true)
-            //{
-            //    Phoenix.Config.PlatformConfigs[(int)DeepLApi.Type].IsFree = true;
-            //}
-            //else
-            //{
-            //    Phoenix.Config.PlatformConfigs[(int)DeepLApi.Type].IsFree = false;
-            //}
-        }
+      
         private void SContextLimit_TextChanged(object sender, TextChangedEventArgs e)
         {
             Phoenix.Config.ContextLimit = ConvertHelper.ObjToInt(SContextLimit.Text);
@@ -3326,27 +3329,6 @@ namespace LexTranslator
 
             Phoenix.SaveConfig();
         }
-
-        private void SGeminiKey_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //SaveApiKey(PlatformType.Gemini, SGeminiKey.Text);
-        }
-
-        private void SChatGptKey_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //SaveApiKey(PlatformType.ChatGpt, SChatGptKey.Text);
-        }
-
-        private void SDeepSeekKey_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //SaveApiKey(PlatformType.DeepSeek, SDeepSeekKey.Text);
-        }
-
-        private void SDeepLKey_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //SaveApiKey(PlatformType.DeepL, SDeepLKey.Text);
-        }
-
         private void SThrottlingRatio_TextChanged(object sender, TextChangedEventArgs e)
         {
             Phoenix.Config.ThrottleRatio = ConvertHelper.ObjToDouble(SThrottlingRatio.Text);

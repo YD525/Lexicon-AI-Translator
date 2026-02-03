@@ -858,7 +858,7 @@ Fill="White"/>
                             </Grid>
                         </Grid>
 
-                        <Grid Name="SettingView" Style="{DynamicResource FrameStyle}" Visibility="Hidden">
+                        <Grid Name="SettingView" Style="{DynamicResource FrameStyle}" Visibility="Visible">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="5"/>
@@ -979,6 +979,9 @@ Fill="White"/>
                                                 <Label Style="{DynamicResource TittleFont}">
                                                     APIKey Configs
                                                 </Label>
+
+                                                <StackPanel Name="KeyConfigBlocks">
+                                                </StackPanel>
 
                                             </StackPanel>
                                         </ScrollViewer>

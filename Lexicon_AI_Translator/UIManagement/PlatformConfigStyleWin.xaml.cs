@@ -27,7 +27,7 @@ namespace LexTranslator.UIManagement
             InitializeComponent();
         }
 
-        public Border GenCloudAIConfig(string PlatformName,string Document,bool IsSystemNode,List<string>Keys,string Model,CustomPlatformType CustomType)
+        public Border GenCloudAIConfig(string PlatformName, string Document, bool IsSystemNode, List<string> Keys, string Model, CustomPlatformType CustomType, List<string> Models)
         {
             Border GetPlatformBorder = UIHelper.CloneElement(CloudAIConfig);
 
@@ -62,6 +62,13 @@ namespace LexTranslator.UIManagement
             }
 
             TextBox GetModelTextBox = ((Body.Children[0] as Grid).Children[0] as StackPanel).Children[5] as TextBox;
+            ComboBox GetModels = ((Body.Children[0] as Grid).Children[0] as StackPanel).Children[6] as ComboBox;
+            GetModels.Items.Clear();
+
+            foreach (var GetModel in Models)
+            {
+                GetModels.Items.Add(GetModel);
+            }
 
             GetModelTextBox.Text = Model;
 
