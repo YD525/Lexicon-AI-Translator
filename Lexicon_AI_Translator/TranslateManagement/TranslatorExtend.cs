@@ -672,7 +672,7 @@ namespace LexTranslator.TranslateManage
                             }
                         }
 
-                        //var GetData = TranslationCore.MergeAll();
+                        var GetData = TranslationCore.MergeAll();
 
                         if (TranslationCore != null)
                         {
