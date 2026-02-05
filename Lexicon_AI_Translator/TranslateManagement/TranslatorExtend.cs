@@ -672,14 +672,21 @@ namespace LexTranslator.TranslateManage
                             }
                         }
 
+                        int GetLeaderCount = TranslationCore.UnitsLeaderToTranslate.Count;
                         var GetData = TranslationCore.MergeAll();
+
+                        List<string> TestBlocks = new List<string>();
+
+                        foreach (var Get in GetData)
+                        { 
+                           TestBlocks.Add(Get.GenContent());
+                        }
 
                         if (TranslationCore != null)
                         {
                             TranslationCore.Close();
                             TranslationCore.Start();
                         }
-                        
 
                         SyncTransStateFreeze = false;
 
