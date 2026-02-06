@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LexTranslator.TranslateManage;
+using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -31,7 +33,7 @@ namespace LexTranslator.SkyrimManagement
                 string GetKey = EspReader.Records.ElementAt(i).Key;
                 var Record = EspReader.Records[GetKey];
 
-                var GetTransData = TranslatorBridge.GetTransCache(Record.UniqueKey);
+                var GetTransData = TranslatorInterface.Instance.GetLink(Record.UniqueKey);
                 if (GetTransData != null)
                 {
                     if (GetTransData.Length > 0 && GetTransData != Record.String)

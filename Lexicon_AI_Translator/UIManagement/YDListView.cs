@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using ICSharpCode.AvalonEdit;
+using LexTranslator.TranslateManage;
 
 // Copyright (c) 2025 YD525
 // Licensed under the CC BY-NC-ND 4.0 License.
@@ -76,7 +77,7 @@ public class FakeGrid
     public void SyncData(ref bool IsCloud)
     {
         IsCloud = false;
-        var QueryResult = TranslatorBridge.QueryTransData(this.Key, this.SourceText);
+        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key, this.SourceText);
 
         if (QueryResult != null)
         {

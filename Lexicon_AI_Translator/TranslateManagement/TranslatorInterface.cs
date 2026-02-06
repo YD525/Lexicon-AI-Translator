@@ -255,9 +255,9 @@ namespace LexTranslator.TranslateManage
 
                 if (TranslationStatus == StateControl.Cancel)
                 {
-                    if (PhoenixTranslator != null)
+                    if (Instance != null)
                     {
-                        PhoenixTranslator.GetBatchCore()?.Cancel();
+                        Instance.GetBatchCore()?.Cancel();
                     }
 
                     return true;
@@ -266,9 +266,9 @@ namespace LexTranslator.TranslateManage
 
             if (TranslationStatus == StateControl.Cancel)
             {
-                if (PhoenixTranslator != null)
+                if (Instance != null)
                 {
-                    PhoenixTranslator.GetBatchCore()?.Cancel();
+                    Instance.GetBatchCore()?.Cancel();
                 }
 
                 return true;
@@ -318,14 +318,14 @@ namespace LexTranslator.TranslateManage
                 PreparingTrd = null;
             }
 
-            if (MarkLeaderTrd != null)
+            if (InitTrd != null)
             {
                 try
                 {
-                    MarkLeaderTrd.Abort();
+                    InitTrd.Abort();
                 }
                 catch { }
-                MarkLeaderTrd = null;
+                InitTrd = null;
             }
 
             PreparingTrd = new Thread(() =>
@@ -436,9 +436,9 @@ namespace LexTranslator.TranslateManage
                                     Phoenix.AddAIMemory(Row.GetSource(), GetTrans.Value);
                                     HasAddAIMemory = true;
 
-                                    if (PhoenixTranslator.TranslatedLink.ContainsKey(Row.Key))
+                                    if (Instance.TranslatedLink.ContainsKey(Row.Key))
                                     {
-                                        PhoenixTranslator.TranslatedLink[Row.Key] = GetTrans.Value;
+                                        Instance.TranslatedLink[Row.Key] = GetTrans.Value;
                                     }
 
                                     var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
@@ -484,9 +484,9 @@ namespace LexTranslator.TranslateManage
                                     Phoenix.AddAIMemory(Row.GetSource(), GetData.Result);
                                     HasAddAIMemory = true;
 
-                                    if (PhoenixTranslator.TranslatedLink.ContainsKey(Row.Key))
+                                    if (Instance.TranslatedLink.ContainsKey(Row.Key))
                                     {
-                                        PhoenixTranslator.TranslatedLink[Row.Key] = GetData.Result;
+                                        Instance.TranslatedLink[Row.Key] = GetData.Result;
                                     }
 
                                     var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
@@ -508,9 +508,9 @@ namespace LexTranslator.TranslateManage
 
                             if (CanSet)
                             {
-                                if (PhoenixTranslator.TranslatedLink.ContainsKey(Row.Key))
+                                if (Instance.TranslatedLink.ContainsKey(Row.Key))
                                 {
-                                    if (PhoenixTranslator.TranslatedLink[Row.Key].Length > 0)
+                                    if (Instance.TranslatedLink[Row.Key].Length > 0)
                                     {
                                         CanSet = false;
                                     }
@@ -529,32 +529,34 @@ namespace LexTranslator.TranslateManage
 
                     InitTrd = new Thread(() =>
                     {
-                        PhoenixTranslator.InitBatchCore(BaseUnits, AggregationMode.Aggregation);
+                        Instance.Init(BaseUnits, AggregationMode.Aggregation);
                         InitTrd = null;
                     });
 
                     if (!DeFine.GlobalLocalSetting.EnableAnalyzingWords)
                     {
-                        MarkLeaderTrd.Start();
+                        InitTrd.Start();
                     }
                     else
                     {
-                        MarkLeaderTrd.Start();
+                        InitTrd.Start();
 
-                        while (TranslationCore.WorkState < 1)
+                        var GetBatchCore = Instance.GetBatchCore();
+
+                        while (GetBatchCore.ProcStage < 2)
                         {
                             Thread.Sleep(100);
 
-                            SetTransBarTittle("Analyzing Words(" + TranslationCore.MarkLeadersPercent + "%)...");
+                            SetTransBarTittle("Analyzing Words(" + GetBatchCore.Content.UnionData.MarkLeadersPercent + "%)...");
                         }
 
                         Thread.Sleep(1000);
 
                         GetListView.Parent.Dispatcher.Invoke(new Action(() =>
                         {
-                            for (int i = 0; i < TranslationCore.UnitsLeaderToTranslate.Count; i++)
+                            for (int i = 0; i < GetBatchCore.Content.UnionData.Leaders.Count; i++)
                             {
-                                string GetKey = TranslationCore.UnitsLeaderToTranslate.ElementAt(i).Key;
+                                string GetKey = GetBatchCore.Content.UnionData.Leaders.ElementAt(i).Key;
 
                                 for (int ir = 0; ir < GetListView.VisibleRows.Count; ir++)
                                 {
@@ -568,7 +570,7 @@ namespace LexTranslator.TranslateManage
                         }));
                     }
 
-                    if (TranslationUnits.Count == 0)
+                    if (BaseUnits.Count == 0)
                     {
                         NeedNextPreparing = true;
                     }
@@ -620,6 +622,8 @@ namespace LexTranslator.TranslateManage
 
             new Thread(() =>
             {
+                var GetBatchCore = Instance.GetBatchCore();
+
                 if (TranslationStatus == StateControl.Run && !IsKeep)
                 {
                     if (NeedNextPreparing)
@@ -633,7 +637,7 @@ namespace LexTranslator.TranslateManage
                             Thread.Sleep(100);
                         }
 
-                        if ((TranslationCore.UnitsLeaderToTranslate.Count + TranslationCore.UnitsToTranslate.Count) == 0)
+                        if ((GetBatchCore.GetCount()) == 0)
                         {
                             TranslationStatus = StateControl.Cancel;
                             EndAction.Invoke();
@@ -676,20 +680,12 @@ namespace LexTranslator.TranslateManage
                             }
                         }
 
-                        int GetLeaderCount = TranslationCore.UnitsLeaderToTranslate.Count;
-                        var GetData = TranslationCore.MergeAll();
+                        int GetLeaderCount = GetBatchCore.Content.UnionData.Leaders.Count;
 
-                        List<string> TestBlocks = new List<string>();
-
-                        foreach (var Get in GetData)
-                        { 
-                           TestBlocks.Add(Get.GenContent());
-                        }
-
-                        if (TranslationCore != null)
+                        if (GetBatchCore != null)
                         {
-                            TranslationCore.Close();
-                            TranslationCore.Start();
+                            GetBatchCore.Cancel();
+                            GetBatchCore.Start();
                         }
 
                         SyncTransStateFreeze = false;
@@ -714,19 +710,24 @@ namespace LexTranslator.TranslateManage
                         {
                             try
                             {
-                                var GetGrid = TranslationCore.DequeueTranslated(out IsEnd);
+                                var GetUnitGroup = GetBatchCore.DequeueTranslated(out IsEnd);
 
-                                if (GetGrid != null)
+                                if (GetUnitGroup != null)
                                 {
-                                    var GetFakeGrid = GetListView.KeyToFakeGrid(GetGrid.Key);
-                                    if (GetFakeGrid != null)
+                                    for (int i = 0; i < GetUnitGroup.Units.Count; i++)
                                     {
-                                        GetFakeGrid.TransText = GetGrid.TransText;
-                                        GetFakeGrid.SyncUI(GetListView);
-                                        SetTranslatorHistoryCache(GetGrid.Key, GetGrid.TransText, true);
+                                        var GetUnit = GetUnitGroup.Units[i];
 
-                                        Phoenix.TranslatedCount++;
-                                        SetTransBarTittle(string.Format("STRINGS({0}/{1})", Phoenix.TranslatedCount, GetListView.Rows));
+                                        var GetFakeGrid = GetListView.KeyToFakeGrid(GetUnit.Key);
+                                        if (GetFakeGrid != null)
+                                        {
+                                            GetFakeGrid.TransText = GetUnit.Translated;
+                                            GetFakeGrid.SyncUI(GetListView);
+                                            SetTranslatorHistoryCache(GetUnit.Key, GetUnit.Translated, true);
+
+                                            Phoenix.TranslatedCount++;
+                                            SetTransBarTittle(string.Format("STRINGS({0}/{1})", Phoenix.TranslatedCount, GetListView.Rows));
+                                        }
                                     }
                                 }
 
@@ -739,7 +740,7 @@ namespace LexTranslator.TranslateManage
                             }
                             catch { }
 
-                            if (TranslationCore == null)
+                            if (GetBatchCore.ProcStage == 0)
                             {
                                 break;
                             }
@@ -757,9 +758,9 @@ namespace LexTranslator.TranslateManage
                 {
                     SyncTransStateFreeze = true;
 
-                    if (TranslationCore != null)
+                    if (GetBatchCore != null)
                     {
-                        TranslationCore.Stop();
+                        GetBatchCore.Stop();
                     }
 
                     EndAction.Invoke();
@@ -771,11 +772,11 @@ namespace LexTranslator.TranslateManage
                 {
                     SyncTransStateFreeze = true;
 
-                    if (TranslationCore != null)
+                    if (GetBatchCore != null)
                     {
                         try
                         {
-                            TranslationCore.Close();
+                            GetBatchCore.Cancel();
                         }
                         catch { }
                     }
@@ -788,9 +789,9 @@ namespace LexTranslator.TranslateManage
                 {
                     SyncTransStateFreeze = true;
 
-                    if (TranslationCore != null)
+                    if (GetBatchCore != null)
                     {
-                        TranslationCore.Keep();
+                        GetBatchCore.Keep();
                     }
 
                     EndAction.Invoke();
@@ -817,22 +818,18 @@ namespace LexTranslator.TranslateManage
             return ReplaceCount;
         }
 
-        public static void ClearLocalCache(int FileUniqueKey)
-        {
-            LocalDBCache.DeleteCacheByFileUniqueKey(FileUniqueKey, DeFine.GlobalLocalSetting.TargetLanguage);
-            Translator.TransData.Clear();
-        }
-
-        public static bool ClearCloudCache(int FileUniqueKey)
-        {
-            return CloudDBCache.ClearCloudCache(FileUniqueKey);
-        }
-
+      
         public static void Close()
         {
             FristInit = false;
             NeedNextPreparing = false;
-            TranslationCore = null;
+
+            var GetBatchCore = Instance.GetBatchCore();
+            if (GetBatchCore != null)
+            {
+                GetBatchCore.Cancel();
+                GetBatchCore.Content.Clear();
+            }
 
             if (PreparingTrd != null)
             {
@@ -844,14 +841,14 @@ namespace LexTranslator.TranslateManage
                 PreparingTrd = null;
             }
 
-            if (MarkLeaderTrd != null)
+            if (InitTrd != null)
             {
                 try
                 {
-                    MarkLeaderTrd.Abort();
+                    InitTrd.Abort();
                 }
                 catch { }
-                MarkLeaderTrd = null;
+                InitTrd = null;
             }
         }
     }

@@ -140,7 +140,7 @@ namespace LexTranslator
         #endregion
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            TranslatorExtend.RegListener("KeyWordsListen", new List<int>() { 2 }, new Action<int, object>((Sign, Any) =>
+            TranslatorInterface.RegListener("KeyWordsListen", new List<int>() { 2 }, new Action<int, object>((Sign, Any) =>
             {
                 if (Any is PreTranslateCall)
                 {
@@ -471,7 +471,7 @@ namespace LexTranslator
             string GetType = ConvertHelper.ObjToStr(TypeSelector.SelectedValue);
             if (GetBtnContent.Equals("Execute"))
             {
-                TranslatorExtend.MakeReady();
+                TranslatorInterface.MakeReady();
 
                 if (FilterFrom != Languages.Null && FilterTo != Languages.Null)
                 {
@@ -481,7 +481,7 @@ namespace LexTranslator
 
                     string GetFromStr = FromStr.Text;
 
-                    TranslationUnit NewUnit = new TranslationUnit(-1, "TestLocalKey255", GetType, GetFromStr, "", "", FilterFrom, FilterTo, 100);
+                    BaseUnit NewUnit = new BaseUnit(-525, "YD525Test", GetType, GetFromStr, "",100);
 
                     new Thread(() =>
                     {
@@ -491,15 +491,15 @@ namespace LexTranslator
                         }));
                         bool CanSleep = false;
 
-                        var GetResult = Translator.QuickTrans(NewUnit, ref CanSleep);
+                        var GetResult = TranslatorInterface.Instance.Translate(NewUnit,false);
 
                         this.Dispatcher.Invoke(new Action(() =>
                         {
-                            FinalText.Text = GetResult;
+                            FinalText.Text = GetResult.GetFrist().Translated;
                             ExecuteBtn.Content = "Execute";
                         }));
 
-                        Translator.ClearCloudCache(-1);
+                        CloudDBCache.ClearCloudCache(-525);
 
                     }).Start();
                 }

@@ -9,6 +9,7 @@ using PhoenixEngine.TranslateManage;
 using LexTranslator.TranslateManagement;
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
+using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -559,7 +560,7 @@ namespace LexTranslator.SkyrimManagement
 
             string Report = EspInterop.GetFieldReport();
             Report =  "Start Heuristic Analysis : " + Path + "\n\n" + Report;
-            TranslatorExtend.LogCall(Report);
+            TranslatorInterface.LogCall(Report);
 
             EspPath = Path;
 
@@ -616,15 +617,13 @@ namespace LexTranslator.SkyrimManagement
 
         public static int SaveEsp(string OutPutPath)
         {
-            var Get = Translator.TransData;
-
             int ModifyCount = 0;
 
             for (int i = 0; i < Records.Count; i++)
             {
                 var Record = Records[Records.ElementAt(i).Key];
 
-                var GetTransData = TranslatorBridge.GetTransCache(Record.UniqueKey);
+                var GetTransData = TranslatorInterface.Instance.GetLink(Record.UniqueKey);
                 if (GetTransData != null)
                 {
                     if (GetTransData.Length > 0 && GetTransData != Record.String)

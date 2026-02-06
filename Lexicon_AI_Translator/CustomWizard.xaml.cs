@@ -15,11 +15,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
+using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
 using PhoenixEngine.EngineManagement;
 using PhoenixEngine.PlatformManagement;
 using PhoenixEngine.RequestManagement;
 using PhoenixEngine.TranslateManage;
+using PhoenixEngine.TranslateManagement;
 using static PhoenixEngine.EngineManagement.DataTransmission;
 
 namespace LexTranslator
@@ -392,16 +394,16 @@ namespace LexTranslator
                         CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
                         NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config);
 
+                        BaseUnit TestUnit = new BaseUnit(-525,"525","","Test Line","",100);
                         NCustomLocalAIApi.QuickTrans(
                             new List<ReplaceTag>(),
-                            "Test Str",
+                            TranslatorInterface.Instance.ToUnitGroup(TestUnit),
                             Phoenix.From,
                             Phoenix.To,
                             false,
                             0,
                             string.Empty,
-                            ref GenAICall,
-                            ""
+                            ref GenAICall
                             );
 
                         Response.Text = GenAICall.ReceiveString;
@@ -414,17 +416,17 @@ namespace LexTranslator
                         CustomAIApi NCustomAIApi = new CustomAIApi();
                         NCustomAIApi.Init(TestID, new AITranslationMemory(),Phoenix.Config,ProxyCenter.CurrentProxy);
 
+                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "", 100);
                         NCustomAIApi.QuickTrans(
                             ApiKey,
                             new List<ReplaceTag>(),
-                            "Test Str",
+                            TranslatorInterface.Instance.ToUnitGroup(TestUnit),
                             Phoenix.From,
                             Phoenix.To,
                             false,
                             0,
                             string.Empty,
-                            ref GenAICall,
-                            ""
+                            ref GenAICall
                             );
 
                         Response.Text = GenAICall.ReceiveString;
@@ -437,9 +439,10 @@ namespace LexTranslator
                         CustomApi NCustomApi = new CustomApi();
                         NCustomApi.Init(TestID,Phoenix.Config,ProxyCenter.CurrentProxy);
 
+                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "", 100);
                         NCustomApi.QuickTrans(
                             ApiKey,
-                            "Test Str",
+                            TranslatorInterface.Instance.ToUnitGroup(TestUnit),
                             Phoenix.From,
                             Phoenix.To,
                             ref GenPlatformCall
