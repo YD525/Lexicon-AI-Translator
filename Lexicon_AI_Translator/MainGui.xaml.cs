@@ -125,6 +125,8 @@ namespace LexTranslator
         {
             DeFine.Init(this);
 
+            TranslatorInterface.Init();
+
             MainHwnd = new WindowInteropHelper(DeFine.WorkingWin).Handle;
 
             UILanguageHelper.ChangeLanguage(DeFine.GlobalLocalSetting.CurrentUILanguage);
@@ -138,8 +140,6 @@ namespace LexTranslator
             }
 
             UILanguages.SelectedValue = DeFine.GlobalLocalSetting.CurrentUILanguage.ToString();
-
-            TranslatorInterface.Init();
 
             DelegateHelper.SetBookTranslateCallback += BookTransCallBack;
 
@@ -180,6 +180,9 @@ namespace LexTranslator
 
             Phoenix.From = DeFine.GlobalLocalSetting.SourceLanguage;
             Phoenix.To = DeFine.GlobalLocalSetting.TargetLanguage;
+
+            TranslatorInterface.Instance.From = Phoenix.From;
+            TranslatorInterface.Instance.To = Phoenix.To;
 
             SelectFristSettingNav();
 

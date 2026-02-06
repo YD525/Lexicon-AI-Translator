@@ -320,6 +320,7 @@ namespace LexTranslator
             }
 
             Phoenix.From = FilterFrom;
+            TranslatorInterface.Instance.From = Phoenix.From;
             DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
             DeFine.GlobalLocalSetting.SaveConfig();
 
@@ -339,6 +340,7 @@ namespace LexTranslator
             }
 
             Phoenix.To = FilterTo;
+            TranslatorInterface.Instance.To = Phoenix.To;
             DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
             DeFine.GlobalLocalSetting.SaveConfig();
 

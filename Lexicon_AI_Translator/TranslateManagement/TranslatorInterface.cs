@@ -19,8 +19,12 @@ namespace LexTranslator.TranslateManage
 {
     public class TranslatorInterface
     {
+        public static Translator Instance = null;
+
         public static void Init()
         {
+            Instance = new Translator(Phoenix.From,Phoenix.To,true);
+
             DelegateHelper.SetDataCall += Recv;
             DelegateHelper.SetTranslationUnitCallBack += TranslationUnitStartWorkCall;
 
@@ -203,7 +207,6 @@ namespace LexTranslator.TranslateManage
 
         public static Dictionary<int, List<TranslatorHistoryCache>> TranslatorHistoryCaches = new Dictionary<int, List<TranslatorHistoryCache>>();
 
-        public static Translator Instance = null;
         public static void ClearTranslatorHistoryCache()
         {
             RowStyleWin.RecordModifyStates.Clear();
@@ -525,8 +528,6 @@ namespace LexTranslator.TranslateManage
                         }
                     }
 
-                   
-
                     InitTrd = new Thread(() =>
                     {
                         Instance.Init(BaseUnits, AggregationMode.Aggregation);
@@ -536,6 +537,11 @@ namespace LexTranslator.TranslateManage
                     if (!DeFine.GlobalLocalSetting.EnableAnalyzingWords)
                     {
                         InitTrd.Start();
+
+                        while (InitTrd != null)
+                        {
+                            Thread.Sleep(100);
+                        }
                     }
                     else
                     {
@@ -547,11 +553,12 @@ namespace LexTranslator.TranslateManage
                         {
                             Thread.Sleep(100);
 
-                            SetTransBarTittle("Analyzing Words(" + GetBatchCore.Content.UnionData.MarkLeadersPercent + "%)...");
+                            SetTransBarTittle("Analyzing Words(" + GetBatchCore.MarkLeadersPercent + "%)...");
                         }
 
                         Thread.Sleep(1000);
 
+                        if (GetBatchCore.Content != null)
                         GetListView.Parent.Dispatcher.Invoke(new Action(() =>
                         {
                             for (int i = 0; i < GetBatchCore.Content.UnionData.Leaders.Count; i++)
@@ -828,7 +835,11 @@ namespace LexTranslator.TranslateManage
             if (GetBatchCore != null)
             {
                 GetBatchCore.Cancel();
-                GetBatchCore.Content.Clear();
+
+                if (GetBatchCore.Content != null)
+                {
+                    GetBatchCore.Content.Clear();
+                }
             }
 
             if (PreparingTrd != null)

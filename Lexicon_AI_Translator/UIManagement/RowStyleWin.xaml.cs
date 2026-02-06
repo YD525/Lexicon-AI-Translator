@@ -258,11 +258,19 @@ namespace LexTranslator.UIManagement
 
             if (TranslatorInterface.Instance != null)
             {
-                if (TranslatorInterface.Instance.GetBatchCore().Content.UnionData.Leaders.ContainsKey(Item.Key))
+                var BatchCore = TranslatorInterface.Instance.GetBatchCore();
+                if (BatchCore != null)
                 {
-                    Grid GetLeader = (Grid)(GetKeyPanel).Children[1];
-                    GetLeader.Visibility = Visibility.Visible;
+                    if (BatchCore.Content != null)
+                    {
+                        if (BatchCore.Content.UnionData.Leaders.ContainsKey(Item.Key))
+                        {
+                            Grid GetLeader = (Grid)(GetKeyPanel).Children[1];
+                            GetLeader.Visibility = Visibility.Visible;
+                        }
+                    }
                 }
+               
             }
 
             GetFakeKey.Foreground = new SolidColorBrush(FontColor);
