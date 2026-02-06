@@ -141,7 +141,7 @@ namespace LexTranslator.UIManage
             return Font.WidthIncludingTrailingWhitespace;
         }
 
-        public static FakeGrid CreatFakeLine(string Type, string Key, string SourceText, string TransText, double Score)
+        public static FakeGrid CreateFakeLine(string Type, string Key, string SourceText, string TransText, double Score)
         {
             double AutoHeight = DefLineHeight;
 
@@ -166,14 +166,14 @@ namespace LexTranslator.UIManage
             return new FakeGrid(AutoHeight, Type, Key, SourceText, TransText, Score);
         }
 
-        public static Grid CreatLine(FakeGrid Item)
+        public static Grid CreateLine(FakeGrid Item)
         {
-            return CreatLine(Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText, Item.Score);
+            return CreateLine(Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText, Item.Score);
         }
 
-        public static Grid CreatLine(double Height, string Type, string Key, string SourceText, string TransText, double Score)
+        public static Grid CreateLine(double Height, string Type, string Key, string SourceText, string TransText, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreatLine(Height, new BaseUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreateLine(Height, new BaseUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
             return MainGrid;
         }
 
@@ -228,7 +228,7 @@ namespace LexTranslator.UIManage
                 {
                     foreach (var Record in Batch)
                     {
-                        View.AddRowR(LineRenderer.CreatLine(
+                        View.AddRowR(LineRenderer.CreateLine(
                             Record.ParentSig,
                             Record.FormID,
                             Record.UniqueKey,

@@ -145,7 +145,7 @@ namespace LexTranslator
                 if (Any is PreTranslateCall)
                 {
                     PreTranslateCall GetPreCall = (PreTranslateCall)Any;
-                    if (GetPreCall.Key.Equals("TestLocalKey255"))
+                    if (GetPreCall.Key.StartsWith("YD525Test_"))
                     {
                         this.Dispatcher.Invoke(new Action(() =>
                         {
@@ -467,12 +467,14 @@ namespace LexTranslator
 
         }
 
+        private static int AutoID = 0;
         private void Execute_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             string GetBtnContent = ConvertHelper.ObjToStr(ExecuteBtn.Content);
             string GetType = ConvertHelper.ObjToStr(TypeSelector.SelectedValue);
             if (GetBtnContent.Equals("Execute"))
             {
+                AutoID++;
                 TranslatorInterface.MakeReady();
 
                 if (FilterFrom != Languages.Null && FilterTo != Languages.Null)
@@ -483,7 +485,7 @@ namespace LexTranslator
 
                     string GetFromStr = FromStr.Text;
 
-                    BaseUnit NewUnit = new BaseUnit(-525, "YD525Test", GetType, GetFromStr, "",100);
+                    BaseUnit NewUnit = new BaseUnit(-525, "YD525Test_"+ AutoID, GetType, GetFromStr, "",100);
 
                     new Thread(() =>
                     {

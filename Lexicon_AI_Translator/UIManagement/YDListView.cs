@@ -77,7 +77,7 @@ public class FakeGrid
     public void SyncData(ref bool IsCloud)
     {
         IsCloud = false;
-        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key, this.SourceText);
+        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key);
 
         if (QueryResult != null)
         {
@@ -507,7 +507,7 @@ public class YDListView
 
                 if (!AlreadyExists)
                 {
-                    Grid Grid = UIHelper.CreatLine(Row);
+                    Grid Grid = UIHelper.CreateLine(Row);
                     Grid.Tag = I;
                     Grid.Width = this.Parent.ActualWidth - 15;
                     Grid.PreviewMouseDown += MainGrid_PreviewMouseDown;

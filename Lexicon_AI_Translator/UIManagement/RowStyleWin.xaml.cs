@@ -154,11 +154,11 @@ namespace LexTranslator.UIManagement
 
         public static List<string> RecordModifyStates = new List<string>();
 
-        public Grid CreatLine(double Height, BaseUnit Item)
+        public Grid CreateLine(double Height, BaseUnit Item)
         {
             bool IsModify = false;
 
-            var QueryTranslated = TranslatorInterface.Instance.QueryTransData(Item.Key, Item.Original);
+            var QueryTranslated = TranslatorInterface.Instance.QueryTransData(Item.Key);
 
             if (QueryTranslated != null)
             {

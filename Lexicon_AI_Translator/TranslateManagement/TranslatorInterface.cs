@@ -783,12 +783,6 @@ namespace LexTranslator.TranslateManage
                             }
                         }
 
-                        TranslationStatus = StateControl.Cancel;
-
-                        DeFine.WorkingWin?.UPDateUI();
-
-                        EndAction.Invoke();
-
                         var BatchCore = TranslatorInterface.Instance.GetBatchCore();
 
                         if (BatchCore != null && IsEnd)
@@ -796,6 +790,12 @@ namespace LexTranslator.TranslateManage
                             Thread.Sleep(500);
                             BatchCore.Clear();
                         }
+
+                        TranslationStatus = StateControl.Cancel;
+
+                        DeFine.WorkingWin?.UPDateUI();
+
+                        EndAction.Invoke();
                     }
                 }
                 else

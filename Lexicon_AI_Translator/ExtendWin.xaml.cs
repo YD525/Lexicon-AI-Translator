@@ -5,9 +5,9 @@ using System.Windows.Input;
 using PhoenixEngine.EngineManagement;
 using PhoenixEngine.TranslateCore;
 using PhoenixEngine.TranslateManagement;
-using LexTranslator.SkyrimManage;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManage;
+using System.Collections.Generic;
 
 namespace LexTranslator
 {
@@ -137,8 +137,22 @@ namespace LexTranslator
                 MatchView.Children.Clear();
             }));
 
+            List<string> UniqueKeys = new List<string>();
+
             var MatchCloudItems = LocalDBCache.MatchLocalItem((int)Phoenix.To, Original);
-            MatchCloudItems.AddRange(CloudDBCache.MatchCloudItem((int)Phoenix.To, Original));
+
+            foreach (var GetMatch in MatchCloudItems)
+            {
+                UniqueKeys.Add(GetMatch.Key);
+            }
+
+            foreach (var GetMatch in CloudDBCache.MatchCloudItem((int)Phoenix.To, Original))
+            {
+                if (!UniqueKeys.Contains(GetMatch.Key))
+                {
+                    UniqueKeys.Add(GetMatch.Key);
+                }
+            }
 
             foreach (var GetMatch in MatchCloudItems)
             {

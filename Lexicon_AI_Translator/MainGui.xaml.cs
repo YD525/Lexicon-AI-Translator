@@ -782,7 +782,7 @@ namespace LexTranslator
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreatLine(GetItem.Type, GetItem.EditorID, GetItem.Key, GetItem.SourceText, GetItem.GetTextIfTransR(), 999));
+                                TransViewList.AddRowR(LineRenderer.CreateLine(GetItem.Type, GetItem.EditorID, GetItem.Key, GetItem.SourceText, GetItem.GetTextIfTransR(), 999));
                             }));
                         }
 
@@ -795,7 +795,7 @@ namespace LexTranslator
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreatLine("Papyrus", GetItem.Index.ToString(), GetItem.Index.ToString(), GetItem.Value, "", -999));
+                                TransViewList.AddRowR(LineRenderer.CreateLine("Papyrus", GetItem.Index.ToString(), GetItem.Index.ToString(), GetItem.Value, "", -999));
                             }));
                         }
 
@@ -808,7 +808,7 @@ namespace LexTranslator
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreatLine(GetItem.Type, "", GetItem.Key, GetItem.SourceText, GetItem.TransText, GetItem.Score));
+                                TransViewList.AddRowR(LineRenderer.CreateLine(GetItem.Type, "", GetItem.Key, GetItem.SourceText, GetItem.TransText, GetItem.Score));
                             }));
                         }
 
@@ -1156,7 +1156,8 @@ namespace LexTranslator
                     EspReader.Close();
                     GlobalMCMReader?.Close();
                     GlobalPexReader?.Close();
-
+                    TranslatorInterface.Instance.TranslatedLink.Clear();
+                    TranslatorInterface.Instance.ReInit();
                     LoadSaveState = 0;
 
                     CancelBtn.Opacity = 0.3;
@@ -1257,6 +1258,7 @@ namespace LexTranslator
                     if (CurrentTransType == 6)
                     {
                         if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
+                        {
                             if (GlobalRamCacheReader != null)
                             {
                                 if (!GlobalRamCacheReader.Save(LastSetPath))
@@ -1264,10 +1266,12 @@ namespace LexTranslator
                                     MessageBox.Show("Build RamCache Error!");
                                 }
                             }
+                        }
                     }
                     if (CurrentTransType == 3)
                     {
                         if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
+                        {
                             if (GlobalPexReader != null)
                             {
                                 string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
@@ -1282,6 +1286,7 @@ namespace LexTranslator
                                     MessageBox.Show("Build Script Error!");
                                 }
                             }
+                        }
                     }
                     if (CurrentTransType == 2)
                     {
@@ -1770,63 +1775,60 @@ namespace LexTranslator
                 CurrentKeyBox.Visibility = Visibility.Visible;
             }
 
-            if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
+            if (TransViewList != null)
             {
-                if (TransViewList != null)
-                {
-                    var GridHandle = TransViewList.KeyToFakeGrid(Key);
+                var GridHandle = TransViewList.KeyToFakeGrid(Key);
 
-                    if (GridHandle != null)
+                if (GridHandle != null)
+                {
+                    if (GridHandle.Score < 0)
                     {
-                        if (GridHandle.Score < 0)
+                        LastSetKey = string.Empty;
+                        return;
+                    }
+
+                    bool IsCloud = false;
+                    GridHandle.SyncData(ref IsCloud);
+
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                        if (GridHandle.Score < 5)
                         {
-                            LastSetKey = string.Empty;
-                            return;
+                            ToStr.Foreground = new SolidColorBrush(Colors.Red);
+                        }
+                        else
+                        {
+                            ToStr.Foreground = new SolidColorBrush((Color)Application.Current.Resources["DefFontColor"]);
                         }
 
-                        bool IsCloud = false;
-                        GridHandle.SyncData(ref IsCloud);
 
-                        this.Dispatcher.Invoke(new Action(() =>
+                        FromStr.Text = TransViewList.RealLines[TransViewList.SelectLineID].SourceText;
+                        ToStr.Text = TransViewList.RealLines[TransViewList.SelectLineID].TransText;
+
+                        UIHelper.ShowButton(ApplyOTButton, true);
+
+                        if (FromStr.Text.Length > 0)
                         {
-                            if (GridHandle.Score < 5)
-                            {
-                                ToStr.Foreground = new SolidColorBrush(Colors.Red);
-                            }
-                            else
-                            {
-                                ToStr.Foreground = new SolidColorBrush((Color)Application.Current.Resources["DefFontColor"]);
-                            }
+                            UIHelper.ShowButton(CancelOTButton, true);
+                            ShowFormatToStrButton(true);
+                        }
 
+                        if (DeFine.GlobalLocalSetting.AutoSpeak)
+                        {
+                            SpeechHelper.TryPlaySound(FromStr.Text, true);
+                        }
 
-                            FromStr.Text = TransViewList.RealLines[TransViewList.SelectLineID].SourceText;
-                            ToStr.Text = TransViewList.RealLines[TransViewList.SelectLineID].TransText;
+                        Point MousePos = Mouse.GetPosition(ToStr);
+                        if (MousePos.X >= 0 && MousePos.X <= ToStr.ActualWidth &&
+                            MousePos.Y >= 0 && MousePos.Y <= ToStr.ActualHeight)
+                        {
+                            ToStr.Focus();
+                        }
 
-                            UIHelper.ShowButton(ApplyOTButton, true);
+                        AutoLoadHistoryList();
+                    }));
 
-                            if (FromStr.Text.Length > 0)
-                            {
-                                UIHelper.ShowButton(CancelOTButton, true);
-                                ShowFormatToStrButton(true);
-                            }
-
-                            if (DeFine.GlobalLocalSetting.AutoSpeak)
-                            {
-                                SpeechHelper.TryPlaySound(FromStr.Text, true);
-                            }
-
-                            Point MousePos = Mouse.GetPosition(ToStr);
-                            if (MousePos.X >= 0 && MousePos.X <= ToStr.ActualWidth &&
-                                MousePos.Y >= 0 && MousePos.Y <= ToStr.ActualHeight)
-                            {
-                                ToStr.Focus();
-                            }
-
-                            AutoLoadHistoryList();
-                        }));
-
-                        DeFine.ExtendWin.SetOriginal(GridHandle.SourceText, EspReader.ToStringsFile.QueryData(GridHandle.Key));
-                    }
+                    DeFine.ExtendWin.SetOriginal(GridHandle.SourceText, EspReader.ToStringsFile.QueryData(GridHandle.Key));
                 }
             }
         }
