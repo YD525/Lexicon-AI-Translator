@@ -295,12 +295,211 @@ namespace LexTranslator.TranslateManage
             ProxyCenter.UsingProxy();
         }
 
+        public static List<BaseUnit> GetCanTransUnits()
+        {
+            YDListView GetListView = DeFine.WorkingWin.TransViewList;
+            List<BaseUnit> BaseUnits = new List<BaseUnit>();
+
+            for (int i = 0; i < GetListView.Rows; i++)
+            {
+                var Row = GetListView.RealLines[i];
+                bool IsCloud = false;
+                Row.SyncData(ref IsCloud);
+
+                bool HasAddAIMemory = false;
+
+                if (!HasAddAIMemory && DeFine.GlobalLocalSetting.ForceTranslationConsistency)
+                {
+                    if (!string.IsNullOrEmpty(Row.TransText))
+                    {
+                        Phoenix.AddAIMemory(Row.GetSource(), Row.TransText);
+                    }
+                }
+
+                if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
+                {
+                    if (EspReader.Records.ContainsKey(Row.Key))
+                    {
+                        var GetRecord = EspReader.Records[Row.Key];
+
+                        if (GetRecord.StringID > 0 && Row.TransText.Length > 0)
+                        {
+                            string AutoType = Row.Type;
+
+                            if (AutoType == "Papyrus" || AutoType == "MCM")
+                            {
+                                AutoType = string.Empty;
+                            }
+                            else
+                            if (AutoType != "NPC_" && AutoType != "WRLD" && AutoType != "CLAS" && AutoType != "ARMO" && AutoType != "AMMO")
+                            {
+                                AutoType = string.Empty;
+                            }
+
+                            AdvancedDictionaryItem NewItem = new AdvancedDictionaryItem(
+                                string.Empty,//The rule applies to all files.
+                                AutoType,//Automatically determine the type of the current term
+                                Row.GetSource(),//Get the source text corresponding to stringsfile id
+                                Row.TransText,//Get the translation content
+                                Phoenix.From,//Get source language
+                                Phoenix.To,//Get target language
+                                1,//Use full-word matching
+                                0,//Case sensitivity is not ignored
+                                string.Empty
+                                );
+                            if (!AdvancedDictionary.CheckSame(NewItem))
+                            {
+                                AdvancedDictionary.AddItem(NewItem);
+                            }
+                        }
+
+                    }
+                }
+
+                if (Row.TransText.Trim().Length == 0)
+                {
+                    bool CanSet = true;
+
+                    if (Row.Type.Equals("BOOK"))
+                    {
+                        if (Row.Key.EndsWith("DESC") && !DeFine.GlobalLocalSetting.CanTranslateBook)
+                        {
+                            if (DelegateHelper.SetDataCall != null)
+                            {
+                                DelegateHelper.SetDataCall(0, "Skip Book fields:" + Row.Key);
+                            }
+
+                            CanSet = false;
+                        }
+                    }
+                    else
+                    if (Row.Score < 5)
+                    {
+                        if (DelegateHelper.SetDataCall != null)
+                        {
+                            DelegateHelper.SetDataCall(0, "Skip Dangerous fields:" + Row.Key);
+                        }
+
+                        CanSet = false;
+                    }
+
+                    if (DeFine.WorkingWin?.CurrentTransType == 2)
+                    {
+                        var GetTrans = EspReader.ToStringsFile.QueryData(Row.Key);
+
+                        if (GetTrans != null)
+                        {
+                            //Added to context memory. Helps AI improve accuracy.
+                            Phoenix.AddAIMemory(Row.GetSource(), GetTrans.Value);
+                            HasAddAIMemory = true;
+
+                            if (Instance.TranslatedLink.ContainsKey(Row.Key))
+                            {
+                                Instance.TranslatedLink[Row.Key] = GetTrans.Value;
+                            }
+
+                            var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
+                            if (GetFakeGrid != null)
+                            {
+                                Row.TransText = GetTrans.Value;
+
+                                Row.SyncUI(GetListView);
+                            }
+
+                            if (DelegateHelper.SetDataCall != null)
+                            {
+                                DelegateHelper.SetDataCall(0, "Skip StringsFile(" + GetTrans.Type.ToString() + ") fields:" + Row.Key);
+                            }
+
+                            CanSet = false;
+                        }
+                        else
+                        {
+                            if (EspReader.Records.ContainsKey(Row.Key))
+                            {
+                                if (EspReader.Records[Row.Key].StringID > 0)
+                                {
+                                    if (DelegateHelper.SetDataCall != null)
+                                    {
+                                        DelegateHelper.SetDataCall(0, "Skip StringsFile(" + EspReader.Records[Row.Key].String + ") fields:" + Row.Key);
+                                    }
+
+                                    CanSet = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (Phoenix.Config.EnableGlobalSearch)
+                    {
+                        var QueryData = CloudDBCache.MatchOtherCloudItem(-1, (int)Phoenix.To, Row.SourceText);
+
+                        if (QueryData.Count > 0)
+                        {
+                            var GetData = QueryData[QueryData.Count - 1];
+
+                            Phoenix.AddAIMemory(Row.GetSource(), GetData.Result);
+                            HasAddAIMemory = true;
+
+                            if (Instance.TranslatedLink.ContainsKey(Row.Key))
+                            {
+                                Instance.TranslatedLink[Row.Key] = GetData.Result;
+                            }
+
+                            var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
+                            if (GetFakeGrid != null)
+                            {
+                                Row.TransText = GetData.Result;
+
+                                Row.SyncUI(GetListView);
+                            }
+
+                            if (DelegateHelper.SetDataCall != null)
+                            {
+                                DelegateHelper.SetDataCall(0, $"Database information matched, filename:{UniqueKeyHelper.RowidToOriginalKey(GetData.FileUniqueKey)}, value:{GetData.Result}");
+                            }
+
+                            CanSet = false;
+                        }
+                    }
+
+                    if (CanSet)
+                    {
+                        if (Instance.TranslatedLink.ContainsKey(Row.Key))
+                        {
+                            if (Instance.TranslatedLink[Row.Key].Length > 0)
+                            {
+                                CanSet = false;
+                            }
+                        }
+
+                        if (CanSet)
+                        {
+                            BaseUnits.Add(new BaseUnit(Phoenix.GetFileUniqueKey(),
+                           Row.Key, Row.Type, Row.SourceText, Row.TransText, Row.Score));
+                        }
+                    }
+                }
+            }
+
+            return BaseUnits;
+        }
+
         public static bool PreparingComplete = false;
         public static bool FristInit = false;
         public static Thread PreparingTrd = null;
         public static Thread InitTrd = null;
         public static void PreparingTranslationUnits()
         {
+            if (Instance != null)
+            {
+                var BatchCore = Instance.GetBatchCore();
+                if (BatchCore != null)
+                {
+                    Instance.GetBatchCore().Clear();
+                }
+            }
+           
             if (!FristInit)
             {
                 FristInit = true;
@@ -344,190 +543,7 @@ namespace LexTranslator.TranslateManage
 
                     YDListView GetListView = DeFine.WorkingWin.TransViewList;
 
-                    List<BaseUnit> BaseUnits = new List<BaseUnit>();
-
-                    for (int i = 0; i < GetListView.Rows; i++)
-                    {
-                        var Row = GetListView.RealLines[i];
-                        bool IsCloud = false;
-                        Row.SyncData(ref IsCloud);
-
-                        bool HasAddAIMemory = false;
-
-                        if (!HasAddAIMemory && DeFine.GlobalLocalSetting.ForceTranslationConsistency)
-                        {
-                            if (!string.IsNullOrEmpty(Row.TransText))
-                            {
-                                Phoenix.AddAIMemory(Row.GetSource(), Row.TransText);
-                            }
-                        }
-
-                        if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
-                        {
-                            if (EspReader.Records.ContainsKey(Row.Key))
-                            {
-                                var GetRecord = EspReader.Records[Row.Key];
-
-                                if (GetRecord.StringID > 0 && Row.TransText.Length > 0)
-                                {
-                                    string AutoType = Row.Type;
-
-                                    if (AutoType == "Papyrus" || AutoType == "MCM")
-                                    {
-                                        AutoType = string.Empty;
-                                    }
-                                    else
-                                    if (AutoType != "NPC_" && AutoType != "WRLD" && AutoType != "CLAS" && AutoType != "ARMO" && AutoType != "AMMO")
-                                    {
-                                        AutoType = string.Empty;
-                                    }
-
-                                    AdvancedDictionaryItem NewItem = new AdvancedDictionaryItem(
-                                        string.Empty,//The rule applies to all files.
-                                        AutoType,//Automatically determine the type of the current term
-                                        Row.GetSource(),//Get the source text corresponding to stringsfile id
-                                        Row.TransText,//Get the translation content
-                                        Phoenix.From,//Get source language
-                                        Phoenix.To,//Get target language
-                                        1,//Use full-word matching
-                                        0,//Case sensitivity is not ignored
-                                        string.Empty
-                                        );
-                                    if (!AdvancedDictionary.CheckSame(NewItem))
-                                    {
-                                        AdvancedDictionary.AddItem(NewItem);
-                                    }
-                                }
-
-                            }
-                        }
-
-                        if (Row.TransText.Trim().Length == 0)
-                        {
-                            bool CanSet = true;
-
-                            if (Row.Type.Equals("BOOK"))
-                            {
-                                if (Row.Key.EndsWith("DESC") && !DeFine.GlobalLocalSetting.CanTranslateBook)
-                                {
-                                    if (DelegateHelper.SetDataCall != null)
-                                    {
-                                        DelegateHelper.SetDataCall(0, "Skip Book fields:" + Row.Key);
-                                    }
-
-                                    CanSet = false;
-                                }
-                            }
-                            else
-                            if (Row.Score < 5)
-                            {
-                                if (DelegateHelper.SetDataCall != null)
-                                {
-                                    DelegateHelper.SetDataCall(0, "Skip Dangerous fields:" + Row.Key);
-                                }
-
-                                CanSet = false;
-                            }
-
-                            if (DeFine.WorkingWin?.CurrentTransType == 2)
-                            {
-                                var GetTrans = EspReader.ToStringsFile.QueryData(Row.Key);
-
-                                if (GetTrans != null)
-                                {
-                                    //Added to context memory. Helps AI improve accuracy.
-                                    Phoenix.AddAIMemory(Row.GetSource(), GetTrans.Value);
-                                    HasAddAIMemory = true;
-
-                                    if (Instance.TranslatedLink.ContainsKey(Row.Key))
-                                    {
-                                        Instance.TranslatedLink[Row.Key] = GetTrans.Value;
-                                    }
-
-                                    var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
-                                    if (GetFakeGrid != null)
-                                    {
-                                        Row.TransText = GetTrans.Value;
-
-                                        Row.SyncUI(GetListView);
-                                    }
-
-                                    if (DelegateHelper.SetDataCall != null)
-                                    {
-                                        DelegateHelper.SetDataCall(0, "Skip StringsFile(" + GetTrans.Type.ToString() + ") fields:" + Row.Key);
-                                    }
-
-                                    CanSet = false;
-                                }
-                                else
-                                {
-                                    if (EspReader.Records.ContainsKey(Row.Key))
-                                    {
-                                        if (EspReader.Records[Row.Key].StringID > 0)
-                                        {
-                                            if (DelegateHelper.SetDataCall != null)
-                                            {
-                                                DelegateHelper.SetDataCall(0, "Skip StringsFile(" + EspReader.Records[Row.Key].String + ") fields:" + Row.Key);
-                                            }
-
-                                            CanSet = false;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (Phoenix.Config.EnableGlobalSearch)
-                            {
-                                var QueryData = CloudDBCache.MatchOtherCloudItem(-1, (int)Phoenix.To, Row.SourceText);
-
-                                if (QueryData.Count > 0)
-                                {
-                                    var GetData = QueryData[QueryData.Count - 1];
-
-                                    Phoenix.AddAIMemory(Row.GetSource(), GetData.Result);
-                                    HasAddAIMemory = true;
-
-                                    if (Instance.TranslatedLink.ContainsKey(Row.Key))
-                                    {
-                                        Instance.TranslatedLink[Row.Key] = GetData.Result;
-                                    }
-
-                                    var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
-                                    if (GetFakeGrid != null)
-                                    {
-                                        Row.TransText = GetData.Result;
-
-                                        Row.SyncUI(GetListView);
-                                    }
-
-                                    if (DelegateHelper.SetDataCall != null)
-                                    {
-                                        DelegateHelper.SetDataCall(0, $"Database information matched, filename:{UniqueKeyHelper.RowidToOriginalKey(GetData.FileUniqueKey)}, value:{GetData.Result}");
-                                    }
-
-                                    CanSet = false;
-                                }
-                            }
-
-                            if (CanSet)
-                            {
-                                if (Instance.TranslatedLink.ContainsKey(Row.Key))
-                                {
-                                    if (Instance.TranslatedLink[Row.Key].Length > 0)
-                                    {
-                                        CanSet = false;
-                                    }
-                                }
-
-                                if (CanSet)
-                                {
-                                    BaseUnits.Add(new BaseUnit(Phoenix.GetFileUniqueKey(),
-                                   Row.Key, Row.Type, Row.SourceText, Row.TransText, Row.Score));
-                                }
-                            }
-                        }
-                    }
-
+                    List<BaseUnit> BaseUnits = GetCanTransUnits();
                     InitTrd = new Thread(() =>
                     {
                         Instance.ReInit();
@@ -653,6 +669,15 @@ namespace LexTranslator.TranslateManage
                         }
                     }
 
+                    var BaseUnits = GetCanTransUnits();
+
+                    if (BaseUnits.Count == 0)
+                    {
+                        TranslationStatus = StateControl.Cancel;
+                        EndAction.Invoke();
+                        return;
+                    }
+
                     if (Phoenix.Config.AutoSetThreadLimit)
                     {
                         Phoenix.SyncTrdCount();
@@ -694,7 +719,9 @@ namespace LexTranslator.TranslateManage
                         if (GetBatchCore != null)
                         {
                             ModifyCount = GetBatchCore.TranslatedCount;
-                            GetBatchCore.Cancel();
+                            GetBatchCore.Clear();
+                           
+                            GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation);
                             GetBatchCore.Start();
                         }
 
@@ -837,12 +864,9 @@ namespace LexTranslator.TranslateManage
             var GetBatchCore = Instance.GetBatchCore();
             if (GetBatchCore != null)
             {
-                GetBatchCore.Cancel();
-
-                if (GetBatchCore.Content != null)
-                {
-                    GetBatchCore.Content.Clear();
-                }
+                GetBatchCore.Clear();
+                GetBatchCore.Close();
+                SetTransBarTittle(string.Format("STRINGS({0}/{1})",0, 0));
             }
 
             if (PreparingTrd != null)
