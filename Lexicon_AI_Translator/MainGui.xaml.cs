@@ -606,7 +606,7 @@ namespace LexTranslator
                                 var BatchCore = TranslatorInterface.Instance.GetBatchCore();
                                 if (BatchCore != null)
                                 {
-                                    if (BatchCore.ProcStage < 3)
+                                    if (BatchCore.ProcStage < 2)
                                     {
                                         return;
                                     }

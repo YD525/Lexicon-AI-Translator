@@ -530,6 +530,7 @@ namespace LexTranslator.TranslateManage
 
                     InitTrd = new Thread(() =>
                     {
+                        Instance.ReInit();
                         Instance.Init(BaseUnits, AggregationMode.Aggregation);
                         InitTrd = null;
                     });
