@@ -932,21 +932,6 @@ Fill="White"/>
 
                                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center">
                                                 <Label Style="{DynamicResource TittleFont}">
-                                                    Request Configs
-                                                </Label>
-
-                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
-                                                    <Label Style="{DynamicResource NormalText}">
-                                                        TimeOut:
-                                                    </Label>
-                                                    <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" >
-                                                        <TextBox Style="{DynamicResource DefTextBox}" Name="STimeOut" TextChanged="STimeOut_TextChanged">
-                                                        </TextBox>
-                                                    </Border>
-                                                </StackPanel>
-
-
-                                                <Label Style="{DynamicResource TittleFont}">
                                                     HttpProxy Configs
                                                 </Label>
 

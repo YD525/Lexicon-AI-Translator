@@ -788,6 +788,14 @@ namespace LexTranslator.TranslateManage
                         DeFine.WorkingWin?.UPDateUI();
 
                         EndAction.Invoke();
+
+                        var BatchCore = TranslatorInterface.Instance.GetBatchCore();
+
+                        if (BatchCore != null && IsEnd)
+                        {
+                            Thread.Sleep(500);
+                            BatchCore.Clear();
+                        }
                     }
                 }
                 else

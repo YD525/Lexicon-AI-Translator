@@ -3146,8 +3146,6 @@ namespace LexTranslator
             {
                 var PhoenixConfig = Phoenix.Config;
 
-                STimeOut.Text = Phoenix.Config.GlobalRequestTimeOut.ToString();
-
                 SProxyUrl.Text = Phoenix.Config.ProxyUrl;
                 SProxyUserName.Text = Phoenix.Config.ProxyUserName;
                 SProxyPassword.Text = Phoenix.Config.ProxyPassword;
@@ -3322,15 +3320,6 @@ namespace LexTranslator
             }
         }
 
-        private void STimeOut_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            int GetTimeOut = ConvertHelper.ObjToInt(STimeOut.Text);
-
-            if (GetTimeOut > 0)
-            {
-                Phoenix.Config.GlobalRequestTimeOut = GetTimeOut;
-            }
-        }
         private void SProxyUrl_TextChanged(object sender, TextChangedEventArgs e)
         {
             Phoenix.Config.ProxyUrl = SProxyUrl.Text;
