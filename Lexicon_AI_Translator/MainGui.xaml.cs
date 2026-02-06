@@ -36,6 +36,9 @@ using PhoenixEngine.PlatformManagement;
 using System.Linq;
 using System.Windows.Interop;
 using PEXInterface;
+using System.Web.WebSockets;
+using PhoenixEngine.EngineManagement.Unit;
+using PhoenixEngine.GameManagement;
 
 namespace LexTranslator
 {
@@ -2566,7 +2569,7 @@ namespace LexTranslator
         public bool SingleTrans = false;
         public void TranslateCurrent()
         {
-            TranslatorExtend.MakeReady();
+            TranslatorInterface.MakeReady();
 
             lock (TranslateLocker)
             {
@@ -2586,7 +2589,7 @@ namespace LexTranslator
                                 CloudDBCache.DeleteCache(Phoenix.GetFileUniqueKey(), QueryGrid.Key, Phoenix.To);
                             }
 
-                            TranslationUnit NewUnit = new TranslationUnit(Phoenix.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, "", Phoenix.From, Phoenix.To, 100);
+                            BaseUnit SetUnit = new BaseUnit(Phoenix.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, 100);
 
                             bool CanSleep = false;
 
@@ -2602,9 +2605,12 @@ namespace LexTranslator
                                     ThreadInFo.Visibility = Visibility.Visible;
                                 }));
 
-                                string GetTranslated = Translator.QuickTrans(
-                                NewUnit,
-                                ref CanSleep);
+                                
+                                string GetTranslated = "";
+
+                                UnitGroup Result = TranslatorInterface.Instance.Translate(SetUnit,false);
+
+                                GetTranslated = Result.GetFrist().Translated;
 
                                 CanEditTransView(true);
 
@@ -2612,7 +2618,7 @@ namespace LexTranslator
                                 {
                                     TranslateOTButtonFont.Content = UILanguageHelper.UICache["TranslateOTButtonFont"];
 
-                                    if (TranslatorExtend.TranslationStatus == StateControl.Null || TranslatorExtend.TranslationStatus == StateControl.Cancel)
+                                    if (TranslatorInterface.TranslationStatus == StateControl.Null || TranslatorInterface.TranslationStatus == StateControl.Cancel)
                                     {
                                         ThreadInFo.Visibility = Visibility.Collapsed;
                                     }
@@ -2657,13 +2663,13 @@ namespace LexTranslator
                         }
                     }
 
-                    if (Translator.TransData.ContainsKey(GetKey))
+                    if (TranslatorInterface.Instance.TranslatedLink.ContainsKey(GetKey))
                     {
-                        Translator.TransData[GetKey] = GetTransText;
+                        TranslatorInterface.Instance.TranslatedLink[GetKey] = GetTransText;
                     }
                     else
                     {
-                        Translator.TransData.Add(GetKey, GetTransText);
+                        TranslatorInterface.Instance.TranslatedLink.Add(GetKey, GetTransText);
                     }
                 }
             }

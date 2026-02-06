@@ -209,8 +209,6 @@ namespace LexTranslator
         public int DeepSeekTokenUsage { get; set; } = 0;
         public int BaichuanTokenUsage { get; set; } = 0;
         public int LocalAITokenUsage { get; set; } = 0;
-
-        public bool EnableAnalyzingWords { get; set; } = true;
         public bool AutoUpdateStringsFileToDatabase { get; set; } = false;
         public bool ForceTranslationConsistency { get; set; } = true;
 

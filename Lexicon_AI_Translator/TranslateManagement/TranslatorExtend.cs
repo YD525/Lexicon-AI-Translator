@@ -15,10 +15,11 @@ using System.Threading;
 using LexTranslator.SkyrimManagement;
 using static PhoenixEngine.DelegateManagement.DelegateHelper;
 using System.Windows;
+using PhoenixEngine.EngineManagement.Unit;
 
 namespace LexTranslator.TranslateManage
 {
-    public class TranslatorExtend
+    public class TranslatorInterface
     {
         public static void Init()
         {
@@ -82,7 +83,7 @@ namespace LexTranslator.TranslateManage
         /// </summary>
         /// <param name="Item"></param>
         /// <returns></returns>
-        public static bool TranslationUnitStartWorkCall(TranslationUnit Item, int State)
+        public static bool TranslationUnitStartWorkCall(UnitGroup Item, int State)
         {
             if (State == 1 || State == 2)
             {
@@ -90,18 +91,23 @@ namespace LexTranslator.TranslateManage
                 {
                     if (DeFine.WorkingWin.TransViewList != null)
                     {
-                        FakeGrid QueryGrid = DeFine.WorkingWin.TransViewList.KeyToFakeGrid(Item.Key);
-
-                        if (QueryGrid != null)
+                        for (int i = 0; i < Item.Units.Count; i++)
                         {
-                            bool IsCloud = false;
-                            QueryGrid.SyncData(ref IsCloud);
+                            var GetUnit = Item.Units[i];
+                            FakeGrid QueryGrid = DeFine.WorkingWin.TransViewList.KeyToFakeGrid(GetUnit.Key);
 
-                            if (QueryGrid.TransText.Length > 0)
+                            if (QueryGrid != null)
                             {
-                                return false;
+                                bool IsCloud = false;
+                                QueryGrid.SyncData(ref IsCloud);
+
+                                if (QueryGrid.TransText.Length > 0)
+                                {
+                                    return false;
+                                }
                             }
                         }
+                      
                     }
                 }
             }
@@ -199,7 +205,7 @@ namespace LexTranslator.TranslateManage
 
         public static Dictionary<int, List<TranslatorHistoryCache>> TranslatorHistoryCaches = new Dictionary<int, List<TranslatorHistoryCache>>();
 
-        public static BatchTranslationCore TranslationCore = null;
+        public static Translator Instance = null;
         public static void ClearTranslatorHistoryCache()
         {
             RowStyleWin.RecordModifyStates.Clear();
@@ -251,9 +257,9 @@ namespace LexTranslator.TranslateManage
 
                 if (TranslationStatus == StateControl.Cancel)
                 {
-                    if (TranslationCore != null)
+                    if (PhoenixTranslator != null)
                     {
-                        TranslationCore.Close();
+                        PhoenixTranslator.GetBatchCore()?.Cancel();
                     }
 
                     return true;
@@ -262,9 +268,9 @@ namespace LexTranslator.TranslateManage
 
             if (TranslationStatus == StateControl.Cancel)
             {
-                if (TranslationCore != null)
+                if (PhoenixTranslator != null)
                 {
-                    TranslationCore.Close();
+                    PhoenixTranslator.GetBatchCore()?.Cancel();
                 }
 
                 return true;
@@ -291,7 +297,7 @@ namespace LexTranslator.TranslateManage
         public static bool PreparingComplete = false;
         public static bool FristInit = false;
         public static Thread PreparingTrd = null;
-        public static Thread MarkLeaderTrd = null;
+        public static Thread InitTrd = null;
         public static void PreparingTranslationUnits()
         {
             if (!FristInit)
@@ -337,7 +343,7 @@ namespace LexTranslator.TranslateManage
 
                     YDListView GetListView = DeFine.WorkingWin.TransViewList;
 
-                    List<TranslationUnit> TranslationUnits = new List<TranslationUnit>();
+                    List<BaseUnit> BaseUnits = new List<BaseUnit>();
 
                     for (int i = 0; i < GetListView.Rows; i++)
                     {
@@ -432,15 +438,10 @@ namespace LexTranslator.TranslateManage
                                     Phoenix.AddAIMemory(Row.GetSource(), GetTrans.Value);
                                     HasAddAIMemory = true;
 
-                                    if (!Translator.TransData.ContainsKey(Row.Key))
+                                    if (PhoenixTranslator.TranslatedLink.ContainsKey(Row.Key))
                                     {
-                                        Translator.TransData.Add(Row.Key, GetTrans.Value);
+                                        PhoenixTranslator.TranslatedLink[Row.Key] = GetTrans.Value;
                                     }
-                                    else
-                                    {
-                                        Translator.TransData[Row.Key] = GetTrans.Value;
-                                    }
-
 
                                     var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
                                     if (GetFakeGrid != null)
@@ -485,13 +486,9 @@ namespace LexTranslator.TranslateManage
                                     Phoenix.AddAIMemory(Row.GetSource(), GetData.Result);
                                     HasAddAIMemory = true;
 
-                                    if (!Translator.TransData.ContainsKey(Row.Key))
+                                    if (PhoenixTranslator.TranslatedLink.ContainsKey(Row.Key))
                                     {
-                                        Translator.TransData.Add(Row.Key, GetData.Result);
-                                    }
-                                    else
-                                    {
-                                        Translator.TransData[Row.Key] = GetData.Result;
+                                        PhoenixTranslator.TranslatedLink[Row.Key] = GetData.Result;
                                     }
 
                                     var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
@@ -513,24 +510,33 @@ namespace LexTranslator.TranslateManage
 
                             if (CanSet)
                             {
-                                TranslationUnits.Add(new TranslationUnit(Phoenix.GetFileUniqueKey(),
-                                Row.Key, Row.Type, Row.SourceText, Row.TransText, "", Phoenix.From, Phoenix.To, Row.Score));
+                                if (PhoenixTranslator.TranslatedLink.ContainsKey(Row.Key))
+                                {
+                                    if (PhoenixTranslator.TranslatedLink[Row.Key].Length > 0)
+                                    {
+                                        CanSet = false;
+                                    }
+                                }
+
+                                if (CanSet)
+                                {
+                                    BaseUnits.Add(new BaseUnit(Phoenix.GetFileUniqueKey(),
+                                   Row.Key, Row.Type, Row.SourceText, Row.TransText, Row.Score));
+                                }
                             }
                         }
                     }
 
-                    TranslationCore = new BatchTranslationCore(Phoenix.From, Phoenix.To, TranslationUnits);
+                   
 
-                    MarkLeaderTrd = new Thread(() =>
+                    InitTrd = new Thread(() =>
                     {
-                        TranslationCore.MarkLeaders();
-                        MarkLeaderTrd = null;
+                        PhoenixTranslator.InitBatchCore(BaseUnits, AggregationMode.Aggregation);
+                        InitTrd = null;
                     });
 
                     if (!DeFine.GlobalLocalSetting.EnableAnalyzingWords)
                     {
-                        TranslationCore.SkipWordAnalysis = true;
-
                         MarkLeaderTrd.Start();
                     }
                     else
