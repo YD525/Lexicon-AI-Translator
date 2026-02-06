@@ -768,7 +768,7 @@ namespace LexTranslator.TranslateManage
                                     }
                                 }
 
-                                Thread.Sleep(20);
+                                Thread.Sleep(10);
 
                                 if (WaitStopSign())
                                 {
