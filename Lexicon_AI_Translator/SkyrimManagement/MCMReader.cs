@@ -3,9 +3,7 @@ using System.IO;
 using System.Text;
 using PhoenixEngine.TranslateManage;
 using LexTranslator.SkyrimManagement;
-using LexTranslator.TranslateManage;
 using LexTranslator.SkyrimModManager;
-using static PhoenixEngine.Bridges.NativeBridge;
 
 namespace LexTranslator.SkyrimManage
 {

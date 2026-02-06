@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
-using static PhoenixEngine.Bridges.NativeBridge;
+using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator
 {
@@ -70,11 +69,11 @@ namespace LexTranslator
 
                                     try
                                     {
-                                        TranslatorBridge.SetTransData(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                       TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
                                     }
                                     catch { }
 
-                                    TranslatorExtend.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
+                                    TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
                                     GetRow.SyncUI(DeFine.WorkingWin.TransViewList);
                                 }
@@ -108,11 +107,11 @@ namespace LexTranslator
 
                                     try
                                     {
-                                        TranslatorBridge.SetTransData(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                        TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
                                     }
                                     catch { }
 
-                                    TranslatorExtend.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
+                                    TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
                                   
                                     GetRow.SyncUI(DeFine.WorkingWin.TransViewList);

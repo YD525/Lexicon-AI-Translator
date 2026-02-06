@@ -3,7 +3,8 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using LexTranslator.SkyrimModManager;
-using static PhoenixEngine.Bridges.NativeBridge;
+using LexTranslator.TranslateManage;
+using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -23,7 +24,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         foreach (var Get in RamLines)
                         {
-                            TranslatorBridge.SetTransCache(Get.Key, Get.TransText);
+                            TranslatorInterface.Instance.SetLink(Get.Key, Get.TransText);
                         }
                     }
                 }

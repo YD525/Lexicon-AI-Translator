@@ -13,7 +13,6 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using static PhoenixEngine.Bridges.NativeBridge;
 using ICSharpCode.AvalonEdit;
 
 // Copyright (c) 2025 YD525

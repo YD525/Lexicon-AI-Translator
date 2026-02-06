@@ -7,7 +7,6 @@ using System.Text;
 using PhoenixEngine.EngineManagement;
 using PhoenixEngine.TranslateManage;
 using LexTranslator.TranslateManagement;
-using static PhoenixEngine.Bridges.NativeBridge;
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 

@@ -149,7 +149,7 @@
     <Compile Include="SkyrimManagement\YDDictionaryHelper.cs" />
     <Compile Include="SQLManagement\SqlCore.cs" />
     <Compile Include="TranslateManagement\Crc32Helper.cs" />
-    <Compile Include="TranslateManagement\TranslatorExtend.cs" />
+    <Compile Include="TranslateManagement\TranslatorInterface.cs" />
     <Compile Include="UIManagement\DashBoardService.cs" />
     <Compile Include="UIManagement\LineRenderer.cs" />
     <Compile Include="UIManagement\LogHelper.cs" />

@@ -1,16 +1,10 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
-using LexTranslator.TranslateManage;
 using LexTranslator.ConvertManager;
-using LexTranslator.SkyrimManage;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
-using System.Windows.Shapes;
-using static LexTranslator.TranslateManage.TranslatorExtend;
 using PhoenixEngine.EngineManagement;
-using System.Windows.Threading;
-using System.Windows.Documents;
 using PhoenixEngine.TranslateManage;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,12 +17,10 @@ using System.Linq;
 using System.IO;
 using System.Xml;
 using System.Windows.Markup;
-using System.Security.Cryptography.X509Certificates;
 using PhoenixEngine.PlatformManagement;
-using System.Diagnostics.Eventing.Reader;
 using static LexTranslator.UIManagement.NodeStyleWin;
 using System.Runtime.CompilerServices;
-using System.Windows.Media.Media3D;
+using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator.UIManage
 {
@@ -181,7 +173,7 @@ namespace LexTranslator.UIManage
 
         public static Grid CreatLine(double Height, string Type, string Key, string SourceText, string TransText, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreatLine(Height, new PhoenixEngine.TranslateManage.TranslationUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, "", Phoenix.From, Phoenix.To, Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreatLine(Height, new BaseUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
             return MainGrid;
         }
 

@@ -1,9 +1,5 @@
-﻿using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Xml;
-using PhoenixEngine.TranslateManage;
-using System.Windows.Markup;
 using LexTranslator.SkyrimManage;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,7 +12,6 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static PhoenixEngine.Bridges.NativeBridge;
 using ICSharpCode.AvalonEdit;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManage;
@@ -159,15 +154,15 @@ namespace LexTranslator.UIManagement
 
         public static List<string> RecordModifyStates = new List<string>();
 
-        public Grid CreatLine(double Height, TranslationUnit Item)
+        public Grid CreatLine(double Height, BaseUnit Item)
         {
             bool IsModify = false;
 
-            var QueryTranslated = TranslatorBridge.QueryTransData(Item.Key, Item.SourceText);
+            var QueryTranslated = TranslatorInterface.Instance.QueryTransData(Item.Key, Item.Original);
 
             if (QueryTranslated != null)
             {
-                Item.TransText = QueryTranslated.TransText;
+                Item.Translated = QueryTranslated.TransText;
             }
 
             var FindDictionary = YDDictionaryHelper.CheckDictionary(Item.Key);
@@ -176,9 +171,9 @@ namespace LexTranslator.UIManagement
             {
                 if (FindDictionary.OriginalText.Trim().Length > 0)
                 {
-                    if (Item.SourceText != FindDictionary.OriginalText)
+                    if (Item.Original != FindDictionary.OriginalText)
                     {
-                        Item.SourceText = FindDictionary.OriginalText;
+                        Item.Original = FindDictionary.OriginalText;
 
                         //11 116 209
                         IsModify = true;
@@ -261,9 +256,9 @@ namespace LexTranslator.UIManagement
                 GetFakeKey.Text = Item.Key;
             }
 
-            if (TranslatorExtend.TranslationCore != null)
+            if (TranslatorInterface.Instance != null)
             {
-                if (TranslatorExtend.TranslationCore.UnitsLeaderToTranslate.ContainsKey(Item.Key))
+                if (TranslatorInterface.Instance.GetBatchCore().Content.UnionData.Leaders.ContainsKey(Item.Key))
                 {
                     Grid GetLeader = (Grid)(GetKeyPanel).Children[1];
                     GetLeader.Visibility = Visibility.Visible;
@@ -276,7 +271,7 @@ namespace LexTranslator.UIManagement
 
             Grid GetOriginalGrid = (Grid)GetChildGrid.Children[2];
             TextBox GetOriginal = (TextBox)GetOriginalGrid.Children[0];
-            GetOriginal.Text = Item.SourceText;
+            GetOriginal.Text = Item.Original;
 
             if (FontColor == Colors.White)
             {
@@ -299,7 +294,7 @@ namespace LexTranslator.UIManagement
 
             GetTranslated.TextArea.LeftMargins.Clear();
 
-            GetTranslated.Text = Item.TransText;
+            GetTranslated.Text = Item.Translated;
 
             if (FontColor == Colors.White)
             { 
@@ -405,10 +400,10 @@ namespace LexTranslator.UIManagement
                 // Update Translation Data And History Cache
                 if (Target != null)
                 {
-                    TranslatorBridge.SetTransData(Key, Target.SourceText, OriginalText);
+                    TranslatorInterface.Instance.AutoSetLink(Key, Target.SourceText, OriginalText);
                     bool IsCloud = false;
                     Target.SyncData(ref IsCloud);
-                    TranslatorExtend.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);
+                    TranslatorInterface.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);
                 }
 
                 // Apply LTR Or RTL Layout

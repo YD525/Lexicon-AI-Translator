@@ -13,8 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using LexTranslator.SkyrimManagement;
-using static PhoenixEngine.DelegateManagement.DelegateHelper;
-using System.Windows;
 using PhoenixEngine.EngineManagement.Unit;
 
 namespace LexTranslator.TranslateManage
