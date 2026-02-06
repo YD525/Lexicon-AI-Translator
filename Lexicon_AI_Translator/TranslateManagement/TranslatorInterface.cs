@@ -689,9 +689,11 @@ namespace LexTranslator.TranslateManage
                         }
 
                         int GetLeaderCount = GetBatchCore.Content.UnionData.Leaders.Count;
+                        int ModifyCount = 0;
 
                         if (GetBatchCore != null)
                         {
+                            ModifyCount = GetBatchCore.TranslatedCount;
                             GetBatchCore.Cancel();
                             GetBatchCore.Start();
                         }
@@ -699,8 +701,6 @@ namespace LexTranslator.TranslateManage
                         SyncTransStateFreeze = false;
 
                         EndAction.Invoke();
-
-                        int ModifyCount = Phoenix.TranslatedCount;
 
                         SetTransBarTittle(string.Format("STRINGS({0}/{1})", ModifyCount, GetListView.Rows));
 
@@ -733,8 +733,10 @@ namespace LexTranslator.TranslateManage
                                             GetFakeGrid.SyncUI(GetListView);
                                             SetTranslatorHistoryCache(GetUnit.Key, GetUnit.Translated, true);
 
-                                            Phoenix.TranslatedCount++;
-                                            SetTransBarTittle(string.Format("STRINGS({0}/{1})", Phoenix.TranslatedCount, GetListView.Rows));
+                                            if (GetBatchCore != null)
+                                            {
+                                                SetTransBarTittle(string.Format("STRINGS({0}/{1})", GetBatchCore.TranslatedCount, GetListView.Rows));
+                                            }
                                         }
                                     }
                                 }

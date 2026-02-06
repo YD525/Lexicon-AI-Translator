@@ -535,7 +535,12 @@ namespace LexTranslator
         {
             try
             {
-                int ModifyCount = Phoenix.TranslatedCount;
+                int ModifyCount = 0;
+                var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
+                if (GetBatchCore != null)
+                {
+                    ModifyCount = GetBatchCore.TranslatedCount;
+                }
 
                 this.Dispatcher.Invoke(new Action(() =>
                 {
@@ -557,7 +562,7 @@ namespace LexTranslator
 
                             if ((BatchCore.IsWork && !BatchCore.IsStop) || SingleTrans)
                             {
-                                int Current = BatchCore.ThreadUsage.CurrentThreads;
+                                int Current = BatchCore.GetWorkingThreadCount();
 
                                 if (SingleTrans)
                                 {
@@ -2977,6 +2982,11 @@ namespace LexTranslator
 
                                         if (CloudDBCache.ClearCloudCache(Phoenix.GetFileUniqueKey()))
                                         {
+                                            var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
+                                            if (GetBatchCore != null)
+                                            {
+                                                GetBatchCore.TranslatedCount = 0;
+                                            }
                                             Phoenix.Vacuum();
                                             CallFuncCount++;
                                         }
