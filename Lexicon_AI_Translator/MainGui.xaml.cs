@@ -34,7 +34,7 @@ using System.Windows.Media.Imaging;
 using PhoenixEngine.PlatformManagement;
 using System.Linq;
 using System.Windows.Interop;
-using PEXInterface;
+using PexInterface;
 using System.Web.WebSockets;
 using PhoenixEngine.EngineManagement.Unit;
 using PhoenixEngine.GameManagement;
@@ -1003,9 +1003,9 @@ namespace LexTranslator
 
                     GlobalPexReader.LoadPex(LastSetPath);
 
-                    PexDecompiler NPexDecompiler = new PexDecompiler(GlobalPexReader, PexDecompiler.CodeGenStyle.CSharp);
-                    string JsonINeed = JsonConvert.SerializeObject(NPexDecompiler);
-                    var GetPsc = NPexDecompiler.Decompile();
+                    PapyrusAsmDecoder Decoder = new PapyrusAsmDecoder(GlobalPexReader, PapyrusAsmDecoder.CodeGenStyle.CSharp);
+                    string JsonINeed = JsonConvert.SerializeObject(Decoder);
+                    var GetPsc = Decoder.Decompile();
 
                     double CalcLeft = this.Left + this.ActualWidth + 1;
                     double CalcTop = this.Top;
@@ -1998,7 +1998,7 @@ namespace LexTranslator
 
                         Modules.Children.Add(UIHelper.CreatModuleItem("LexTranslator", DeFine.CurrentVersion));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Translation Engine", Phoenix.Version));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("Pex Analysis", PEXHeuristicAnalysis.Version));
+                        Modules.Children.Add(UIHelper.CreatModuleItem("Pex Analysis", PexHeuristicAnalysis.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Esp Reader", EspInterop.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Pex Reader", PexInterop.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("DSD Convert", DSDConverter.Version));
