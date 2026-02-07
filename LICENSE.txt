@@ -19,8 +19,8 @@ License https://system.data.sqlite.org/home/doc/trunk/www/copyright.wiki
 - miniz
 License https://github.com/richgel999/miniz?tab=MIT-1-ov-file
 
-- pex-interface
-License https://github.com/YD525/pex-interface?tab=License-1-ov-file
+- PexInterface
+License https://github.com/YD525/PexInterface?tab=License-1-ov-file
 
 - PexReader
 Note: Original author (YD525) is exempt under the Author Exception (Section 2).
