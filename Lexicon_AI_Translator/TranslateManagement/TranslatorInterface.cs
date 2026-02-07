@@ -496,7 +496,7 @@ namespace LexTranslator.TranslateManage
                 var BatchCore = Instance.GetBatchCore();
                 if (BatchCore != null)
                 {
-                    Instance.GetBatchCore().Clear();
+                    BatchCore.Close();
                 }
             }
            
@@ -719,7 +719,7 @@ namespace LexTranslator.TranslateManage
                         if (GetBatchCore != null)
                         {
                             ModifyCount = GetBatchCore.TranslatedCount;
-                            GetBatchCore.Clear();
+                            GetBatchCore.Close();
                            
                             GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation);
                             GetBatchCore.Start();
@@ -741,31 +741,17 @@ namespace LexTranslator.TranslateManage
 
                         bool IsEnd = false;
 
+                        List<BaseUnit> Units = new List<BaseUnit>();
+                        int TotalCount = 0;
                         while (!IsEnd)
                         {
                             try
                             {
-                                var GetUnitGroup = GetBatchCore.DequeueTranslated(out IsEnd);
-
-                                if (GetUnitGroup != null)
+                                var GetUnit = GetBatchCore.DequeueTranslated(out IsEnd);
+                                if (GetUnit != null)
                                 {
-                                    for (int i = 0; i < GetUnitGroup.Units.Count; i++)
-                                    {
-                                        var GetUnit = GetUnitGroup.Units[i];
-
-                                        var GetFakeGrid = GetListView.KeyToFakeGrid(GetUnit.Key);
-                                        if (GetFakeGrid != null)
-                                        {
-                                            GetFakeGrid.TransText = GetUnit.Translated;
-                                            GetFakeGrid.SyncUI(GetListView);
-                                            SetTranslatorHistoryCache(GetUnit.Key, GetUnit.Translated, true);
-
-                                            if (GetBatchCore != null)
-                                            {
-                                                SetTransBarTittle(string.Format("STRINGS({0}/{1})", GetBatchCore.TranslatedCount, GetListView.Rows));
-                                            }
-                                        }
-                                    }
+                                    TotalCount++;
+                                    SetTransBarTittle(string.Format("STRINGS({0}/{1})", GetBatchCore.TranslatedCount, GetListView.Rows));
                                 }
 
                                 Thread.Sleep(10);
@@ -783,12 +769,14 @@ namespace LexTranslator.TranslateManage
                             }
                         }
 
+                        DeFine.WorkingWin.TransViewList.QuickRefresh();
+
                         var BatchCore = TranslatorInterface.Instance.GetBatchCore();
 
                         if (BatchCore != null && IsEnd)
                         {
                             Thread.Sleep(500);
-                            BatchCore.Clear();
+                            BatchCore.Close();
                         }
 
                         TranslationStatus = StateControl.Cancel;
@@ -872,7 +860,6 @@ namespace LexTranslator.TranslateManage
             var GetBatchCore = Instance.GetBatchCore();
             if (GetBatchCore != null)
             {
-                GetBatchCore.Clear();
                 GetBatchCore.Close();
                 SetTransBarTittle(string.Format("STRINGS({0}/{1})",0, 0));
             }
