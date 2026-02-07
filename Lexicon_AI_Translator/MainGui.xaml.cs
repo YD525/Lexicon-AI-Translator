@@ -141,7 +141,7 @@ namespace LexTranslator
 
             UILanguages.SelectedValue = DeFine.GlobalLocalSetting.CurrentUILanguage.ToString();
 
-            DelegateHelper.SetBookTranslateCallback += BookTransCallBack;
+            EngineEvents.SetBookTranslateCallback += BookTransCallBack;
 
             SetSelectedNav("TransHub");
 

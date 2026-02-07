@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using LexTranslator.SkyrimManagement;
 using PhoenixEngine.EngineManagement.Unit;
+using static PhoenixEngine.DelegateManagement.EngineEvents;
 
 namespace LexTranslator.TranslateManage
 {
@@ -25,8 +26,8 @@ namespace LexTranslator.TranslateManage
         {
             Instance = new Translator(Phoenix.From,Phoenix.To,true);
 
-            DelegateHelper.SetDataCall += Recv;
-            DelegateHelper.SetTranslationUnitCallBack += TranslationUnitStartWorkCall;
+            EngineEvents.SetDataCall += Recv;
+            EngineEvents.SetBaseUnitStateChangedCallback += BaseUnitStateChanged;
 
             RegListener("PreLog", new List<int>() { 2 }, new Action<int, object>((Sign, Any) =>
             {
@@ -85,36 +86,29 @@ namespace LexTranslator.TranslateManage
         /// </summary>
         /// <param name="Item"></param>
         /// <returns></returns>
-        public static bool TranslationUnitStartWorkCall(UnitGroup Item, int State)
+        public static UnitContext<BaseUnit> BaseUnitStateChanged(BaseUnit Item, UnitTranslationState State)
         {
-            if (State == 1 || State == 2)
+            if (State == UnitTranslationState.Queued)
             {
                 if (DeFine.WorkingWin != null)
                 {
                     if (DeFine.WorkingWin.TransViewList != null)
                     {
-                        for (int i = 0; i < Item.Units.Count; i++)
-                        {
-                            var GetUnit = Item.Units[i];
-                            FakeGrid QueryGrid = DeFine.WorkingWin.TransViewList.KeyToFakeGrid(GetUnit.Key);
+                        FakeGrid QueryGrid = DeFine.WorkingWin.TransViewList.KeyToFakeGrid(Item.Key);
 
-                            if (QueryGrid != null)
+                        if (QueryGrid != null)
+                        {
+                            if (QueryGrid.TransText.Length == 0)
                             {
                                 bool IsCloud = false;
                                 QueryGrid.SyncData(ref IsCloud);
-
-                                if (QueryGrid.TransText.Length > 0)
-                                {
-                                    return false;
-                                }
                             }
                         }
-                      
                     }
                 }
             }
 
-            return true;
+            return new UnitContext<BaseUnit>();
         }
 
         public class RecvListener
@@ -364,9 +358,9 @@ namespace LexTranslator.TranslateManage
                     {
                         if (Row.Key.EndsWith("DESC") && !DeFine.GlobalLocalSetting.CanTranslateBook)
                         {
-                            if (DelegateHelper.SetDataCall != null)
+                            if (EngineEvents.SetDataCall != null)
                             {
-                                DelegateHelper.SetDataCall(0, "Skip Book fields:" + Row.Key);
+                                EngineEvents.SetDataCall(0, "Skip Book fields:" + Row.Key);
                             }
 
                             CanSet = false;
@@ -375,9 +369,9 @@ namespace LexTranslator.TranslateManage
                     else
                     if (Row.Score < 5)
                     {
-                        if (DelegateHelper.SetDataCall != null)
+                        if (EngineEvents.SetDataCall != null)
                         {
-                            DelegateHelper.SetDataCall(0, "Skip Dangerous fields:" + Row.Key);
+                            EngineEvents.SetDataCall(0, "Skip Dangerous fields:" + Row.Key);
                         }
 
                         CanSet = false;
@@ -406,9 +400,9 @@ namespace LexTranslator.TranslateManage
                                 Row.SyncUI(GetListView);
                             }
 
-                            if (DelegateHelper.SetDataCall != null)
+                            if (EngineEvents.SetDataCall != null)
                             {
-                                DelegateHelper.SetDataCall(0, "Skip StringsFile(" + GetTrans.Type.ToString() + ") fields:" + Row.Key);
+                                EngineEvents.SetDataCall(0, "Skip StringsFile(" + GetTrans.Type.ToString() + ") fields:" + Row.Key);
                             }
 
                             CanSet = false;
@@ -419,9 +413,9 @@ namespace LexTranslator.TranslateManage
                             {
                                 if (EspReader.Records[Row.Key].StringID > 0)
                                 {
-                                    if (DelegateHelper.SetDataCall != null)
+                                    if (EngineEvents.SetDataCall != null)
                                     {
-                                        DelegateHelper.SetDataCall(0, "Skip StringsFile(" + EspReader.Records[Row.Key].String + ") fields:" + Row.Key);
+                                        EngineEvents.SetDataCall(0, "Skip StringsFile(" + EspReader.Records[Row.Key].String + ") fields:" + Row.Key);
                                     }
 
                                     CanSet = false;
@@ -454,9 +448,9 @@ namespace LexTranslator.TranslateManage
                                 Row.SyncUI(GetListView);
                             }
 
-                            if (DelegateHelper.SetDataCall != null)
+                            if (EngineEvents.SetDataCall != null)
                             {
-                                DelegateHelper.SetDataCall(0, $"Database information matched, filename:{UniqueKeyHelper.RowidToOriginalKey(GetData.FileUniqueKey)}, value:{GetData.Result}");
+                                EngineEvents.SetDataCall(0, $"Database information matched, filename:{UniqueKeyHelper.RowidToOriginalKey(GetData.FileUniqueKey)}, value:{GetData.Result}");
                             }
 
                             CanSet = false;
