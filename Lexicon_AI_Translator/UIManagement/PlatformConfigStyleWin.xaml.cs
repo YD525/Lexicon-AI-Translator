@@ -444,6 +444,8 @@ namespace LexTranslator.UIManagement
                             }
                         }
                     }
+
+                    Phoenix.ReSetKeyData();
                 }
                 else
                 {
@@ -462,10 +464,10 @@ namespace LexTranslator.UIManagement
                         }
 
                     }
+
+                    Phoenix.ReSetKeyData();
                 }
             }
-
-            Phoenix.SaveConfig();
         }
 
         private void RemoveBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -545,6 +547,8 @@ namespace LexTranslator.UIManagement
                             }
                         }
                     }
+
+                    Phoenix.ReSetKeyData();
                 }
                 else
                 {
@@ -561,12 +565,11 @@ namespace LexTranslator.UIManagement
                                 break;
                             }
                         }
-
                     }
+
+                    Phoenix.ReSetKeyData();
                 }
             }
-
-            Phoenix.SaveConfig();
         }
 
         private void PlatformConfigStyleWin_PreviewMouseDown(object sender, MouseButtonEventArgs e)

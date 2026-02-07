@@ -137,39 +137,51 @@ namespace LexTranslator
                 MatchView.Children.Clear();
             }));
 
+            List<string> UniqueResult = new List<string>();
             List<string> UniqueKeys = new List<string>();
 
             var MatchCloudItems = LocalDBCache.MatchLocalItem((int)Phoenix.To, Original);
 
             foreach (var GetMatch in MatchCloudItems)
             {
-                UniqueKeys.Add(GetMatch.Key);
+                if (!UniqueResult.Contains(GetMatch.Result))
+                {
+                    UniqueResult.Add(GetMatch.Result);
+                    if (!UniqueKeys.Contains(GetMatch.Key))
+                    {
+                        UniqueKeys.Add(GetMatch.Key);
+                        MatchView.Dispatcher.Invoke(new Action(() =>
+                        {
+                            MatchView.Children.Add(UIHelper.CreatMatchLine(
+                              UniqueKeyHelper.RowidToOriginalKey(GetMatch.FileUniqueKey),//Get Original File Name
+                              GetMatch.Key,
+                              GetMatch.Result
+                              ));
+                        }));
+                    }
+                }
             }
 
             foreach (var GetMatch in CloudDBCache.MatchCloudItem((int)Phoenix.To, Original))
             {
-                if (!UniqueKeys.Contains(GetMatch.Key))
+                if (!UniqueResult.Contains(GetMatch.Result))
                 {
-                    UniqueKeys.Add(GetMatch.Key);
+                    UniqueResult.Add(GetMatch.Result);
+                    if (!UniqueKeys.Contains(GetMatch.Key))
+                    {
+                        UniqueKeys.Add(GetMatch.Key);
+                        MatchView.Dispatcher.Invoke(new Action(() =>
+                        {
+                            MatchView.Children.Add(UIHelper.CreatMatchLine(
+                              UniqueKeyHelper.RowidToOriginalKey(GetMatch.FileUniqueKey),//Get Original File Name
+                              GetMatch.Key,
+                              GetMatch.Result
+                              ));
+                        }));
+                    }
                 }
             }
-
-            foreach (var GetMatch in MatchCloudItems)
-            {
-                if (CancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                MatchView.Dispatcher.Invoke(new Action(() =>
-                {
-                    MatchView.Children.Add(UIHelper.CreatMatchLine(
-                      UniqueKeyHelper.RowidToOriginalKey(GetMatch.FileUniqueKey),//Get Original File Name
-                      GetMatch.Key,
-                      GetMatch.Result
-                      ));
-                }));
-            }
+            
 
             //Find DL IL Strings
             if (StringKey != 0)
