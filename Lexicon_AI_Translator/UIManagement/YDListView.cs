@@ -16,10 +16,7 @@ using System.Linq;
 using ICSharpCode.AvalonEdit;
 using LexTranslator.TranslateManage;
 
-// Copyright (c) 2025 YD525
-// Licensed under the CC BY-NC-ND 4.0 License.
-// See LICENSE file in the project root for full license information.
-//https://github.com/YD525/Lexicon-AI-Translator/UIManagement/YDListView.cs
+// Copyright 2026 YD525
 
 public class FakeGrid
 {

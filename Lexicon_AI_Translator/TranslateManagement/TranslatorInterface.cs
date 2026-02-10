@@ -13,11 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using LexTranslator.SkyrimManagement;
-using PhoenixEngine.EngineManagement.Unit;
 using static PhoenixEngine.DelegateManagement.EngineEvents;
 
 namespace LexTranslator.TranslateManage
 {
+    // Copyright 2026 YD525
     public class TranslatorInterface
     {
         public static Translator Instance = null;
