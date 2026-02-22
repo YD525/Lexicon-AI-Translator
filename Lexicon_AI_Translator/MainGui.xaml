@@ -797,6 +797,13 @@ Fill="White"/>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
+                                        <TextBlock HorizontalAlignment="Center" Foreground="White" FontSize="14">
+                                            Chinese character Processed by - 
+                                            <Run Cursor="Hand" Tag="https://zhconvert.org" FontWeight="Bold"  Foreground="#FF44A0FF"  Text="https://zhconvert.org (繁华姬)" MouseDown="OpenUrl_MouseDown"/>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
 
                                         <TextBlock HorizontalAlignment="Center" Foreground="White" FontSize="14">
                                         <Run Text="ESP file parsing  - " />
