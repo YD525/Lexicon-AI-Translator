@@ -146,6 +146,7 @@
     <Compile Include="SkyrimManagement\RamCacheReader.cs" />
     <Compile Include="SkyrimManagement\SkyrimHelper.cs" />
     <Compile Include="SkyrimManagement\StringsFileReader.cs" />
+    <Compile Include="SkyrimManagement\XMLConverter.cs" />
     <Compile Include="SkyrimManagement\YDDictionaryHelper.cs" />
     <Compile Include="SQLManagement\SqlCore.cs" />
     <Compile Include="TranslateManagement\Crc32Helper.cs" />
