@@ -10,7 +10,7 @@
   <Color name="MethodCall" foreground="#ffffcc66"/>
   <Color name="NumberLiteral" foreground="#ff99cc99"/>
   <Color name="NilKeyword" fontWeight="bold"/>
-  <Color name="Keywords" fontWeight="bold" foreground="#ff6699cc" />
+  <Color name="Keywords" fontWeight="bold" foreground="#FF249BE9" />
   <Color name="GotoKeywords" foreground="#ffcc99cc" />
   <Color name="Visibility" fontWeight="bold" foreground="#fff99157"/>
   <Color name="TrueFalse" fontWeight="bold" foreground="#ff66cccc" />
@@ -97,6 +97,8 @@
 
 	  
 	  <Keywords color="PapyrusDeFine">
+		  <Word>var</Word>
+		  <Word>actor</Word>
 		  <Word>Actor</Word>
 		  <Word>Function</Word>
 		  <Word>EndFunction</Word>
@@ -138,6 +140,11 @@
 	</Keywords>
 	 
 	  <Keywords color="Keywords">
+      <Word>new</Word>
+	  <Word>struct</Word>
+	  <Word>class</Word>
+	  <Word>public</Word>
+	  <Word>void</Word>
       <Word>;</Word>
       <Word>and</Word>
       <Word>break</Word>
@@ -165,8 +172,6 @@
       <Word>while</Word>
       <Word>using</Word>
       <Word>continue</Word>
-      <Word>{</Word>
-	  <Word>}</Word>
     </Keywords>
 
     <Keywords color="GotoKeywords">
