@@ -1003,16 +1003,16 @@ namespace LexTranslator
 
                     GlobalPexReader.LoadPex(LastSetPath);
 
-                    PapyrusAsmDecoder Decoder = new PapyrusAsmDecoder(GlobalPexReader, PapyrusAsmDecoder.CodeGenStyle.CSharp);
+                    PapyrusAsmDecoder Decoder = new PapyrusAsmDecoder(GlobalPexReader);
                     string JsonINeed = JsonConvert.SerializeObject(Decoder);
-                    var GetPsc = Decoder.Decompile();
+                    Decoder.Decompile(out PexHeuristicAnalysis Analyst);
 
                     double CalcLeft = this.Left + this.ActualWidth + 1;
                     double CalcTop = this.Top;
                     double IDEHeight = this.Height;
                     DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
                     {
-                        DeFine.CurrentCodeView.TextEditor.Text = GetPsc;
+                        DeFine.CurrentCodeView.TextEditor.Text = Analyst.GetPsc();
                     }));
 
                     this.Dispatcher.Invoke(new Action(() =>
