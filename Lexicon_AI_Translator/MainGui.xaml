@@ -815,16 +815,6 @@ Fill="White"/>
                                         </TextBlock>
                                     </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
-
-                                        <TextBlock HorizontalAlignment="Center" Foreground="White" FontSize="14">
-                                          PhoenixR  - YD525,
-                                          <Run Cursor="Hand" Tag="https://github.com/Wuerfelhusten" FontWeight="Bold"  Foreground="#FF44A0FF" Text="Wuerfelhusten" MouseDown="OpenUrl_MouseDown"/>
-                                          ,SSEATTeam
-                                        </TextBlock>
-
-                                    </StackPanel>
-
                                     <TextBlock Foreground="White" FontSize="20" FontWeight="DemiBold" Margin="0 20 0 0" HorizontalAlignment="Center" TextAlignment="Center">
                                     Special Thanks
                                     </TextBlock>
@@ -852,7 +842,12 @@ Fill="White"/>
                                     </TextBlock>
 
                                     <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 5 20 0">
-                                      Help LexTranslator Creating dictionary files —
+                                         Suggested separating the translation cache by model name and help Lex Translator create Traditional Chinese dictionaries —
+                                    <Run Tag="https://home.gamer.com.tw/profile/index.php?owner=jacky66666" Text="Jacky66evil" FontWeight="Bold"  Cursor="Hand" Foreground="#FF44A0FF"  MouseDown="OpenUrl_MouseDown"/>
+                                    </TextBlock>
+
+                                    <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 5 20 0">
+                                         help Lex Translator create Simplified Chinese dictionaries —
                                     <Run Tag="https://www.nexusmods.com/profile/50809501" Text="50809501" FontWeight="Bold"  Cursor="Hand" Foreground="#FF44A0FF"  MouseDown="OpenUrl_MouseDown"/>
                                     </TextBlock>
                                     

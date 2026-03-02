@@ -97,6 +97,8 @@
 
 	  
 	  <Keywords color="PapyrusDeFine">
+		  <Word>VoiceType</Word>
+		  <Word>ActorBase</Word>
 		  <Word>var</Word>
 		  <Word>actor</Word>
 		  <Word>Actor</Word>
