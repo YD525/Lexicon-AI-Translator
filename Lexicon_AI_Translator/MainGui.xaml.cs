@@ -38,6 +38,8 @@ using PexInterface;
 using System.Web.WebSockets;
 using PhoenixEngine.EngineManagement.Unit;
 using PhoenixEngine.GameManagement;
+using static PexInterface.PexHeuristicAnalysis;
+using System.Threading.Tasks;
 
 namespace LexTranslator
 {
@@ -154,7 +156,7 @@ namespace LexTranslator
             GlobalRamCacheReader = new RamCacheReader();
             //GlobalEspReader = new EspReader();
             GlobalMCMReader = new MCMReader();
-            GlobalPexReader = new PexReader();
+            GlobalPexReader = new PexHeuristicAnalysis();
 
             ScanAnimator = new ScanAnimator(ScanTransform, ProcessBar, 60);
 
@@ -676,8 +678,7 @@ namespace LexTranslator
 
         public RamCacheReader GlobalRamCacheReader = null;
         public MCMReader GlobalMCMReader = null;
-        //public EspReader GlobalEspReader = null;
-        public PexReader GlobalPexReader = null;
+        public PexHeuristicAnalysis GlobalPexReader = new PexHeuristicAnalysis();
 
         //public List<ObjSelect> CanSetSelecter = new List<ObjSelect>();
         //public ObjSelect CurrentSelect = ObjSelect.Null;
@@ -791,11 +792,13 @@ namespace LexTranslator
                     else
                     if (CurrentTransType == 3)
                     {
-                        foreach (var GetItem in GlobalPexReader.StringTable)
+                        GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings,CurrentSig);
+
+                        foreach (var GetItem in Strings)
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreateLine("Papyrus", GetItem.Index.ToString(), GetItem.Index.ToString(), GetItem.Value, "", -999));
+                                TransViewList.AddRowR(LineRenderer.CreateLine(CurrentSig,ConvertHelper.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
                             }));
                         }
 
@@ -961,7 +964,7 @@ namespace LexTranslator
                     GlobalRamCacheReader.Close();
                     EspReader.Close();
                     GlobalMCMReader.Close();
-                    GlobalPexReader.Close();
+                    GlobalPexReader.Core.Close();
 
                     LastSetPath = FilePath;
 
@@ -992,7 +995,6 @@ namespace LexTranslator
                     GlobalRamCacheReader.Close();
                     EspReader.Close();
                     GlobalMCMReader.Close();
-                    GlobalPexReader.Close();
 
                     LastSetPath = FilePath;
 
@@ -1001,19 +1003,18 @@ namespace LexTranslator
                         TransViewList.Clear();
                     }));
 
-                    GlobalPexReader.LoadPex(LastSetPath);
+                    string SetPsc = "";
 
-                    PapyrusAsmDecoder Decoder = new PapyrusAsmDecoder(GlobalPexReader);
-                    string JsonINeed = JsonConvert.SerializeObject(Decoder);
-                    Decoder.Decompile(out PexHeuristicAnalysis Analyst);
+                    GlobalPexReader?.Core.LoadPex(LastSetPath).ReadStrings().GetPsc(out SetPsc, false, CodeGenStyle.CSharp).AnalysisStrings();
+
+                    DeFine.CurrentCodeView.Dispatcher.Invoke(() =>
+                    {
+                        DeFine.CurrentCodeView.TextEditor.Text = SetPsc;
+                    });
 
                     double CalcLeft = this.Left + this.ActualWidth + 1;
                     double CalcTop = this.Top;
                     double IDEHeight = this.Height;
-                    DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
-                    {
-                        DeFine.CurrentCodeView.TextEditor.Text = Analyst.GetPsc();
-                    }));
 
                     this.Dispatcher.Invoke(new Action(() =>
                     {
@@ -1281,7 +1282,9 @@ namespace LexTranslator
                                     File.Copy(LastSetPath, GetBackUPPath);
                                 }
 
-                                if (GlobalPexReader.SavePex(LastSetPath) > 0 == false)
+                                GlobalPexReader.Core.SavePex(LastSetPath, out int SaveState).Close();
+
+                                if (SaveState > 0 == false)
                                 {
                                     MessageBox.Show("Build Script Error!");
                                 }

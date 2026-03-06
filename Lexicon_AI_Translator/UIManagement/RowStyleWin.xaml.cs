@@ -348,16 +348,11 @@ namespace LexTranslator.UIManagement
                 ApplyLTROrRtl(GetTranslated);
             }
 
-            if (Item.Score < 5)
-            {
-                GetKey.Foreground = new SolidColorBrush(Colors.Red);
-                GetOriginal.Foreground = new SolidColorBrush(Colors.Red);
-                GetTranslated.Foreground = new SolidColorBrush(Colors.Red);
-            }
             if (Item.Score < 0)
             {
                 GetKey.Foreground = new SolidColorBrush(Colors.Red);
                 GetOriginal.Foreground = new SolidColorBrush(Colors.Red);
+                GetTranslated.Foreground = new SolidColorBrush(Colors.Red);
                 GetTranslatedBorder.Visibility = Visibility.Collapsed;
 
                 GetTranslated.IsReadOnly = true;
