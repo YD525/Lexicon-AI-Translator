@@ -821,7 +821,12 @@ namespace LexTranslator
                     else
                     if (CurrentTransType == 3)
                     {
-                        GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings, CurrentSig);
+                        string AutoSig = CurrentSig;
+                        if (AutoSig == "ALL")
+                        {
+                            AutoSig = string.Empty;
+                        }
+                        GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings, AutoSig);
 
                         foreach (var GetItem in Strings)
                         {
@@ -1095,6 +1100,15 @@ namespace LexTranslator
 
                     GlobalPexReader?.Core.LoadPex(LastSetPath).ReadStrings().GetPsc(out SetPsc, DeFine.GlobalLocalSetting.ShowAssembly, AutoStyle).AnalysisStrings();
 
+                    List<string> Types = new List<string>();
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                        foreach (var GetType in GlobalPexReader.Core.HeuristicCore.Types)
+                        {
+                            Types.Add(GetType);
+                        }
+                    }));
+
                     DeFine.CurrentCodeView.Dispatcher.Invoke(() =>
                     {
                         DeFine.CurrentCodeView.TextEditor.Text = SetPsc;
@@ -1111,7 +1125,7 @@ namespace LexTranslator
                         LoadSaveState = 1;
                     }));
 
-                    ReSetTransTargetType(null);
+                    ReSetTransTargetType(Types);
                     ReloadData();
 
                     IsValidFile = true;

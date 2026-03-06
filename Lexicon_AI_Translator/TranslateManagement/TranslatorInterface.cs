@@ -367,7 +367,7 @@ namespace LexTranslator.TranslateManage
                         }
                     }
                     else
-                    if (Row.Score < 5)
+                    if (Row.Score <= 0)
                     {
                         if (EngineEvents.SetDataCall != null)
                         {
