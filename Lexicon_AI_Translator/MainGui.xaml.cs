@@ -1275,18 +1275,34 @@ namespace LexTranslator
                         {
                             if (GlobalPexReader != null)
                             {
-                                string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
+                                GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings);
 
-                                if (!File.Exists(GetBackUPPath))
+                                int TranslateCount = 0;
+                                for (int i=0;i<Strings.Count;i++)
                                 {
-                                    File.Copy(LastSetPath, GetBackUPPath);
+                                    var StringItem = Strings[i];
+                                    StringItem.Translated = TranslatorInterface.Instance.GetLink(StringItem.UniqueKey);
+                                    if (StringItem.Translated.Length > 0)
+                                    {
+                                        TranslateCount++;
+                                    }
                                 }
 
-                                GlobalPexReader.Core.SavePex(LastSetPath, out int SaveState).Close();
-
-                                if (SaveState > 0 == false)
+                                if (TranslateCount > 0)
                                 {
-                                    MessageBox.Show("Build Script Error!");
+                                    string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
+
+                                    if (!File.Exists(GetBackUPPath))
+                                    {
+                                        File.Copy(LastSetPath, GetBackUPPath);
+                                    }
+
+                                    GlobalPexReader.Core.SavePex(LastSetPath, out int SaveState).Close();
+
+                                    if (SaveState > 0 == false)
+                                    {
+                                        MessageBox.Show("Build Script Error!");
+                                    }
                                 }
                             }
                         }
