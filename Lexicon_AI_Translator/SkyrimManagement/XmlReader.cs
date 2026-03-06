@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 using System.Xml.Linq;
 using LexTranslator.SkyrimModManager;
+using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
+using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -14,6 +17,7 @@ namespace LexTranslator.SkyrimManagement
         {
             public string Type = "";
             public string EditorID = "";
+            public string REC = "";
             public string Key = "";
             public string SourceText = "";
             public string TransText = "";
@@ -22,6 +26,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 this.Type = "Xml";
                 this.EditorID = Item.EDID;
+                this.REC = Item.REC;
 
                 this.Key =Crc32Helper.ComputeCrc32(Item.EDID + "_" + Item.REC);
                 this.SourceText = Item.Source;
@@ -38,31 +43,28 @@ namespace LexTranslator.SkyrimManagement
 
             public string GetTextIfTrans()
             {
-                //if (this.TransText.Trim().Length > 0)
-                //{
-                //    return this.TransText;
-                //}
-                //string GetKey = this.Key;
-                //var GetResult = TranslatorInterface.Instance.GetLink(GetKey);
-                //if (GetResult != null)
-                //{
-                //    this.TransText = GetResult;
-                //    if (this.TransText.Length > 0)
-                //    {
-                //        return this.TransText;
-                //    }
-                //    else
-                //    {
-                //        return this.SourceText;
-                //    }
-                //}
+                if (this.TransText.Trim().Length > 0)
+                {
+                    return this.TransText;
+                }
+                string GetKey = this.Key;
+                var GetResult = TranslatorInterface.Instance.GetLink(GetKey);
+                if (GetResult != null)
+                {
+                    this.TransText = GetResult;
+                    if (this.TransText.Length > 0)
+                    {
+                        return this.TransText;
+                    }
+                    else
+                    {
+                        return this.SourceText;
+                    }
+                }
 
-                //return this.SourceText;
-
-                return string.Empty;
+                return this.SourceText;
             }
         }
-
         public class StringItem
         {
             public string EDID { get; set; }
@@ -73,12 +75,13 @@ namespace LexTranslator.SkyrimManagement
 
         public List<XmlItem> XmlItems = new List<XmlItem>();
         public Encoding CurrentEncoding = null;
-
+        public XDocument Instance = null;
         public void Load(string Path)
         {
             Close();
             CurrentEncoding = DataHelper.GetFileEncodeType(Path);
             XDocument Doc = XDocument.Load(Path);
+            Instance = Doc;
             try
             {
                 foreach (var GetItem in
@@ -92,7 +95,9 @@ namespace LexTranslator.SkyrimManagement
                   })
                   .ToList())
                 {
-                    XmlItems.Add(new XmlItem(GetItem));
+                    XmlItem SetItem = new XmlItem(GetItem);
+                    SetItem.GetTextIfTrans();
+                    XmlItems.Add(SetItem);
                 }
             }
             catch 
@@ -101,16 +106,33 @@ namespace LexTranslator.SkyrimManagement
             }
         }
 
-
         public void Close()
         {
             this.XmlItems.Clear();
+            Instance = null;
         }
 
-
         public void Save()
-        { 
-        
+        {
+            var ItemDict = XmlItems.ToDictionary(x => x.EditorID + "|" + x.REC, x => x);
+
+            foreach (var StringNode in Instance.Descendants("String"))
+            {
+                var EditorID = (string)StringNode.Element("EDID");
+                var Rec = (string)StringNode.Element("REC");
+                var DestNode = StringNode.Element("Dest");
+                if (EditorID != null && Rec != null)
+                {
+                    string Key = EditorID + "|" + Rec;
+                    if (ItemDict.TryGetValue(Key, out XmlItem Item))
+                    {
+                        Item.GetTextIfTrans();
+                        DestNode.Value = Item.TransText;
+                    }
+                }
+            }
+
+            Close();
         }
     }
 }

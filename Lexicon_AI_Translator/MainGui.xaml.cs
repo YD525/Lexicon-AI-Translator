@@ -178,6 +178,7 @@ namespace LexTranslator
             //GlobalEspReader = new EspReader();
             GlobalMCMReader = new MCMReader();
             GlobalPexReader = new PexHeuristicAnalysis();
+            GlobalXmlReader = new R_XmlReader();
 
             ScanAnimator = new ScanAnimator(ScanTransform, ProcessBar, 60);
 
@@ -704,7 +705,8 @@ namespace LexTranslator
 
         public RamCacheReader GlobalRamCacheReader = null;
         public MCMReader GlobalMCMReader = null;
-        public PexHeuristicAnalysis GlobalPexReader = new PexHeuristicAnalysis();
+        public PexHeuristicAnalysis GlobalPexReader = null;
+        public R_XmlReader GlobalXmlReader = null;
         public Dictionary<string,int>PexLinks = new Dictionary<string,int>();
 
         //public List<ObjSelect> CanSetSelecter = new List<ObjSelect>();
