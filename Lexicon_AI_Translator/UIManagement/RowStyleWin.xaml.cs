@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManage;
+using Newtonsoft.Json.Linq;
 
 namespace LexTranslator.UIManagement
 {
@@ -420,61 +421,69 @@ namespace LexTranslator.UIManagement
         }
 
         public static Thread AutoSelectIDETrd = null;
-        private static CancellationTokenSource AutoCancelSelectIDETrd;
-        public static void CancelAutoSelect()
+     
+        public static void SelectLineFromIDE(int LineID, string Value)
         {
-            AutoCancelSelectIDETrd?.Cancel();
-        }
-
-        public static void SelectLineFromIDE(string GetKey)
-        {
-            try
+            if (DeFine.ActiveIDE == null)
             {
-                if (AutoSelectIDETrd != null)
-                {
-                    CancelAutoSelect();
-                }
+                return;
             }
-            catch { }
+            if (DeFine.WorkingWin.CodeViewShowState!=1)
+            {
+                return;
+            }
 
-            AutoCancelSelectIDETrd = new CancellationTokenSource();
-            var Token = AutoCancelSelectIDETrd.Token;
+            if (AutoSelectIDETrd != null)
+            {
+                try 
+                {
+                    AutoSelectIDETrd.Abort();
+                }
+                catch { }
+                AutoSelectIDETrd = null;
+            }
+
+            Value = "\"" + Value + "\"";
 
             AutoSelectIDETrd = new Thread(() =>
             {
                 try
                 {
-                    if (GetKey.Length > 0)
+                    DeFine.ActiveIDE.Dispatcher.Invoke(() =>
                     {
-                        Task.Delay(200, Token).Wait(Token);
+                        var Editor = DeFine.ActiveIDE;
+                        var Doc = Editor.Document;
 
-                        Token.ThrowIfCancellationRequested();
+                        int TotalLines = Doc.LineCount;
 
-                        //foreach (var Item in DeFine.WorkingWin.GlobalPexReader.HeuristicEngine.DStringItems)
-                        //{
-                        //    if (Item.Key.Equals(GetKey))
-                        //    {
-                        //        DeFine.ActiveIDE.Dispatcher.Invoke(() =>
-                        //        {
-                        //            int LineOffset = DeFine.ActiveIDE.Document.Text.IndexOf(Item.SourceLine);
-                        //            if (LineOffset == -1) return;
+                        for (int i = LineID; i <= TotalLines; i++)
+                        {
+                            var Line = Doc.GetLineByNumber(i);
+                            string Text = Doc.GetText(Line);
 
-                        //            int RelativeOffset = Item.SourceLine.IndexOf("\"" + Item.Str + "\"");
-                        //            if (RelativeOffset == -1) return;
+                            int Index = Text.IndexOf(Value, StringComparison.OrdinalIgnoreCase);
 
-                        //            int AbsoluteOffset = LineOffset + RelativeOffset;
-                        //            DeFine.ActiveIDE.ScrollToLine(DeFine.ActiveIDE.Document.GetLineByOffset(AbsoluteOffset).LineNumber);
-                        //            DeFine.ActiveIDE.Select(AbsoluteOffset, ("\"" + Item.Str + "\"").Length);
-                        //        });
-                        //    }
-                        //}
-                    }
+                            if (Index >= 0)
+                            {
+                                int Offset = Line.Offset + Index;
+
+                                Editor.ScrollToLine(i);
+                                Editor.Select(Offset, Value.Length);
+                                Editor.CaretOffset = Offset + Value.Length;
+                                Editor.Focus();
+
+                                break;
+                            }
+                        }
+                    });
                 }
                 catch (OperationCanceledException)
                 {
-
                 }
+
+                AutoSelectIDETrd = null;
             });
+
 
             AutoSelectIDETrd.Start();
         }

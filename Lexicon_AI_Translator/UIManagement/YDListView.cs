@@ -181,7 +181,7 @@ public class YDListView
         TextEditor GetTranslated = (TextEditor)(((Border)GetTranslatedGrid.Children[0]).Child);
 
         GetTranslatedGrid.ColumnDefinitions[1].Width = new GridLength(15,GridUnitType.Pixel);
-
+        
         if (UPDate)
         {
             GetTranslated.Focus();
@@ -190,7 +190,17 @@ public class YDListView
 
             if (DeFine.GlobalLocalSetting.ShowCode && DeFine.WorkingWin.CurrentTransType == 3)
             {
-                RowStyleWin.SelectLineFromIDE(GetKey);
+                string AutoValue = KeyToFakeGrid(GetKey).RealSource;
+
+                if (DeFine.WorkingWin.PexLinks.ContainsKey(GetKey))
+                {
+                    if (AutoValue == "")
+                    {
+                        AutoValue = RowStyleWin.GetOriginal(MainGrid);
+                    }
+                }
+
+                RowStyleWin.SelectLineFromIDE(DeFine.WorkingWin.PexLinks[GetKey], AutoValue);
             }
         }
 

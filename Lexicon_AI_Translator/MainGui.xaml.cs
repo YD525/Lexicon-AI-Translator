@@ -679,6 +679,7 @@ namespace LexTranslator
         public RamCacheReader GlobalRamCacheReader = null;
         public MCMReader GlobalMCMReader = null;
         public PexHeuristicAnalysis GlobalPexReader = new PexHeuristicAnalysis();
+        public Dictionary<string,int>PexLinks = new Dictionary<string,int>();
 
         //public List<ObjSelect> CanSetSelecter = new List<ObjSelect>();
         //public ObjSelect CurrentSelect = ObjSelect.Null;
@@ -796,6 +797,17 @@ namespace LexTranslator
 
                         foreach (var GetItem in Strings)
                         {
+                            int CalcLineIndex = GetItem.FunctionRef.PscStartLineIndex;
+
+                            if (PexLinks.ContainsKey(GetItem.UniqueKey))
+                            {
+                                PexLinks[GetItem.UniqueKey] = CalcLineIndex;
+                            }
+                            else
+                            {
+                                PexLinks.Add(GetItem.UniqueKey,CalcLineIndex);
+                            }
+
                             this.Dispatcher.Invoke(new Action(() =>
                             {
                                 TransViewList.AddRowR(LineRenderer.CreateLine(CurrentSig,ConvertHelper.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
@@ -921,6 +933,8 @@ namespace LexTranslator
             CancelBatchTranslation();
 
             IsValidFile = false;
+
+            PexLinks.Clear();
 
             SetLog("Load:" + FilePath);
 
@@ -3619,6 +3633,8 @@ namespace LexTranslator
 
         public bool EnableFocusMode = false;
         public string LastSelectExView = "";
+
+        public int CodeViewShowState = 0;
         private void SelectExView(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border)
@@ -3677,6 +3693,8 @@ namespace LexTranslator
                                 MutiWinHelper.SyncLocation();
 
                                 LastSelectExView = GetExViewName;
+
+                                CodeViewShowState = 1;
                             }
                             else
                             {
@@ -3686,6 +3704,8 @@ namespace LexTranslator
                                 }));
                                 CodeViewTag.Style = (Style)this.FindResource("ExWinHide");
                                 LastSelectExView = string.Empty;
+
+                                CodeViewShowState = 0;
                             }
 
                             DeFine.CurrentCodeView.SyncZIndex();
