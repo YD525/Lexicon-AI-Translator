@@ -119,6 +119,24 @@ namespace LexTranslator
             InitializeComponent();
         }
 
+        public void AutoShowTraditional()
+        {
+            bool IsVisible = false;
+            if (DeFine.GlobalLocalSetting.SourceLanguage == Languages.SimplifiedChinese || DeFine.GlobalLocalSetting.SourceLanguage == Languages.TraditionalChinese)
+            {
+                if (DeFine.GlobalLocalSetting.SourceLanguage == Languages.TraditionalChinese || DeFine.GlobalLocalSetting.SourceLanguage == Languages.SimplifiedChinese)
+                {
+                    Traditional.Visibility = Visibility.Visible;
+                    IsVisible = true;
+                }
+            }
+
+            if (!IsVisible)
+            {
+                Traditional.Visibility = Visibility.Collapsed;
+            }
+        }
+
         public YDListView TransViewList = null;
 
         private ScanAnimator ScanAnimator = null;
@@ -127,6 +145,8 @@ namespace LexTranslator
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DeFine.Init(this);
+
+            AutoShowTraditional();
 
             TranslatorInterface.Init();
 
@@ -205,7 +225,6 @@ namespace LexTranslator
             }
 
             UIHelper.SyncNodes();
-            new TraditionalConvert().Show();
         }
 
 
@@ -286,6 +305,11 @@ namespace LexTranslator
                         }
                     }
                 }
+        }
+
+        private void Traditional_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            new TraditionalConvert().Show();
         }
 
         #endregion

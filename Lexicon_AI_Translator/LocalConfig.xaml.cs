@@ -329,6 +329,8 @@ namespace LexTranslator
 
             if (CanReload > 0)
                 AutoReload();
+
+            DeFine.WorkingWin.AutoShowTraditional();
         }
 
         private void STo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -349,6 +351,8 @@ namespace LexTranslator
 
             if (CanReload > 0)
                 AutoReload();
+
+            DeFine.WorkingWin.AutoShowTraditional();
         }
 
         public void SetOutput(string Str)

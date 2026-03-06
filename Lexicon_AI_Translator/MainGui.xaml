@@ -585,6 +585,12 @@
                                                             NextUntranslated
                                                         </Label>
                                                     </Border>
+
+                                                    <Border Name="Traditional" Style="{DynamicResource LiteButton}" PreviewMouseDown="Traditional_PreviewMouseDown" Visibility="Collapsed">
+                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UITraditional">
+                                                            Traditional
+                                                        </Label>
+                                                    </Border>
                                                 </StackPanel>
 
                                                 <Border Style="{DynamicResource IDEBorder}" Grid.Row="1">
