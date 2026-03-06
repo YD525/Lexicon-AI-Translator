@@ -491,7 +491,7 @@
                                             </Label>
                                         </Border>
 
-                                        <Border Name="TestAll" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="TestAll_PreviewMouseDown" Visibility="Collapsed">
+                                        <Border Name="TestAll" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="TestAll_PreviewMouseDown" Visibility="Visible">
                                             <Label Style="{DynamicResource ButtonFont}" Name="TestAllButton">
                                                 TestAll
                                             </Label>
@@ -1039,7 +1039,7 @@ Fill="White"/>
                                         <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
                                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center" Width="500">
                                                 <Label Style="{DynamicResource TittleFont}">
-                                                    Game Configs
+                                                    File Configs
                                                 </Label>
 
                                                 <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
@@ -1053,6 +1053,7 @@ Fill="White"/>
                                                             <ComboBox Style="{DynamicResource CustomComboBoxStyle}" Name="SGame" Width="100" SelectionChanged="SGame_SelectionChanged">
                                                             </ComboBox>
                                                         </StackPanel>
+                                                        
 
                                                         <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 10">
                                                             <Label Style="{DynamicResource NormalText}">
@@ -1064,6 +1065,56 @@ Fill="White"/>
                                                                 </TextBox>
                                                             </Border>
                                                         </StackPanel>-->
+
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Pex Configs
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 10">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                CodeGenStyle:
+                                                            </Label>
+
+                                                            <ComboBox Style="{DynamicResource CustomComboBoxStyle}" Name="SCodeGenStyle" Width="100" SelectionChanged="SCodeGenStyle_SelectionChanged">
+                                                            </ComboBox>
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                                Assembly Code Comparison mode:
+                                                            </Label>
+                                                            <CheckBox Style="{DynamicResource ToggleCircleCheckBox}" VerticalAlignment="Center" Name="SShowAssembly" Click="SShowAssembly_Click">
+                                                            </CheckBox>
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                                String encoding: Force UTF8
+                                                            </Label>
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+                                                </Border>
+
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Esp Configs
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                                String encoding: Force UTF8
+                                                            </Label>
+                                                        </StackPanel>
 
                                                     </StackPanel>
                                                 </Border>

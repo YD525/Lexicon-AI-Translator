@@ -354,6 +354,7 @@ namespace LexTranslator.UIManagement
                 GetOriginal.Foreground = new SolidColorBrush(Colors.Red);
                 GetTranslated.Foreground = new SolidColorBrush(Colors.Red);
                 GetTranslatedBorder.Visibility = Visibility.Collapsed;
+                GetFakeKey.Foreground = new SolidColorBrush(Colors.Red);
 
                 GetTranslated.IsReadOnly = true;
             }

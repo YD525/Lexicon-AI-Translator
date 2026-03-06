@@ -220,6 +220,9 @@ namespace LexTranslator
         public bool CanTranslateBook { get; set; } = true;
         public TextLayout TextDisplay { get; set; } = TextLayout.LTR;
 
+        public bool ShowAssembly { get; set; } = false;
+        public bool GenCSharp { get; set; } = true;
+
         public void ReadConfig()
         {
             try
@@ -264,6 +267,9 @@ namespace LexTranslator
                             this.CanTranslateBook = GetSetting.CanTranslateBook;
 
                             this.TextDisplay = GetSetting.TextDisplay;
+
+                            this.ShowAssembly = GetSetting.ShowAssembly;
+                            this.GenCSharp = GetSetting.GenCSharp;
                         }
                     }
                     else

@@ -1005,7 +1005,14 @@ namespace LexTranslator
 
                     string SetPsc = "";
 
-                    GlobalPexReader?.Core.LoadPex(LastSetPath).ReadStrings().GetPsc(out SetPsc, false, CodeGenStyle.CSharp).AnalysisStrings();
+                    CodeGenStyle AutoStyle = CodeGenStyle.Papyrus;
+
+                    if (DeFine.GlobalLocalSetting.GenCSharp)
+                    {
+                        AutoStyle = CodeGenStyle.CSharp;
+                    }
+
+                    GlobalPexReader?.Core.LoadPex(LastSetPath).ReadStrings().GetPsc(out SetPsc, DeFine.GlobalLocalSetting.ShowAssembly, AutoStyle).AnalysisStrings();
 
                     DeFine.CurrentCodeView.Dispatcher.Invoke(() =>
                     {
@@ -3197,6 +3204,30 @@ namespace LexTranslator
 
                 SGame.SelectedValue = DeFine.GlobalLocalSetting.GameType.ToString();
 
+                if (DeFine.GlobalLocalSetting.ShowAssembly)
+                {
+                    SShowAssembly.IsChecked = true;
+                }
+                else
+                {
+                    SShowAssembly.IsChecked = false;
+                }
+
+                SCodeGenStyle.Items.Clear();
+
+                SCodeGenStyle.Items.Add("CSharp");
+                SCodeGenStyle.Items.Add("Papyrus");
+
+                if (DeFine.GlobalLocalSetting.GenCSharp)
+                {
+                    SCodeGenStyle.SelectedValue = SCodeGenStyle.Items[0];
+                }
+                else
+                {
+                    SCodeGenStyle.SelectedValue = SCodeGenStyle.Items[1];
+                }
+
+
                 //SGameFileEncoding.Items.Clear();
                 //SGameFileEncoding.Items.Add(EncodingTypes.UTF8.ToString());
                 //SGameFileEncoding.Items.Add(EncodingTypes.UTF8_1250.ToString());
@@ -3339,6 +3370,32 @@ namespace LexTranslator
 
                 SelectSettingNav(GetNav);
             }
+        }
+
+        private void SCodeGenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ConvertHelper.ObjToStr(SCodeGenStyle.SelectedValue).Equals("CSharp"))
+            {
+                DeFine.GlobalLocalSetting.GenCSharp = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.GenCSharp = false;
+            }
+        }
+
+        private void SShowAssembly_Click(object sender, RoutedEventArgs e)
+        {
+            if (SShowAssembly.IsChecked == true)
+            {
+                DeFine.GlobalLocalSetting.ShowAssembly = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.ShowAssembly = false;
+            }
+
+            DeFine.GlobalLocalSetting.SaveConfig();
         }
 
         private void SProxyUrl_TextChanged(object sender, TextChangedEventArgs e)

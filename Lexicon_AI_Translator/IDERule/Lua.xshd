@@ -97,6 +97,17 @@
 
 	  
 	  <Keywords color="PapyrusDeFine">
+		  <Word>keyword</Word>
+		  <Word>form</Word>
+		  <Word>visualeffect</Word>
+		  <Word>leveleditem</Word>
+		  <Word>race</Word>
+		  <Word>spell</Word>
+		  <Word>scene</Word>
+		  <Word>faction</Word>
+		  <Word>quest</Word>
+		  <Word>globalvariable</Word>
+		  <Word>formlist</Word>
 		  <Word>VoiceType</Word>
 		  <Word>ActorBase</Word>
 		  <Word>var</Word>
@@ -142,7 +153,10 @@
 	</Keywords>
 	 
 	  <Keywords color="Keywords">
-      <Word>new</Word>
+	  <Word>static</Word>
+	  <Word>public</Word>
+	  <Word>private</Word>
+	  <Word>new</Word>
 	  <Word>struct</Word>
 	  <Word>class</Word>
 	  <Word>public</Word>
