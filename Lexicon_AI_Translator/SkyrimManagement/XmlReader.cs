@@ -38,15 +38,12 @@ namespace LexTranslator.SkyrimManagement
                 else 
                 {
                     this.TransText = Item.Dest;
+                    TranslatorInterface.Instance.SetLink(this.Key,Item.Dest);
                 }
             }
 
             public string GetTextIfTrans()
             {
-                if (this.TransText.Trim().Length > 0)
-                {
-                    return this.TransText;
-                }
                 string GetKey = this.Key;
                 var GetResult = TranslatorInterface.Instance.GetLink(GetKey);
                 if (GetResult != null)
@@ -60,6 +57,11 @@ namespace LexTranslator.SkyrimManagement
                     {
                         return this.SourceText;
                     }
+                }
+
+                if (this.TransText.Trim().Length > 0)
+                {
+                    return this.TransText;
                 }
 
                 return this.SourceText;
@@ -96,7 +98,6 @@ namespace LexTranslator.SkyrimManagement
                   .ToList())
                 {
                     XmlItem SetItem = new XmlItem(GetItem);
-                    SetItem.GetTextIfTrans();
                     XmlItems.Add(SetItem);
                 }
             }
@@ -112,7 +113,7 @@ namespace LexTranslator.SkyrimManagement
             Instance = null;
         }
 
-        public void Save()
+        public void Save(string Path)
         {
             var ItemDict = XmlItems.ToDictionary(x => x.EditorID + "|" + x.REC, x => x);
 
@@ -131,6 +132,8 @@ namespace LexTranslator.SkyrimManagement
                     }
                 }
             }
+
+            Instance.Save(Path);
 
             Close();
         }

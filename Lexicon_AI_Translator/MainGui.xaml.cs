@@ -1232,9 +1232,9 @@ namespace LexTranslator
                     LoadFileButton.Content = UILanguageHelper.UICache["LoadFileButton"];
 
                     TransViewList?.Clear();
-                    EspReader.Close();
-                    GlobalMCMReader?.Close();
-                    GlobalPexReader?.Close();
+
+                    CloseAllPointer();
+
                     TranslatorInterface.Instance.TranslatedLink.Clear();
                     TranslatorInterface.Instance.ReInit();
                     LoadSaveState = 0;
@@ -1334,6 +1334,17 @@ namespace LexTranslator
                     string GetFileSuffix = GetFileFullName.Split('.')[1];
                     string GetFileName = GetFileFullName.Split('.')[0];
 
+                    if (CurrentTransType == 11)
+                    {
+                        if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
+                        {
+                            if (GlobalXmlReader.XmlItems.Count > 0)
+                            {
+                                GlobalXmlReader.Save(LastSetPath);
+                            }
+                        }
+                    }
+                    else
                     if (CurrentTransType == 6)
                     {
                         if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
@@ -1347,6 +1358,7 @@ namespace LexTranslator
                             }
                         }
                     }
+                    else
                     if (CurrentTransType == 3)
                     {
                         if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
@@ -1356,7 +1368,7 @@ namespace LexTranslator
                                 GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings);
 
                                 int TranslateCount = 0;
-                                for (int i=0;i<Strings.Count;i++)
+                                for (int i = 0; i < Strings.Count; i++)
                                 {
                                     var StringItem = Strings[i];
                                     StringItem.Translated = TranslatorInterface.Instance.GetLink(StringItem.UniqueKey);
@@ -1385,6 +1397,7 @@ namespace LexTranslator
                             }
                         }
                     }
+                    else
                     if (CurrentTransType == 2)
                     {
                         string TempFilePath = LastSetPath + ".Temp";
