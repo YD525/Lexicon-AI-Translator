@@ -821,7 +821,7 @@ namespace LexTranslator
                     else
                     if (CurrentTransType == 3)
                     {
-                        GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings,CurrentSig);
+                        GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings, CurrentSig);
 
                         foreach (var GetItem in Strings)
                         {
@@ -833,12 +833,12 @@ namespace LexTranslator
                             }
                             else
                             {
-                                PexLinks.Add(GetItem.UniqueKey,CalcLineIndex);
+                                PexLinks.Add(GetItem.UniqueKey, CalcLineIndex);
                             }
 
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreateLine(CurrentSig,ConvertHelper.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
+                                TransViewList.AddRowR(LineRenderer.CreateLine(CurrentSig, ConvertHelper.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
                             }));
                         }
 
@@ -852,6 +852,19 @@ namespace LexTranslator
                             this.Dispatcher.Invoke(new Action(() =>
                             {
                                 TransViewList.AddRowR(LineRenderer.CreateLine(GetItem.Type, "", GetItem.Key, GetItem.SourceText, GetItem.TransText, GetItem.Score));
+                            }));
+                        }
+
+                        DataLoading = false;
+                    }
+                    else
+                    if (CurrentTransType == 11)
+                    {
+                        foreach (var GetItem in GlobalXmlReader.XmlItems)
+                        {
+                            this.Dispatcher.Invoke(new Action(() =>
+                            {
+                                TransViewList.AddRowR(LineRenderer.CreateLine(GetItem.Type, "", GetItem.Key, GetItem.SourceText, GetItem.TransText, 999));
                             }));
                         }
 
@@ -953,6 +966,15 @@ namespace LexTranslator
             }
         }
 
+        public void CloseAllPointer()
+        {
+            GlobalXmlReader.Close();
+            GlobalRamCacheReader.Close();
+            EspReader.Close();
+            GlobalMCMReader.Close();
+            GlobalPexReader.Core.Close();
+        }
+
         public bool DataLoading = false;
         public void LoadAny(string FilePath)
         {
@@ -970,6 +992,7 @@ namespace LexTranslator
             {
                 TranslatorInterface.Close();
                 TranslatorInterface.Instance.ClearAICache();
+                CloseAllPointer();
                 //FromStr.Text = "";
                 //ToStr.Text = "";
 
@@ -998,17 +1021,37 @@ namespace LexTranslator
 
                 YDDictionaryHelper.ReadDictionary(GetModName);
 
+                LastSetPath = FilePath;
+
+                if (FilePath.ToLower().EndsWith(".xml"))
+                {
+                    SetTittle(FModName);
+                    CurrentTransType = 11;
+
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                        TransViewList.Clear();
+                    }));
+
+                    GlobalXmlReader.Load(LastSetPath);
+
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                        CancelBtn.Opacity = 1;
+                        CancelBtn.IsEnabled = true;
+                        LoadSaveState = 1;
+                    }));
+
+                    ReSetTransTargetType(null);
+                    ReloadData();
+
+                    IsValidFile = true;
+                }
+
                 if (FilePath.ToLower().EndsWith(".json"))
                 {
                     SetTittle(FModName);
                     CurrentTransType = 6;
-
-                    GlobalRamCacheReader.Close();
-                    EspReader.Close();
-                    GlobalMCMReader.Close();
-                    GlobalPexReader.Core.Close();
-
-                    LastSetPath = FilePath;
 
                     this.Dispatcher.Invoke(new Action(() =>
                     {
@@ -1033,10 +1076,6 @@ namespace LexTranslator
                 {
                     SetTittle(FModName);
                     CurrentTransType = 3;
-
-                    GlobalRamCacheReader.Close();
-                    EspReader.Close();
-                    GlobalMCMReader.Close();
 
                     LastSetPath = FilePath;
 
@@ -1082,11 +1121,6 @@ namespace LexTranslator
                     SetTittle(FModName);
                     CurrentTransType = 1;
 
-                    GlobalRamCacheReader.Close();
-                    EspReader.Close();
-                    GlobalMCMReader.Close();
-                    GlobalPexReader.Close();
-
                     LastSetPath = FilePath;
 
                     this.Dispatcher.Invoke(new Action(() =>
@@ -1112,11 +1146,6 @@ namespace LexTranslator
                 {
                     SetTittle(FModName);
                     CurrentTransType = 2;
-
-                    GlobalRamCacheReader.Close();
-
-                    GlobalMCMReader.Close();
-                    GlobalPexReader.Close();
 
                     LastSetPath = FilePath;
 
@@ -3006,7 +3035,7 @@ namespace LexTranslator
             //var Get = ChineseVariantMap.SimplifiedToTraditionalByReq("测试转换的一段话");
             //MessageBox.Show(Get);
 
-            new R_XmlReader().Load("C:\\Users\\52508\\Desktop\\Delilah Dress_english_chinese.xml");
+            //new R_XmlReader().Load("C:\\Users\\52508\\Desktop\\Delilah Dress_english_chinese.xml");
 
             for (int i = 0; i < TransViewList.RealLines.Count; i++)
             {
