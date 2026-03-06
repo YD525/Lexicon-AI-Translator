@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
+using LexTranslator.SkyrimModManager;
+using LexTranslator.TranslateManagement;
 
 namespace LexTranslator.SkyrimManagement
 {
-    public class XmlReader
+    public class R_XmlReader
     {
-        public class MCMItem
+        public class XmlItem
         {
             public string Type = "";
             public string EditorID = "";
@@ -14,14 +18,22 @@ namespace LexTranslator.SkyrimManagement
             public string SourceText = "";
             public string TransText = "";
 
-            public MCMItem(string EditorID, string SourceText)
+            public XmlItem(StringItem Item)
             {
                 this.Type = "Xml";
-                this.EditorID = EditorID;
+                this.EditorID = Item.EDID;
 
-                this.Key = "";
-                this.SourceText = SourceText;
-                this.TransText = string.Empty;
+                this.Key =Crc32Helper.ComputeCrc32(Item.EDID + "_" + Item.REC);
+                this.SourceText = Item.Source;
+
+                if (Item.Source == Item.Dest)
+                {
+                    this.TransText = string.Empty;
+                }
+                else 
+                {
+                    this.TransText = Item.Dest;
+                }
             }
 
             public string GetTextIfTrans()
@@ -59,23 +71,46 @@ namespace LexTranslator.SkyrimManagement
             public string Dest { get; set; }
         }
 
+        public List<XmlItem> XmlItems = new List<XmlItem>();
+        public Encoding CurrentEncoding = null;
+
         public void Load(string Path)
         {
+            Close();
+            CurrentEncoding = DataHelper.GetFileEncodeType(Path);
             XDocument Doc = XDocument.Load(Path);
-
-            foreach (var GetItem in
-              Doc.Descendants("String")
-              .Select(x => new StringItem
-              {
-                  EDID = (string)x.Element("EDID"),
-                  REC = (string)x.Element("REC"),
-                  Source = (string)x.Element("Source"),
-                  Dest = (string)x.Element("Dest")
-              })
-              .ToList())
+            try
             {
-
+                foreach (var GetItem in
+                  Doc.Descendants("String")
+                  .Select(x => new StringItem
+                  {
+                      EDID = (string)x.Element("EDID"),
+                      REC = (string)x.Element("REC"),
+                      Source = (string)x.Element("Source"),
+                      Dest = (string)x.Element("Dest")
+                  })
+                  .ToList())
+                {
+                    XmlItems.Add(new XmlItem(GetItem));
+                }
             }
+            catch 
+            {
+                MessageBoxExtend.Show(DeFine.WorkingWin, "This XML file format is not supported.");
+            }
+        }
+
+
+        public void Close()
+        {
+            this.XmlItems.Clear();
+        }
+
+
+        public void Save()
+        { 
+        
         }
     }
 }

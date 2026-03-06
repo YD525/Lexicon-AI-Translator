@@ -3004,6 +3004,8 @@ namespace LexTranslator
             //var Get = ChineseVariantMap.SimplifiedToTraditionalByReq("测试转换的一段话");
             //MessageBox.Show(Get);
 
+            new R_XmlReader().Load("C:\\Users\\52508\\Desktop\\Delilah Dress_english_chinese.xml");
+
             for (int i = 0; i < TransViewList.RealLines.Count; i++)
             {
                 TransViewList.RealLines[i].TransText = TransViewList.RealLines[i].SourceText + "(" + i.ToString() + ")";
