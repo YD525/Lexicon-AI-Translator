@@ -40,6 +40,7 @@ using PhoenixEngine.EngineManagement.Unit;
 using PhoenixEngine.GameManagement;
 using static PexInterface.PexHeuristicAnalysis;
 using System.Threading.Tasks;
+using PhoenixEngine.LanguageManagement;
 
 namespace LexTranslator
 {
@@ -204,6 +205,7 @@ namespace LexTranslator
             }
 
             UIHelper.SyncNodes();
+            new TraditionalConvert().Show();
         }
 
 
@@ -2975,6 +2977,9 @@ namespace LexTranslator
 
         private void TestAll_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            //var Get = ChineseVariantMap.SimplifiedToTraditionalByReq("测试转换的一段话");
+            //MessageBox.Show(Get);
+
             for (int i = 0; i < TransViewList.RealLines.Count; i++)
             {
                 TransViewList.RealLines[i].TransText = TransViewList.RealLines[i].SourceText + "(" + i.ToString() + ")";

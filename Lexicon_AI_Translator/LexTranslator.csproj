@@ -149,6 +149,9 @@
     <Compile Include="SkyrimManagement\XMLConverter.cs" />
     <Compile Include="SkyrimManagement\YDDictionaryHelper.cs" />
     <Compile Include="SQLManagement\SqlCore.cs" />
+    <Compile Include="TraditionalConvert.xaml.cs">
+      <DependentUpon>TraditionalConvert.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TranslateManagement\Crc32Helper.cs" />
     <Compile Include="TranslateManagement\TranslatorInterface.cs" />
     <Compile Include="UIManagement\DashBoardService.cs" />
@@ -233,6 +236,10 @@
     <Page Include="Themes\RetroStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TraditionalConvert.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIManagement\NodeStyleWin.xaml">
       <SubType>Designer</SubType>

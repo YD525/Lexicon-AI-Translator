@@ -168,12 +168,20 @@ namespace LexTranslator.UIManage
 
         public static Grid CreateLine(FakeGrid Item)
         {
-            return CreateLine(Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText, Item.Score);
+            bool IsModify = false;
+            if (Item.RealSource.Length > 0)
+            {
+                if (Item.RealSource != Item.SourceText)
+                {
+                    IsModify = true;
+                }
+            }
+            return CreateLine(IsModify,Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText, Item.Score);
         }
 
-        public static Grid CreateLine(double Height, string Type, string Key, string SourceText, string TransText, double Score)
+        public static Grid CreateLine(bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreateLine(Height, new BaseUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreateLine(IsModify,Height, new BaseUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
             return MainGrid;
         }
 

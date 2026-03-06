@@ -203,6 +203,7 @@ namespace LexTranslator.TranslateManage
 
         public static void ClearTranslatorHistoryCache()
         {
+            RowStyleWin.RecordModifyStates.Clear();
             TranslatorHistoryCaches.Clear();
         }
 
