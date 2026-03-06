@@ -1663,6 +1663,11 @@ namespace LexTranslator
 
         private void ClearCache_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (LoadSaveState == 0)
+            {
+                MessageBoxExtend.Show(this, "Only currently open files can have their cache cleared.");
+                return;
+            }
             ClearCacheView.Visibility = Visibility.Visible;
         }
 
