@@ -62,6 +62,10 @@ namespace LexTranslator
 
                 for (int i = 0; i < DeFine.WorkingWin.TransViewList.RealLines.Count; i++)
                 {
+                    if (DeFine.WorkingWin.TransViewList.RealLines[i].Score <= 0)
+                    {
+                        continue;
+                    }
                     string Source = DeFine.WorkingWin.TransViewList.RealLines[i].SourceText;
                     var Result = ChineseVariantMap.SimplifiedToTraditionalByReq(Source);
 

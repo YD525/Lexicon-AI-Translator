@@ -3482,7 +3482,9 @@ namespace LexTranslator
 
         private void SCodeGenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ConvertHelper.ObjToStr(SCodeGenStyle.SelectedValue).Equals("CSharp"))
+            var GetValue = ConvertHelper.ObjToStr(SCodeGenStyle.SelectedValue);
+            if(GetValue.Length>0)
+            if (GetValue.Equals("CSharp"))
             {
                 DeFine.GlobalLocalSetting.GenCSharp = true;
             }
