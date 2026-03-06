@@ -13,14 +13,18 @@
                 Processed by 繁化姬: https://zhconvert.org
             </TextBox>
 
-            <Border CornerRadius="9" Cursor="Hand" Background="#FF585858" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 50 0 0" Padding="10 5 10 5">
+            <Label Foreground="White" HorizontalAlignment="Center" Margin="0 5 0 0">
+                Simplified To Traditional
+            </Label>
+
+            <Border CornerRadius="9" Cursor="Hand" Background="#FF585858" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 50 0 0" Padding="10 5 10 5" PreviewMouseDown="ConvertCurrent_PreviewMouseDown">
                 <Label Foreground="White">
                     Current to Traditional
                 </Label>
             </Border>
 
-            <Border CornerRadius="9" Cursor="Hand" Background="#FF585858" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 15 0 0" Padding="10 5 10 5">
-                <Label Foreground="White">
+            <Border CornerRadius="9" Cursor="Hand" Background="#FF585858" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 15 0 0" Padding="10 5 10 5"  PreviewMouseDown="ConvertAll_PreviewMouseDown">
+                <Label Foreground="White" Name="ConvertAllBtn">
                     All to Traditional
                 </Label>
             </Border>
