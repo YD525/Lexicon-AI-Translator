@@ -1659,6 +1659,22 @@ namespace LexTranslator
             }));
         }
 
+        public void CheckCanClearCache(out bool Check)
+        {
+            if ((CloudTranslationCache.IsChecked == true || UserTranslationCache.IsChecked == true) == false)
+            {
+                Check = false;
+                ClearCacheR.Opacity = 0.5;
+                ClearCacheR.Cursor = null;
+            }
+            else
+            {
+                Check = true;
+                ClearCacheR.Opacity = 1;
+                ClearCacheR.Cursor = Cursors.Hand;
+            }
+        }
+
         public Thread ClearCacheTrd = null;
 
         private void ClearCache_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -1668,6 +1684,9 @@ namespace LexTranslator
                 MessageBoxExtend.Show(this, "Only currently open files can have their cache cleared.");
                 return;
             }
+
+            CheckCanClearCache(out bool Check);
+
             ClearCacheView.Visibility = Visibility.Visible;
         }
 
@@ -1839,6 +1858,8 @@ namespace LexTranslator
             {
                 DeFine.GlobalLocalSetting.CanClearCloudTranslationCache = false;
             }
+
+            CheckCanClearCache(out bool Check);
         }
         private void UserTranslationCache_Click(object sender, RoutedEventArgs e)
         {
@@ -1850,6 +1871,8 @@ namespace LexTranslator
             {
                 DeFine.GlobalLocalSetting.CanClearUserInputTranslationCache = false;
             }
+
+            CheckCanClearCache(out bool Check);
         }
         private void SpeakFromStr(object sender, MouseButtonEventArgs e)
         {
@@ -3086,85 +3109,89 @@ namespace LexTranslator
 
         private void ClearCacheR_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (MessageBoxExtend.Show(this, "Waring", "Are you sure you want to clear the database records? Doing so will lose all translated content. (Note: Under no circumstances should you click this button arbitrarily.)", MsgAction.YesNo, MsgType.Waring) <= 0)
+            CheckCanClearCache(out bool Check);
+            if (Check)
             {
-                return;
-            }
-
-            if (TransViewList != null)
-            {
-                if (TransViewList.Rows > 0)
+                if (MessageBoxExtend.Show(this, "Waring", "Are you sure you want to clear the database records? Doing so will lose all translated content. (Note: Under no circumstances should you click this button arbitrarily.)", MsgAction.YesNo, MsgType.Waring) <= 0)
                 {
-                    if (ConvertHelper.ObjToStr(ClearCacheButton.Content).Equals(UILanguageHelper.UICache["ClearCacheButton"]))
-                    {
-                        if (ClearCacheTrd == null)
-                        {
-                            bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
-                            bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
+                    return;
+                }
 
-                            ClearCacheTrd = new Thread(() =>
+                if (TransViewList != null)
+                {
+                    if (TransViewList.Rows > 0)
+                    {
+                        if (ConvertHelper.ObjToStr(ClearCacheButton.Content).Equals(UILanguageHelper.UICache["ClearCacheButton"]))
+                        {
+                            if (ClearCacheTrd == null)
                             {
-                                try
+                                bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
+                                bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
+
+                                ClearCacheTrd = new Thread(() =>
                                 {
+                                    try
+                                    {
+                                        ClearCacheButton.Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            ClearCacheButton.Content = UILanguageHelper.UICache["ClearCacheButton1"];
+                                        }));
+
+                                        int CallFuncCount = 0;
+                                        if (GetCloudTranslationCache == true)
+                                        {
+                                            TranslatorInterface.Instance.ClearAICache();
+
+                                            if (CloudDBCache.ClearCloudCache(Phoenix.GetFileUniqueKey()))
+                                            {
+                                                var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
+                                                if (GetBatchCore != null)
+                                                {
+                                                    GetBatchCore.TranslatedCount = 0;
+                                                }
+                                                Phoenix.Vacuum();
+                                                CallFuncCount++;
+                                            }
+                                        }
+                                        if (GetUserTranslationCache == true)
+                                        {
+                                            LocalDBCache.ClearLocalCache(Phoenix.GetFileUniqueKey());
+                                            {
+                                                Phoenix.Vacuum();
+                                                CallFuncCount++;
+                                            }
+
+                                            ToStr.Dispatcher.Invoke(new Action(() =>
+                                            {
+                                                ToStr.Text = "";
+                                            }));
+                                        }
+
+                                        UPDateUI();
+                                    }
+                                    catch
+                                    {
+
+                                    }
+
+                                    TranslatorInterface.Close();
+                                    TranslatorInterface.PreparingTranslationUnits();
+
+                                    while (TranslatorInterface.PreparingTrd != null)
+                                    {
+                                        Thread.Sleep(100);
+                                    }
+
                                     ClearCacheButton.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        ClearCacheButton.Content = UILanguageHelper.UICache["ClearCacheButton1"];
+                                        ClearCacheButton.Content = UILanguageHelper.UICache["ClearCacheButton"];
                                     }));
 
-                                    int CallFuncCount = 0;
-                                    if (GetCloudTranslationCache == true)
-                                    {
-                                        TranslatorInterface.Instance.ClearAICache();
+                                    ClearCacheTrd = null;
+                                });
 
-                                        if (CloudDBCache.ClearCloudCache(Phoenix.GetFileUniqueKey()))
-                                        {
-                                            var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
-                                            if (GetBatchCore != null)
-                                            {
-                                                GetBatchCore.TranslatedCount = 0;
-                                            }
-                                            Phoenix.Vacuum();
-                                            CallFuncCount++;
-                                        }
-                                    }
-                                    if (GetUserTranslationCache == true)
-                                    {
-                                        LocalDBCache.ClearLocalCache(Phoenix.GetFileUniqueKey());
-                                        {
-                                            Phoenix.Vacuum();
-                                            CallFuncCount++;
-                                        }
-
-                                        ToStr.Dispatcher.Invoke(new Action(() =>
-                                        {
-                                            ToStr.Text = "";
-                                        }));
-                                    }
-
-                                    UPDateUI();
-                                }
-                                catch
-                                {
-
-                                }
-
-                                TranslatorInterface.Close();
-                                TranslatorInterface.PreparingTranslationUnits();
-
-                                while (TranslatorInterface.PreparingTrd != null)
-                                {
-                                    Thread.Sleep(100);
-                                }
-
-                                ClearCacheButton.Dispatcher.Invoke(new Action(() =>
-                                {
-                                    ClearCacheButton.Content = UILanguageHelper.UICache["ClearCacheButton"];
-                                }));
-
-                                ClearCacheTrd = null;
-                            });
-
-                            ClearCacheTrd.Start();
+                                ClearCacheTrd.Start();
+                            }
                         }
                     }
                 }
