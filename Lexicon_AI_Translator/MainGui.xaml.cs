@@ -1353,21 +1353,23 @@ namespace LexTranslator
                     {
                         Link.CheckLinks(new Action<string, string>((string Key,string Value) => 
                         {
-                            if(Value.Length>0)
-                            Value = Value
-                            .Replace(",", "，")
-                            .Replace(".", "。")
-                            .Replace(":", "：")
-                            .Replace(";", "；")
-                            .Replace("!", "！")
-                            .Replace("?", "？")
-                            .Replace("(", "（")
-                            .Replace(")", "）")
-                            .Replace("[", "【")
-                            .Replace("]", "】")
-                            .Replace("<", "《")
-                            .Replace(">", "》")
-                            .Replace("'", "‘");
+                            if (Value.Length > 0)
+                            {
+                                Link[Key] = Value
+                               .Replace(",", "，")
+                               .Replace(".", "。")
+                               .Replace(":", "：")
+                               .Replace(";", "；")
+                               .Replace("!", "！")
+                               .Replace("?", "？")
+                               .Replace("(", "（")
+                               .Replace(")", "）")
+                               .Replace("[", "【")
+                               .Replace("]", "】")
+                               .Replace("<", "《")
+                               .Replace(">", "》")
+                               .Replace("'", "‘");
+                            }
                         }));
                     }
 
