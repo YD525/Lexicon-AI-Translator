@@ -311,7 +311,7 @@ namespace LexTranslator.UIManagement
 
             if (EspReader.GameCharacters.ContainsKey(Item.Key))
             {
-                GetFakeKey.Foreground =new SolidColorBrush(Color.FromRgb(11, 116, 209));
+                GetFakeKey.Foreground =new SolidColorBrush(Color.FromRgb(180,224,236));
             }
 
             GetTranslated.Foreground = new SolidColorBrush(FontColor);

@@ -5,18 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="NPCFinder" Height="150" Width="300" WindowStartupLocation="CenterOwner">
+        Title="NPCFinder" Height="150" Width="300" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
     <Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <Label>
                     NpcName
                 </Label>
-                <TextBox Width="150">
+                <TextBox Name="NpcName" Width="150" TextChanged="TextBox_TextChanged">
                 </TextBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <ComboBox Width="220" Name="NpcNames" Margin="0 5 0 0">
+                <ComboBox Width="220" Name="NpcNames" Margin="0 5 0 0" SelectionChanged="NpcNames_SelectionChanged">
                 </ComboBox>
             </StackPanel>
 

@@ -582,7 +582,7 @@
 
                                                     <Border Name="NextUntranslated" Style="{DynamicResource LiteButton}" PreviewMouseDown="NextUntranslated_PreviewMouseDown">
                                                         <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UINextUntranslated">
-                                                            NextUntranslated
+                                                            NextAuto
                                                         </Label>
                                                     </Border>
 
@@ -603,7 +603,7 @@
                                                 <Border Style="{DynamicResource IDEBorder}" Grid.Row="1">
                                                 
                                                     <Grid>
-                                                        <StackPanel Name="NpcView" Orientation="Horizontal" Panel.ZIndex="2" VerticalAlignment="Bottom" Height="20">
+                                                        <StackPanel Name="NpcView" Orientation="Horizontal" Panel.ZIndex="2" VerticalAlignment="Bottom" Height="30" Visibility="Collapsed">
                                                             
                                                             <Label VerticalAlignment="Center" Foreground="White">
                                                                 Gender:
@@ -616,7 +616,7 @@
                                                                 Name:
                                                             </Label>
 
-                                                            <TextBox VerticalAlignment="Center" Name="NpcName" Focusable="False" IsReadOnly="True" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center" Visibility="Collapsed">
+                                                            <TextBox VerticalAlignment="Center" Name="NpcName" Focusable="False" IsReadOnly="True" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center">
 
                                                             </TextBox>
                                                         </StackPanel>
