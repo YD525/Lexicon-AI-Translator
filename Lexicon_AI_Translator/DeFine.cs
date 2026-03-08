@@ -12,6 +12,8 @@ using System.Threading;
 using LexTranslator.UIManage;
 using PhoenixEngine;
 using PhoenixEngine.Language;
+using PhoenixEngine.ADO;
+using System.Runtime.CompilerServices;
 
 namespace LexTranslator
 {
@@ -141,6 +143,15 @@ namespace LexTranslator
             ExtendWin.CloseUI();
         }
 
+        public static void SetSQLErrorReport()
+        {
+            P_SQLite.OnError += new Action<string>((ErrorMsg) => 
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() => {
+                    MessageBoxExtend.Show(DeFine.WorkingWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                }));
+            });
+        }
         public static void Init(MainGui Work)
         {
             CurrentReplaceView.Owner = Work;
@@ -176,6 +187,8 @@ namespace LexTranslator
             LocalConfigView.Init();
 
             ExtendWin = new ExtendWin();
+
+            SetSQLErrorReport();
         }
     }
 
