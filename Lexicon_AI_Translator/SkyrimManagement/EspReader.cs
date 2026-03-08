@@ -10,6 +10,7 @@ using LexTranslator.TranslateManagement;
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using PhoenixEngine.TranslateManagement;
+using static LexTranslator.SkyrimManagement.EspInterop;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -185,6 +186,54 @@ namespace LexTranslator.SkyrimManagement
          IntPtr NewUtf8Data
         );
 
+        //--------------------------
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void C_ClearCharacterTracker();
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterCount();
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint C_GetCharacterFormID(int index);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterGender(int index);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterName(int index, byte[] buffer, int bufferSize);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterEditorID(int index, byte[] buffer, int bufferSize);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterVoiceType(int index, byte[] buffer, int bufferSize);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterLinkedInfoCount(int index);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint C_GetCharacterLinkedInfo(int index, int linkIndex);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterLinkedFactionCount(int index);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint C_GetCharacterLinkedFaction(int index, int linkIndex);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterLinkedRaceCount(int index);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint C_GetCharacterLinkedRace(int index, int linkIndex);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int C_GetCharacterLinkedVoiceTypeCount(int index);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint C_GetCharacterLinkedVoiceType(int index, int linkIndex);
+        //--------------------------
+
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool C_SaveEsp(IntPtr utf8Path);
 
@@ -215,6 +264,82 @@ namespace LexTranslator.SkyrimManagement
             return Encoding.UTF8.GetString(Buffer);
         }
 
+        private static string GetCharacterUtf8(int index,
+    Func<int, byte[], int, int> getter)
+        {
+            int Len = getter(index, null, 0);
+            if (Len <= 0) return string.Empty;
+
+            byte[] Buffer = new byte[Len + 1];
+            int ActualLen = getter(index, Buffer, Buffer.Length);
+
+            int NullIndex = Array.IndexOf(Buffer, (byte)0, 0, ActualLen);
+            if (NullIndex >= 0) ActualLen = NullIndex;
+
+            return Encoding.UTF8.GetString(Buffer, 0, ActualLen);
+        }
+
+        public static List<CharacterRecordInfo> GetAllCharacters()
+        {
+            int Count = C_GetCharacterCount();
+            var Results = new List<CharacterRecordInfo>(Count);
+
+            for (int i = 0; i < Count; i++)
+            {
+                var Record = new CharacterRecordInfo();
+                Record.NpcFormID = C_GetCharacterFormID(i);
+                Record.Name = GetCharacterUtf8(i, C_GetCharacterName);
+                Record.EditorID = GetCharacterUtf8(i, C_GetCharacterEditorID);
+                Record.VoiceType = GetCharacterUtf8(i, C_GetCharacterVoiceType);
+                Record.Gender = C_GetCharacterGender(i);   // 0=Unknown 1=Male 2=Female
+
+                int InfoCount = C_GetCharacterLinkedInfoCount(i);
+                for (int j = 0; j < InfoCount; j++)
+                    Record.LinkedInfos.Add(C_GetCharacterLinkedInfo(i, j));
+
+                int FactionCount = C_GetCharacterLinkedFactionCount(i);
+                for (int j = 0; j < FactionCount; j++)
+                    Record.LinkedFactions.Add(C_GetCharacterLinkedFaction(i, j));
+
+                int RaceCount = C_GetCharacterLinkedRaceCount(i);
+                for (int j = 0; j < RaceCount; j++)
+                    Record.LinkedRaces.Add(C_GetCharacterLinkedRace(i, j));
+
+                int VoiceCount = C_GetCharacterLinkedVoiceTypeCount(i);
+                for (int j = 0; j < VoiceCount; j++)
+                    Record.LinkedVoiceTypes.Add(C_GetCharacterLinkedVoiceType(i, j));
+
+                Results.Add(Record);
+            }
+
+            return Results;
+        }
+
+        public class CharacterRecordInfo
+        {
+            public uint NpcFormID { get; set; }
+            public string Name { get; set; } = "";
+            public string EditorID { get; set; } = "";
+            public string VoiceType { get; set; } = "";
+            public int Gender { get; set; }   
+
+            public List<uint> LinkedInfos { get; set; } = new List<uint>();
+            public List<uint> LinkedFactions { get; set; } = new List<uint>();
+            public List<uint> LinkedRaces { get; set; } = new List<uint>();
+            public List<uint> LinkedVoiceTypes { get; set; } = new List<uint>();
+
+            public string GenderString
+            {
+                get
+                {
+                    if (Gender == 1) return "Male";
+                    if (Gender == 2) return "Female";
+                    return "Unknown";
+                }
+            }
+
+            public string FormIDHex => $"{NpcFormID:X8}";
+        }
 
         public static bool SaveEsp(string path)
         {
@@ -476,6 +601,19 @@ namespace LexTranslator.SkyrimManagement
         }
     }
 
+    public enum CharacterGender
+    {
+        Unknown,
+        Male,
+        Female
+    }
+    public class Character
+    {
+        public string Name { get; set; } = "";
+        public CharacterGender Gender { get; set; }// 0=Unknown 1=Male 2=Female
+        public string VoiceType { get; set; } = "";
+    }
+
     public static class EspReader
     {
         public static StringsFileReader FromStringsFile = new StringsFileReader();
@@ -497,12 +635,44 @@ namespace LexTranslator.SkyrimManagement
             public bool IsModify = false;
         }
 
+        public static Dictionary<string, List<Character>> GameCharacters = new Dictionary<string, List<Character>>();
+
         public static Dictionary<string, RecordItem> Records = new Dictionary<string, RecordItem>();
         public static List<string> Types = new List<string>();
-
+        private static bool IsFristSelect = true;
         public static void SelectSig(string Sig)
         {
             Records.Clear();
+
+            Dictionary<uint, Character> InfoToCharacter = null;
+            List<CharacterRecordInfo> Characters = new List<CharacterRecordInfo>();
+
+            if (IsFristSelect)
+            {
+                if (Sig.Equals("ALL"))
+                {
+                    Characters.AddRange(EspInterop.GetAllCharacters());
+
+                    InfoToCharacter = new Dictionary<uint, Character>(Characters.Sum(c => c.LinkedInfos.Count));
+
+                    foreach (var Character in Characters)
+                    {
+                        var NCH = new Character
+                        {
+                            Name = Character.Name,
+                            Gender = (CharacterGender)Character.Gender,
+                            VoiceType = Character.VoiceType
+                        };
+                        foreach (var InfoFID in Character.LinkedInfos)
+                        {
+                            if (!InfoToCharacter.ContainsKey(InfoFID))
+                                InfoToCharacter[InfoFID] = NCH;
+                        }
+                    }
+
+                    Characters.Clear();
+                }
+            }
 
             foreach (var GetRecord in EspInterop.SearchBySig(Sig))
             {
@@ -532,6 +702,17 @@ namespace LexTranslator.SkyrimManagement
                         OccurrenceIndex = Sub.OccurrenceIndex
                     };
 
+                    if (IsFristSelect)
+                    {
+                        if (InfoToCharacter != null && InfoToCharacter.TryGetValue(RealFormID, out var MatchedChar))
+                        {
+                            if (GameCharacters.TryGetValue(UniqueKey, out var List))
+                                List.Add(MatchedChar);
+                            else
+                                GameCharacters[UniqueKey] = new List<Character> { MatchedChar };
+                        }
+                    }
+
                     if (NRecordItem.String.Length > 0)
                     {
                         if (!Records.ContainsKey(NRecordItem.UniqueKey))
@@ -547,6 +728,15 @@ namespace LexTranslator.SkyrimManagement
                     {
                         
                     }
+                }
+            }
+
+            if (Sig.Equals("ALL"))
+            {
+                if (IsFristSelect)
+                {
+                    IsFristSelect = false;
+                    EspInterop.C_ClearCharacterTracker();
                 }
             }
         }
@@ -658,6 +848,8 @@ namespace LexTranslator.SkyrimManagement
             EspPath = String.Empty;
             FromStringsFile.Close();
             ToStringsFile.Close();
+            IsFristSelect = true;       
+            GameCharacters.Clear();    
             EspInterop.C_Clear();
         }
     }
