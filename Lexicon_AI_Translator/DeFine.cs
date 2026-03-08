@@ -193,8 +193,6 @@ namespace LexTranslator
             ExtendWin = new ExtendWin();
 
             SetSQLErrorReport();
-
-            new P_SQLite().ExecuteNonQuery("saksjlwjkewqlkeqw q qeweq");
         }
     }
 
@@ -239,6 +237,7 @@ namespace LexTranslator
 
         public bool ShowAssembly { get; set; } = false;
         public bool GenCSharp { get; set; } = true;
+        public bool UseFullPunctuation { get; set; } = false;
 
         public void ReadConfig()
         {
@@ -287,6 +286,8 @@ namespace LexTranslator
 
                             this.ShowAssembly = GetSetting.ShowAssembly;
                             this.GenCSharp = GetSetting.GenCSharp;
+
+                            this.UseFullPunctuation = GetSetting.UseFullPunctuation;
                         }
                     }
                     else

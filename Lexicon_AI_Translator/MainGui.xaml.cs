@@ -1276,6 +1276,8 @@ namespace LexTranslator
             }).Start();
 
             TranslatorInterface.Close();
+
+            TranslatorInterface.Instance.GetLink().Clear();
         }
 
         public bool IsValidFile = false;
@@ -1346,6 +1348,28 @@ namespace LexTranslator
                     string GetFileName = GetFileFullName.Split('.')[0];
 
                     var Link = TranslatorInterface.Instance.GetLink();
+
+                    if (DeFine.GlobalLocalSetting.UseFullPunctuation)
+                    {
+                        Link.CheckLinks(new Action<string, string>((string Key,string Value) => 
+                        {
+                            if(Value.Length>0)
+                            Value = Value
+                            .Replace(",", "，")
+                            .Replace(".", "。")
+                            .Replace(":", "：")
+                            .Replace(";", "；")
+                            .Replace("!", "！")
+                            .Replace("?", "？")
+                            .Replace("(", "（")
+                            .Replace(")", "）")
+                            .Replace("[", "【")
+                            .Replace("]", "】")
+                            .Replace("<", "《")
+                            .Replace(">", "》")
+                            .Replace("'", "‘");
+                        }));
+                    }
 
                     if (CurrentTransType == 11)
                     {
@@ -3460,6 +3484,15 @@ namespace LexTranslator
                 {
                     CanTranslateBook.IsChecked = false;
                 }
+
+                if (DeFine.GlobalLocalSetting.UseFullPunctuation)
+                {
+                    UseFullPunctuation.IsChecked = true;
+                }
+                else
+                {
+                    UseFullPunctuation.IsChecked = false;
+                }
             }
         }
 
@@ -3649,6 +3682,18 @@ namespace LexTranslator
             else
             {
                 DeFine.GlobalLocalSetting.CanTranslateBook = false;
+            }
+        }
+
+        private void UseFullPunctuation_Click(object sender, RoutedEventArgs e)
+        {
+            if (UseFullPunctuation.IsChecked == true)
+            {
+                DeFine.GlobalLocalSetting.UseFullPunctuation = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.UseFullPunctuation = false;
             }
         }
 
@@ -3876,5 +3921,7 @@ namespace LexTranslator
             NNPCFinder.Owner = this;
             NNPCFinder.Show();
         }
+
+   
     }
 }
