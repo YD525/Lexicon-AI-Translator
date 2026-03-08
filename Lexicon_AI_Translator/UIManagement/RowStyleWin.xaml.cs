@@ -3,19 +3,19 @@ using System.Windows.Controls;
 using LexTranslator.SkyrimManage;
 using System.Windows.Input;
 using System.Windows.Media;
-using PhoenixEngine.TranslateManagement;
-using PhoenixEngine.ConvertManager;
-using PhoenixEngine.EngineManagement;
 using System.Windows.Shapes;
 using LexTranslator.TranslateManage;
 using System;
 using System.Threading;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManage;
-using Newtonsoft.Json.Linq;
+using LexTranslator.ConvertManager;
+using PhoenixEngine.Translate;
+using PhoenixEngine.Additional;
+using PhoenixEngine;
+using PhoenixEngine.Unit;
 
 namespace LexTranslator.UIManagement
 {

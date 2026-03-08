@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using PhoenixEngine.TranslateManage;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator.UIManagement
 {

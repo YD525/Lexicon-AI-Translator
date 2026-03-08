@@ -2,7 +2,7 @@
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
-using PhoenixEngine.TranslateManagement;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator
 {
@@ -67,11 +67,7 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    try
-                                    {
-                                       TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
-                                    }
-                                    catch { }
+                                    TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
@@ -105,11 +101,7 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    try
-                                    {
-                                        TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
-                                    }
-                                    catch { }
+                                    TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 

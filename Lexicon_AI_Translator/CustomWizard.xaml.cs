@@ -1,28 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.PlatformManagement;
-using PhoenixEngine.RequestManagement;
-using PhoenixEngine.TranslateManage;
-using PhoenixEngine.TranslateManagement;
-using static PhoenixEngine.EngineManagement.DataTransmission;
+using PhoenixEngine;
+using PhoenixEngine.Engine;
+using PhoenixEngine.Memory;
+using PhoenixEngine.P_Delegate;
+using PhoenixEngine.Platform;
+using PhoenixEngine.Platform.LocalAI;
+using PhoenixEngine.Request;
+using PhoenixEngine.Unit;
 
 namespace LexTranslator
 {
@@ -370,7 +363,7 @@ namespace LexTranslator
         private void TestCall(object sender, MouseButtonEventArgs e)
         {
             PlatformConfig NPlatformConfig = new PlatformConfig();
-            NPlatformConfig.Platform = PhoenixEngine.TranslateManage.PlatformType.CustomPlatform;
+            NPlatformConfig.Platform = PhoenixEngine.Translate.PlatformType.CustomPlatform;
             NPlatformConfig.Enable = true;
 
             int TestID = 525;
@@ -664,7 +657,7 @@ namespace LexTranslator
         private void FinishBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             PlatformConfig NPlatformConfig = new PlatformConfig();
-            NPlatformConfig.Platform = PhoenixEngine.TranslateManage.PlatformType.CustomPlatform;
+            NPlatformConfig.Platform = PhoenixEngine.Translate.PlatformType.CustomPlatform;
             NPlatformConfig.Enable = false;
 
             CustomPlatform.QueryRule = QueryRule;

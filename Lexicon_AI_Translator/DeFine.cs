@@ -5,15 +5,13 @@ using System.Windows.Media;
 using LexTranslator.SkyrimModManager;
 using System.Windows.Threading;
 using System.Windows;
-using PhoenixEngine.TranslateCore;
-using PhoenixEngine.EngineManagement;
 using LexTranslator.UIManagement;
-using LexTranslator.FileManagement;
 using System;
 using Newtonsoft.Json;
 using System.Threading;
 using LexTranslator.UIManage;
-using PhoenixEngine.TranslateManage;
+using PhoenixEngine;
+using PhoenixEngine.Language;
 
 namespace LexTranslator
 {

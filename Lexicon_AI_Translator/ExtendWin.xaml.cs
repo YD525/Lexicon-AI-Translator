@@ -2,12 +2,12 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.TranslateCore;
-using PhoenixEngine.TranslateManagement;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManage;
 using System.Collections.Generic;
+using PhoenixEngine.ADO;
+using PhoenixEngine;
+using PhoenixEngine.Engine;
 
 namespace LexTranslator
 {

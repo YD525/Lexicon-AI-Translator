@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using PhoenixEngine.DataBaseManagement;
+using PhoenixEngine.ADO;
 
 namespace LexTranslator.SQLManager
 {
@@ -56,9 +56,9 @@ namespace LexTranslator.SQLManager
         {
             this.SQLHelper = new T();
 
-            if (SQLHelper is SQLiteHelper)
+            if (SQLHelper is P_SQLite)
             {
-                (this.SQLHelper as SQLiteHelper).OpenSql(ConnectStr);
+                (this.SQLHelper as P_SQLite).OpenSQL(ConnectStr);
                 this.ThisType = SqlType.SQLite;
             }
 
@@ -73,7 +73,7 @@ namespace LexTranslator.SQLManager
                 {
                     case SqlType.SQLite:
                         {
-                            State = (SQLHelper as SQLiteHelper).ExecuteNonQuery(SqlOrder);
+                            State = (SQLHelper as P_SQLite).ExecuteNonQuery(SqlOrder);
                         }
                         break;
                     case SqlType.SqlServer:
@@ -99,7 +99,7 @@ namespace LexTranslator.SQLManager
                 {
                     case SqlType.SQLite:
                         {
-                            Table = (SQLHelper as SQLiteHelper).ExecuteQuery(SqlOrder);
+                            Table = (SQLHelper as P_SQLite).ExecuteQuery(SqlOrder);
                         }
                         break;
                     case SqlType.SqlServer:
@@ -162,7 +162,7 @@ namespace LexTranslator.SQLManager
                 {
                     case SqlType.SQLite:
                         {
-                            Result = (SQLHelper as SQLiteHelper).ExecuteScalar(SqlOrder);
+                            Result = (SQLHelper as P_SQLite).ExecuteScalar(SqlOrder);
                         }
                         break;
                     case SqlType.SqlServer:

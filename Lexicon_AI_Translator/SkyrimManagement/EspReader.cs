@@ -4,13 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.TranslateManage;
 using LexTranslator.TranslateManagement;
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
-using PhoenixEngine.TranslateManagement;
 using static LexTranslator.SkyrimManagement.EspInterop;
+using PhoenixEngine;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -813,27 +811,32 @@ namespace LexTranslator.SkyrimManagement
             {
                 var Record = Records[Records.ElementAt(i).Key];
 
-                var GetTransData = TranslatorInterface.Instance.GetLink(Record.UniqueKey);
-                if (GetTransData != null)
+                var Link = TranslatorInterface.Instance.GetLink();
+
+                if (Link.ContainsKey(Record.UniqueKey))
                 {
-                    if (GetTransData.Length > 0 && GetTransData != Record.String)
+                    var GetTransData = Link[Record.UniqueKey];
+                    if (GetTransData != null)
                     {
-                        bool IsCell = false;
-
-                        if (Record.ParentSig == "CELL")
+                        if (GetTransData.Length > 0 && GetTransData != Record.String)
                         {
-                            IsCell = true;
+                            bool IsCell = false;
+
+                            if (Record.ParentSig == "CELL")
+                            {
+                                IsCell = true;
+                            }
+
+                            if (ConvertHelper.ObjToLong(GetTransData) > 0)
+                            {
+                                continue;
+                            }
+
+                            if (EspInterop.ModifySubRecordByOffset(IsCell, Record.ParentIndex, Record.SubIndex, GetTransData))
+                            {
+                                ModifyCount++;
+                            }
                         }
-
-                        if (ConvertHelper.ObjToLong(GetTransData) > 0)
-                        {
-                            continue;
-                        }
-
-                        if (EspInterop.ModifySubRecordByOffset(IsCell,Record.ParentIndex,Record.SubIndex, GetTransData))
-                        {
-                            ModifyCount++;
-                        }                     
                     }
                 }
             }

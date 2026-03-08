@@ -4,8 +4,6 @@ using System.Windows;
 using LexTranslator.ConvertManager;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.TranslateManage;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -17,10 +15,12 @@ using System.Linq;
 using System.IO;
 using System.Xml;
 using System.Windows.Markup;
-using PhoenixEngine.PlatformManagement;
 using static LexTranslator.UIManagement.NodeStyleWin;
 using System.Runtime.CompilerServices;
-using PhoenixEngine.TranslateManagement;
+using PhoenixEngine.Translate;
+using PhoenixEngine;
+using PhoenixEngine.Platform;
+using PhoenixEngine.Unit;
 
 namespace LexTranslator.UIManage
 {

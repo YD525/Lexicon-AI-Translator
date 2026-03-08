@@ -4,7 +4,6 @@ using System.Text;
 using Newtonsoft.Json;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
-using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -24,7 +23,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         foreach (var Get in RamLines)
                         {
-                            TranslatorInterface.Instance.SetLink(Get.Key, Get.TransText);
+                            TranslatorInterface.Instance.GetLink().Add(Get.Key, Get.TransText);
                         }
                     }
                 }

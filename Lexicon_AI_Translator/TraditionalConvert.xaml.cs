@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using LexTranslator.TranslateManage;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.LanguageManagement;
-using PhoenixEngine.TranslateCore;
+using PhoenixEngine;
+using PhoenixEngine.ADO;
+using PhoenixEngine.Language;
 
 namespace LexTranslator
 {
@@ -75,13 +65,15 @@ namespace LexTranslator
 
                         var Key = DeFine.WorkingWin.TransViewList.RealLines[i].Key;
 
-                        if (TranslatorInterface.Instance.TranslatedLink.ContainsKey(Key))
+                        var Link = TranslatorInterface.Instance.GetLink();
+
+                        if (Link.ContainsKey(Key))
                         {
-                            TranslatorInterface.Instance.TranslatedLink[Key] = Result;
+                            Link[Key] = Result;
                         }
                         else
                         {
-                            TranslatorInterface.Instance.TranslatedLink.Add(Key, Result);
+                            Link.Add(Key, Result);
                         }
 
                         DeFine.WorkingWin.TransViewList.RealLines[i].SyncUI(DeFine.WorkingWin.TransViewList);

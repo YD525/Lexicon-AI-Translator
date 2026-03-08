@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
 using LexTranslator.FileManagement;
 using LexTranslator.UIManage;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.PlatformManagement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using PhoenixEngine;
+using PhoenixEngine.Platform;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator.UIManagement
 {
@@ -265,31 +259,31 @@ namespace LexTranslator.UIManagement
                     {
                         var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
                         var Config = Phoenix.Config.PlatformConfigs[GetKey];
-                        if (GetPlatformName == "ChatGpt" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.ChatGpt && Config.CustomInFo == null)
+                        if (GetPlatformName == "ChatGpt" && Config.Platform == PlatformType.ChatGpt && Config.CustomInFo == null)
                         {
                             Config.Model = GetModel;
                             break;
                         }
                         else
-                        if (GetPlatformName == "Gemini" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.Gemini && Config.CustomInFo == null)
+                        if (GetPlatformName == "Gemini" && Config.Platform == PlatformType.Gemini && Config.CustomInFo == null)
                         {
                             Config.Model = GetModel;
                             break;
                         }
                         else
-                        if (GetPlatformName == "DeepSeek" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.DeepSeek && Config.CustomInFo == null)
+                        if (GetPlatformName == "DeepSeek" && Config.Platform == PlatformType.DeepSeek && Config.CustomInFo == null)
                         {
                             Config.Model = GetModel;
                             break;
                         }
                         else
-                        if (GetPlatformName == "LM Studio" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.LMLocalAI && Config.CustomInFo == null)
+                        if (GetPlatformName == "LM Studio" && Config.Platform == PlatformType.LMLocalAI && Config.CustomInFo == null)
                         {
                             Config.Model = GetModel;
                             break;
                         }
                         else
-                        if (GetPlatformName == "DeepL" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.DeepL && Config.CustomInFo == null)
+                        if (GetPlatformName == "DeepL" && Config.Platform == PlatformType.DeepL && Config.CustomInFo == null)
                         {
                             Config.Model = GetModel;
                             break;
@@ -342,7 +336,7 @@ namespace LexTranslator.UIManagement
                         var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
                         var Config = Phoenix.Config.PlatformConfigs[GetKey];
 
-                        if (GetPlatformName == "LM Studio" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.LMLocalAI && Config.CustomInFo == null)
+                        if (GetPlatformName == "LM Studio" && Config.Platform == PlatformType.LMLocalAI && Config.CustomInFo == null)
                         {
                             Phoenix.Config.PlatformConfigs[GetKey].LocalPort = GetPort;
                             break;
@@ -394,7 +388,7 @@ namespace LexTranslator.UIManagement
                     {
                         var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
                         var Config = Phoenix.Config.PlatformConfigs[GetKey];
-                        if (GetPlatformName == "ChatGpt" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.ChatGpt && Config.CustomInFo == null)
+                        if (GetPlatformName == "ChatGpt" && Config.Platform == PlatformType.ChatGpt && Config.CustomInFo == null)
                         {
                             if (!Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -404,7 +398,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "Gemini" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.Gemini && Config.CustomInFo == null)
+                        if (GetPlatformName == "Gemini" && Config.Platform == PlatformType.Gemini && Config.CustomInFo == null)
                         {
                             if (!Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -414,7 +408,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "DeepSeek" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.DeepSeek && Config.CustomInFo == null)
+                        if (GetPlatformName == "DeepSeek" && Config.Platform == PlatformType.DeepSeek && Config.CustomInFo == null)
                         {
                             if (!Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -424,7 +418,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "LM Studio" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.LMLocalAI && Config.CustomInFo == null)
+                        if (GetPlatformName == "LM Studio" && Config.Platform == PlatformType.LMLocalAI && Config.CustomInFo == null)
                         {
                             if (!Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -434,7 +428,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "DeepL" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.DeepL && Config.CustomInFo == null)
+                        if (GetPlatformName == "DeepL" && Config.Platform == PlatformType.DeepL && Config.CustomInFo == null)
                         {
                             if (!Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -497,7 +491,7 @@ namespace LexTranslator.UIManagement
                     {
                         var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
                         var Config = Phoenix.Config.PlatformConfigs[GetKey];
-                        if (GetPlatformName == "ChatGpt" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.ChatGpt && Config.CustomInFo == null)
+                        if (GetPlatformName == "ChatGpt" && Config.Platform == PlatformType.ChatGpt && Config.CustomInFo == null)
                         {
                             if (Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -507,7 +501,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "Gemini" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.Gemini && Config.CustomInFo == null)
+                        if (GetPlatformName == "Gemini" && Config.Platform == PlatformType.Gemini && Config.CustomInFo == null)
                         {
                             if (Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -517,7 +511,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "DeepSeek" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.DeepSeek && Config.CustomInFo == null)
+                        if (GetPlatformName == "DeepSeek" && Config.Platform == PlatformType.DeepSeek && Config.CustomInFo == null)
                         {
                             if (Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -527,7 +521,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "LM Studio" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.LMLocalAI && Config.CustomInFo == null)
+                        if (GetPlatformName == "LM Studio" && Config.Platform == PlatformType.LMLocalAI && Config.CustomInFo == null)
                         {
                             if (Config.ApiKeys.Contains(GetApiKey))
                             {
@@ -537,7 +531,7 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         else
-                        if (GetPlatformName == "DeepL" && Config.Platform == PhoenixEngine.TranslateManage.PlatformType.DeepL && Config.CustomInFo == null)
+                        if (GetPlatformName == "DeepL" && Config.Platform == PlatformType.DeepL && Config.CustomInFo == null)
                         {
                             if (Config.ApiKeys.Contains(GetApiKey))
                             {

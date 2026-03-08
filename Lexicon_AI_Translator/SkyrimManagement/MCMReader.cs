@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using PhoenixEngine.TranslateManage;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
-using PhoenixEngine.TranslateManagement;
+using PhoenixEngine.Engine;
 
 namespace LexTranslator.SkyrimManage
 {
@@ -39,10 +38,11 @@ namespace LexTranslator.SkyrimManage
                 return this.TransText;
             }
             string GetKey = SkyrimData.GenUniqueKey(this.EditorID, this.Type);
-            var GetResult = TranslatorInterface.Instance.GetLink(GetKey);
-            if (GetResult!=null)
+
+            var Link = TranslatorInterface.Instance.GetLink();
+            if (Link.ContainsKey(GetKey))
             {
-                this.TransText = GetResult;
+                this.TransText = Link[GetKey];
                 if (this.TransText.Length > 0)
                 {
                     return this.TransText;
@@ -60,10 +60,12 @@ namespace LexTranslator.SkyrimManage
         public string GetTextIfTransR()
         {
             string GetKey = SkyrimData.GenUniqueKey(this.EditorID, this.Type);
-            var GetResult = TranslatorInterface.Instance.GetLink(GetKey);
-            if (GetResult != null)
+
+            var Link = TranslatorInterface.Instance.GetLink();
+        
+            if (Link.ContainsKey(GetKey))
             {
-                this.TransText = GetResult;
+                this.TransText = Link[GetKey];
                 if (this.TransText.Length > 0)
                 {
                     return this.TransText;

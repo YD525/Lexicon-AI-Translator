@@ -8,17 +8,16 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Newtonsoft.Json.Linq;
-using PhoenixEngine.DataBaseManagement;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.TranslateCore;
-using PhoenixEngine.TranslateManage;
-using PhoenixEngine.TranslateManagement;
 using LexTranslator.ConvertManager;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
-using static PhoenixEngine.EngineManagement.DataTransmission;
+using PhoenixEngine.ADO;
+using PhoenixEngine.Unit;
+using PhoenixEngine.Language;
+using PhoenixEngine;
+using PhoenixEngine.P_Delegate;
 
 namespace LexTranslator
 {
@@ -215,14 +214,14 @@ namespace LexTranslator
 
         private void FromStr_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SFrom.SelectedValue = LanguageHelper.DetectLanguageByLine(FromStr.Text).ToString();
+            SFrom.SelectedValue = P_Language.DetectLanguageByLine(FromStr.Text).ToString();
         }
 
         private void SourceStr_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (AutoDetect.IsChecked == true)
             {
-                var DetectLang = LanguageHelper.DetectLanguageByLine(SourceStr.Text);
+                var DetectLang = P_Language.DetectLanguageByLine(SourceStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
                     if (Phoenix.From == Languages.SimplifiedChinese || Phoenix.From == Languages.TraditionalChinese)
@@ -239,7 +238,7 @@ namespace LexTranslator
         {
             if (AutoDetect.IsChecked == true)
             {
-                var DetectLang = LanguageHelper.DetectLanguageByLine(TargetStr.Text);
+                var DetectLang = P_Language.DetectLanguageByLine(TargetStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
                     if (Phoenix.To == Languages.SimplifiedChinese || Phoenix.To == Languages.TraditionalChinese)
@@ -586,7 +585,7 @@ namespace LexTranslator
                         foreach (var Get in GetData.CurrentPage)
                         {
                             if (ExitAny) goto QuickExit;
-                            Writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7},", Get.From, Get.To,Get.ExactMatch,Get.IgnoreCase, SqlSafeCodec.Encode(Get.TargetFileName), SqlSafeCodec.Encode(Get.Type), SqlSafeCodec.Encode(Get.Source), SqlSafeCodec.Encode(Get.Result)));
+                            Writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7},", Get.From, Get.To,Get.ExactMatch,Get.IgnoreCase, SQLSafeCodec.Encode(Get.TargetFileName), SQLSafeCodec.Encode(Get.Type), SQLSafeCodec.Encode(Get.Source), SQLSafeCodec.Encode(Get.Result)));
                         }
 
                         MaxPage = GetData.MaxPage;
@@ -642,10 +641,10 @@ namespace LexTranslator
                         try
                         {
                             if (AdvancedDictionary.AddItem(new AdvancedDictionaryItem(
-                                   SqlSafeCodec.Decode(Params[4]),
-                                   SqlSafeCodec.Decode(Params[5]),
-                                   SqlSafeCodec.Decode(Params[6]),
-                                   SqlSafeCodec.Decode(Params[7]),
+                                   SQLSafeCodec.Decode(Params[4]),
+                                   SQLSafeCodec.Decode(Params[5]),
+                                   SQLSafeCodec.Decode(Params[6]),
+                                   SQLSafeCodec.Decode(Params[7]),
                                    Params[0],
                                    Params[1],
                                    Params[2],

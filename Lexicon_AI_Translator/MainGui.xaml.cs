@@ -11,13 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using PhoenixEngine.ConvertManager;
-using PhoenixEngine.DelegateManagement;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.PlatformManagement.LocalAI;
-using PhoenixEngine.TranslateCore;
-using PhoenixEngine.TranslateManage;
-using PhoenixEngine.TranslateManagement;
 using LexTranslator.FileManagement;
 using LexTranslator.SkyrimManage;
 using LexTranslator.SkyrimManagement;
@@ -25,22 +18,26 @@ using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
 using LexTranslator.UIManagement;
-using static PhoenixEngine.TranslateCore.LanguageHelper;
 using Newtonsoft.Json;
 using System.Windows.Threading;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using static LexTranslator.UIManagement.DashBoardService;
 using System.Windows.Media.Imaging;
-using PhoenixEngine.PlatformManagement;
 using System.Linq;
 using System.Windows.Interop;
 using PexInterface;
-using System.Web.WebSockets;
-using PhoenixEngine.EngineManagement.Unit;
-using PhoenixEngine.GameManagement;
 using static PexInterface.PexHeuristicAnalysis;
-using System.Threading.Tasks;
-using PhoenixEngine.LanguageManagement;
+using PhoenixEngine;
+using PhoenixEngine.Translate;
+using PhoenixEngine.Unit;
+using LexTranslator.ConvertManager;
+using PhoenixEngine.ADO;
+using PhoenixEngine.Platform.LocalAI;
+using PhoenixEngine.Language;
+using PhoenixEngine.Platform;
+using PhoenixEngine.Additional;
+using PhoenixEngine.Engine;
+using PhoenixEngine.Events;
 
 namespace LexTranslator
 {
@@ -1249,7 +1246,7 @@ namespace LexTranslator
 
                     CloseAllPointer();
 
-                    TranslatorInterface.Instance.TranslatedLink.Clear();
+                    TranslatorInterface.Instance.GetLink().Clear();
                     TranslatorInterface.Instance.ReInit();
                     LoadSaveState = 0;
 
@@ -1348,9 +1345,11 @@ namespace LexTranslator
                     string GetFileSuffix = GetFileFullName.Split('.')[1];
                     string GetFileName = GetFileFullName.Split('.')[0];
 
+                    var Link = TranslatorInterface.Instance.GetLink();
+
                     if (CurrentTransType == 11)
                     {
-                        if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
+                        if (Link.Count > 0)
                         {
                             if (GlobalXmlReader.XmlItems.Count > 0)
                             {
@@ -1361,7 +1360,7 @@ namespace LexTranslator
                     else
                     if (CurrentTransType == 6)
                     {
-                        if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
+                        if (Link.Count > 0)
                         {
                             if (GlobalRamCacheReader != null)
                             {
@@ -1375,7 +1374,7 @@ namespace LexTranslator
                     else
                     if (CurrentTransType == 3)
                     {
-                        if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
+                        if (Link.Count > 0)
                         {
                             if (GlobalPexReader != null)
                             {
@@ -1448,7 +1447,7 @@ namespace LexTranslator
                     else
                     if (CurrentTransType == 1)
                     {
-                        if (TranslatorInterface.Instance.TranslatedLink.Count > 0)
+                        if (Link.Count > 0)
                             if (GlobalMCMReader != null)
                             {
                                 string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
@@ -1620,7 +1619,7 @@ namespace LexTranslator
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 EmptyFromAndToText();
-                TranslatorInterface.Instance.TranslatedLink.Clear();
+                TranslatorInterface.Instance.GetLink().Clear();
                 Phoenix.GetTranslatedCount(Phoenix.GetFileUniqueKey());
 
                 if (TransViewList != null)
@@ -2011,7 +2010,7 @@ namespace LexTranslator
 
         public Languages DetectLanguage()
         {
-            LanguageDetect OneDetect = new LanguageDetect();
+            LanguageDetector OneDetect = new LanguageDetector();
 
             for (int i = 0; i < TransViewList?.RealLines.Count; i++)
             {
@@ -2021,7 +2020,7 @@ namespace LexTranslator
                 }
                 bool IsCloud = false;
                 TransViewList.RealLines[i].SyncData(ref IsCloud);
-                LanguageHelper.DetectLanguage(ref OneDetect, TransViewList.RealLines[i].SourceText);
+                P_Language.DetectLanguage(ref OneDetect, TransViewList.RealLines[i].SourceText);
             }
 
             return OneDetect.GetMaxLang();
@@ -2031,7 +2030,7 @@ namespace LexTranslator
         {
             if (TransViewList.RealLines.Count > 0)
             {
-                LanguageDetect OneDetect = new LanguageDetect();
+                LanguageDetector OneDetect = new LanguageDetector();
 
                 for (int i = 0; i < TransViewList.RealLines.Count; i++)
                 {
@@ -2041,7 +2040,7 @@ namespace LexTranslator
                     }
                     bool IsCloud = false;
                     TransViewList.RealLines[i].SyncData(ref IsCloud);
-                    LanguageHelper.DetectLanguage(ref OneDetect, TransViewList.RealLines[i].SourceText);
+                    P_Language.DetectLanguage(ref OneDetect, TransViewList.RealLines[i].SourceText);
                 }
 
                 return OneDetect.GetMaxLang();
@@ -2500,9 +2499,11 @@ namespace LexTranslator
                             {
                                 LocalDBCache.DeleteCache(Phoenix.GetFileUniqueKey(), GetGrid.Key, Phoenix.To);
 
-                                if (TranslatorInterface.Instance.TranslatedLink.ContainsKey(GetGrid.Key))
+                                var Link = TranslatorInterface.Instance.GetLink();
+
+                                if (Link.ContainsKey(GetGrid.Key))
                                 {
-                                    TranslatorInterface.Instance.TranslatedLink[GetGrid.Key] = GetGrid.TransText;
+                                    Link[GetGrid.Key] = GetGrid.TransText;
                                 }
                             }
                             else
@@ -2848,13 +2849,14 @@ namespace LexTranslator
                         }
                     }
 
-                    if (TranslatorInterface.Instance.TranslatedLink.ContainsKey(GetKey))
+                    var Link = TranslatorInterface.Instance.GetLink();
+                    if (Link.ContainsKey(GetKey))
                     {
-                        TranslatorInterface.Instance.TranslatedLink[GetKey] = GetTransText;
+                        Link[GetKey] = GetTransText;
                     }
                     else
                     {
-                        TranslatorInterface.Instance.TranslatedLink.Add(GetKey, GetTransText);
+                        Link.Add(GetKey, GetTransText);
                     }
                 }
             }
@@ -3056,12 +3058,12 @@ namespace LexTranslator
                 TransViewList.RealLines[i].SyncData(ref IsCloud);
                 if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
                 {
-                    var SourceLang = LanguageHelper.DetectLanguageByLine(GetLine.SourceText);
+                    var SourceLang = P_Language.DetectLanguageByLine(GetLine.SourceText);
                     if (SourceLang != Phoenix.To)
                     {
                         if (GetLine.TransText.Length == 0 ||
                          SourceLang ==
-                         LanguageHelper.DetectLanguageByLine(GetLine.TransText)
+                         P_Language.DetectLanguageByLine(GetLine.TransText)
                          )
                         {
                             if (TransViewList.RealLines[i].Score > 0)
@@ -3106,7 +3108,8 @@ namespace LexTranslator
             {
                 TransViewList.RealLines[i].TransText = TransViewList.RealLines[i].SourceText + "(" + i.ToString() + ")";
 
-                TranslatorInterface.Instance.TranslatedLink[TransViewList.RealLines[i].Key] = TransViewList.RealLines[i].TransText;
+                var Link = TranslatorInterface.Instance.GetLink();
+                Link[TransViewList.RealLines[i].Key] = TransViewList.RealLines[i].TransText;
 
                 TransViewList.RealLines[i].SyncUI(TransViewList);
             }

@@ -1,12 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using PhoenixEngine.TranslateCore;
 using LexTranslator.SkyrimManage;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using PhoenixEngine.Language;
 
 namespace LexTranslator.UIManage
 {

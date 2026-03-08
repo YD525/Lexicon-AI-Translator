@@ -1,14 +1,13 @@
-﻿using System.Globalization;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using LexTranslator.ConvertManager;
 using LexTranslator.UIManage;
-using PhoenixEngine.EngineManagement;
-using PhoenixEngine.PlatformManagement;
-using PhoenixEngine.TranslateManage;
+using PhoenixEngine;
+using PhoenixEngine.Platform;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator.UIManagement
 {

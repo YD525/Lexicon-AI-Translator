@@ -6,7 +6,6 @@ using System.Windows.Media;
 using LexTranslator.ConvertManager;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-using PhoenixEngine.TranslateManagement;
 using LexTranslator.UIManagement;
 using LexTranslator.SkyrimManage;
 using System.Threading;
@@ -15,6 +14,8 @@ using System;
 using System.Linq;
 using ICSharpCode.AvalonEdit;
 using LexTranslator.TranslateManage;
+using PhoenixEngine.Translate;
+using PhoenixEngine.Additional;
 
 // Copyright 2026 YD525
 

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
 using System.Xml.Linq;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
-using PhoenixEngine.TranslateManagement;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -38,26 +35,32 @@ namespace LexTranslator.SkyrimManagement
                 else 
                 {
                     this.TransText = Item.Dest;
-                    TranslatorInterface.Instance.SetLink(this.Key,Item.Dest);
+                    TranslatorInterface.Instance.GetLink().Add(this.Key,Item.Dest);
                 }
             }
 
             public string GetTextIfTrans()
             {
                 string GetKey = this.Key;
-                var GetResult = TranslatorInterface.Instance.GetLink(GetKey);
-                if (GetResult != null)
+                var Link = TranslatorInterface.Instance.GetLink();
+
+                if (Link.ContainsKey(GetKey))
                 {
-                    this.TransText = GetResult;
-                    if (this.TransText.Length > 0)
+                    var GetResult = Link[GetKey];
+                    if (GetResult != null)
                     {
-                        return this.TransText;
-                    }
-                    else
-                    {
-                        return this.SourceText;
+                        this.TransText = GetResult;
+                        if (this.TransText.Length > 0)
+                        {
+                            return this.TransText;
+                        }
+                        else
+                        {
+                            return this.SourceText;
+                        }
                     }
                 }
+           
 
                 if (this.TransText.Trim().Length > 0)
                 {
