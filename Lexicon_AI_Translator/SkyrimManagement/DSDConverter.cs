@@ -37,10 +37,7 @@ namespace LexTranslator.SkyrimManagement
 
                 string GetTransData = null;
 
-                if (Link.ContainsKey(Record.UniqueKey))
-                {
-                    GetTransData = TranslatorInterface.Instance.GetLink(Record.UniqueKey);
-                }
+                GetTransData = TranslatorInterface.Instance.GetLink(Record.UniqueKey);
 
                 if (GetTransData != null)
                 {

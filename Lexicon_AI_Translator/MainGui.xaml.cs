@@ -2501,10 +2501,7 @@ namespace LexTranslator
 
                                 var Link = TranslatorInterface.Instance.GetLink();
 
-                                if (Link.ContainsKey(GetGrid.Key))
-                                {
-                                    Link[GetGrid.Key] = GetGrid.TransText;
-                                }
+                                Link[GetGrid.Key] = GetGrid.TransText;
                             }
                             else
                             {
@@ -2850,14 +2847,7 @@ namespace LexTranslator
                     }
 
                     var Link = TranslatorInterface.Instance.GetLink();
-                    if (Link.ContainsKey(GetKey))
-                    {
-                        Link[GetKey] = GetTransText;
-                    }
-                    else
-                    {
-                        Link.Add(GetKey, GetTransText);
-                    }
+                    Link[GetKey] = GetTransText;
                 }
             }
         }

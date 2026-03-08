@@ -44,23 +44,19 @@ namespace LexTranslator.SkyrimManagement
                 string GetKey = this.Key;
                 var Link = TranslatorInterface.Instance.GetLink();
 
-                if (Link.ContainsKey(GetKey))
+                var GetResult = Link[GetKey];
+                if (GetResult != null)
                 {
-                    var GetResult = Link[GetKey];
-                    if (GetResult != null)
+                    this.TransText = GetResult;
+                    if (this.TransText.Length > 0)
                     {
-                        this.TransText = GetResult;
-                        if (this.TransText.Length > 0)
-                        {
-                            return this.TransText;
-                        }
-                        else
-                        {
-                            return this.SourceText;
-                        }
+                        return this.TransText;
+                    }
+                    else
+                    {
+                        return this.SourceText;
                     }
                 }
-           
 
                 if (this.TransText.Trim().Length > 0)
                 {

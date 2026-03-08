@@ -67,14 +67,7 @@ namespace LexTranslator
 
                         var Link = TranslatorInterface.Instance.GetLink();
 
-                        if (Link.ContainsKey(Key))
-                        {
-                            Link[Key] = Result;
-                        }
-                        else
-                        {
-                            Link.Add(Key, Result);
-                        }
+                        Link[Key] = Result;
 
                         DeFine.WorkingWin.TransViewList.RealLines[i].SyncUI(DeFine.WorkingWin.TransViewList);
 

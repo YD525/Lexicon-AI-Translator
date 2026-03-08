@@ -40,9 +40,11 @@ namespace LexTranslator.SkyrimManage
             string GetKey = SkyrimData.GenUniqueKey(this.EditorID, this.Type);
 
             var Link = TranslatorInterface.Instance.GetLink();
-            if (Link.ContainsKey(GetKey))
+            var GetStr = Link[GetKey];
+
+            if (GetStr!=null)
             {
-                this.TransText = Link[GetKey];
+                this.TransText = GetStr;
                 if (this.TransText.Length > 0)
                 {
                     return this.TransText;
@@ -62,10 +64,13 @@ namespace LexTranslator.SkyrimManage
             string GetKey = SkyrimData.GenUniqueKey(this.EditorID, this.Type);
 
             var Link = TranslatorInterface.Instance.GetLink();
-        
-            if (Link.ContainsKey(GetKey))
+
+            var GetStr = Link[GetKey];
+
+            if (GetStr != null)
             {
-                this.TransText = Link[GetKey];
+                this.TransText = GetStr;
+
                 if (this.TransText.Length > 0)
                 {
                     return this.TransText;

@@ -813,29 +813,26 @@ namespace LexTranslator.SkyrimManagement
 
                 var Link = TranslatorInterface.Instance.GetLink();
 
-                if (Link.ContainsKey(Record.UniqueKey))
+                var GetTransData = Link[Record.UniqueKey];
+                if (GetTransData != null)
                 {
-                    var GetTransData = Link[Record.UniqueKey];
-                    if (GetTransData != null)
+                    if (GetTransData.Length > 0 && GetTransData != Record.String)
                     {
-                        if (GetTransData.Length > 0 && GetTransData != Record.String)
+                        bool IsCell = false;
+
+                        if (Record.ParentSig == "CELL")
                         {
-                            bool IsCell = false;
+                            IsCell = true;
+                        }
 
-                            if (Record.ParentSig == "CELL")
-                            {
-                                IsCell = true;
-                            }
+                        if (ConvertHelper.ObjToLong(GetTransData) > 0)
+                        {
+                            continue;
+                        }
 
-                            if (ConvertHelper.ObjToLong(GetTransData) > 0)
-                            {
-                                continue;
-                            }
-
-                            if (EspInterop.ModifySubRecordByOffset(IsCell, Record.ParentIndex, Record.SubIndex, GetTransData))
-                            {
-                                ModifyCount++;
-                            }
+                        if (EspInterop.ModifySubRecordByOffset(IsCell, Record.ParentIndex, Record.SubIndex, GetTransData))
+                        {
+                            ModifyCount++;
                         }
                     }
                 }

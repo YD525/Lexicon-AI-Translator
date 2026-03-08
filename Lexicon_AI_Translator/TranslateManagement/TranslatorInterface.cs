@@ -390,10 +390,7 @@ namespace LexTranslator.TranslateManage
                             HasAddAIMemory = true;
 
                             var Link = Instance.GetLink();
-                            if (Link.ContainsKey(Row.Key))
-                            {
-                                Link[Row.Key] = GetTrans.Value;
-                            }
+                            Link[Row.Key] = GetTrans.Value;
 
                             var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
                             if (GetFakeGrid != null)
@@ -439,10 +436,7 @@ namespace LexTranslator.TranslateManage
                             HasAddAIMemory = true;
 
                             var Link = Instance.GetLink();
-                            if (Link.ContainsKey(Row.Key))
-                            {
-                                Link[Row.Key] = GetData.Result;
-                            }
+                            Link[Row.Key] = GetData.Result;
 
                             var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
                             if (GetFakeGrid != null)
@@ -464,12 +458,9 @@ namespace LexTranslator.TranslateManage
                     if (CanSet)
                     {
                         var Link = Instance.GetLink();
-                        if (Link.ContainsKey(Row.Key))
+                        if (Link[Row.Key] != null)
                         {
-                            if (Link[Row.Key].Length > 0)
-                            {
-                                CanSet = false;
-                            }
+                            CanSet = false;
                         }
 
                         if (CanSet)
