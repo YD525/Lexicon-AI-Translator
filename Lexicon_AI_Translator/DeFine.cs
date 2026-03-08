@@ -143,11 +143,15 @@ namespace LexTranslator
             ExtendWin.CloseUI();
         }
 
+        private static object ErrorReportLocker = new object();
         public static void SetSQLErrorReport()
         {
             P_SQLite.OnError += new Action<string>((ErrorMsg) => 
             {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
+                lock(ErrorReportLocker)
+                Application.Current.Dispatcher.Invoke(new Action(() => 
+                {
+                    if (DeFine.WorkingWin!=null)
                     MessageBoxExtend.Show(DeFine.WorkingWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
                 }));
             });
@@ -189,6 +193,8 @@ namespace LexTranslator
             ExtendWin = new ExtendWin();
 
             SetSQLErrorReport();
+
+            new P_SQLite().ExecuteNonQuery("saksjlwjkewqlkeqw q qeweq");
         }
     }
 
