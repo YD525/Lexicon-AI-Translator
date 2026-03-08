@@ -1351,7 +1351,7 @@ namespace LexTranslator
 
                     if (DeFine.GlobalLocalSetting.UseFullPunctuation)
                     {
-                        Link.CheckLinks(new Action<string, string>((string Key,string Value) => 
+                        Link.CheckLinks(new Action<string, string,bool>((string Key,string Value,bool Unique) => 
                         {
                             if (Value.Length > 0)
                             {
