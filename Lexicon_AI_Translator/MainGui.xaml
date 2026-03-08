@@ -586,17 +586,44 @@
                                                         </Label>
                                                     </Border>
 
+                                                    <Border Name="FindNpc" Style="{DynamicResource LiteButton}" PreviewMouseDown="FindNpc_PreviewMouseDown">
+                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIFindNpc">
+                                                            FindNpc
+                                                        </Label>
+                                                    </Border>
+
                                                     <Border Name="Traditional" Style="{DynamicResource LiteButton}" PreviewMouseDown="Traditional_PreviewMouseDown" Visibility="Collapsed">
                                                         <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UITraditional">
                                                             ZH Convert
                                                         </Label>
                                                     </Border>
+
                                                 </StackPanel>
 
                                                 <Border Style="{DynamicResource IDEBorder}" Grid.Row="1">
-                                                    <avalonEdit:TextEditor Style="{DynamicResource IDEStyle}" Margin="5" Name="FromStr" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" IsReadOnly="True"  FontFamily="Consolas" FontSize="16" ShowLineNumbers="True" WordWrap="True" TextOptions.TextFormattingMode="Display">
+                                                
+                                                    <Grid>
+                                                        <StackPanel Name="NpcView" Orientation="Horizontal" Panel.ZIndex="2" VerticalAlignment="Bottom" Height="20">
+                                                            
+                                                            <Label VerticalAlignment="Center" Foreground="White">
+                                                                Gender:
+                                                            </Label>
 
-                                                    </avalonEdit:TextEditor>
+                                                            <Label VerticalAlignment="Center" Name="NpcSex" Foreground="White">
+                                                            </Label>
+
+                                                            <Label VerticalAlignment="Center" Foreground="White" Margin="5 0 0 0">
+                                                                Name:
+                                                            </Label>
+
+                                                            <TextBox VerticalAlignment="Center" Name="NpcName" Focusable="False" IsReadOnly="True" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center" Visibility="Collapsed">
+
+                                                            </TextBox>
+                                                        </StackPanel>
+                                                        <avalonEdit:TextEditor Panel.ZIndex="1" Style="{DynamicResource IDEStyle}" Margin="5" Name="FromStr" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" IsReadOnly="True"  FontFamily="Consolas" FontSize="16" ShowLineNumbers="True" WordWrap="True" TextOptions.TextFormattingMode="Display">
+
+                                                        </avalonEdit:TextEditor>
+                                                    </Grid>
                                                 </Border>
 
                                             </Grid>

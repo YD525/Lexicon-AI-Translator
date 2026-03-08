@@ -133,6 +133,9 @@
     <Compile Include="MessageBoxExtend.xaml.cs">
       <DependentUpon>MessageBoxExtend.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NPCFinder.xaml.cs">
+      <DependentUpon>NPCFinder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ReplaceWin.xaml.cs">
       <DependentUpon>ReplaceWin.xaml</DependentUpon>
     </Compile>
@@ -212,6 +215,10 @@
     <Page Include="MessageBoxExtend.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NPCFinder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ReplaceWin.xaml">
       <Generator>MSBuild:Compile</Generator>

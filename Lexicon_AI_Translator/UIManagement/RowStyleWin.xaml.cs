@@ -308,6 +308,12 @@ namespace LexTranslator.UIManagement
             { 
                FontColor = (Color)Application.Current.Resources["DefFontColor"];
             }
+
+            if (EspReader.GameCharacters.ContainsKey(Item.Key))
+            {
+                GetFakeKey.Foreground =new SolidColorBrush(Color.FromRgb(11, 116, 209));
+            }
+
             GetTranslated.Foreground = new SolidColorBrush(FontColor);
 
             GetTranslated.PreviewMouseWheel += TextEditorPreviewMouseWheel;

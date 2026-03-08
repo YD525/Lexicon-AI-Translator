@@ -1921,6 +1921,16 @@ namespace LexTranslator
                 SetLog("Select:" + LastSetKey);
             }
 
+            if (EspReader.GameCharacters.ContainsKey(Key))
+            {
+                NpcView.Visibility = Visibility.Visible;
+                NpcName.Text = EspReader.GameCharacters[Key][0].Name;
+                NpcSex.Content = EspReader.GameCharacters[Key][0].Gender.ToString();
+            }
+            else
+            {
+                NpcView.Visibility = Visibility.Collapsed;
+            }
 
             if (Key.Length > 0)
             {
@@ -3865,6 +3875,11 @@ namespace LexTranslator
         private void Window_Activated(object sender, EventArgs e)
         {
             DeFine.CurrentCodeView.SyncZIndex();
+        }
+
+        private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }
