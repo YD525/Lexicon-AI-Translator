@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="NPCFinder" Height="150" Width="300" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
+        Title="NPC Dialogue Locator" Height="150" Width="300" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
     <Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">

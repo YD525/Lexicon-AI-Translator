@@ -579,11 +579,16 @@
                                                             ⬇
                                                         </Label>
                                                     </Border>
-
-                                                    <Border Name="NextUntranslated" Style="{DynamicResource LiteButton}" PreviewMouseDown="NextUntranslated_PreviewMouseDown">
-                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UINextUntranslated">
-                                                            ⬇ Auto
-                                                        </Label>
+                                                    
+                                                    <Border Style="{DynamicResource SplitToggleButton}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Border Name="HotKeyArea" Background="#505050" Padding="8 0" CornerRadius="5 0 0 5" PreviewMouseDown="EnableHotKey_MouseDown" ToolTip="Auto Next: OFF — Click to enable. When enabled, pressing Tab will automatically jump to the next untranslated entry.">
+                                                                <Ellipse Name="HotKeyDot" Width="7" Height="7" Fill="#55FFFFFF" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <Border Name="NextAutoBtn" Background="#7B7B7B" Padding="6 0" CornerRadius="0 5 5 0" PreviewMouseDown="NextAuto_PreviewMouseDown">
+                                                                <TextBlock Text="⬇ Auto" Foreground="White" FontSize="12" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </StackPanel>
                                                     </Border>
 
                                                 </StackPanel>
@@ -648,7 +653,7 @@ Fill="White"/>
 
                                                     <Border Name="FindNpc" Style="{DynamicResource LiteButton}" PreviewMouseDown="FindNpc_PreviewMouseDown">
                                                         <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIFindNpc">
-                                                            FindNpc
+                                                            NPC Locator
                                                         </Label>
                                                     </Border>
 

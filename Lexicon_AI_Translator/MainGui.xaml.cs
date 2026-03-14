@@ -354,7 +354,14 @@ namespace LexTranslator
                 {
                     e.Handled = true;
 
-                    TransViewList?.Down();
+                    if (NextAutoEnable == 0)
+                    {
+                        TransViewList?.Down();
+                    }
+                    else
+                    {
+                        NextAuto();
+                    }
                 }
             }
             if (e.Key == Key.F2)
@@ -3045,8 +3052,13 @@ namespace LexTranslator
             Phoenix.SaveConfig();
         }
 
+        private void NextAuto_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NextAuto();
+        }
+
         private string LastUntranslatedKey = null;
-        private void NextUntranslated_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        public void NextAuto()
         {
             var Lines = TransViewList?.RealLines;
             if (Lines == null) return;
@@ -3078,7 +3090,7 @@ namespace LexTranslator
                         {
                             if (Lines[i].Score > 0)
                             {
-                                LastUntranslatedKey = Lines[i].Key; 
+                                LastUntranslatedKey = Lines[i].Key;
                                 TransViewList.Goto(Lines[i].Key);
                                 return;
                             }
@@ -3089,6 +3101,8 @@ namespace LexTranslator
 
             LastUntranslatedKey = null;
         }
+
+       
 
         private void SearchBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -3921,6 +3935,32 @@ namespace LexTranslator
             NNPCFinder.Show();
         }
 
-   
+        public int NextAutoEnable = 0;
+        private const string ToolTipNextAutoOff = "Auto Next: OFF — Click to enable. When enabled, pressing Tab will automatically jump to the next untranslated entry.";
+        private const string ToolTipNextAutoOn = "Auto Next: ON — Tab key is now redirected to jump to the next untranslated entry. Click to disable.";
+        private bool _AutoLoop = false;
+        private void EnableHotKey_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _AutoLoop = !_AutoLoop;
+
+            LastUntranslatedKey = null;
+
+            if (_AutoLoop)
+            {
+                HotKeyDot.Fill = new SolidColorBrush(Color.FromRgb(11, 116, 209));
+                HotKeyArea.ToolTip = ToolTipNextAutoOn;
+                NextAutoEnable = 1;
+            }
+            else
+            {
+                HotKeyDot.Fill = new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xFF, 0xFF));
+                HotKeyArea.ToolTip = ToolTipNextAutoOff;
+                NextAutoEnable = 0;
+            }
+
+            e.Handled = true;
+        }
+
+      
     }
 }

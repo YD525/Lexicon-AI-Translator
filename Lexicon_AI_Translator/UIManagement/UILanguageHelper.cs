@@ -162,7 +162,7 @@ namespace LexTranslator.UIManage
         {
             NextLoad:
             UICache.Clear();
-            string SetPath = DeFine.GetFullPath(@"\Interface\Translations\SSE Lexicon_" + SetLanguage.ToString().ToUpper() + ".txt");
+            string SetPath = DeFine.GetFullPath(@"\Interface\Translations\Lex_" + SetLanguage.ToString().ToUpper() + ".txt");
             MCMReader NewReader = new MCMReader();
             if (File.Exists(SetPath))
             {
