@@ -3065,32 +3065,49 @@ namespace LexTranslator
             Phoenix.SaveConfig();
         }
 
+        private string LastUntranslatedKey = null;
         private void NextUntranslated_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            for (int i = 0; i < TransViewList?.RealLines.Count; i++)
+            var Lines = TransViewList?.RealLines;
+            if (Lines == null) return;
+
+            int StartIndex = 0;
+            if (LastUntranslatedKey != null)
             {
+                int LastIndex = Lines.FindIndex(l => l.Key == LastUntranslatedKey);
+                if (LastIndex >= 0)
+                    StartIndex = LastIndex + 1;
+            }
+
+            int Total = Lines.Count;
+            for (int Offset = 0; Offset < Total; Offset++)
+            {
+                int i = (StartIndex + Offset) % Total;
+
                 bool IsCloud = false;
-                var GetLine = TransViewList.RealLines[i];
-                TransViewList.RealLines[i].SyncData(ref IsCloud);
+                var GetLine = Lines[i];
+                Lines[i].SyncData(ref IsCloud);
+
                 if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
                 {
                     var SourceLang = P_Language.DetectLanguageByLine(GetLine.SourceText);
                     if (SourceLang != Phoenix.To)
                     {
                         if (GetLine.TransText.Length == 0 ||
-                         SourceLang ==
-                         P_Language.DetectLanguageByLine(GetLine.TransText)
-                         )
+                            SourceLang == P_Language.DetectLanguageByLine(GetLine.TransText))
                         {
-                            if (TransViewList.RealLines[i].Score > 0)
+                            if (Lines[i].Score > 0)
                             {
-                                TransViewList.Goto(TransViewList.RealLines[i].Key);
-                                break;
+                                LastUntranslatedKey = Lines[i].Key; 
+                                TransViewList.Goto(Lines[i].Key);
+                                return;
                             }
                         }
                     }
                 }
             }
+
+            LastUntranslatedKey = null;
         }
 
         private void SearchBox_KeyDown(object sender, KeyEventArgs e)

@@ -500,9 +500,9 @@
                                     </StackPanel>
 
 
-                                    <GridSplitter HorizontalAlignment="Right" Height="15" Width="3.5" Background="Gray" Grid.Column="0"/>
-                                    <GridSplitter HorizontalAlignment="Right" Height="15" Width="3.5" Background="Gray" Grid.Column="1"/>
-                                    <GridSplitter HorizontalAlignment="Right" Height="15" Width="3.5" Background="Gray" Grid.Column="2"/>
+                                    <GridSplitter Style="{StaticResource ColSplitterStyle}" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeDirection="Columns" Grid.Column="0"/>
+                                    <GridSplitter Style="{StaticResource ColSplitterStyle}" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeDirection="Columns" Grid.Column="1"/>
+                                    <GridSplitter Style="{StaticResource ColSplitterStyle}" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeDirection="Columns" Grid.Column="2"/>
                                 </Grid>
                                 <Grid Name="TransView" Style="{DynamicResource FrameStyle}" Grid.Row="4" Panel.ZIndex="990" Margin="10 0 10 0" Visibility="Visible">
 
@@ -519,7 +519,7 @@
                                     </Grid.ContextMenu>
                                 </Grid>
 
-                                <GridSplitter   Style="{StaticResource SplitterStyle}"  DragCompleted="GridSplitter_DragCompleted"  Height="6" Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF7B7B7B" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" ShowsPreview="True" />
+                                <GridSplitter   Style="{StaticResource SplitterStyle}"  DragCompleted="GridSplitter_DragCompleted"  Height="5" Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF7B7B7B" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" ShowsPreview="True" />
 
                                 <Grid Grid.Row="6" Style="{DynamicResource ExtendBoxStyle}">
                                     <Grid.Resources>
