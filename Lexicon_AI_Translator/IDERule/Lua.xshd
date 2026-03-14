@@ -146,13 +146,10 @@
 		  <Word>Return</Word>
 		  <Word>EndIf</Word>
     </Keywords>
-    <Keywords color="TrueFalse">
-      <Word>true</Word>
-      <Word>false</Word>
-	  <Word>DisplayedName</Word>
-	</Keywords>
 	 
 	  <Keywords color="Keywords">
+      <Word>False</Word>
+      <Word>True</Word>
 	  <Word>static</Word>
 	  <Word>public</Word>
 	  <Word>private</Word>

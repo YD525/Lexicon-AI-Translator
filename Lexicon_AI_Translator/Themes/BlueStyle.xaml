@@ -1344,4 +1344,47 @@
     <Color x:Key="LineASelected">#FF0A61AF</Color>
 
     <Color x:Key="DefFontColor">White</Color>
+
+
+
+
+    <Style x:Key="SplitterStyle" TargetType="{x:Type GridSplitter}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GridSplitter}">
+                    <Grid>
+                        <Rectangle Fill="Transparent"/>
+                        <Rectangle x:Name="Line"
+                     Height="1" VerticalAlignment="Center"
+                     Fill="#33FFFFFF"/>
+                        <Border x:Name="Handle"
+                  Width="50" Height="5"
+                  CornerRadius="2.5"
+                  Background="#55888888"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                                <Ellipse Width="3" Height="3" Fill="#99FFFFFF" Margin="2 0"/>
+                                <Ellipse Width="3" Height="3" Fill="#99FFFFFF" Margin="2 0"/>
+                                <Ellipse Width="3" Height="3" Fill="#99FFFFFF" Margin="2 0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Handle" Property="Width"      Value="56"/>
+                            <Setter TargetName="Handle" Property="Background" Value="#770090FF"/>
+                            <Setter TargetName="Line"   Property="Fill"       Value="#440090FF"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
 </ResourceDictionary>

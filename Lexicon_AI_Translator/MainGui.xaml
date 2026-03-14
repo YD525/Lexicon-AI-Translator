@@ -318,7 +318,7 @@
                                     <RowDefinition Height="5"/>
                                     <RowDefinition Height="35"/>
                                     <RowDefinition Height="1*" Name="ListViewArea"/>
-                                    <RowDefinition Height="3.5" Name="SplictLine"/>
+                                    <RowDefinition Height="5" Name="SplictLine"/>
                                     <RowDefinition Height="260" Name="WritingArea"/>
                                 </Grid.RowDefinitions>
 
@@ -519,7 +519,7 @@
                                     </Grid.ContextMenu>
                                 </Grid>
 
-                                <GridSplitter  DragCompleted="GridSplitter_DragCompleted" Grid.Row="5" Height="3.5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF7B7B7B" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" ShowsPreview="True" />
+                                <GridSplitter   Style="{StaticResource SplitterStyle}"  DragCompleted="GridSplitter_DragCompleted"  Height="6" Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF7B7B7B" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" ShowsPreview="True" />
 
                                 <Grid Grid.Row="6" Style="{DynamicResource ExtendBoxStyle}">
                                     <Grid.Resources>
