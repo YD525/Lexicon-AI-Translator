@@ -1997,7 +1997,6 @@ namespace LexTranslator
                         if (FromStr.Text.Length > 0)
                         {
                             UIHelper.ShowButton(CancelOTButton, true);
-                            ShowFormatToStrButton(true);
                         }
 
                         if (DeFine.GlobalLocalSetting.AutoSpeak)
@@ -2495,7 +2494,6 @@ namespace LexTranslator
             UIHelper.ShowButton(CancelOTButton, false);
             UIHelper.ShowButton(ApplyOTButton, false);
 
-            ShowFormatToStrButton(false);
             ShowClearToStrButton(false);
         }
 
@@ -2580,7 +2578,6 @@ namespace LexTranslator
         private void ClearToStr(object sender, MouseButtonEventArgs e)
         {
             ToStr.Text = string.Empty;
-            ShowFormatToStrButton(true);
         }
 
         private void CloneFromStr(object sender, MouseButtonEventArgs e)
@@ -2596,17 +2593,12 @@ namespace LexTranslator
             UIHelper.ShowButton(ClearToStrButton, Enable);
         }
 
-        public void ShowFormatToStrButton(bool Enable)
-        {
-            UIHelper.ShowButton(FormatToStrButton, Enable);
-        }
 
         private void ToStr_TextChanged(object sender, EventArgs e)
         {
             if (ToStr.Text.Length > 0)
             {
                 ShowClearToStrButton(true);
-                ShowFormatToStrButton(true);
                 UIHelper.ShowButton(ApplyOTButton, true);
             }
             else
@@ -2629,19 +2621,7 @@ namespace LexTranslator
             }
         }
 
-        private void FormatToStr(object sender, MouseButtonEventArgs e)
-        {
-            if (ToStr.Text.Length > 0)
-            {
-                ToStr.Text = TranslationPreprocessor.FormatStr(ToStr.Text);
-            }
-            else
-            {
-                ToStr.Text = TranslationPreprocessor.FormatStr(FromStr.Text);
-            }
-
-            ShowFormatToStrButton(false);
-        }
+       
 
 
         private void ReplaceStr(object sender, MouseButtonEventArgs e)

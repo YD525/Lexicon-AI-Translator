@@ -582,19 +582,7 @@
 
                                                     <Border Name="NextUntranslated" Style="{DynamicResource LiteButton}" PreviewMouseDown="NextUntranslated_PreviewMouseDown">
                                                         <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UINextUntranslated">
-                                                            NextAuto
-                                                        </Label>
-                                                    </Border>
-
-                                                    <Border Name="FindNpc" Style="{DynamicResource LiteButton}" PreviewMouseDown="FindNpc_PreviewMouseDown">
-                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIFindNpc">
-                                                            FindNpc
-                                                        </Label>
-                                                    </Border>
-
-                                                    <Border Name="Traditional" Style="{DynamicResource LiteButton}" PreviewMouseDown="Traditional_PreviewMouseDown" Visibility="Collapsed">
-                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UITraditional">
-                                                            ZH Convert
+                                                            ⬇ Auto
                                                         </Label>
                                                     </Border>
 
@@ -652,21 +640,27 @@ Fill="White"/>
                                                         </Viewbox>
                                                     </Border>
 
-                                                    <Border Name="FormatToStrButton" Style="{DynamicResource LiteButton}" PreviewMouseDown="FormatToStr" ToolTip="Unified beautified strings">
-                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIFormat">
-                                                            Format
-                                                        </Label>
-                                                    </Border>
-
                                                     <Border Name="ClearToStrButton" Style="{DynamicResource LiteButton}" PreviewMouseDown="ClearToStr">
                                                         <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIClear">
                                                             Clear
                                                         </Label>
                                                     </Border>
 
+                                                    <Border Name="FindNpc" Style="{DynamicResource LiteButton}" PreviewMouseDown="FindNpc_PreviewMouseDown">
+                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIFindNpc">
+                                                            FindNpc
+                                                        </Label>
+                                                    </Border>
+
                                                     <Border Name="ReplaceStrButton" Style="{DynamicResource LiteButton}" PreviewMouseDown="ReplaceStr">
                                                         <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIReplace">
                                                             Replace
+                                                        </Label>
+                                                    </Border>
+
+                                                    <Border Name="Traditional" Style="{DynamicResource LiteButton}" PreviewMouseDown="Traditional_PreviewMouseDown" Visibility="Collapsed">
+                                                        <Label Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UITraditional">
+                                                            ZH Convert
                                                         </Label>
                                                     </Border>
 

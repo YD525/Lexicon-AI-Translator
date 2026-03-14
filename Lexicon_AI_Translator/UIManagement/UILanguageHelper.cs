@@ -78,11 +78,6 @@ namespace LexTranslator.UIManage
                        DeFine.WorkingWin.UIClone.Content = Value;
                     }
                 break;
-                case "UIFormat":
-                    {
-                        DeFine.WorkingWin.UIFormat.Content = Value;
-                    }
-                break;
                 case "UIClear":
                     {
                         DeFine.WorkingWin.UIClear.Content = Value;
