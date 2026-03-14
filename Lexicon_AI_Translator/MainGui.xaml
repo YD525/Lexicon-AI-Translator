@@ -1212,7 +1212,7 @@ Fill="White"/>
                                         <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
                                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center" Width="500">
                                                 <Label Style="{DynamicResource TittleFont}">
-                                                    Localizable Areas
+                                                    Punctuation Output Format
                                                 </Label>
                                                 <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
                                                     <Grid Margin="0 5 0 5">
