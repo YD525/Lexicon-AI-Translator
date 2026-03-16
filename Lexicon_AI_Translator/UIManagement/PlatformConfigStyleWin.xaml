@@ -23,9 +23,9 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left" Background="White">
+                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left" >
                             <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
-                                <Label VerticalAlignment="Center" FontWeight="Bold">
+                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="White">
                                     ChatGpt
                                 </Label>
                                 <Ellipse Width="8" Height="8" Fill="#FF14C1DC" VerticalAlignment="Center">
@@ -33,9 +33,9 @@
                             </StackPanel>
                         </Border>
 
-                        <Grid Grid.Column="1" Background="#FF404040" Margin="0 1 0 0">
+                        <Grid Grid.Column="1" Background="#FF303030" Margin="0 1 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand">
+                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
                                     Document: 
                                 </Label>
                                 <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
@@ -46,7 +46,7 @@
                             </StackPanel>
 
                         </Grid>
-                        <Border Grid.Column="2" Background="#FF404040" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
                         </Border>
                     </Grid>
 
@@ -117,9 +117,9 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left" Background="White">
+                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
-                                <Label VerticalAlignment="Center" FontWeight="Bold">
+                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="White">
                                     LMStudio
                                 </Label>
                                 <Ellipse Width="8" Height="8" Fill="#FF14C1DC" VerticalAlignment="Center">
@@ -127,9 +127,9 @@
                             </StackPanel>
                         </Border>
 
-                        <Grid Grid.Column="1" Background="#FF404040" Margin="0 1 0 0">
+                        <Grid Grid.Column="1" Background="#FF303030" Margin="0 1 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand">
+                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
                                     Document: 
                                 </Label>
                                 <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
@@ -140,7 +140,7 @@
                             </StackPanel>
 
                         </Grid>
-                        <Border Grid.Column="2" Background="#FF404040" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
                         </Border>
                     </Grid>
 
@@ -188,9 +188,9 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left" Background="White">
+                        <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
-                                <Label VerticalAlignment="Center" FontWeight="Bold">
+                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="White">
                                     DeepL
                                 </Label>
                                 <Ellipse Width="8" Height="8" Fill="#FFF5668C" VerticalAlignment="Center">
@@ -198,9 +198,9 @@
                             </StackPanel>
                         </Border>
 
-                        <Grid Grid.Column="1" Background="#FF404040" Margin="0 1 0 0">
+                        <Grid Grid.Column="1" Background="#FF303030" Margin="0 1 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand">
+                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
                                     Document: 
                                 </Label>
                                 <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
@@ -211,7 +211,7 @@
                             </StackPanel>
 
                         </Grid>
-                        <Border Grid.Column="2" Background="#FF404040" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
                         </Border>
                     </Grid>
 
