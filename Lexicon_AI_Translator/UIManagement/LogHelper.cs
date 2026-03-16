@@ -37,15 +37,5 @@ namespace LexTranslator.UIManagement
                 SetLog(DeFine.WorkingWin.MainLog, Text);
             }
         }
-
-        public static void ClearLog()
-        {
-            if (DeFine.WorkingWin != null)
-            {
-                DeFine.WorkingWin.Dispatcher.Invoke(new Action(() => {
-                    DeFine.WorkingWin.InputLog.Text = DeFine.WorkingWin.OutputLog.Text = DeFine.WorkingWin.MainLog.Text = string.Empty;
-                }));
-            }
-        }
     }
 }

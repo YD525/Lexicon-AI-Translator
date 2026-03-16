@@ -13,7 +13,6 @@ using LexTranslator.UIManage;
 using PhoenixEngine;
 using PhoenixEngine.Language;
 using PhoenixEngine.ADO;
-using System.Runtime.CompilerServices;
 
 namespace LexTranslator
 {

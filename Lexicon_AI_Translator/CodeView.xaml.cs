@@ -3,13 +3,10 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using System.Windows;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit;
-using System.Collections.Generic;
 using System;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
-using System.Windows.Media.TextFormatting;
 using System.Diagnostics;
 
 namespace LexTranslator

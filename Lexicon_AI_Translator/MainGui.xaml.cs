@@ -35,7 +35,6 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Language;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Additional;
-using PhoenixEngine.Engine;
 using PhoenixEngine.Events;
 
 namespace LexTranslator
