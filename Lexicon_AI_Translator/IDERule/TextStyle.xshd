@@ -1,103 +1,33 @@
 <?xml version="1.0"?>
-<SyntaxDefinition name="SharpLua" extensions=".slua;.lua" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-  <!-- The named colors 'Comment' and 'String' are used in SharpDevelop to detect if a line is inside a multiline string/comment -->
-  <Color name="Comment" foreground="#ff999999" exampleText="-- comment" />
-  <Color name="String" foreground="#fff99157" />
-  <Color name="Function" foreground="#FF2EE84B" />
+<SyntaxDefinition name="SkyrimBook" extensions=".slua;.lua"
+                  xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 
-  <Color name="StringDSP" foreground="#ffcc99cc" />
-  <Color name="Punctuation" />
-  <Color name="MethodCall" foreground="#ffffcc66"/>
-  <Color name="NumberLiteral" foreground="#ff99cc99"/>
-  <Color name="NilKeyword" fontWeight="bold"/>
-  <Color name="Keywords" fontWeight="bold" foreground="#ff6699cc" />
-  <Color name="GotoKeywords" foreground="#ffcc99cc" />
-  <Color name="Visibility" fontWeight="bold" foreground="#fff99157"/>
-  <Color name="TrueFalse" fontWeight="bold" foreground="#ff66cccc" />
-  <Color name="System" foreground="#FFF49A0C" />
-  <Color name="PapyrusDeFine" foreground="#FF249BE9"/>
-  <Color name="SystemDef" foreground="#FF03A9E7" />
-  <Color name="Orange" foreground="#FFA500" />
-	
+	<Color name="Tag"     foreground="#FFA500" />
+	<Color name="XMLTag"  foreground="#569CD6" />
 
-  <RuleSet name="CommentMarkerSet">
-    <Keywords fontWeight="bold" foreground="#fff2777a">
-      <Word>TODO</Word>
-      <Word>FIXME</Word>
-    </Keywords>
-    <Keywords fontWeight="bold" foreground="#fff2777a">
-      <Word>HACK</Word>
-      <Word>UNDONE</Word>
-    </Keywords>
-  </RuleSet>
+	<Color name="StringDouble" foreground="#CE9178" />
+	<Color name="StringSingle" foreground="#CE9178" />
 
-  <!-- This is the main ruleset. -->
-  <RuleSet>
+	<RuleSet>
 
-	  <Span color="Orange">
-		  <Begin>\[</Begin>
-		  <End>\]</End>
-	  </Span>
+		<Span color="Tag" multiline="false">
+			<Begin>\[</Begin>
+			<End>\]</End>
+		</Span>
 
-	  <Span color="Orange">
-		  <Begin>&lt;</Begin>
-		  <End>&gt;</End>
-	  </Span>
-	  
-    <Span color="Comment">
-      <Begin color="XmlDoc/DocComment">---</Begin>
-      <RuleSet>
-        <Import ruleSet="XmlDoc/DocCommentSet"/>
-        <Import ruleSet="CommentMarkerSet"/>
-      </RuleSet>
-    </Span>
+		<Span color="XMLTag" multiline="false">
+			<Begin>&lt;</Begin>
+			<End>&gt;</End>
+		</Span>
 
+		<Span color="StringDouble" multiline="false">
+			<Begin>"</Begin>
+			<End>"</End>
+		</Span>
 
-    <Span color="Comment" ruleSet="CommentMarkerSet" multiline="true">
-      <Begin>--\[[=]*\[</Begin>
-      <End>\][=]*]</End>
-    </Span>
-
-
-    <Span color="Comment" ruleSet="CommentMarkerSet">
-      <Begin>--</Begin>
-    </Span>
-
-    <Span color="String">
-      <Begin>"</Begin>
-      <End>"</End>
-      <RuleSet>
-        <!-- span for escape sequences -->
-        <Span begin="\\" end="."/>
-      </RuleSet>
-    </Span>
-
-	  <Span color="StringDSP">
-		  <Begin>//</Begin>
-		 
-		  <RuleSet>
-			  <!-- span for escape sequences -->
-			  <Span begin="//" />
-		  </RuleSet>
-	  </Span>
-
-    <Span color="String" multiline="true">
-      <Begin color="String">\[[=]*\[</Begin>
-      <End>\][=]*]</End>
-    </Span>
-
-    <!-- Digits -->
-    <Rule color="NumberLiteral">
-      \b0[xX][0-9a-fA-F]+  # hex number
-      |
-      ( \b\d+(\.[0-9]+)?   #number with optional floating point
-      | \.[0-9]+           #or just starting with floating point
-      )
-      ([eE][+-]?[0-9]+)? # optional exponent
-    </Rule>
-
-    <Rule color="Punctuation">
-      [?,.;()\[\]{}+\-/%*&lt;&gt;^+~!|&amp;]+
-    </Rule>
-  </RuleSet>
+		<Span color="StringSingle" multiline="false">
+			<Begin>'</Begin>
+			<End>'</End>
+		</Span>
+	</RuleSet>
 </SyntaxDefinition>

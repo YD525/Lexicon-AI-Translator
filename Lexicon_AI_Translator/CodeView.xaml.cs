@@ -143,6 +143,15 @@ namespace LexTranslator
         {
             SyncZIndex();
         }
+
+        public void SetText(string Text)
+        {
+            DeFine.CurrentCodeView.Dispatcher.Invoke(() =>
+            {
+                DeFine.CurrentCodeView.TextEditor.WordWrap = false;
+                DeFine.CurrentCodeView.TextEditor.Document = new TextDocument(Text);
+            });
+        }
     }
 
   

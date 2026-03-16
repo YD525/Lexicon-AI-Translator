@@ -1113,10 +1113,7 @@ namespace LexTranslator
                         }
                     }));
 
-                    DeFine.CurrentCodeView.Dispatcher.Invoke(() =>
-                    {
-                        DeFine.CurrentCodeView.TextEditor.Text = SetPsc;
-                    });
+                    DeFine.CurrentCodeView.SetText(SetPsc);
 
                     double CalcLeft = this.Left + this.ActualWidth + 1;
                     double CalcTop = this.Top;
