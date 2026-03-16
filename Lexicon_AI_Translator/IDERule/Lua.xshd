@@ -1,256 +1,228 @@
 <?xml version="1.0"?>
-<SyntaxDefinition name="SharpLua" extensions=".slua;.lua" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-  <!-- The named colors 'Comment' and 'String' are used in SharpDevelop to detect if a line is inside a multiline string/comment -->
-  <Color name="Comment" foreground="#ff999999" exampleText="-- comment" />
-  <Color name="String" foreground="#fff99157" />
-  <Color name="Function" foreground="#FF2EE84B" />
+<SyntaxDefinition name="SharpLua" extensions=".slua;.lua"
+                  xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 
-  <Color name="StringDSP" foreground="#FF7A7878" />
-  <Color name="Punctuation" />
-  <Color name="MethodCall" foreground="#ffffcc66"/>
-  <Color name="NumberLiteral" foreground="#ff99cc99"/>
-  <Color name="NilKeyword" fontWeight="bold"/>
-  <Color name="Keywords" fontWeight="bold" foreground="#FF249BE9" />
-  <Color name="GotoKeywords" foreground="#ffcc99cc" />
-  <Color name="Visibility" fontWeight="bold" foreground="#fff99157"/>
-  <Color name="TrueFalse" fontWeight="bold" foreground="#ff66cccc" />
-  <Color name="System" foreground="#FFF49A0C" />
-  <Color name="PapyrusDeFine" foreground="#FF249BE9"/>
-  <Color name="SystemDef" foreground="#FF03A9E7" />
-  <Color name="Orange" foreground="#FFA500" />
-	
+	<!-- ═══════════════════════════════════════════
+       VSCode Dark+ Color Scheme
+       Keywords    : #569CD6 blue
+       Control flow: #C586C0 purple
+       Types       : #4EC9B0 teal
+       Methods     : #DCDCAA yellow
+       Strings     : #CE9178 orange-brown
+       Numbers     : #B5CEA8 light green
+       Comments    : #6A9955 green
+       Punctuation : #D4D4D4 light gray
+       Modifiers   : #569CD6 blue
+       this/null   : #569CD6 blue
+       SystemOp    : #4EC9B0 teal
+  ═══════════════════════════════════════════ -->
 
-  <RuleSet name="CommentMarkerSet">
-    <Keywords fontWeight="bold" foreground="#fff2777a">
-      <Word>TODO</Word>
-      <Word>FIXME</Word>
-    </Keywords>
-    <Keywords fontWeight="bold" foreground="#fff2777a">
-      <Word>HACK</Word>
-      <Word>UNDONE</Word>
-    </Keywords>
-  </RuleSet>
+	<Color name="Comment"       foreground="#6A9955" />
+	<Color name="String"        foreground="#CE9178" />
+	<Color name="StringSingle"  foreground="#CE9178" />
+	<Color name="MethodCall"    foreground="#DCDCAA" />
+	<Color name="NumberLiteral" foreground="#B5CEA8" />
+	<Color name="Keywords"      foreground="#569CD6" fontWeight="bold" />
+	<Color name="ControlFlow"   foreground="#C586C0" fontWeight="bold" />
+	<Color name="Visibility"    foreground="#569CD6" />
+	<Color name="NilKeyword"    foreground="#569CD6" />
+	<Color name="ScriptType"    foreground="#4EC9B0" />
+	<Color name="SystemDef"     foreground="#569CD6" />
+	<Color name="SystemOp"      foreground="#4EC9B0" />
+	<Color name="Punctuation"   foreground="#D4D4D4" />
 
-  <!-- This is the main ruleset. -->
-  <RuleSet>
+	<!-- ═══════════════════════════════════════════
+       COMMENT MARKERS
+  ═══════════════════════════════════════════ -->
+	<RuleSet name="CommentMarkerSet">
+		<Keywords fontWeight="bold" foreground="#FF8C00">
+			<Word>TODO</Word>
+			<Word>FIXME</Word>
+			<Word>HACK</Word>
+			<Word>UNDONE</Word>
+		</Keywords>
+	</RuleSet>
 
-	  <Span color="Orange">
-		  <Begin>\[</Begin>
-		  <End>\]</End>
-	  </Span>
+	<!-- ═══════════════════════════════════════════
+       MAIN RULESET
+  ═══════════════════════════════════════════ -->
+	<RuleSet>
 
-	  <Span color="Orange">
-		  <Begin>&lt;</Begin>
-		  <End>&gt;</End>
-	  </Span>
-	  
-    <Span color="Comment">
-      <Begin color="XmlDoc/DocComment">---</Begin>
-      <RuleSet>
-        <Import ruleSet="XmlDoc/DocCommentSet"/>
-        <Import ruleSet="CommentMarkerSet"/>
-      </RuleSet>
-    </Span>
+		<!-- ─── COMMENTS ─── -->
+		<Span color="Comment" ruleSet="CommentMarkerSet">
+			<Begin>//</Begin>
+		</Span>
 
+		<!-- ─── STRINGS ─── -->
+		<Span color="String">
+			<Begin>"</Begin>
+			<End>"</End>
+			<RuleSet>
+				<Span begin="\\" end="." />
+			</RuleSet>
+		</Span>
 
-    <Span color="Comment" ruleSet="CommentMarkerSet" multiline="true">
-      <Begin>--\[[=]*\[</Begin>
-      <End>\][=]*]</End>
-    </Span>
+		<Span color="StringSingle">
+			<Begin>'</Begin>
+			<End>'</End>
+			<RuleSet>
+				<Span begin="\\" end="." />
+			</RuleSet>
+		</Span>
 
+		<!-- ─── CONTROL FLOW ─── -->
+		<Keywords color="ControlFlow">
+			<Word>if</Word>
+			<Word>If</Word>
+			<Word>else</Word>
+			<Word>Else</Word>
+			<Word>elseif</Word>
+			<Word>ElseIf</Word>
+			<Word>endif</Word>
+			<Word>EndIf</Word>
+			<Word>for</Word>
+			<Word>foreach</Word>
+			<Word>while</Word>
+			<Word>do</Word>
+			<Word>break</Word>
+			<Word>continue</Word>
+			<Word>return</Word>
+			<Word>Return</Word>
+			<Word>repeat</Word>
+			<Word>until</Word>
+			<Word>in</Word>
+			<Word>end</Word>
+			<Word>then</Word>
+			<Word>switch</Word>
+			<Word>case</Word>
+			<Word>default</Word>
+		</Keywords>
 
-    <Span color="Comment" ruleSet="CommentMarkerSet">
-      <Begin>--</Begin>
-    </Span>
+		<!-- ─── KEYWORDS ─── -->
+		<Keywords color="Keywords">
+			<Word>and</Word>
+			<Word>or</Word>
+			<Word>not</Word>
+			<Word>new</Word>
+			<Word>using</Word>
+			<Word>class</Word>
+			<Word>struct</Word>
+			<Word>void</Word>
+			<Word>function</Word>
+			<Word>endfunction</Word>
+			<Word>EndFunction</Word>
+			<Word>true</Word>
+			<Word>True</Word>
+			<Word>false</Word>
+			<Word>False</Word>
+		</Keywords>
 
-    <Span color="String">
-      <Begin>"</Begin>
-      <End>"</End>
-      <RuleSet>
-        <!-- span for escape sequences -->
-        <Span begin="\\" end="."/>
-      </RuleSet>
-    </Span>
+		<!-- ─── ACCESS MODIFIERS ─── -->
+		<Keywords color="Visibility">
+			<Word>local</Word>
+			<Word>public</Word>
+			<Word>private</Word>
+			<Word>protected</Word>
+			<Word>static</Word>
+			<Word>readonly</Word>
+			<Word>const</Word>
+			<Word>override</Word>
+			<Word>virtual</Word>
+			<Word>abstract</Word>
+			<Word>sealed</Word>
+		</Keywords>
 
-    <Span color="StringDSP">
-      <Begin>'</Begin>
-      <End>'</End>
-      <RuleSet>
-        <!-- span for escape sequences -->
-        <Span begin="\\" end="."/>
-      </RuleSet>
-    </Span>
-	  
-	  <Span color="StringDSP">
-		  <Begin>//</Begin>
-		 
-		  <RuleSet>
-			  <!-- span for escape sequences -->
-			  <Span begin="//" />
-		  </RuleSet>
-	  </Span>
+		<!-- ─── NIL / NULL / THIS ─── -->
+		<Keywords color="NilKeyword">
+			<Word>nil</Word>
+			<Word>null</Word>
+		</Keywords>
 
-    <Span color="String" multiline="true">
-      <Begin color="String">\[[=]*\[</Begin>
-      <End>\][=]*]</End>
-    </Span>
+		<Keywords color="SystemDef">
+			<Word>this</Word>
+			<Word>base</Word>
+		</Keywords>
 
-	  
-	  <Keywords color="PapyrusDeFine">
-		  <Word>keyword</Word>
-		  <Word>form</Word>
-		  <Word>visualeffect</Word>
-		  <Word>leveleditem</Word>
-		  <Word>race</Word>
-		  <Word>spell</Word>
-		  <Word>scene</Word>
-		  <Word>faction</Word>
-		  <Word>quest</Word>
-		  <Word>globalvariable</Word>
-		  <Word>formlist</Word>
-		  <Word>VoiceType</Word>
-		  <Word>ActorBase</Word>
-		  <Word>var</Word>
-		  <Word>actor</Word>
-		  <Word>Actor</Word>
-		  <Word>Function</Word>
-		  <Word>EndFunction</Word>
-		  <Word>Keyword</Word>
-		  <Word>GlobalVariable</Word>
-		  <Word>Quest</Word>
-		  <Word>Spell</Word>
-		  <Word>MagicEffect</Word>
-		  <Word>ScriptName</Word>
-		  <Word>Extends</Word>
-		  <Word>String</Word>
-		  <Word>string</Word>
-		  <Word>int</Word>
-		  <Word>Int</Word>
-		  <Word>Float</Word>
-		  <Word>Armor</Word>
-		  <Word>Faction</Word>
-		  <Word>Sound</Word>
-		  <Word>Idle</Word>
-		  <Word>Key</Word>
-		  <Word>Message</Word>
-		  <Word>Scene</Word>
-		  <Word>FormList</Word>
-		  <Word>Package</Word>
-		  <Word>Outfit</Word>
-		  <Word>Auto</Word>
-		  <Word>Bool</Word>
-		  <Word>Double</Word>
-		  <Word>If</Word>
-		  <Word>Else</Word>
-		  <Word>ElseIf</Word>
-		  <Word>Return</Word>
-		  <Word>EndIf</Word>
-    </Keywords>
-	 
-	  <Keywords color="Keywords">
-      <Word>False</Word>
-      <Word>True</Word>
-	  <Word>static</Word>
-	  <Word>public</Word>
-	  <Word>private</Word>
-	  <Word>new</Word>
-	  <Word>struct</Word>
-	  <Word>class</Word>
-	  <Word>public</Word>
-	  <Word>void</Word>
-      <Word>;</Word>
-      <Word>and</Word>
-      <Word>break</Word>
-      <Word>do</Word>
-      <Word>else</Word>
-      <Word>elseif</Word>
-      <Word>end</Word>
-      <Word>false</Word>
-      <Word>for</Word>
-      <Word>function</Word>
-	  <Word>endfunction</Word>
-      <Word>if</Word>
-      <Word>endif</Word>
-	  <Word>then</Word>
-      <Word>in</Word>
-      <Word>local</Word>
-      <!--<Word>nil</Word>-->
-      <Word>not</Word>
-      <Word>or</Word>
-      <Word>repeat</Word>
-      <Word>return</Word>
-      <Word>then</Word>
-      <Word>true</Word>
-      <Word>until</Word>
-      <Word>while</Word>
-      <Word>using</Word>
-      <Word>continue</Word>
-    </Keywords>
+		<!-- ─── SCRIPT SPECIAL TYPES ─── -->
+		<Keywords color="ScriptType">
+			<Word>var</Word>
+			<Word>int</Word>
+			<Word>Int</Word>
+			<Word>float</Word>
+			<Word>Float</Word>
+			<Word>double</Word>
+			<Word>Double</Word>
+			<Word>bool</Word>
+			<Word>Bool</Word>
+			<Word>string</Word>
+			<Word>String</Word>
+			<Word>Actor</Word>
+			<Word>actor</Word>
+			<Word>ActorBase</Word>
+			<Word>Armor</Word>
+			<Word>Auto</Word>
+			<Word>Extends</Word>
+			<Word>Faction</Word>
+			<Word>faction</Word>
+			<Word>FormList</Word>
+			<Word>formlist</Word>
+			<Word>form</Word>
+			<Word>GlobalVariable</Word>
+			<Word>globalvariable</Word>
+			<Word>Idle</Word>
+			<Word>Key</Word>
+			<Word>keyword</Word>
+			<Word>Keyword</Word>
+			<Word>leveleditem</Word>
+			<Word>MagicEffect</Word>
+			<Word>Message</Word>
+			<Word>Outfit</Word>
+			<Word>Package</Word>
+			<Word>Quest</Word>
+			<Word>quest</Word>
+			<Word>race</Word>
+			<Word>Scene</Word>
+			<Word>scene</Word>
+			<Word>ScriptName</Word>
+			<Word>Sound</Word>
+			<Word>Spell</Word>
+			<Word>spell</Word>
+			<Word>visualeffect</Word>
+			<Word>VoiceType</Word>
+		</Keywords>
 
-    <Keywords color="GotoKeywords">
-      <Word>break</Word>
-      <Word>return</Word>
-    </Keywords>
+		<!-- ─── SYSTEM OPERATIONS ─── -->
+		<Keywords color="SystemOp">
+			<Word>Modify</Word>
+			<Word>Insert</Word>
+			<Word>Delete</Word>
+		</Keywords>
 
-	  <Keywords color="System" >
-		  <Word>&lt;</Word>
-		  <Word>&gt;</Word>
-		  <Word>Modify</Word>
-		  <Word>Insert</Word>
-		  <Word>Delete</Word>
-	  </Keywords>
+		<!-- ─── METHOD CALLS ─── -->
+		<Rule color="MethodCall">
+			\b[\d\w_]+(?=\s*\()
+		</Rule>
+		<Rule color="MethodCall">
+			\b[\d\w_]+(?=\s*\")
+		</Rule>
+		<Rule color="MethodCall">
+			\b[\d\w_]+(?=\s*\')
+		</Rule>
+		<Rule color="MethodCall">
+			\b[\d\w_]+(?=\s*\{)
+		</Rule>
 
-	  <Keywords color="SystemDef">
-		  <Word>this</Word>
-	  </Keywords>
+		<!-- ─── NUMBER LITERALS ─── -->
+		<Rule color="NumberLiteral">
+			\b0[xX][0-9a-fA-F]+
+			|
+			(\b\d+(\.[0-9]+)?|\.[0-9]+)([eE][+-]?[0-9]+)?
+		</Rule>
 
-    <Keywords color="Visibility">
-      <Word>local</Word>
-    </Keywords>
+		<!-- ─── PUNCTUATION ─── -->
+		<Rule color="Punctuation">
+			[?,.;()\[\]{}+\-/%*&lt;&gt;^+~!|&amp;]+
+		</Rule>
 
-    <Keywords color="NilKeyword">
-      <Word>nil</Word>
-    </Keywords>
-
-    <!-- Mark previous rule-->
-    <Rule color="MethodCall">
-      \b
-      [\d\w_]+  # an identifier
-      (?=\s*\() # followed by (
-    </Rule>
-    <Rule color="MethodCall">
-      \b
-      [\d\w_]+  # an identifier
-      (?=\s*\") # followed by "
-    </Rule>
-    <Rule color="MethodCall">
-      \b
-      [\d\w_]+  # an identifier
-      (?=\s*\') # followed by '
-    </Rule>
-    <Rule color="MethodCall">
-      \b
-      [\d\w_]+  # an identifier
-      (?=\s*\{) # followed by {
-    </Rule>
-    <Rule color="MethodCall">
-      \b
-      [\d\w_]+  # an identifier
-      (?=\s*\[) # followed by [
-    </Rule>
-
-    <!-- Digits -->
-    <Rule color="NumberLiteral">
-      \b0[xX][0-9a-fA-F]+  # hex number
-      |
-      ( \b\d+(\.[0-9]+)?   #number with optional floating point
-      | \.[0-9]+           #or just starting with floating point
-      )
-      ([eE][+-]?[0-9]+)? # optional exponent
-    </Rule>
-
-    <Rule color="Punctuation">
-      [?,.;()\[\]{}+\-/%*&lt;&gt;^+~!|&amp;]+
-    </Rule>
-  </RuleSet>
+	</RuleSet>
 </SyntaxDefinition>
