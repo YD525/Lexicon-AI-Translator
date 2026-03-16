@@ -21,7 +21,6 @@ using LexTranslator.UIManagement;
 using Newtonsoft.Json;
 using System.Windows.Threading;
 using static LexTranslator.SkyrimManagement.DSDConverter;
-using static LexTranslator.UIManagement.DashBoardService;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using System.Windows.Interop;
@@ -2164,7 +2163,6 @@ namespace LexTranslator
                         SettingView.Visibility = Visibility.Collapsed;
                         DashBoardView.Visibility = Visibility.Visible;
                         DeFine.CanUpdateChart = true;
-                        UPDateChart();
                     }
                     break;
                 case "Settings":
@@ -3754,47 +3752,6 @@ namespace LexTranslator
                 }
 
             }
-        }
-        #endregion
-
-        #region DashBoardView
-
-
-        public SpeedMonitor CurrentMonitor = null;
-        public void UPDateChart(string SendStr = "")
-        {
-            //if (CurrentMonitor == null)
-            //{
-            //    CurrentMonitor = new SpeedMonitor(CurrentModel);
-            //}
-
-            //if (SendStr.Length > 0)
-            //{
-            //    CurrentMonitor.AddCount(SendStr.Length);
-            //}
-
-            //UsageCount.Content = $"Average Speed (last 30s): {CurrentMonitor.AverageSpeed:F1}";
-
-            //CurrentModel.SetValues[0] = DeFine.GlobalLocalSetting.ChatGPTTokenUsage;
-            //CurrentModel.SetValues[1] = DeFine.GlobalLocalSetting.GeminiTokenUsage;
-            //CurrentModel.SetValues[2] = DeFine.GlobalLocalSetting.CohereTokenUsage;
-            //CurrentModel.SetValues[3] = DeFine.GlobalLocalSetting.DeepSeekTokenUsage;
-            //CurrentModel.SetValues[4] = DeFine.GlobalLocalSetting.BaichuanTokenUsage;
-            //CurrentModel.SetValues[5] = DeFine.GlobalLocalSetting.LocalAITokenUsage;
-        }
-
-        private void ReSetToken_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DeFine.GlobalLocalSetting.ChatGPTTokenUsage = 0;
-            DeFine.GlobalLocalSetting.GeminiTokenUsage = 0;
-            DeFine.GlobalLocalSetting.CohereTokenUsage = 0;
-            DeFine.GlobalLocalSetting.DeepSeekTokenUsage = 0;
-            DeFine.GlobalLocalSetting.BaichuanTokenUsage = 0;
-            DeFine.GlobalLocalSetting.LocalAITokenUsage = 0;
-
-            UPDateChart();
-
-            DeFine.GlobalLocalSetting.SaveConfig();
         }
         #endregion
 

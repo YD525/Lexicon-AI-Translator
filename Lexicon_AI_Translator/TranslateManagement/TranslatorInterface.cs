@@ -68,7 +68,7 @@ namespace LexTranslator.TranslateManage
                         LogHelper.SetInputLog(GetCall.Platform.ToString() + "->\n" + GetCall.SendString);
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);
 
-                        DashBoardService.TokenStatistics(GetCall.Platform, GetCall.SendString, GetCall.ReceiveString);
+                        //DashBoardService.TokenStatistics(GetCall.Platform, GetCall.SendString, GetCall.ReceiveString);
                     }
                     if (Any is PlatformCall)
                     {

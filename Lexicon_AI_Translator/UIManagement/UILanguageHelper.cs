@@ -160,7 +160,6 @@ namespace LexTranslator.UIManage
         public static Dictionary<string, string> UICache = new Dictionary<string, string>();
         public static void ChangeLanguage(Languages SetLanguage)
         {
-            NextLoad:
             UICache.Clear();
             string SetPath = DeFine.GetFullPath(@"\Interface\Translations\Lex_" + SetLanguage.ToString().ToUpper() + ".txt");
             MCMReader NewReader = new MCMReader();
@@ -179,13 +178,11 @@ namespace LexTranslator.UIManage
             }
             else
             {
-                SetLanguage = Languages.English;
                 MessageBox.Show("The interface translation file was not found.");
 
                 DeFine.GlobalLocalSetting.CurrentUILanguage = Languages.English;
-                DeFine.GlobalLocalSetting.SaveConfig();
 
-                goto NextLoad;
+                DeFine.CloseAny();
             }
         }
     }
