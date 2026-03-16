@@ -116,6 +116,22 @@ namespace LexTranslator
                 DeFine.CloseAny();
             }
 
+            if (!Directory.Exists(DeFine.GetFullPath(@"\Interface")))
+            {
+                Directory.CreateDirectory(DeFine.GetFullPath(@"\Interface"));
+
+                if (!Directory.Exists(DeFine.GetFullPath(@"\Interface\Translations")))
+                {
+                    Directory.CreateDirectory(DeFine.GetFullPath(@"\Interface\Translations"));
+                }
+            }
+
+            string SetDefMCM = DeFine.GetFullPath(@"\Interface\Translations\Lex_English.txt");
+            if (!File.Exists(SetDefMCM))
+            {
+                DataHelper.WriteFile(SetDefMCM, Encoding.UTF8.GetBytes(""));
+            }
+
             if (!Directory.Exists(DeFine.GetFullPath(@"\Librarys")))
             {
                 Directory.CreateDirectory(DeFine.GetFullPath(@"\Librarys"));
