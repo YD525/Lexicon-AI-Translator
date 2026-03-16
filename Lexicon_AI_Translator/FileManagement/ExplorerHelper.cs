@@ -15,13 +15,13 @@ namespace LexTranslator.FileManagement
             {
                 try
                 {
-                    var psi = new ProcessStartInfo
+                    var PSI = new ProcessStartInfo
                     {
                         FileName = UriResult.ToString(),
                         UseShellExecute = true //Let the operating system decide which program to open
                     };
 
-                    Process.Start(psi);
+                    Process.Start(PSI);
                     return true;
                 }
                 catch
@@ -32,6 +32,7 @@ namespace LexTranslator.FileManagement
 
             return false;
         }
+
         public static bool SelectFile(string FilePath)
         {
             try
