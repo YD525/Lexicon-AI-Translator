@@ -586,6 +586,7 @@ namespace LexTranslator
 
         public bool ExitAny = false;
 
+
         private void ExportAll(object sender, MouseButtonEventArgs e)
         {
             new Thread(() =>
@@ -602,11 +603,11 @@ namespace LexTranslator
 
                 int Count = 0;
                 int MaxPage = 1;
-                int CurrentPage = 0;
+                int CurrentPage = 1;   
 
                 using (var Writer = new StreamWriter(SetOutPutPath, true, Encoding.UTF8))
                 {
-                    while (CurrentPage < MaxPage)
+                    while (CurrentPage <= MaxPage)   
                     {
                         if (ExitAny) goto QuickExit;
 
@@ -632,13 +633,14 @@ namespace LexTranslator
                             Writer.WriteLine(SerializeToJson(ExportItem));
                         }
 
+                        int DisplayPage = CurrentPage;
                         MaxPage = GetData.MaxPage;
                         CurrentPage++;
 
                         Log.Dispatcher.Invoke(new Action(() =>
                         {
                             Log.Content = string.Format("Exporting dictionary...({0}%)({1} Records)",
-                                Math.Round(((double)CurrentPage / (double)MaxPage) * 100, 0),
+                                Math.Round(((double)DisplayPage / (double)MaxPage) * 100, 0),
                                 Count);
                         }));
                     }
