@@ -1357,13 +1357,18 @@ namespace LexTranslator
                         {
                             if (Value.Length > 0)
                             {
-                                Link[Key] = Value
-                               .Replace(",", "，")
-                               .Replace(".", "。")
-                               .Replace(":", "：")
-                               .Replace(";", "；")
-                               .Replace("!", "！")
-                               .Replace("?", "？");
+                                var Regex = new System.Text.RegularExpressions.Regex("<[^>]+>");
+
+                                if (!Regex.IsMatch(Value))
+                                {
+                                     Link[Key] = Value
+                                    .Replace(",", "，")
+                                    .Replace(".", "。")
+                                    .Replace(":", "：")
+                                    .Replace(";", "；")
+                                    .Replace("!", "！")
+                                    .Replace("?", "？");
+                                }
                             }
                         }));
                     }
