@@ -20,6 +20,18 @@ using PhoenixEngine.P_Delegate;
 
 namespace LexTranslator
 {
+    public class DictExportItem
+    {
+        public int From { get; set; }
+        public int To { get; set; }
+        public int ExactMatch { get; set; }
+        public int IgnoreCase { get; set; }
+        public string TargetFileName { get; set; }
+        public string Type { get; set; }
+        public string Source { get; set; }
+        public string Result { get; set; }
+    }
+
     /// <summary>
     /// Interaction logic for LocalConfig.xaml
     /// </summary>
@@ -29,6 +41,7 @@ namespace LexTranslator
         {
             InitializeComponent();
         }
+
 
         #region Default Form Behavior
 
@@ -547,10 +560,32 @@ namespace LexTranslator
             AutoReload();
         }
 
+        private static string SerializeToJson(DictExportItem Item)
+        {
+            var NStringBuilder = new StringBuilder();
+            using (var SW = new StringWriter(NStringBuilder))
+            {
+                var Serializer = new Newtonsoft.Json.JsonSerializer();
+                Serializer.Serialize(SW, Item);
+            }
+            return NStringBuilder.ToString();
+        }
+
+        private static DictExportItem DeserializeFromJson(string Json)
+        {
+            using (var SR = new StringReader(Json))
+            using (var Reader = new Newtonsoft.Json.JsonTextReader(SR))
+            {
+                var Serializer = new Newtonsoft.Json.JsonSerializer();
+                return Serializer.Deserialize<DictExportItem>(Reader);
+            }
+        }
+
         public int ImportCount = 0;
         public string LeftOver = "";
 
         public bool ExitAny = false;
+
         private void ExportAll(object sender, MouseButtonEventArgs e)
         {
             new Thread(() =>
@@ -560,12 +595,10 @@ namespace LexTranslator
                     ProcessWin.Visibility = Visibility.Visible;
                 }));
 
-                string SetOutPutPath = DeFine.GetFullPath(@"\Cache\Output.txt");
+                string SetOutPutPath = DeFine.GetFullPath(@"\Cache\Output.json");
 
                 if (File.Exists(SetOutPutPath))
-                {
                     File.Delete(SetOutPutPath);
-                }
 
                 int Count = 0;
                 int MaxPage = 1;
@@ -576,15 +609,27 @@ namespace LexTranslator
                     while (CurrentPage < MaxPage)
                     {
                         if (ExitAny) goto QuickExit;
+
                         var GetData = AdvancedDictionary.QueryByPage((int)FilterFrom, (int)FilterTo, CurrentPage);
-
                         Count += GetData.CurrentPage.Count;
-
 
                         foreach (var Get in GetData.CurrentPage)
                         {
                             if (ExitAny) goto QuickExit;
-                            Writer.Write(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7},", Get.From, Get.To,Get.ExactMatch,Get.IgnoreCase, SQLSafeCodec.Encode(Get.TargetFileName), SQLSafeCodec.Encode(Get.Type), SQLSafeCodec.Encode(Get.Source), SQLSafeCodec.Encode(Get.Result)));
+
+                            var ExportItem = new DictExportItem
+                            {
+                                From = Get.From,
+                                To = Get.To,
+                                ExactMatch = Get.ExactMatch,
+                                IgnoreCase = Get.IgnoreCase,
+                                TargetFileName = Get.TargetFileName,
+                                Type = Get.Type,
+                                Source = Get.Source,
+                                Result = Get.Result
+                            };
+
+                            Writer.WriteLine(SerializeToJson(ExportItem));
                         }
 
                         MaxPage = GetData.MaxPage;
@@ -592,9 +637,9 @@ namespace LexTranslator
 
                         Log.Dispatcher.Invoke(new Action(() =>
                         {
-                            Log.Content = string.Format("Exporting dictionary...({0}%)({1}Record)",
-                            Math.Round(((double)(CurrentPage) / (double)MaxPage) * 100, 0),
-                            Count);
+                            Log.Content = string.Format("Exporting dictionary...({0}%)({1} Records)",
+                                Math.Round(((double)CurrentPage / (double)MaxPage) * 100, 0),
+                                Count);
                         }));
                     }
                 }
@@ -603,26 +648,25 @@ namespace LexTranslator
 
                 this.Dispatcher.Invoke(new Action(() =>
                 {
-                    var GetWritePath = DataHelper.ShowSaveFileDialog("Sql_" + TimeStamp + ".txt", "Text (*.txt)|*.txt");
+                    var GetWritePath = DataHelper.ShowSaveFileDialog(
+                        "Dict_" + TimeStamp + ".json",
+                        "JSON (*.json)|*.json");
 
                     if (GetWritePath != null)
                     {
                         File.Copy(SetOutPutPath, GetWritePath);
-
-                        if (SetOutPutPath.ToLower().EndsWith(".txt"))
-                        {
-                            File.Delete(SetOutPutPath);
-                        }
+                        File.Delete(SetOutPutPath);
                     }
                 }));
 
-                QuickExit:
+            QuickExit:
                 Thread.Sleep(100);
                 ExitAny = false;
                 ProcessWin.Dispatcher.Invoke(new Action(() =>
                 {
                     ProcessWin.Visibility = Visibility.Hidden;
                 }));
+
             }).Start();
         }
         public void ProcessRecord(string Combined)
@@ -670,6 +714,7 @@ namespace LexTranslator
 
             ProcessRecord(Combined);
         }
+
         private void ImportTable(object sender, MouseButtonEventArgs e)
         {
             ImportCount = 0;
@@ -677,23 +722,83 @@ namespace LexTranslator
 
             var Dialog = new System.Windows.Forms.OpenFileDialog();
             Dialog.Title = "Please select a file";
-            Dialog.Filter = "Text|*.txt";
+            Dialog.Filter = "Dictionary File (*.json;*.txt)|*.json;*.txt";
             Dialog.Multiselect = false;
 
-            if (Dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (Dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            string SelectedFile = Dialog.FileName;
+
+            if (!File.Exists(SelectedFile))
+                return;
+
+            new Thread(() =>
             {
-                string SelectedFile = Dialog.FileName;
-                string GetFileName = new FileInfo(SelectedFile).Name;
-
-                if (File.Exists(SelectedFile))
+                ProcessWin.Dispatcher.Invoke(new Action(() =>
                 {
-                    new Thread(() =>
-                    {
-                        ProcessWin.Dispatcher.Invoke(new Action(() =>
-                        {
-                            ProcessWin.Visibility = Visibility.Visible;
-                        }));
+                    ProcessWin.Visibility = Visibility.Visible;
+                }));
 
+                try
+                {
+                    bool IsJsonFormat = false;
+                    using (var PeekReader = new StreamReader(SelectedFile, Encoding.UTF8))
+                    {
+                        string FirstLine;
+                        while ((FirstLine = PeekReader.ReadLine()) != null)
+                        {
+                            FirstLine = FirstLine.Trim();
+                            if (string.IsNullOrEmpty(FirstLine)) continue;
+
+                            IsJsonFormat = FirstLine.StartsWith("{");
+                            break;
+                        }
+                    }
+
+                    if (IsJsonFormat)
+                    {
+                        using (var Reader = new StreamReader(SelectedFile, Encoding.UTF8))
+                        {
+                            string Line;
+                            while ((Line = Reader.ReadLine()) != null)
+                            {
+                                if (ExitAny) break;
+
+                                Line = Line.Trim();
+                                if (string.IsNullOrEmpty(Line)) continue;
+
+                                try
+                                {
+                                    DictExportItem Item = DeserializeFromJson(Line);
+
+                                    if (AdvancedDictionary.AddItem(new AdvancedDictionaryItem(
+                                        Item.TargetFileName,
+                                        Item.Type,
+                                        Item.Source,
+                                        Item.Result,
+                                        Item.From,
+                                        Item.To,
+                                        Item.ExactMatch,
+                                        Item.IgnoreCase,
+                                        string.Empty)))
+                                    {
+                                        ImportCount++;
+                                    }
+                                }
+                                catch 
+                                { 
+                                }
+
+                                Log.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    Log.Content = string.Format("Number of imported records: ({0})", ImportCount);
+                                }));
+                            }
+                        }
+                    }
+                    else
+                    {
                         int BufferSize = 1024 * 2;
                         char[] Buffer = new char[BufferSize];
 
@@ -701,37 +806,43 @@ namespace LexTranslator
                         {
                             while (true)
                             {
-                                if (ExitAny) goto QuickExit;
+                                if (ExitAny) break;
 
                                 int ReadCount = Reader.ReadBlock(Buffer, 0, BufferSize);
-                                if (ReadCount == 0) break;   // EOF
+                                if (ReadCount == 0) break;
 
                                 ProcessBuffer(Buffer, ReadCount);
 
                                 Log.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    Log.Content = string.Format("Number of imported records:({0})", ImportCount);
+                                    Log.Content = string.Format("Number of imported records: ({0})", ImportCount);
                                 }));
                             }
 
                             if (!string.IsNullOrWhiteSpace(LeftOver))
-                            {
                                 ProcessRecord(LeftOver);
-                            }
-
-                            QuickExit:
-                            Thread.Sleep(100);
-                            ExitAny = false;
-                            ProcessWin.Dispatcher.Invoke(new Action(() =>
-                            {
-                                ProcessWin.Visibility = Visibility.Hidden;
-                                AutoReload();
-                            }));
                         }
-
-                    }).Start();
+                    }
                 }
-            }
+                catch (Exception Ex)
+                {
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                        MessageBox.Show("Import failed: " + Ex.Message);
+                    }));
+                }
+                finally
+                {
+                    ExitAny = false;
+                    Thread.Sleep(100);
+                    ProcessWin.Dispatcher.Invoke(new Action(() =>
+                    {
+                        ProcessWin.Visibility = Visibility.Hidden;
+                        AutoReload();
+                    }));
+                }
+
+            }).Start();
         }
         private void CancelProcess(object sender, MouseButtonEventArgs e)
         {
