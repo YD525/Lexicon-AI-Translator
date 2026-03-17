@@ -26,7 +26,7 @@ namespace LexTranslator
         public int To { get; set; }
         public int ExactMatch { get; set; }
         public int IgnoreCase { get; set; }
-        public string TargetFileName { get; set; }
+        public string ModName { get; set; }
         public string Type { get; set; }
         public string Source { get; set; }
         public string Result { get; set; }
@@ -624,7 +624,7 @@ namespace LexTranslator
                                 To = Get.To,
                                 ExactMatch = Get.ExactMatch,
                                 IgnoreCase = Get.IgnoreCase,
-                                TargetFileName = Get.TargetFileName,
+                                ModName = Get.TargetFileName,
                                 Type = Get.Type,
                                 Source = Get.Source,
                                 Result = Get.Result
@@ -775,7 +775,7 @@ namespace LexTranslator
                                     DictExportItem Item = DeserializeFromJson(Line);
 
                                     if (AdvancedDictionary.AddItem(new AdvancedDictionaryItem(
-                                        Item.TargetFileName,
+                                        Item.ModName,
                                         Item.Type,
                                         Item.Source,
                                         Item.Result,
