@@ -1363,8 +1363,7 @@ namespace LexTranslator
                                .Replace(":", "：")
                                .Replace(";", "；")
                                .Replace("!", "！")
-                               .Replace("?", "？")
-                               .Replace("'", "‘");
+                               .Replace("?", "？");
                             }
                         }));
                     }
