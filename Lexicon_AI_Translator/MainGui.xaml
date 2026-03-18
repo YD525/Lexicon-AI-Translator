@@ -884,6 +884,11 @@ Fill="White"/>
                                     </TextBlock>
 
                                     <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 5 20 0">
+                                         help Lex Translator create German dictionaries —
+                                    <Run Tag="https://www.nexusmods.com/profile/Neko41" Text="Neko41" FontWeight="Bold"  Cursor="Hand" Foreground="#FF44A0FF"  MouseDown="OpenUrl_MouseDown"/>
+                                    </TextBlock>
+
+                                    <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 5 20 0">
                                     Suggested multi-color highlighting, improved keyword search, and helped me test the program —
                                     <Run Tag="https://next.nexusmods.com/profile/Kanie17" Text="Kanie17" FontWeight="Bold"  Cursor="Hand" Foreground="#FF44A0FF"  MouseDown="OpenUrl_MouseDown"/>
                                     </TextBlock>
