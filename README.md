@@ -69,7 +69,11 @@ I would like to give special thanks to the developers of
 
 [50809501](https://www.nexusmods.com/profile/50809501) has been continuously maintaining the Chinese dictionary database for SSELex.
 
+[Neko41](https://www.nexusmods.com/profile/Neko41) has been continuously maintaining the German dictionary database for SSELex.
+
 [撒倫](https://home.gamer.com.tw/profile/index.php?owner=salunt) offered many meaningful suggestions regarding Traditional Chinese.
+
+[zhuabaobao123](https://www.nexusmods.com/profile/zhuabaobao123) Created the Chinese interface for Lex.
 
 Their excellent libraries provide Lex Translator with a stable and solid foundation, allowing us to focus more on developing the translation features.
 Acknowledgements: Nexus Mods,9DM,2Game.info,and 泰姆瑞尔MOD组, for their support and encouragement that inspire my creative work.
