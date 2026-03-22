@@ -57,9 +57,9 @@ I would like to give special thanks to the developers of
 
 [Cutleast](https://github.com/Cutleast), [SkyHorizon3](https://github.com/SkyHorizon3) for helping me resolve the issue with generating specific JSON fields in the DSD file.
 
-[SSEAT](https://github.com/Cutleast/SSE-Auto-Translator) This is a highly automated program that can automatically download pre-translated content, avoiding repeated translation of a single module. It's ideal for use with SSELex, The functions of both parties may also be integrated in the future.
+[SSEAT](https://github.com/Cutleast/SSE-Auto-Translator) This is a highly automated program that can automatically download pre-translated content, avoiding repeated translation of a single module. It's ideal for use with Lex, The functions of both parties may also be integrated in the future.
 
-[Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) Without this framework, there would be no earliest version of SSELex.
+[Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) Without this framework, there would be no earliest version of Lex.
 
 [walkswithwolf](https://www.nexusmods.com/profile/walkswithwolf?gameId=110) Help me understand the structure of Skyrim files.
 
@@ -67,9 +67,9 @@ I would like to give special thanks to the developers of
 
 [Kanie17](https://www.nexusmods.com/profile/Kanie17/mods) introduced many meaningful feature improvements.
 
-[50809501](https://www.nexusmods.com/profile/50809501) has been continuously maintaining the Chinese dictionary database for SSELex.
+[50809501](https://www.nexusmods.com/profile/50809501) has been continuously maintaining the Chinese dictionary database for Lex.
 
-[Neko41](https://www.nexusmods.com/profile/Neko41) has been continuously maintaining the German dictionary database for SSELex.
+[Neko41](https://www.nexusmods.com/profile/Neko41) created the German dictionary database for Lex.
 
 [撒倫](https://home.gamer.com.tw/profile/index.php?owner=salunt) offered many meaningful suggestions regarding Traditional Chinese.
 
