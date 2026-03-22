@@ -222,7 +222,37 @@ namespace LexTranslator.UIManagement
             RemoveBtn.Tag = GetPlatformBorder;
             RemoveBtn.PreviewMouseDown += RemoveBtn_PreviewMouseDown;
 
+            //DeepL requires special handling.
+            if (CustomType == CustomPlatformType.Traditional && PlatformName.ToLower().Equals("deepl"))
+            {
+                var SetIndex = 3 + 1;
+                CheckBox IsFreeCheck = ((Body.Children[0] as Grid).Children[0] as StackPanel).Children[SetIndex] as CheckBox;
+                IsFreeCheck.Click += IsFreeCheck_Click;
+                if (Phoenix.Config.GetPlatformData(PlatformType.DeepL).IsFree)
+                {
+                    IsFreeCheck.IsChecked = true;
+                }
+
+                IsFreeCheck.Visibility = Visibility.Visible;
+            }
+
             return GetPlatformBorder;
+        }
+
+        private void IsFreeCheck_Click(object sender, RoutedEventArgs e)
+        {           
+            CheckBox GetCheck = sender as CheckBox;
+            int Key = (int)PlatformType.DeepL;
+            if (GetCheck.IsChecked == true)
+            {
+                Phoenix.Config.PlatformConfigs[Key].IsFree = true;
+            }
+            else
+            {
+                Phoenix.Config.PlatformConfigs[Key].IsFree = false;
+            }
+
+            Phoenix.SaveConfig();
         }
 
         private void GetModelComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
