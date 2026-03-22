@@ -1358,12 +1358,7 @@ namespace LexTranslator
                         {
                             if (Value.Length > 0)
                             {
-                                var Regex = new System.Text.RegularExpressions.Regex("<[^>]+>");
-
-                                if (!Regex.IsMatch(Value))
-                                {
-                                    Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value);
-                                }
+                                Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value);
                             }
                         }));
                     }
