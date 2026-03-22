@@ -36,6 +36,7 @@ using PhoenixEngine.Language;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Additional;
 using PhoenixEngine.Events;
+using PhoenixEngine.Engine;
 
 namespace LexTranslator
 {
@@ -1361,13 +1362,7 @@ namespace LexTranslator
 
                                 if (!Regex.IsMatch(Value))
                                 {
-                                     Link[Key] = Value
-                                    .Replace(",", "，")
-                                    .Replace(".", "。")
-                                    .Replace(":", "：")
-                                    .Replace(";", "；")
-                                    .Replace("!", "！")
-                                    .Replace("?", "？");
+                                    Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value);
                                 }
                             }
                         }));
