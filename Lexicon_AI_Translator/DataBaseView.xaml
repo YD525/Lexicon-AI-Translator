@@ -20,13 +20,14 @@
             <Label VerticalAlignment="Center" Foreground="White">
                 SQL:
             </Label>
-            <TextBox Width="300" VerticalContentAlignment="Center" BorderThickness="1" BorderBrush="White" Background="{x:Null}" Foreground="White" CaretBrush="White">
+            <TextBox Name="SqlOrder" Width="300" VerticalContentAlignment="Center" BorderThickness="1" BorderBrush="White" Background="{x:Null}" Foreground="White" CaretBrush="White">
             </TextBox>
-            <Button x:Name="BtnPause" Margin="5 0 0 0" Content="Query" Width="110" Height="34"
+            <Button x:Name="QueryBtn" Margin="5 0 0 0" Content="Query" Width="110" Height="34"
          Background="#1A1E2E" Foreground="#FF0B74D1"
          BorderBrush="#FF0B74D1" BorderThickness="1"
          FontSize="12"
-         Cursor="Hand" />
+         Cursor="Hand" 
+         Click="QueryDataBase"/>
         </StackPanel>
     </Grid>
 </Window>
