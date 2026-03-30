@@ -32,6 +32,8 @@ namespace LexTranslator.YDControls
 
         public void SetAction(Action<RealtimeLineChart> Current, Action<RealtimeLineChart> Total,ChartData DataRef)
         {
+            this.DataRef = DataRef;
+
             if (Current != null)
             {
                 TokenChart.OnTick += new Action<RealtimeLineChart>((Ref) =>
@@ -51,8 +53,6 @@ namespace LexTranslator.YDControls
                 });
                 TotalTokenChart.Start();
             }
-
-            this.DataRef = DataRef;
         }
     }
 }
