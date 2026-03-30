@@ -10,7 +10,7 @@ namespace LexTranslator.YDControls
     {
         #region Fields
         private readonly List<double> _DataPoints = new List<double>();
-        private readonly DispatcherTimer _Timer = new DispatcherTimer();
+        private readonly System.Timers.Timer _Timer = new System.Timers.Timer();
         #endregion
 
         #region Dependency Properties
@@ -108,8 +108,15 @@ namespace LexTranslator.YDControls
         #region Constructor
         public RealtimeLineChart()
         {
-            _Timer.Interval = TimeSpan.FromMilliseconds(300);
-            _Timer.Tick += (s, e) => { if (OnTick != null) OnTick(this); };
+            _Timer.Interval = 1000;
+            _Timer.Elapsed += (s, e) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    OnTick?.Invoke(this);
+                });
+            };
+
             Unloaded += (s, e) => _Timer.Stop();
         }
         #endregion
@@ -117,11 +124,11 @@ namespace LexTranslator.YDControls
         #region Timer
         public void Start() { _Timer.Start(); }
         public void Stop() { _Timer.Stop(); }
-        public bool IsRunning { get { return _Timer.IsEnabled; } }
+      
 
         private static void OnRefreshIntervalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((RealtimeLineChart)d)._Timer.Interval = TimeSpan.FromMilliseconds((int)e.NewValue);
+            ((RealtimeLineChart)d)._Timer.Interval = (int)e.NewValue;
         }
         #endregion
 
@@ -323,10 +330,14 @@ namespace LexTranslator.YDControls
             {
                 double Normalized = (_DataPoints[I] - Min) / Range;
 
-                Sp[I] = new Point(
-                    Left + I * Step,
-                    Top + Margin + (1 - Normalized) * UsableHeight
-                );
+                double X = Left + I * Step;
+
+                if (Count >= MaxPoints && I == Count - 1)
+                {
+                    X -= 5;
+                }
+
+                Sp[I] = new Point(X,Top + Margin + (1 - Normalized) * UsableHeight);
             }
 
             return Sp;

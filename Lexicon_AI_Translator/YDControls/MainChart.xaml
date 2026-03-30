@@ -42,7 +42,8 @@
                 GridRows="4" GridColumns="8"
                 ShowFill="True"
                 ShowDot="True"
-                RefreshInterval="800"/>
+                RefreshInterval="300"
+                />
         </Border>
 
         <!-- Controls -->
