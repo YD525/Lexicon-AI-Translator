@@ -111,6 +111,9 @@
     <Compile Include="CustomWizard.xaml.cs">
       <DependentUpon>CustomWizard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataBaseView.xaml.cs">
+      <DependentUpon>DataBaseView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DeFine.cs" />
     <Compile Include="ExtendWin.xaml.cs">
       <DependentUpon>ExtendWin.xaml</DependentUpon>
@@ -181,6 +184,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomWizard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataBaseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
