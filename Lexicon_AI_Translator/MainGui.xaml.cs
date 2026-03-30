@@ -37,6 +37,7 @@ using PhoenixEngine.Platform;
 using PhoenixEngine.Additional;
 using PhoenixEngine.Events;
 using PhoenixEngine.Engine;
+using LexTranslator.YDControls;
 
 namespace LexTranslator
 {
@@ -140,6 +141,8 @@ namespace LexTranslator
         public IntPtr MainHwnd = IntPtr.Zero;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            new TestWin().Show();
+
             DeFine.Init(this);
 
             AutoShowTraditional();

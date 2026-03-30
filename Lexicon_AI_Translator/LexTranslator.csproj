@@ -167,6 +167,10 @@
     <Compile Include="YDControls\MainChart.xaml.cs">
       <DependentUpon>MainChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="YDControls\RealtimeLineChart.cs" />
+    <Compile Include="YDControls\TestWin.xaml.cs">
+      <DependentUpon>TestWin.xaml</DependentUpon>
+    </Compile>
     <Page Include="CGView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -248,6 +252,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="YDControls\MainChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="YDControls\TestWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
