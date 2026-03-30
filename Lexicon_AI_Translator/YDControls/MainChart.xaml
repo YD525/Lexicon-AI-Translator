@@ -6,51 +6,28 @@
              xmlns:local="clr-namespace:LexTranslator.YDControls"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="#0C0E14" Loaded="UserControl_Loaded">
+             Background="#FF282828" Loaded="UserControl_Loaded">
 
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="SYSTEM MONITOR"
+            <TextBlock Text="Request Monitor"
                        Foreground="White" FontSize="22" FontWeight="Bold"
                        FontFamily="Segoe UI"/>
-            <TextBlock Text="Real-time performance dashboard"
-                       Foreground="#555E6E" FontSize="12" FontFamily="Segoe UI"
+            <TextBlock Text="Real-time Token Usage dashboard"
+                       Foreground="White" FontSize="12" FontFamily="Segoe UI"
                        Margin="0,4,0,0"/>
         </StackPanel>
 
-        <!-- Chart 1: CPU -->
         <Border Grid.Row="1" Margin="0,0,0,12"
-                Background="#0F1119" CornerRadius="10"
-                BorderBrush="#1E2230" BorderThickness="1">
-            <local:RealtimeLineChart
-                x:Name="GpuChart"
-                Title="Gpu USAGE"
-                Unit="%"
-                MinValue="0" MaxValue="100"
-                MaxPoints="80"
-                LineColor="#00C8A0"
-                BackgroundColor="#0F1119"
-                GridColor="#1E2230"
-                LabelColor="#445060"
-                LineThickness="2"
-                GridRows="4" GridColumns="8"
-                ShowFill="True"
-                ShowDot="True"
-                RefreshInterval="600"/>
-        </Border>
-
-        <!-- Chart 2: Memory -->
-        <Border Grid.Row="2" Margin="0,0,0,12"
-                Background="#0F1119" CornerRadius="10"
-                BorderBrush="#1E2230" BorderThickness="1">
+                Background="#FF282828" CornerRadius="10"
+                BorderBrush="#FF282828" BorderThickness="1">
             <local:RealtimeLineChart
                 x:Name="TokenChart"
                 Title="Token Usage"
@@ -58,9 +35,9 @@
                 MinValue="0" MaxValue="0"
                 MaxPoints="80"
                 LineColor="#5B8EFF"
-                BackgroundColor="#0F1119"
-                GridColor="#1E2230"
-                LabelColor="#445060"
+                BackgroundColor="#FF282828"
+                GridColor="#FF484747"
+                LabelColor="#FFA5A5A5"
                 LineThickness="2"
                 GridRows="4" GridColumns="8"
                 ShowFill="True"
@@ -73,17 +50,19 @@
             <Button x:Name="BtnPause" Content="⏸  PAUSE"
                     Click="BtnPause_Click"
                     Width="110" Height="34"
-                    Background="#1A1E2E" Foreground="#00C8A0"
-                    BorderBrush="#00C8A0" BorderThickness="1"
+                    Background="#1A1E2E" Foreground="#FF0B74D1"
+                    BorderBrush="#FF0B74D1" BorderThickness="1"
                     FontSize="12" FontFamily="Segoe UI"
                     Cursor="Hand" Margin="0,0,12,0"/>
             <Button x:Name="BtnClear" Content="✕  CLEAR"
                     Click="BtnClear_Click"
                     Width="110" Height="34"
-                    Background="#1A1E2E" Foreground="#FF5B6A"
-                    BorderBrush="#FF5B6A" BorderThickness="1"
+                    Background="#FF282828" Foreground="#FFFF7380"
+                    BorderBrush="#FFFF7380" BorderThickness="1"
                     FontSize="12" FontFamily="Segoe UI"
                     Cursor="Hand"/>
+            <Grid Width="25" Height="25" Background="#FFA5A5A5">
+            </Grid>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -23,7 +23,6 @@ namespace LexTranslator.YDControls
 
         private void BtnClear_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            GpuChart.Clear();
             TokenChart.Clear();
         }
 
