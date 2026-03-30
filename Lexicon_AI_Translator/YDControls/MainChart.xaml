@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:LexTranslator.YDControls"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="850" d:DesignWidth="800"
              Background="#FF282828" Loaded="UserControl_Loaded">
 
     <Grid Margin="24">
@@ -13,11 +13,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Request Monitor"
+            <TextBlock Text="Dashboard"
                        Foreground="White" FontSize="22" FontWeight="Bold"
                        FontFamily="Segoe UI"/>
             <TextBlock Text="Real-time Token Usage dashboard"
@@ -46,8 +49,50 @@
                 />
         </Border>
 
+        <StackPanel Grid.Row="2" Margin="0,0,0,20">
+            <TextBlock Text="Total"
+                 Foreground="White" FontSize="22" FontWeight="Bold"
+                 FontFamily="Segoe UI"/>
+            <TextBlock Text="Token Usage dashboard"
+                 Foreground="White" FontSize="12" FontFamily="Segoe UI"
+                 Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="3" Margin="0,0,0,12"
+        Background="#FF282828" CornerRadius="10"
+        BorderBrush="#FF282828" BorderThickness="1">
+            <local:RealtimeLineChart
+        x:Name="TotalTokenChart"
+        Title="Total Token Usage"
+        Unit="Tokens"
+        MinValue="0" MaxValue="0"
+        MaxPoints="80"
+        LineColor="#FFD58811"
+        BackgroundColor="#FF282828"
+        GridColor="#FF484747"
+        LabelColor="#FFA5A5A5"
+        LineThickness="2"
+        GridRows="4" GridColumns="8"
+        ShowFill="True"
+        ShowDot="True"
+        RefreshInterval="300"
+        />
+        </Border>
+
+        <Grid Grid.Row="4">
+            <StackPanel Orientation="Horizontal">
+                <Label Foreground="White" FontSize="21">
+                    ModName:
+                </Label>
+                <Label Foreground="White" FontSize="21" Margin="5 0 0 0" Name="Tokens">
+                    Current:
+                </Label>
+            </StackPanel>
+        </Grid>
+
+
         <!-- Controls -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,8,0,0">
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,8,0,0">
             <Button x:Name="BtnPause" Content="⏸  PAUSE"
                     Click="BtnPause_Click"
                     Width="110" Height="34"
@@ -62,7 +107,7 @@
                     BorderBrush="#FFFF7380" BorderThickness="1"
                     FontSize="12" FontFamily="Segoe UI"
                     Cursor="Hand"/>
-            <Grid Width="25" Height="25" Background="#FFA5A5A5">
+            <Grid Width="25" Height="25" Background="#FFD58811">
             </Grid>
         </StackPanel>
     </Grid>
