@@ -30,39 +30,20 @@ namespace LexTranslator.YDControls
 
         public long TotalToken = 0;
         public double CurrentToken = 0;
-        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+
+        public void SetAction(Action<RealtimeLineChart> Current, Action<RealtimeLineChart> Total)
         {
-            //TokenChart.OnTick += new Action<RealtimeLineChart>((Ref) =>
-            //{
-            //    if (!_Paused)
-            //    {
-            //        var GenValue = new Random(Guid.NewGuid().GetHashCode()).Next(100, 99000);
-            //        CurrentToken = GenValue;
-            //        TotalToken += Convert.ToInt64(GenValue);
-            //        Ref.PushValue(GenValue);
-            //    }
-           
-            //});
-            //TokenChart.Start();
+            if (Total != null)
+            {
+                TotalTokenChart.OnTick += Total;
+                TotalTokenChart.Start();
+            }
 
-            //TotalTokenChart.OnTick += new Action<RealtimeLineChart>((Ref) =>
-            //{
-            //    Ref.PushValue(TotalToken);
-
-            //    Tokens.Content = string.Format("Current:{0}", CurrentToken);
-
-            //    if (CurrentToken > 99000 * 0.7)
-            //    {
-            //        Tokens.Foreground = new SolidColorBrush(Colors.Red);
-            //    }
-            //    else
-            //    {
-            //        Tokens.Foreground = new SolidColorBrush(Colors.White);
-            //    }
-               
-            //});
-            //TotalTokenChart.Start();
-
+            if (Current != null)
+            {
+                TokenChart.OnTick += Current;
+                TokenChart.Start();
+            }
         }
     }
 }
