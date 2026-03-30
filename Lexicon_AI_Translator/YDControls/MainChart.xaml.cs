@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using LexTranslator.UIManagement;
 
 namespace LexTranslator.YDControls
 {
@@ -10,8 +11,6 @@ namespace LexTranslator.YDControls
     /// </summary>
     public partial class MainChart : UserControl
     {
-        private bool _Paused = false;
-
         public MainChart()
         {
             InitializeComponent();
@@ -19,31 +18,41 @@ namespace LexTranslator.YDControls
 
         private void BtnPause_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _Paused = !_Paused;
-            BtnPause.Content = _Paused ? "▶  RESUME" : "⏸  PAUSE";
+            DataRef.Paused = !DataRef.Paused;
+            BtnPause.Content = DataRef.Paused ? "▶  RESUME" : "⏸  PAUSE";
         }
 
         private void BtnClear_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             TokenChart.Clear();
+            TotalTokenChart.Clear();
         }
 
-        public long TotalToken = 0;
-        public double CurrentToken = 0;
+        public ChartData DataRef = null;
 
-        public void SetAction(Action<RealtimeLineChart> Current, Action<RealtimeLineChart> Total)
+        public void SetAction(Action<RealtimeLineChart> Current, Action<RealtimeLineChart> Total,ChartData DataRef)
         {
+            if (Current != null)
+            {
+                TokenChart.OnTick += new Action<RealtimeLineChart>((Ref) =>
+                {
+                    if(!DataRef.Paused)
+                    Current.Invoke(Ref);
+                });
+                TokenChart.Start();
+            }
+
             if (Total != null)
             {
-                TotalTokenChart.OnTick += Total;
+                TotalTokenChart.OnTick += new Action<RealtimeLineChart>((Ref) =>
+                {
+                    if (!DataRef.Paused)
+                    Total.Invoke(Ref);
+                });
                 TotalTokenChart.Start();
             }
 
-            if (Current != null)
-            {
-                TokenChart.OnTick += Current;
-                TokenChart.Start();
-            }
+            this.DataRef = DataRef;
         }
     }
 }

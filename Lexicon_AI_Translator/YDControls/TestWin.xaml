@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator.YDControls"
         mc:Ignorable="d"
-         xmlns:yd="clr-namespace:LexTranslator.YDControls"
-        Title="TestWin" Height="850" Width="800">
+        xmlns:yd="clr-namespace:LexTranslator.YDControls"
+        Title="TestWin" Height="850" Width="800" Loaded="Window_Loaded">
     <Grid>
-        <yd:MainChart>
+        <yd:MainChart x:Name="YDChart">
         </yd:MainChart>
     </Grid>
 </Window>
