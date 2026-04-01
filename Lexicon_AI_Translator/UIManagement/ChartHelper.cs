@@ -13,7 +13,7 @@ namespace LexTranslator.UIManagement
         private double Current = 0;
         public long Total = 0;
 
-        private long ToDayLimit = 0;
+        private long SingleUseLimit = 0;
         public double SetCurrent(long Current)
         {
             if (!Paused)
@@ -34,8 +34,8 @@ namespace LexTranslator.UIManagement
 
         public void CheckLimit()
         {
-            if(this.ToDayLimit != 0)
-            if (this.Total > this.ToDayLimit)
+            if(this.SingleUseLimit != 0)
+            if (this.Total > this.SingleUseLimit)
             {
                 //If the token limit is exceeded, the fuse will trip, forcibly terminating the translation process.
                 TranslatorInterface.TranslationStatus = StateControl.Cancel;
@@ -52,7 +52,7 @@ namespace LexTranslator.UIManagement
 
         public void SetTokenUseLimit(long MaxToken)
         { 
-            this.ToDayLimit = MaxToken;
+            this.SingleUseLimit = MaxToken;
         }
     }
 }
