@@ -850,5 +850,11 @@ namespace LexTranslator
         {
             ExitAny = true;
         }
+
+        private void OpenDataBase(object sender, MouseButtonEventArgs e)
+        {
+            DeFine.CloseDataBaseView();
+            DeFine.OpenDataBaseView($"Select * From AdvancedDictionary Where [From] = {(int)TranslatorInterface.Instance.From} And [To] = {(int)TranslatorInterface.Instance.To}");
+        }
     }
 }

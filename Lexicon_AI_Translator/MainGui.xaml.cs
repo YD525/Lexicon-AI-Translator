@@ -141,8 +141,6 @@ namespace LexTranslator
         public IntPtr MainHwnd = IntPtr.Zero;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DeFine.OpenDataBaseView();//Test
-
             DeFine.Init(this);
 
             AutoShowTraditional();

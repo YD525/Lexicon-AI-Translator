@@ -55,12 +55,16 @@ namespace LexTranslator
         public static ExtendWin ExtendWin = null;
         public static CGView CG = null;
 
-        public static void OpenDataBaseView()
+        public static void OpenDataBaseView(string SqlOrder = "")
         {
             if (DataBaseView == null)
             {
                 DataBaseView = new DataBaseView();
                 DataBaseView.Show();
+                if (SqlOrder.Length > 0)
+                {
+                    DataBaseView.QueryFirst(SqlOrder);
+                }
             }
         }
         public static void CloseDataBaseView()

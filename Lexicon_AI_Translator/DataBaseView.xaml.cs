@@ -17,14 +17,14 @@ namespace LexTranslator
 
         private Dictionary<int, long> _RowIds = new Dictionary<int, long>();
 
-        public DataBaseView(string TableName = "AdvancedDictionary")
+        public void QueryFirst(string Sql)
+        {
+            SqlOrder.Text = Sql;
+            RunQuery(SqlOrder.Text);
+        }
+        public DataBaseView()
         {
             InitializeComponent();
-            _TableName = TableName;
-
-            SetTableName(TableName);
-            SqlOrder.Text = $"SELECT * FROM {TableName}";
-            RunQuery(SqlOrder.Text);
         }
 
         // ── Update table name display ─────────────────────────────
@@ -52,13 +52,43 @@ namespace LexTranslator
         // ── Insert button: add empty row ──────────────────────────
         private void InsertRow(object Sender, RoutedEventArgs E)
         {
-         
+
+        }
+
+        public string ExtractTableName(string Sql)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(Sql))
+                    return string.Empty;
+
+                Sql = Sql.Trim();
+
+                string Pattern = @"(?i)^\s*(?:SELECT\s+.*?\s+FROM|INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+([`""\[]?)(\w+)\1";
+
+                Match Match = Regex.Match(Sql, Pattern);
+                if (Match.Success)
+                {
+                    string TableName = Match.Groups[2].Value;
+                    SetTableName(TableName);
+                    return TableName;
+                }
+
+                SetTableName(string.Empty);
+                return string.Empty;
+            }
+            catch 
+            {
+                SetTableName(string.Empty);
+                return string.Empty;
+            }
         }
 
         private void RunQuery(string UserSql)
         {
             try
             {
+                ExtractTableName(UserSql);
                 SetStatus("Querying...", true);
                 _RowIds.Clear();
 
@@ -105,12 +135,12 @@ namespace LexTranslator
                 @"^(\s*SELECT\s+)(.*?)(\s+FROM\s+)",
                 RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-            if (!Match.Success) return Sql; 
+            if (!Match.Success) return Sql;
 
-            string Keyword = Match.Groups[1].Value;  
-            string Columns = Match.Groups[2].Value;  
-            string FromClause = Match.Groups[3].Value;  
-            string Rest = Sql.Substring(Match.Length); 
+            string Keyword = Match.Groups[1].Value;
+            string Columns = Match.Groups[2].Value;
+            string FromClause = Match.Groups[3].Value;
+            string Rest = Sql.Substring(Match.Length);
 
             return $"{Keyword}Rowid, {Columns.Trim()}{FromClause}{Rest}";
         }
@@ -222,7 +252,7 @@ namespace LexTranslator
 
                     Dr[Key] = Value == null ? "(null)" : Value.ToString();
                 }
-                  
+
                 Table.Rows.Add(Dr);
             }
 
