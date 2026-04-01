@@ -257,27 +257,30 @@
         <!-- Toolbar -->
         <Border Grid.Row="0" Background="#FF282828"
                 BorderBrush="#FF333333" BorderThickness="0,0,0,1">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="12"/>
+                </Grid.ColumnDefinitions>
 
+                <Label Content="Table:" Foreground="#FF888888" VerticalAlignment="Center" Margin="5 0 5 0" Grid.Column="1" HorizontalAlignment="Center" />
+                
                 <!-- Table Name -->
-                <Label Content="Table:" Foreground="#FF888888"
-                       VerticalAlignment="Center" Padding="0,0,4,0"/>
-                <TextBlock x:Name="TableNameBlock"
-                           Foreground="White" FontFamily="Consolas"
-                           FontSize="12" FontWeight="SemiBold"
-                           VerticalAlignment="Center" Margin="0,0,16,0"
-                           Text="—"/>
+                
+                <TextBlock x:Name="TableNameBlock" Foreground="White" Margin="5 0 5 0"  FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"  Text="—" Grid.Column="2" HorizontalAlignment="Center"/>
+
+                <Label Content="SQL:" Foreground="#FF888888" VerticalAlignment="Center" Margin="5 0 5 0" Grid.Column="3" HorizontalAlignment="Center" />
 
                 <!-- SQL -->
-                <Label Content="SQL:" Foreground="#FF888888"
-                       VerticalAlignment="Center" Padding="0,0,6,0"/>
-                <TextBox x:Name="SqlOrder" Width="500" Height="28"
-                         VerticalContentAlignment="Center"
-                         FontFamily="Consolas" FontSize="12"
-                         Background="Transparent" Foreground="White"
-                         CaretBrush="#FF0B74D1"
-                         BorderThickness="1" BorderBrush="#FF555555"
-                         Padding="8,0">
+
+                <TextBox x:Name="SqlOrder" Margin="5 0 5 0" Height="28" VerticalContentAlignment="Center" FontSize="12" Background="Transparent" Foreground="White" CaretBrush="#FF0B74D1" BorderThickness="1" BorderBrush="#FF555555" Grid.Column="4">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Triggers>
@@ -290,26 +293,16 @@
                 </TextBox>
 
                 <!-- Query -->
-                <Button Content="▶  Query" x:Name="QueryBtn"
-                        Margin="8,0,0,0" Width="90" Height="28"
-                        Background="#FF1A1E2E" Foreground="#FF0B74D1"
-                        BorderBrush="#FF0B74D1" BorderThickness="1"
-                        FontFamily="Consolas" FontSize="12" Cursor="Hand"
-                        Click="QueryDataBase"/>
+                <Button Content="▶  Query" Margin="5 0 5 0" HorizontalAlignment="Center" x:Name="QueryBtn" Width="90" Height="28" Background="#FF1A1E2E" Foreground="#FF0B74D1"  BorderBrush="#FF0B74D1" BorderThickness="1" FontSize="12" Cursor="Hand" Click="QueryDataBase" Grid.Column="5" />
 
-                <!-- Insert -->
-                <Button Content="＋  Insert" x:Name="InsertBtn"
-                        Margin="6,0,0,0" Width="90" Height="28"
-                        Background="Transparent" Foreground="#FF7EC8A0"
-                        BorderBrush="#FF2A6A4A" BorderThickness="1"
-                        FontFamily="Consolas" FontSize="12" Cursor="Hand"
-                        Click="InsertRow"/>
-
+                <!-- Delete -->
+                <Button Content="Delete" Margin="5 0 5 0" HorizontalAlignment="Center" x:Name="DeleteBtn" Width="90" Height="28" Background="#FF3B2626" Foreground="Red"  BorderBrush="#FFD05353" BorderThickness="1" FontSize="12" Cursor="Hand" Click="DeleteSelect" Grid.Column="6" />
                 <!-- Status -->
-                <TextBlock x:Name="StatusMsg" Margin="16,0,0,0"
-                           Foreground="#FF555555" FontFamily="Consolas"
-                           FontSize="11" VerticalAlignment="Center"/>
-            </StackPanel>
+                <TextBlock x:Name="StatusMsg" Margin="5 0 5 0" HorizontalAlignment="Center" Foreground="#FF555555" FontSize="11" VerticalAlignment="Center" Grid.Column="7"/>
+
+            </Grid>
+
+           
         </Border>
 
         <!-- DataGrid -->
@@ -332,7 +325,8 @@
                   ColumnHeaderHeight="34"
                   RowHeight="35"
                   FontFamily="Consolas" FontSize="12"
-                  EnableRowVirtualization="True">
+                  EnableRowVirtualization="True"
+                  SelectionChanged="MainGrid_SelectionChanged">
 
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">

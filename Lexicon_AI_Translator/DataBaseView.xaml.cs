@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using LexTranslator.ConvertManager;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
 
@@ -49,12 +50,6 @@ namespace LexTranslator
             RunQuery(Sql);
         }
 
-        // ── Insert button: add empty row ──────────────────────────
-        private void InsertRow(object Sender, RoutedEventArgs E)
-        {
-
-        }
-
         public string ExtractTableName(string Sql)
         {
             try
@@ -84,10 +79,12 @@ namespace LexTranslator
             }
         }
 
+        private string LastQuery = "";
         private void RunQuery(string UserSql)
         {
             try
             {
+                LastQuery = UserSql;
                 ExtractTableName(UserSql);
                 SetStatus("Querying...", true);
                 _RowIds.Clear();
@@ -126,6 +123,14 @@ namespace LexTranslator
             }
         }
 
+        private void RunQuery()
+        {
+            if (LastQuery.Length > 0)
+            {
+                RunQuery(LastQuery);
+            }
+        }
+
         private string InjectRowid(string Sql)
         {
             if (Regex.IsMatch(Sql, @"\browid\b", RegexOptions.IgnoreCase))
@@ -147,6 +152,7 @@ namespace LexTranslator
 
         private Dictionary<(int, string), string> _EditSnapshots
         = new Dictionary<(int, string), string>();
+        
         private void OnBeginningEdit(object Sender, DataGridBeginningEditEventArgs E)
         {
             string ColName = E.Column.Header?.ToString();
@@ -405,7 +411,23 @@ namespace LexTranslator
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            DeFine.CloseDataBaseView();
+            _TableName = string.Empty;
+            CurrentRowid = 0;
+            _RowIds.Clear();
+        }
+
+        private void DeleteSelect(object sender, RoutedEventArgs e)
+        {
+            if (CurrentRowid != 0)
+            {
+                Phoenix.LocalDB.P_ExecuteQuery($"Delete From {_TableName} Where Rowid = {CurrentRowid}");
+                RunQuery();
+            }
+        }
+        public long CurrentRowid = 0;
+        private void MainGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CurrentRowid = this._RowIds[MainGrid.SelectedIndex];
         }
     }
 }
