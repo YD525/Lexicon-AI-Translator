@@ -341,10 +341,10 @@
             </Setter>
         </Style>
 
-        <!--默认ScrollBar-->
+        <!--Default ScrollBar-->
         <Style TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}"/>
 
-        <!--默认ScrollView-->
+        <!--Default ScrollView-->
         <Style TargetType="ScrollViewer" BasedOn="{StaticResource for_scrollviewer}"/>
     </Window.Resources>
 

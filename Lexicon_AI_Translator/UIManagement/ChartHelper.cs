@@ -32,6 +32,10 @@ namespace LexTranslator.UIManagement
             this.Current = this.Total = 0;
         }
 
+        // Stops translation when token usage exceeds the set limit.
+        // This is only an approximate protection and may not match real costs,
+        // since each platform calculates token usage differently.
+        // For accurate cost control, please set limits in your service provider's dashboard.
         public void CheckLimit()
         {
             if(this.SingleUseLimit != 0)

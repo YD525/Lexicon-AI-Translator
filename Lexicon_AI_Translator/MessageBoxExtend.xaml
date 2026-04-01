@@ -33,7 +33,7 @@
         <Grid Panel.ZIndex="2" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
@@ -45,6 +45,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="38"/>
                         <RowDefinition Height="1*"/>
+                        <RowDefinition Height="38"/>
                     </Grid.RowDefinitions>
                     <Label Name="Caption" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="10 0 0 0">
                         Tittle
@@ -55,16 +56,16 @@
                         </TextBox>
                     </Grid>
 
-                    <Grid Grid.Row="1" HorizontalAlignment="Right" Height="40" Margin="0 10 0 5" VerticalAlignment="Bottom">
+                    <Grid Grid.Row="2" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal" Margin="0 0 5 0">
                             <Border BorderThickness="1" BorderBrush="White" Margin="5" Background="#FF0C539C" Width="65" PreviewMouseDown="Confirm" Name="ConfirmBtn" Cursor="Hand">
-                                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15">
+                                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13">
                                     Yes
                                 </Label>
                             </Border>
 
                             <Border BorderThickness="1" BorderBrush="White" Margin="5" Background="#FF0887E9" Width="60" PreviewMouseDown="Cancel" Name="CancelBtn" Cursor="Hand">
-                                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15">
+                                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13">
                                     No
                                 </Label>
                             </Border>

@@ -50,8 +50,27 @@ namespace LexTranslator
         public static NodeStyleWin NodeStyleWin = new NodeStyleWin();
         public static PlatformConfigStyleWin PlatformConfigStyleWin = new PlatformConfigStyleWin();
 
+        public static DataBaseView DataBaseView = null;
+
         public static ExtendWin ExtendWin = null;
         public static CGView CG = null;
+
+        public static void OpenDataBaseView()
+        {
+            if (DataBaseView == null)
+            {
+                DataBaseView = new DataBaseView();
+                DataBaseView.Show();
+            }
+        }
+        public static void CloseDataBaseView()
+        {
+            if (DataBaseView != null)
+            {
+                DataBaseView.Close();
+                DataBaseView = null;
+            }
+        }
 
         public static void CloseAny()
         {
@@ -150,8 +169,15 @@ namespace LexTranslator
                 lock(ErrorReportLocker)
                 Application.Current.Dispatcher.Invoke(new Action(() => 
                 {
-                    if (DeFine.WorkingWin!=null)
-                    MessageBoxExtend.Show(DeFine.WorkingWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                    if (DeFine.DataBaseView != null)
+                    {
+                        MessageBoxExtend.Show(DeFine.DataBaseView, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                    }
+                    else
+                    if (DeFine.WorkingWin != null)
+                    {
+                        MessageBoxExtend.Show(DeFine.WorkingWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                    }
                 }));
             });
         }
