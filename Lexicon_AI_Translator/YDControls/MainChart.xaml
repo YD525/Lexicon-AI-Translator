@@ -105,7 +105,7 @@
                     BorderBrush="#FFFF7380" BorderThickness="1"
                     FontSize="12" 
                     Cursor="Hand"/>
-            <Grid Width="25" Height="25" Background="#FFD58811">
+            <Grid Width="25" Height="25" Background="#FFD58811" Visibility="Hidden">
             </Grid>
         </StackPanel>
     </Grid>

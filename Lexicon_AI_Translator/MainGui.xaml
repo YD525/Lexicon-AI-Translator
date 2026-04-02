@@ -7,6 +7,7 @@
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
+        xmlns:yd="clr-namespace:LexTranslator.YDControls"
         Title="LexTranslator" Height="850" Width="980" Loaded="Window_Loaded" Style="{DynamicResource DefWin}" PreviewKeyDown="Window_PreviewKeyDown" WindowStartupLocation="CenterScreen" AllowDrop="True" PreviewDragEnter="ModTransView_DragEnter" PreviewDrop="ModTransView_Drop"  PreviewDragLeave="ModTransView_DragLeave" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" Activated="Window_Activated">
 
     <Window.Resources>
@@ -188,6 +189,7 @@
                                 <RowDefinition Height="1*"/>
                                 <RowDefinition Height="1*"/>
                                 <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0">
@@ -202,7 +204,7 @@
                                 </Border>
                             </Grid>
 
-                            <!--<Grid Grid.Row="1">
+                            <Grid Grid.Row="1">
                                 <Border Tag="DashBoard" ToolTip="DashBoard" Style="{DynamicResource MenuBlockStyle}" PreviewMouseDown="ShowView">
                                     <Viewbox Width="23" Height="23" Stretch="Uniform">
                                         <Canvas Width="1024" Height="1024">
@@ -212,9 +214,9 @@
                                         </Canvas>
                                     </Viewbox>
                                 </Border>
-                            </Grid>-->
+                            </Grid>
 
-                            <Grid Grid.Row="1">
+                            <Grid Grid.Row="2">
                                 <Border Tag="Settings" ToolTip="Settings" Style="{DynamicResource MenuBlockStyle}" PreviewMouseDown="ShowView">
                                     <Viewbox Width="21" Height="21" Stretch="Uniform">
                                         <Canvas Width="1024" Height="1024">
@@ -229,7 +231,7 @@
                                 </Border>
                             </Grid>
 
-                            <Grid Grid.Row="2">
+                            <Grid Grid.Row="3">
                                 <Border Tag="About" ToolTip="About" Style="{DynamicResource MenuBlockStyle}" PreviewMouseDown="ShowView">
                                     <Viewbox Width="23" Height="23" Stretch="Uniform">
                                         <Canvas Width="1024" Height="1024">
@@ -751,18 +753,21 @@ Fill="White"/>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="35"/>
                                     <RowDefinition Height="1*"/>
-                                    <RowDefinition Height="35"/>
-                                    <RowDefinition Height="0.7*"/>
+                                    <RowDefinition Height="5"/>
                                 </Grid.RowDefinitions>
+
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
                                     <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="35"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Row="0" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="5 0 0 0" FontSize="13">
+                                <Label Grid.Row="0" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="5 0 0 0" FontSize="13">
                                     DashBoard
                                 </Label>
 
+                                <yd:MainChart x:Name="YDChart" Grid.Row="1" Grid.Column="1">
+                                </yd:MainChart>
 
                             </Grid>
                         </Grid>
