@@ -3930,16 +3930,19 @@ namespace LexTranslator
 
             DeFine.CloseDataBaseView();
 
-            //If both checkboxes are checked, only one viewer can be opened. I'm leaving it like this for now—I'm too lazy to change it.
             int Key = Phoenix.GetFileUniqueKey();
             if (GetCloudTranslationCache == true)
             {
-                DeFine.OpenDataBaseView($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} Limit 5000");
+                var CloudTrans = new DataBaseView();
+                CloudTrans.Show();
+                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} Limit 5000");
             }
-            else
+
             if (GetUserTranslationCache == true)
             {
-                DeFine.OpenDataBaseView($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} Limit 5000");
+                var UserTranslation = new DataBaseView();
+                UserTranslation.Show();
+                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} Limit 5000");
             }
         }
     }
