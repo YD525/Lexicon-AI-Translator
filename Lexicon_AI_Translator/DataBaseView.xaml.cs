@@ -95,11 +95,10 @@ namespace LexTranslator
                 string RewrittenSql = InjectRowid(UserSql);
                 string SafeSQL = SQLSafeCodec.EncodeSQLValues(RewrittenSql);
                 List<Dictionary<string, object>> Rows =
-                Phoenix.LocalDB.P_ExecuteQuery(SafeSQL);
+                    Phoenix.LocalDB.P_ExecuteQuery(SafeSQL);
 
                 DataTable Table = ToDataTable(Rows);
 
-                // Cache rowid per row index, then hide the rowid column from view
                 for (int I = 0; I < Table.Rows.Count; I++)
                 {
                     if (Table.Columns.Contains("Rowid") &&
@@ -107,23 +106,39 @@ namespace LexTranslator
                         _RowIds[I] = Rid;
                 }
 
-                BuildColumns(Table);
-
-                MainGrid.BeginningEdit -= OnBeginningEdit;
-                MainGrid.CellEditEnding -= OnCellEditEnding;
-                MainGrid.BeginningEdit += OnBeginningEdit;
-                MainGrid.CellEditEnding += OnCellEditEnding;
+                if (!ColumnsMatch(Table))
+                {
+                    BuildColumns(Table);
+                    MainGrid.BeginningEdit -= OnBeginningEdit;
+                    MainGrid.CellEditEnding -= OnCellEditEnding;
+                    MainGrid.BeginningEdit += OnBeginningEdit;
+                    MainGrid.CellEditEnding += OnCellEditEnding;
+                }
 
                 MainGrid.ItemsSource = Table.DefaultView;
 
                 RowCountRun.Text = Table.Rows.Count.ToString();
-                ColCountRun.Text = (Table.Columns.Count - 1).ToString(); // exclude rowid
+                ColCountRun.Text = (Table.Columns.Count - 1).ToString();
                 SetStatus($"OK · {Table.Rows.Count} rows", true);
             }
             catch (Exception Ex)
             {
                 SetStatus($"Error: {Ex.Message}", false);
             }
+        }
+
+        private bool ColumnsMatch(DataTable Table)
+        {
+            if (MainGrid.Columns.Count != Table.Columns.Count)
+                return false;
+
+            for (int I = 0; I < Table.Columns.Count; I++)
+            {
+                if (MainGrid.Columns[I].Header?.ToString() != Table.Columns[I].ColumnName)
+                    return false;
+            }
+
+            return true;
         }
 
         private void RunQuery()
@@ -330,12 +345,44 @@ namespace LexTranslator
                 }
                 else
                 {
-                    // Standard single-line text column
+                    DataGridLength ColWidth;
+
+                    switch (Col.ColumnName)
+                    {
+                        case "Rowid":
+                            ColWidth = new DataGridLength(60);
+                            break;
+                        case "To":
+                            ColWidth = new DataGridLength(50);
+                            break;
+                        case "From":
+                        case "Type":
+                            ColWidth = new DataGridLength(70);
+                            break;
+                        case "Regex":
+                            ColWidth = new DataGridLength(5);
+                            break;
+                        case "IgnoreCase":
+                        case "ExactMatch":
+                            ColWidth = new DataGridLength(50);
+                            break;
+                        case "TargetFileName":
+                            ColWidth = new DataGridLength(60);
+                            break;
+                        case "Source":
+                        case "Result":
+                            ColWidth = new DataGridLength(1, DataGridLengthUnitType.Star);
+                            break;
+                        default:
+                            ColWidth = new DataGridLength(1, DataGridLengthUnitType.Star);
+                            break;
+                    }
+
                     var TextCol = new DataGridTextColumn
                     {
                         Header = Col.ColumnName,
                         Binding = new Binding($"[{Col.ColumnName}]"),
-                        Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                        Width = ColWidth,
                         ElementStyle = MakeTextBlockStyle(Col.ColumnName),
                         EditingElementStyle = MakeEditBoxStyle(),
                         CanUserSort = false
