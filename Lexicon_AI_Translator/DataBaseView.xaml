@@ -4,9 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="DataBaseView" Height="900" Width="960"
+        Title="Database Viewer" Height="900" Width="960"
         Background="#FF1A1A1A"
-        WindowStyle="SingleBorderWindow"
         ResizeMode="CanResize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -369,9 +368,6 @@
                                         <Setter TargetName="RowBorder" Property="Background" Value="#FF162030"/>
                                         <Setter TargetName="Bar"       Property="Background" Value="#FF1A74C0"/>
                                     </Trigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="RowBorder" Property="Background" Value="#FF1E2D3E"/>
-                                    </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
@@ -388,11 +384,14 @@
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background"      Value="Transparent"/>
+                            <Setter Property="Foreground"      Value="#FFD4D4D4"/>
                             <Setter Property="BorderBrush"     Value="Transparent"/>
                             <Setter Property="BorderThickness" Value="0"/>
                         </Trigger>
                         <Trigger Property="IsEditing" Value="True">
-                            <Setter Property="Background" Value="#FF0A1520"/>
+                            <Setter Property="Background"      Value="#FF0A1520"/>
+                            <Setter Property="BorderBrush"     Value="#FF1A74C0"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,2"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>

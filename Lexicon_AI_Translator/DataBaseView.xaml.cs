@@ -36,7 +36,8 @@ namespace LexTranslator
             _TableName = Name;
             TableNameBlock.Text = Name;
             TableNameRun.Text = Name;
-            Title = $"DataBaseView — {Name}";
+
+            Title = $"Database Viewer - {Name}";
         }
 
         // ── Query button click ────────────────────────────────────
