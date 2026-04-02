@@ -594,7 +594,11 @@ namespace LexTranslator
         public long CurrentRowid = 0;
         private void MainGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CurrentRowid = this._RowIds[MainGrid.SelectedIndex];
+            int Index = MainGrid.SelectedIndex;
+            if (Index >= 0 && _RowIds.ContainsKey(Index))
+                CurrentRowid = _RowIds[Index];
+            else
+                CurrentRowid = 0;
         }
 
        
