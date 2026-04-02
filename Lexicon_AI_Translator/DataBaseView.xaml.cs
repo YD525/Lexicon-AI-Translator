@@ -12,6 +12,12 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
+using System.Linq;
+using System.Windows.Documents;
 
 namespace LexTranslator
 {
@@ -63,12 +69,12 @@ namespace LexTranslator
 
                 Sql = Sql.Trim();
 
-                string Pattern = @"(?i)^\s*(?:SELECT\s+.*?\s+FROM|INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+([`""\[]?)(\w+)\1";
+                string Pattern = @"(?i)\b(?:FROM|INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+[`""\[]?(?<TableName>\w+)[`""\]]?";
 
-                Match Match = Regex.Match(Sql, Pattern);
+                Match Match = Regex.Match(Sql, Pattern, RegexOptions.Singleline);
                 if (Match.Success)
                 {
-                    string TableName = Match.Groups[2].Value;
+                    string TableName = Match.Groups["TableName"].Value;
                     SetTableName(TableName);
                     return TableName;
                 }
@@ -83,8 +89,6 @@ namespace LexTranslator
             }
         }
 
-
-       
         private string LastQuery = "";
         private void RunQuery(string UserSql)
         {
@@ -480,8 +484,16 @@ namespace LexTranslator
         {
             if (CurrentRowid != 0)
             {
-                Phoenix.LocalDB.P_ExecuteQuery($"Delete From {_TableName} Where Rowid = {CurrentRowid}");
-                RunQuery();
+                if (MessageBoxExtend.Show(this, "Msg", "The currently selected row will be deleted. Are you sure you want to continue?", MsgAction.YesNo, MsgType.Waring) > 0)
+                {
+                    Phoenix.LocalDB.P_ExecuteQuery($"Delete From {_TableName} Where Rowid = {CurrentRowid}");
+                    RunQuery();
+
+                    if (DeFine.LocalConfigView != null)
+                    {
+                        DeFine.LocalConfigView.AutoReload();
+                    }
+                }
             }
         }
         public long CurrentRowid = 0;
@@ -494,7 +506,7 @@ namespace LexTranslator
                 CurrentRowid = 0;
         }
 
-     
+
         private void SelectNextRow()
         {
             if (MainGrid.Items.Count == 0)
@@ -513,7 +525,7 @@ namespace LexTranslator
 
             MainGrid.ScrollIntoView(MainGrid.SelectedItem);
         }
-       
+
         private void MainGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Tab)
@@ -553,8 +565,241 @@ namespace LexTranslator
                 }
             }
 
+            SqlIDE.TextArea.TextEntering += SqlEditor_TextEntering;
+            SqlIDE.TextArea.TextEntered += SqlEditor_TextEntered;
         }
-       
+
+        #region Completion
+        class MyCompletionData : ICompletionData
+        {
+            private readonly string _Description;
+            private readonly ImageSource _Image;
+
+            public MyCompletionData(string Text, string Description = null, ImageSource Image = null)
+            {
+                this.Text = Text;
+                _Description = Description;
+                _Image = Image;
+            }
+
+            public ImageSource Image => _Image;
+            public string Text { get; private set; }
+            public object Content => Text;
+            public object Description => _Description ?? Text;
+            public double Priority => 0;
+
+            public void Complete(TextArea TextArea, ISegment CompletionSegment, EventArgs E)
+            {
+                TextArea.Document.Replace(CompletionSegment, Text);
+            }
+        }
+
+
+        public CompletionWindow Completion;
+
+        private static readonly string[] SqlKeywords =
+        {
+            "Select", "From", "Where", "Insert", "Into", "Values",
+            "Update", "Set", "Delete", "Join", "Left Join", "Right Join",
+            "Inner Join", "On", "Group By", "Order By", "Having",
+            "Distinct", "As", "And", "Or", "Not", "Null", "Is Null",
+            "Is Not Null", "Like", "In", "Between", "Exists", "Union",
+            "Create", "Table", "Drop", "Alter", "Index", "View",
+            "Begin", "Commit", "Rollback", "Transaction",
+            "Count", "Sum", "Avg", "Min", "Max", "Coalesce",
+            "Case", "When", "Then", "End", "Limit", "Offset"
+        };
+
+        private static readonly string[] BracketKeywords =
+        {
+            "[Rowid]","[From]", "[To]","[Type]", "[Source]", "[Result]","[TargetFileName]","[ExactMatch]","[IgnoreCase]","[FileUniqueKey]","[Key]"
+        };
+
+        private static readonly Dictionary<string, string[]> TableColumns = new Dictionary<string, string[]>
+        {
+            ["AdvancedDictionary"] = new[] { "Rowid", "TargetFileName", "Type", "Source", "Result", "ExactMatch", "IgnoreCase" }
+        };
+
+        private static readonly string[] TableNames =
+        {
+            "AdvancedDictionary", "CloudTranslation", "LocalTranslation"
+        };
+
+        private ImageSource GetBracketIcon() => CreateCircleIcon(Colors.Orange);
+        private ImageSource GetValueIcon() => CreateCircleIcon(Color.FromRgb(155, 89, 182));
+        private ImageSource GetTableNameIcon() => CreateCircleIcon(Color.FromRgb(52, 152, 219));
+
+
+        private void ShowBracketCompletion()
+        {
+            Completion?.Close();
+            Completion = new CompletionWindow(SqlIDE.TextArea);
+
+            int Offset = SqlIDE.TextArea.Caret.Offset;
+            var Doc = SqlIDE.Document;
+            int Start = Offset - 1;
+            Completion.StartOffset = (Start >= 0 && Doc.GetCharAt(Start) == '[') ? Start : Offset;
+
+            StyleCompletionWindow(Completion);
+
+            foreach (string Kw in BracketKeywords)
+                Completion.CompletionList.CompletionData.Add(
+                    new MyCompletionData(Kw, $"Escaped Identifier: {Kw}", GetBracketIcon()));
+
+            Completion.Show();
+            Completion.Closed += (S, E) => Completion = null;
+        }
+
+
+        private void ShowValueCompletion()
+        {
+            var Doc = SqlIDE.Document;
+            int Offset = SqlIDE.TextArea.Caret.Offset;
+
+            int Pos = Offset - 1;
+            while (Pos > 0 && Doc.GetCharAt(Pos) != '=') Pos--;
+            if (Pos <= 0) return;
+
+            int EqPos = Pos - 1;
+            while (EqPos > 0 && Doc.GetCharAt(EqPos) == ' ') EqPos--;
+
+            if (EqPos < 0 || Doc.GetCharAt(EqPos) != ']') return;
+            int BracketEnd = EqPos;
+            int BracketStart = BracketEnd - 1;
+            while (BracketStart > 0 && Doc.GetCharAt(BracketStart) != '[') BracketStart--;
+            if (BracketStart < 0) return;
+
+            string FieldName = Doc.GetText(BracketStart + 1, BracketEnd - BracketStart - 1);
+
+            if (!BracketDefaults.TryGetValue(FieldName, out Func<string> GetDefault)) return;
+
+            string DefaultValue = GetDefault();
+
+            Completion?.Close();
+            Completion = new CompletionWindow(SqlIDE.TextArea);
+            Completion.StartOffset = Offset;
+            StyleCompletionWindow(Completion);
+
+            Completion.CompletionList.CompletionData.Add(
+                new MyCompletionData(DefaultValue, $"Current value for [{FieldName}]", GetValueIcon()));
+
+            Completion.Show();
+            Completion.Closed += (S, E) => Completion = null;
+        }
+
+     
+        private static readonly Dictionary<string, Func<string>> BracketDefaults = new Dictionary<string, Func<string>>
+        {
+            ["From"] = () => ((int)Phoenix.From).ToString(),
+            ["To"] = () => ((int)Phoenix.To).ToString(),
+        };
+
+        private string[] ResolveColumns(string TableOrAlias)
+        {
+            string Key = TableColumns.Keys.FirstOrDefault(K =>
+                K.Equals(TableOrAlias, StringComparison.OrdinalIgnoreCase));
+            return Key != null ? TableColumns[Key] : null;
+        }
+
+        private string GetWordBefore(TextArea TextArea, int Skip = 0)
+        {
+            var Doc = TextArea.Document;
+            int Pos = TextArea.Caret.Offset - Skip;
+            int Start = Pos;
+
+            while (Start > 0 && (char.IsLetterOrDigit(Doc.GetCharAt(Start - 1)) || Doc.GetCharAt(Start - 1) == '_'))
+                Start--;
+
+            return Start < Pos ? Doc.GetText(Start, Pos - Start) : string.Empty;
+        }
+
+        private void ShowKeywordCompletion()
+        {
+            Completion = new CompletionWindow(SqlIDE.TextArea);
+
+            int Offset = SqlIDE.TextArea.Caret.Offset;
+            var Doc = SqlIDE.Document;
+            int Start = Offset;
+            while (Start > 0 && (char.IsLetterOrDigit(Doc.GetCharAt(Start - 1)) || Doc.GetCharAt(Start - 1) == '_'))
+                Start--;
+            Completion.StartOffset = Start;
+
+            StyleCompletionWindow(Completion);
+
+            var Data = Completion.CompletionList.CompletionData;
+
+            foreach (string Kw in SqlKeywords)
+                Data.Add(new MyCompletionData(Kw, $"SQL Keyword: {Kw}", GetKeywordIcon()));
+
+            foreach (string Tbl in TableNames)
+                Data.Add(new MyCompletionData(Tbl, $"Table: {Tbl}", GetTableIcon()));
+
+            //foreach (string Tbl in TableColumns.Keys)
+            //    Data.Add(new MyCompletionData(Tbl, $"Table: {Tbl}\nColumns: {string.Join(", ", TableColumns[Tbl])}", GetTableIcon()));
+
+            Completion.Show();
+            Completion.Closed += (S, E) => Completion = null;
+        }
+        private void ShowMemberCompletion()
+        {
+            string Word = GetWordBefore(SqlIDE.TextArea, 1);
+            string[] Columns = ResolveColumns(Word);
+
+            if (Columns == null || Columns.Length == 0) return;
+
+            Completion?.Close();
+            Completion = new CompletionWindow(SqlIDE.TextArea);
+            StyleCompletionWindow(Completion);
+
+            foreach (string Col in Columns)
+                Completion.CompletionList.CompletionData.Add(
+                    new MyCompletionData(Col, $"Column: {Col}\nTable: {Word}", GetColumnIcon()));
+
+            Completion.Show();
+            Completion.Closed += (S, E) => Completion = null;
+        }
+
+        private void SqlEditor_TextEntering(object Sender, TextCompositionEventArgs E)
+        {
+            if (Completion == null) return;
+            if (E.Text.Length == 0) return;
+
+            char C = E.Text[0];
+
+            if (char.IsLetterOrDigit(C) || C == '_' || C == '[') return;
+
+            Completion.CompletionList.RequestInsertion(E);
+        }
+
+        private void SqlEditor_TextEntered(object Sender, TextCompositionEventArgs E)
+        {
+            //if (E.Text == ".")
+            //{
+            //    ShowMemberCompletion();
+            //    return;
+            //}
+
+            if (E.Text == "[")
+            {
+                ShowBracketCompletion();
+                return;
+            }
+
+            if (E.Text == "=")
+            {
+                ShowValueCompletion();
+                return;
+            }
+
+            if (E.Text.Length == 1 && (char.IsLetter(E.Text[0]) || E.Text[0] == '_'))
+            {
+                if (Completion == null)
+                    ShowKeywordCompletion();
+            }
+        }
+
+        #endregion
+
         private void LayerGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             SqlSetView.Visibility = Visibility.Collapsed;
@@ -564,7 +809,7 @@ namespace LexTranslator
         {
             SqlOrder.Text = SqlIDE.Text;
             SqlSetView.Visibility = Visibility.Collapsed;
-            SqlOrderCopy.Content = SqlIDE.Text.Replace("\r\n"," ");
+            SqlOrderCopy.Content = SqlIDE.Text.Replace("\r\n", " ");
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
@@ -572,7 +817,37 @@ namespace LexTranslator
             SqlSetView.Visibility = Visibility.Collapsed;
         }
 
-       
+
+
+        private void StyleCompletionWindow(CompletionWindow win)
+        {
+            win.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+            win.Foreground = Brushes.White;
+            win.BorderBrush = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+            win.BorderThickness = new Thickness(1);
+            win.MaxHeight = 220;
+            win.CloseWhenCaretAtBeginning = true;
+        }
+        private ImageSource GetKeywordIcon() => CreateCircleIcon(Colors.CornflowerBlue);
+        private ImageSource GetTableIcon() => CreateCircleIcon(Colors.MediumSeaGreen);
+        private ImageSource GetColumnIcon() => CreateCircleIcon(Colors.Gold);
+
+        private ImageSource CreateCircleIcon(Color color)
+        {
+            var dg = new DrawingGroup();
+            dg.Children.Add(new GeometryDrawing(
+                new SolidColorBrush(color),
+                null,
+                new EllipseGeometry(new Point(8, 8), 6, 6)));
+            return new DrawingImage(dg);
+        }
+
+        private void Clear(object sender, RoutedEventArgs e)
+        {
+            SqlIDE.Text = "";
+            SqlOrderCopy.Content = "";
+            SqlOrder.Text = "";
+        }
     }
 
     public static class DataGridExtensions

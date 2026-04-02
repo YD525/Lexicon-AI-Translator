@@ -310,8 +310,12 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 5 0" Grid.Row="1">
 
 
-                        <Button Content="Cancel" Width="90" Height="28" Margin="0 0 0 0"
- Background="#FF3B2626" Foreground="#FFD05353" BorderBrush="#FFD05353" BorderThickness="1"
+                        <Button Content="Clear" Width="90" Height="28" Margin="10 0 0 0"
+Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
+FontSize="12" Cursor="Hand" Click="Clear"/>
+                        
+                        <Button Content="Cancel" Width="90" Height="28" Margin="10 0 0 0"
+ Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
 FontSize="12" Cursor="Hand" Click="Cancel"/>
                         
                         <Button Content="Apply" Width="90" Height="28" Margin="10 0 0 0"
