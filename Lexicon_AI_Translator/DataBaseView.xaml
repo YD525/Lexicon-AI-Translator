@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         Title="Database Viewer" Height="900" Width="960"
         Background="#FF1A1A1A"
-        ResizeMode="CanResize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
+        ResizeMode="CanResize" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
 
     <Window.Resources>
 
@@ -267,9 +268,9 @@
                 <TextBox Name="SqlOrder" TextWrapping="Wrap" AcceptsReturn="True"  Visibility="Collapsed">
                 </TextBox>
 
-                <Border BorderThickness="1" CornerRadius="3" Grid.Column="4" BorderBrush="#FF9D9D9D" Background="Transparent" Margin="0 10 0 10" Cursor="Hand">
-                    <Label Foreground="#FFBFBFBF" Cursor="Hand">
-                        Execute SQL
+                <Border BorderThickness="1" CornerRadius="3" Grid.Column="4" BorderBrush="#FF9D9D9D" Background="Transparent" Margin="0 10 0 10" Cursor="Hand" PreviewMouseDown="ShowSqlOrder">
+                    <Label Foreground="#FFBFBFBF" Cursor="Hand" Name="SqlOrderCopy">
+                        (Click to Edit SQL Command)
                     </Label>
                 </Border>
 
@@ -286,7 +287,40 @@
         </Border>
 
         <!-- DataGrid -->
-        <DataGrid x:Name="MainGrid" Grid.Row="1"
+        <Grid Name="SqlSetView" Panel.ZIndex="2" Grid.Row="1" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="0.5*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Background="Black" Opacity="0.6">
+            </Grid>
+
+            <Grid Grid.Row="1" Background="#FF2F2F2F">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <avalonEdit:TextEditor Name="SqlIDE" Grid.Row="0"  Margin="5" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontSize="16" ShowLineNumbers="True" Background="#FF282828" Foreground="White" WordWrap="True" TextOptions.TextFormattingMode="Display">
+
+                    </avalonEdit:TextEditor>
+                    <Button Content="Set Sql" Grid.Row="1"  Width="90" Height="28"
+Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
+FontSize="12" Cursor="Hand" Click="SetSQL"/>
+                </Grid>
+               
+            </Grid>
+
+            <Grid Grid.Row="2" Background="Black" Opacity="0.6">
+            </Grid>
+
+        </Grid>
+      
+
+        <DataGrid x:Name="MainGrid" Panel.ZIndex="1" Grid.Row="1"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"

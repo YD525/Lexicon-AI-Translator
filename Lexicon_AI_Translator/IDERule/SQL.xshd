@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SyntaxDefinition name="SQL" extensions=".sql"
+                  xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+
+	<Color name="Comment"    foreground="#6A9955" fontStyle="italic"/>
+	<Color name="String"     foreground="#CE9178"/>
+	<Color name="Number"     foreground="#B5CEA8"/>
+	<Color name="DMLKeyword" foreground="#569CD6" fontWeight="bold"/>
+	<Color name="DDLKeyword" foreground="#C586C0" fontWeight="bold"/>
+	<Color name="DataType"   foreground="#4EC9B0"/>
+	<Color name="Function"   foreground="#DCDCAA"/>
+
+	<RuleSet ignoreCase="true">
+
+		<Span color="Comment" multiline="false">
+			<Begin>--</Begin>
+		</Span>
+
+		<Span color="Comment" multiline="true">
+			<Begin>/\*</Begin>
+			<End>\*/</End>
+		</Span>
+
+		<Span color="String" multiline="false">
+			<Begin>'</Begin>
+			<End>'</End>
+		</Span>
+
+		<Span color="String" multiline="false">
+			<Begin>N'</Begin>
+			<End>'</End>
+		</Span>
+
+		<Span color="String" multiline="false">
+			<Begin>"</Begin>
+			<End>"</End>
+		</Span>
+
+		<Rule color="Number">\b\d+(\.\d+)?\b</Rule>
+
+		<Keywords color="Function">
+			<Word>ABS</Word>
+			<Word>AVG</Word>
+			<Word>CAST</Word>
+			<Word>CEILING</Word>
+			<Word>CHARINDEX</Word>
+			<Word>COALESCE</Word>
+			<Word>CONCAT</Word>
+			<Word>CONVERT</Word>
+			<Word>COUNT</Word>
+			<Word>DATEADD</Word>
+			<Word>DATEDIFF</Word>
+			<Word>DATENAME</Word>
+			<Word>DATEPART</Word>
+			<Word>DAY</Word>
+			<Word>FLOOR</Word>
+			<Word>FORMAT</Word>
+			<Word>GETDATE</Word>
+			<Word>GETUTCDATE</Word>
+			<Word>ISNULL</Word>
+			<Word>ISNUMERIC</Word>
+			<Word>ISDATE</Word>
+			<Word>LEN</Word>
+			<Word>LENGTH</Word>
+			<Word>LOWER</Word>
+			<Word>LTRIM</Word>
+			<Word>MAX</Word>
+			<Word>MIN</Word>
+			<Word>MONTH</Word>
+			<Word>NOW</Word>
+			<Word>NULLIF</Word>
+			<Word>PATINDEX</Word>
+			<Word>POWER</Word>
+			<Word>REPLACE</Word>
+			<Word>REPLICATE</Word>
+			<Word>REVERSE</Word>
+			<Word>ROUND</Word>
+			<Word>RTRIM</Word>
+			<Word>SIGN</Word>
+			<Word>SQRT</Word>
+			<Word>STUFF</Word>
+			<Word>SUBSTRING</Word>
+			<Word>SUM</Word>
+			<Word>TRIM</Word>
+			<Word>UPPER</Word>
+			<Word>YEAR</Word>
+			<Word>RANK</Word>
+			<Word>ROW_NUMBER</Word>
+			<Word>DENSE_RANK</Word>
+			<Word>NTILE</Word>
+			<Word>LAG</Word>
+			<Word>LEAD</Word>
+			<Word>FIRST_VALUE</Word>
+			<Word>LAST_VALUE</Word>
+			<Word>OVER</Word>
+			<Word>PARTITION</Word>
+			<Word>IIF</Word>
+			<Word>CASE</Word>
+			<Word>WHEN</Word>
+			<Word>THEN</Word>
+			<Word>ELSE</Word>
+			<Word>END</Word>
+		</Keywords>
+
+		<Keywords color="DataType">
+			<Word>BIGINT</Word>
+			<Word>BINARY</Word>
+			<Word>BIT</Word>
+			<Word>CHAR</Word>
+			<Word>DATE</Word>
+			<Word>DATETIME</Word>
+			<Word>DATETIME2</Word>
+			<Word>DATETIMEOFFSET</Word>
+			<Word>DECIMAL</Word>
+			<Word>FLOAT</Word>
+			<Word>IMAGE</Word>
+			<Word>INT</Word>
+			<Word>INTEGER</Word>
+			<Word>MONEY</Word>
+			<Word>NCHAR</Word>
+			<Word>NTEXT</Word>
+			<Word>NUMERIC</Word>
+			<Word>NVARCHAR</Word>
+			<Word>REAL</Word>
+			<Word>SMALLDATETIME</Word>
+			<Word>SMALLINT</Word>
+			<Word>SMALLMONEY</Word>
+			<Word>TEXT</Word>
+			<Word>TIME</Word>
+			<Word>TIMESTAMP</Word>
+			<Word>TINYINT</Word>
+			<Word>UNIQUEIDENTIFIER</Word>
+			<Word>VARBINARY</Word>
+			<Word>VARCHAR</Word>
+			<Word>XML</Word>
+			<Word>BOOLEAN</Word>
+			<Word>BOOL</Word>
+			<Word>DOUBLE</Word>
+			<Word>ENUM</Word>
+			<Word>JSON</Word>
+			<Word>LONGTEXT</Word>
+			<Word>MEDIUMINT</Word>
+			<Word>TINYTEXT</Word>
+			<Word>UNSIGNED</Word>
+		</Keywords>
+
+		<Keywords color="DDLKeyword">
+			<Word>ADD</Word>
+			<Word>ALTER</Word>
+			<Word>COLUMN</Word>
+			<Word>CONSTRAINT</Word>
+			<Word>CREATE</Word>
+			<Word>DATABASE</Word>
+			<Word>DELETE</Word>
+			<Word>DROP</Word>
+			<Word>EXEC</Word>
+			<Word>EXECUTE</Word>
+			<Word>FOREIGN</Word>
+			<Word>INDEX</Word>
+			<Word>INSERT</Word>
+			<Word>INTO</Word>
+			<Word>KEY</Word>
+			<Word>MERGE</Word>
+			<Word>PROCEDURE</Word>
+			<Word>REFERENCES</Word>
+			<Word>RENAME</Word>
+			<Word>SCHEMA</Word>
+			<Word>SEQUENCE</Word>
+			<Word>TABLE</Word>
+			<Word>TRIGGER</Word>
+			<Word>TRUNCATE</Word>
+			<Word>UPDATE</Word>
+			<Word>USE</Word>
+			<Word>VALUES</Word>
+			<Word>VIEW</Word>
+		</Keywords>
+
+		<Keywords color="DMLKeyword">
+			<Word>ALL</Word>
+			<Word>AND</Word>
+			<Word>ANY</Word>
+			<Word>AS</Word>
+			<Word>ASC</Word>
+			<Word>BETWEEN</Word>
+			<Word>BY</Word>
+			<Word>CROSS</Word>
+			<Word>DEFAULT</Word>
+			<Word>DESC</Word>
+			<Word>DISTINCT</Word>
+			<Word>EXCEPT</Word>
+			<Word>EXISTS</Word>
+			<Word>FETCH</Word>
+			<Word>FOR</Word>
+			<Word>FROM</Word>
+			<Word>FULL</Word>
+			<Word>GO</Word>
+			<Word>GROUP</Word>
+			<Word>HAVING</Word>
+			<Word>IN</Word>
+			<Word>INNER</Word>
+			<Word>INTERSECT</Word>
+			<Word>IS</Word>
+			<Word>JOIN</Word>
+			<Word>LEFT</Word>
+			<Word>LIKE</Word>
+			<Word>LIMIT</Word>
+			<Word>NEXT</Word>
+			<Word>NOT</Word>
+			<Word>NULL</Word>
+			<Word>OFFSET</Word>
+			<Word>ON</Word>
+			<Word>OR</Word>
+			<Word>ORDER</Word>
+			<Word>OUTER</Word>
+			<Word>PRIMARY</Word>
+			<Word>RIGHT</Word>
+			<Word>ROWS</Word>
+			<Word>SELECT</Word>
+			<Word>SET</Word>
+			<Word>SOME</Word>
+			<Word>TOP</Word>
+			<Word>UNION</Word>
+			<Word>UNIQUE</Word>
+			<Word>WHERE</Word>
+			<Word>WITH</Word>
+			<Word>NOLOCK</Word>
+			<Word>ROWLOCK</Word>
+			<Word>AUTO_INCREMENT</Word>
+			<Word>IDENTITY</Word>
+			<Word>OUTPUT</Word>
+			<Word>RETURNING</Word>
+			<Word>TRANSACTION</Word>
+			<Word>BEGIN</Word>
+			<Word>COMMIT</Word>
+			<Word>ROLLBACK</Word>
+			<Word>SAVEPOINT</Word>
+			<Word>DECLARE</Word>
+			<Word>PRINT</Word>
+			<Word>CASCADE</Word>
+			<Word>CHECK</Word>
+			<Word>COLLATE</Word>
+			<Word>ENABLE</Word>
+			<Word>DISABLE</Word>
+			<Word>IF</Word>
+		</Keywords>
+
+	</RuleSet>
+</SyntaxDefinition>

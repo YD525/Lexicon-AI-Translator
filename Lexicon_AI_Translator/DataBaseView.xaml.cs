@@ -7,6 +7,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
 
@@ -525,6 +528,36 @@ namespace LexTranslator
                 SelectNextRow();
                 e.Handled = true;
             }
+        }
+
+        private void ShowSqlOrder(object sender, MouseButtonEventArgs e)
+        {
+            SqlSetView.Visibility = Visibility.Visible;
+            SqlIDE.Text = SqlOrder.Text;
+        }
+
+        private void SetSQL(object sender, RoutedEventArgs e)
+        {
+            SqlOrder.Text = SqlIDE.Text;
+            SqlSetView.Visibility = Visibility.Collapsed;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            string GetName = "LexTranslator" + ".IDERule.SQL.xshd";
+
+            System.Reflection.Assembly Assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+            using (System.IO.Stream Resource = Assembly.GetManifestResourceStream(GetName))
+            {
+                using (System.Xml.XmlTextReader Reader = new System.Xml.XmlTextReader(Resource))
+                {
+                    var Xshd = HighlightingLoader.LoadXshd(Reader);
+
+                    SqlIDE.SyntaxHighlighting = HighlightingLoader.Load(Xshd, HighlightingManager.Instance);
+                }
+            }
+
         }
     }
 
