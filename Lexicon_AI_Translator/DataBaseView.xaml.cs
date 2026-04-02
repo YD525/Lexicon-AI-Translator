@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -72,11 +73,28 @@ namespace LexTranslator
                 SetTableName(string.Empty);
                 return string.Empty;
             }
-            catch 
+            catch
             {
                 SetTableName(string.Empty);
                 return string.Empty;
             }
+        }
+
+        public static string EncodeSQLValues(string Sql)
+        {
+            if (string.IsNullOrEmpty(Sql)) return Sql;
+
+            string SqlStringLiteral = @"(['""])(?:(?!\1).|\1\1)*?\1";
+
+            return Regex.Replace(Sql, SqlStringLiteral, Match =>
+            {
+                string FullValue = Match.Value;
+                char Q = FullValue[0];
+
+                string Content = FullValue.Substring(1, FullValue.Length - 2).Replace($"{Q}{Q}", $"{Q}");
+
+                return $"{Q}{SQLSafeCodec.Encode(Content)}{Q}";
+            }, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 
         private string LastQuery = "";
@@ -84,7 +102,6 @@ namespace LexTranslator
         {
             try
             {
-                Test();
                 LastQuery = UserSql;
                 ExtractTableName(UserSql);
                 SetStatus("Querying...", true);
@@ -93,7 +110,7 @@ namespace LexTranslator
                 string RewrittenSql = InjectRowid(UserSql);
 
                 List<Dictionary<string, object>> Rows =
-                    Phoenix.LocalDB.P_ExecuteQuery(RewrittenSql);
+                    Phoenix.LocalDB.P_ExecuteQuery(EncodeSQLValues(RewrittenSql));
 
                 DataTable Table = ToDataTable(Rows);
 
@@ -153,7 +170,7 @@ namespace LexTranslator
 
         private Dictionary<(int, string), string> _EditSnapshots
         = new Dictionary<(int, string), string>();
-        
+
         private void OnBeginningEdit(object Sender, DataGridBeginningEditEventArgs E)
         {
             string ColName = E.Column.Header?.ToString();
@@ -436,59 +453,7 @@ namespace LexTranslator
             CurrentRowid = this._RowIds[MainGrid.SelectedIndex];
         }
 
-        public static string EncodeSQLValues(string Sql)
-        {
-            var Pattern = @"\b(Source|Result)\s*=\s*(['""])(.*?)\2";
-
-            string Result = Regex.Replace(Sql, Pattern, match =>
-            {
-                string Field = match.Groups[1].Value; 
-                string Quote = match.Groups[2].Value; 
-                string Value = match.Groups[3].Value; 
-
-                string SafeValue = SQLSafeCodec.Encode(Value);
-
-                return $"{Field}={Quote}{SafeValue}{Quote}";
-            }, RegexOptions.IgnoreCase);
-
-            var InsertPattern = @"\bVALUES\s*\((.*?)\)";
-            Result = Regex.Replace(Result, InsertPattern, Match =>
-            {
-                string Inside = Match.Groups[1].Value;
-
-                var Parts = Regex.Split(Inside, @"(?<!\\),");
-                for (int i = 0; i < Parts.Length; i++)
-                {
-                    var Part = Parts[i].Trim();
-                    if ((Part.StartsWith("\"") && Part.EndsWith("\"")) || (Part.StartsWith("'") && Part.EndsWith("'")))
-                    {
-                        string Content = Part.Substring(1, Part.Length - 2);
-                        Parts[i] = Part[0] + SQLSafeCodec.Encode(Content) + Part[0];
-                    }
-                }
-                return $"VALUES({string.Join(",", Parts)})";
-            }, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-
-            return Result;
-        }
-
-
-        public void Test()
-        {
-            string TestEncode = "";
-            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result, Other) VALUES(\"Hello, world!\", \"Result: 123!\", \"IgnoreMe\");");
-            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result) VALUES\r\n(\"Hello, world!\", \"Result: 123!\"),\r\n(\"Special chars: !@#$%^&*()\", \"Another, value!\"),\r\n(\"Quotes: \\\"double\\\" 'single'\", \"Mix: \\\"'`~\");");
-            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result) VALUES\r\n('O''Reilly', 'Result: it''s tricky!'),\r\n('Newline\\nTab\\t', 'Comma, semicolon; colon:');");
-
-            TestEncode = EncodeSQLValues("SELECT Source, Result FROM MyTable WHERE Source=\"Hello, world!\" AND Result='Result: 123!';");
-            TestEncode = EncodeSQLValues("SELECT * FROM MyTable WHERE Source LIKE \"%Special chars: !@#$%\" OR Result LIKE '%Another, value!%';");
-            TestEncode = EncodeSQLValues("SELECT * FROM MyTable WHERE Source IN (\"O'Reilly\", 'Newline\\nTab\\t') AND Result IN (\"Result: it''s tricky!\", 'Comma, semicolon; colon:');");
-
-            TestEncode = EncodeSQLValues("DELETE FROM MyTable WHERE Source=\"Hello, world!\" AND Result='Result: 123!';");
-            TestEncode = EncodeSQLValues("DELETE FROM MyTable WHERE Result IN (\"Quotes \\\"double\\\" 'single'\", 'Mix: \"\\\"\\'`~\"');");
-
-            TestEncode = EncodeSQLValues("UPDATE MyTable\r\nSET Source=\"Complex! @# $%^ &*()\", Result='Multiple: value, test; ok?'\r\nWHERE Source LIKE \"%Complex%\" AND Result IN (\"Multiple: value, test; ok?\", 'Check: \"yes\"');");
-            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result)\r\nSELECT Source, Result FROM OtherTable WHERE Source='Need \"encoding\" test' AND Result=\"Special: ,.;!?@#\";");
-        }
+       
+      
     }
 }

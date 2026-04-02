@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="DataBaseView" Height="520" Width="960"
+        Title="DataBaseView" Height="900" Width="960"
         Background="#FF1A1A1A"
         WindowStyle="SingleBorderWindow"
         ResizeMode="CanResize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
