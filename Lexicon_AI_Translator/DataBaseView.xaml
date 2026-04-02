@@ -280,7 +280,7 @@
 
                 <!-- SQL -->
 
-                <TextBox x:Name="SqlOrder" Margin="5 0 5 0" Height="28" VerticalContentAlignment="Center" FontSize="12" Background="Transparent" Foreground="White" CaretBrush="#FF0B74D1" BorderThickness="1" BorderBrush="#FF555555" Grid.Column="4">
+                <TextBox x:Name="SqlOrder" Padding="5 0 5 0" Margin="5 0 5 0" Height="28" VerticalContentAlignment="Center" FontSize="12" Background="Transparent" Foreground="White" CaretBrush="#FF0B74D1" BorderThickness="1" BorderBrush="#FF555555" Grid.Column="4">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Triggers>

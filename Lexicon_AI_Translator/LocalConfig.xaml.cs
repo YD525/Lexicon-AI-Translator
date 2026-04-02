@@ -854,7 +854,8 @@ namespace LexTranslator
         private void OpenDataBase(object sender, MouseButtonEventArgs e)
         {
             DeFine.CloseDataBaseView();
-            DeFine.OpenDataBaseView($"Select * From AdvancedDictionary Where [From] = {(int)TranslatorInterface.Instance.From} And [To] = {(int)TranslatorInterface.Instance.To}");
+            //Results are capped at 500 rows via LIMIT to prevent memory exhaustion, as databases may scale to GB/TB levels. This tool is intended for SQL-proficient users to manually execute conditional queries for specific records or perform bulk modifications across multiple entries using custom SQL logic.
+            DeFine.OpenDataBaseView($"Select * From AdvancedDictionary Where [From] = {(int)TranslatorInterface.Instance.From} And [To] = {(int)TranslatorInterface.Instance.To} Limit 500");
         }
     }
 }
