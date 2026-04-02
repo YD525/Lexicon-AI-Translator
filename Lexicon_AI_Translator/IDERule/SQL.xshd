@@ -9,6 +9,7 @@
 	<Color name="DDLKeyword" foreground="#C586C0" fontWeight="bold"/>
 	<Color name="DataType"   foreground="#4EC9B0"/>
 	<Color name="Function"   foreground="#DCDCAA"/>
+	<Color name="BracketId"  foreground="#D4D4D4" />
 
 	<RuleSet ignoreCase="true">
 
@@ -36,6 +37,7 @@
 			<End>"</End>
 		</Span>
 
+		<Rule color="BracketId">\[[^\]]+\]</Rule>
 		<Rule color="Number">\b\d+(\.\d+)?\b</Rule>
 
 		<Keywords color="Function">

@@ -287,14 +287,14 @@
         </Border>
 
         <!-- DataGrid -->
-        <Grid Name="SqlSetView" Panel.ZIndex="2" Grid.Row="1" Visibility="Collapsed">
+        <Grid Name="SqlSetView" Panel.ZIndex="2" Grid.Row="1" Visibility="Collapsed" PreviewKeyDown="SqlSetView_PreviewKeyDown">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.5*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Background="Black" Opacity="0.6">
+            <Grid Grid.Row="0" Cursor="Hand" Background="Black" Opacity="0.6" MouseLeftButtonDown="LayerGrid_MouseLeftButtonDown">
             </Grid>
 
             <Grid Grid.Row="1" Background="#FF2F2F2F">
@@ -307,14 +307,21 @@
                     <avalonEdit:TextEditor Name="SqlIDE" Grid.Row="0"  Margin="5" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontSize="16" ShowLineNumbers="True" Background="#FF282828" Foreground="White" WordWrap="True" TextOptions.TextFormattingMode="Display">
 
                     </avalonEdit:TextEditor>
-                    <Button Content="Set Sql" Grid.Row="1"  Width="90" Height="28"
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                        <Button Content="Set Sql" Width="90" Height="28"
 Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
 FontSize="12" Cursor="Hand" Click="SetSQL"/>
+
+                        <Label VerticalAlignment="Center" Foreground="White" Margin="5 0 0 0" Opacity="0.7">
+                            Press the ESC key to close the input box.
+                        </Label>
+                    </StackPanel>
+             
                 </Grid>
                
             </Grid>
 
-            <Grid Grid.Row="2" Background="Black" Opacity="0.6">
+            <Grid Grid.Row="2" Cursor="Hand" Background="Black" Opacity="0.6" MouseLeftButtonDown="LayerGrid_MouseLeftButtonDown">
             </Grid>
 
         </Grid>

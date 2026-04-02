@@ -559,6 +559,18 @@ namespace LexTranslator
             }
 
         }
+
+        private void SqlSetView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                SqlSetView.Visibility = Visibility.Collapsed;
+            }
+        }
+        private void LayerGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SqlSetView.Visibility = Visibility.Collapsed;
+        }
     }
 
     public static class DataGridExtensions
