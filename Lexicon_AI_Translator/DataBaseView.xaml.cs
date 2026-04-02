@@ -356,8 +356,10 @@ namespace LexTranslator
                             ColWidth = new DataGridLength(50);
                             break;
                         case "From":
+                            ColWidth = new DataGridLength(50);
+                            break;
                         case "Type":
-                            ColWidth = new DataGridLength(70);
+                            ColWidth = new DataGridLength(60);
                             break;
                         case "Regex":
                             ColWidth = new DataGridLength(5);
