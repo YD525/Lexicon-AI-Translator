@@ -3933,14 +3933,14 @@ namespace LexTranslator
             {
                 var CloudTrans = new DataBaseView();
                 CloudTrans.Show();
-                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And To = {(int)Phoenix.To} Limit 5000");
+                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)Phoenix.To} Limit 5000");
             }
 
             if (GetUserTranslationCache == true)
             {
                 var UserTranslation = new DataBaseView();
                 UserTranslation.Show();
-                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And To = {(int)Phoenix.To} Limit 5000");
+                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)Phoenix.To} Limit 5000");
             }
         }
     }
