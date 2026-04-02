@@ -279,7 +279,7 @@
                         Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
                         FontSize="12" Cursor="Hand" Click="QueryDataBase" Grid.Column="5"/>
                 <Button Content="Delete" Margin="5,0" x:Name="DeleteBtn" Width="90" Height="28"
-                        Background="#FF3B2626" Foreground="Red" BorderBrush="#FFD05353" BorderThickness="1"
+                        Background="#FF3B2626" Foreground="#FFD05353" BorderBrush="#FFD05353" BorderThickness="1"
                         FontSize="12" Cursor="Hand" Click="DeleteSelect" Grid.Column="6"/>
                 <TextBlock x:Name="StatusMsg" Margin="5,0" Foreground="#FF555555" FontSize="11"
                            VerticalAlignment="Center" Grid.Column="7"/>
@@ -287,7 +287,7 @@
         </Border>
 
         <!-- DataGrid -->
-        <Grid Name="SqlSetView" Panel.ZIndex="2" Grid.Row="1" Visibility="Collapsed" PreviewKeyDown="SqlSetView_PreviewKeyDown">
+        <Grid Name="SqlSetView" Panel.ZIndex="2" Grid.Row="1" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.5*"/>
                 <RowDefinition Height="1*"/>
@@ -307,14 +307,20 @@
                     <avalonEdit:TextEditor Name="SqlIDE" Grid.Row="0"  Margin="5" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontSize="16" ShowLineNumbers="True" Background="#FF282828" Foreground="White" WordWrap="True" TextOptions.TextFormattingMode="Display">
 
                     </avalonEdit:TextEditor>
-                    <StackPanel Orientation="Horizontal" Grid.Row="1">
-                        <Button Content="Set Sql" Width="90" Height="28"
-Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
-FontSize="12" Cursor="Hand" Click="SetSQL"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 5 0" Grid.Row="1">
 
-                        <Label VerticalAlignment="Center" Foreground="White" Margin="5 0 0 0" Opacity="0.7">
-                            Press the ESC key to close the input box.
-                        </Label>
+
+                        <Button Content="Cancel" Width="90" Height="28" Margin="0 0 0 0"
+ Background="#FF3B2626" Foreground="#FFD05353" BorderBrush="#FFD05353" BorderThickness="1"
+FontSize="12" Cursor="Hand" Click="Cancel"/>
+                        
+                        <Button Content="Apply" Width="90" Height="28" Margin="10 0 0 0"
+Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
+FontSize="12" Cursor="Hand" Click="Apply"/>
+
+                      
+
+
                     </StackPanel>
              
                 </Grid>

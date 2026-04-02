@@ -536,11 +536,6 @@ namespace LexTranslator
             SqlIDE.Text = SqlOrder.Text;
         }
 
-        private void SetSQL(object sender, RoutedEventArgs e)
-        {
-            SqlOrder.Text = SqlIDE.Text;
-            SqlSetView.Visibility = Visibility.Collapsed;
-        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -559,18 +554,25 @@ namespace LexTranslator
             }
 
         }
-
-        private void SqlSetView_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                SqlSetView.Visibility = Visibility.Collapsed;
-            }
-        }
+       
         private void LayerGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             SqlSetView.Visibility = Visibility.Collapsed;
         }
+
+        private void Apply(object sender, RoutedEventArgs e)
+        {
+            SqlOrder.Text = SqlIDE.Text;
+            SqlSetView.Visibility = Visibility.Collapsed;
+            SqlOrderCopy.Content = SqlIDE.Text.Replace("\r\n"," ");
+        }
+
+        private void Cancel(object sender, RoutedEventArgs e)
+        {
+            SqlSetView.Visibility = Visibility.Collapsed;
+        }
+
+       
     }
 
     public static class DataGridExtensions
