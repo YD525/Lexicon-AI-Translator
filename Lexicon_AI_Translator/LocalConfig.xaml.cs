@@ -855,7 +855,7 @@ namespace LexTranslator
         {
             DeFine.CloseDataBaseView();
             //Results are capped at 500 rows via LIMIT to prevent memory exhaustion, as databases may scale to GB/TB levels. This tool is intended for SQL-proficient users to manually execute conditional queries for specific records or perform bulk modifications across multiple entries using custom SQL logic.
-            //Select * From AdvancedDictionary Where XXX Like '%[%]%' - > Compared to using regular expressions for pattern matching, utilizing the `LIKE` and `GLOB` commands in SQL operates directly at the database engine level, enabling millisecond-level query performance.
+            //Select * From AdvancedDictionary Where Source Like '%[_]%' - > Compared to using regular expressions for pattern matching, utilizing the `LIKE` and `GLOB` commands in SQL operates directly at the database engine level, enabling millisecond-level query performance.
             DeFine.OpenDataBaseView($"Select * From AdvancedDictionary Where [From] = {(int)TranslatorInterface.Instance.From} And [To] = {(int)TranslatorInterface.Instance.To} Limit 500");
         }
     }
