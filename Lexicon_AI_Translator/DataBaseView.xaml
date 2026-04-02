@@ -307,26 +307,27 @@
 
         <!-- DataGrid -->
         <DataGrid x:Name="MainGrid" Grid.Row="1"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  CanUserResizeColumns="True"
-                  CanUserReorderColumns="True"
-                  SelectionMode="Single"
-                  SelectionUnit="FullRow"
-                  GridLinesVisibility="All"
-                  Background="#FF202020"
-                  RowBackground="#FF202020"
-                  AlternatingRowBackground="#FF242424"
-                  Foreground="#FFD4D4D4"
-                  BorderBrush="#FF333333" BorderThickness="0"
-                  HorizontalGridLinesBrush="#FF2A2A2A"
-                  VerticalGridLinesBrush="#FF2A2A2A"
-                  ColumnHeaderHeight="34"
-                  RowHeight="35"
-                  FontFamily="Consolas" FontSize="12"
-                  EnableRowVirtualization="True"
-                  SelectionChanged="MainGrid_SelectionChanged">
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          CanUserDeleteRows="False"
+          CanUserResizeColumns="True"
+          CanUserReorderColumns="True"
+          SelectionMode="Single"
+          SelectionUnit="FullRow"
+          GridLinesVisibility="All"
+          Background="#FF202020"
+          RowBackground="#FF202020"
+          AlternatingRowBackground="#FF242424"
+          Foreground="#FFD4D4D4"
+          BorderBrush="#FF333333" BorderThickness="0"
+          HorizontalGridLinesBrush="#FF2A2A2A"
+          VerticalGridLinesBrush="#FF2A2A2A"
+          ColumnHeaderHeight="34"
+          RowHeight="35"
+          FontFamily="Consolas" FontSize="12"
+          EnableRowVirtualization="True"
+          SelectionChanged="MainGrid_SelectionChanged"
+          PreviewKeyDown="MainGrid_PreviewKeyDown">
 
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
@@ -347,14 +348,34 @@
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background"      Value="Transparent"/>
                     <Setter Property="BorderThickness" Value="0"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#FF1A3050"/>
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#FF1E2D3E"/>
-                        </Trigger>
-                    </Style.Triggers>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridRow">
+                                <Border x:Name="RowBorder" Background="Transparent" SnapsToDevicePixels="True">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border x:Name="Bar" Grid.Column="0" Background="Transparent"/>
+                                        <DataGridCellsPresenter
+                                Grid.Column="1"
+                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="RowBorder" Property="Background" Value="#FF162030"/>
+                                        <Setter TargetName="Bar"       Property="Background" Value="#FF1A74C0"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="RowBorder" Property="Background" Value="#FF1E2D3E"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </DataGrid.RowStyle>
 
@@ -367,11 +388,11 @@
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background"      Value="Transparent"/>
-                            <Setter Property="BorderBrush"     Value="#FF0B74D1"/>
-                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="BorderBrush"     Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
                         </Trigger>
                         <Trigger Property="IsEditing" Value="True">
-                            <Setter Property="Background" Value="#FF0D1F30"/>
+                            <Setter Property="Background" Value="#FF0A1520"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -379,9 +400,28 @@
 
             <DataGrid.RowHeaderStyle>
                 <Style TargetType="DataGridRowHeader">
-                    <Setter Property="Width" Value="0"/>
+                    <Setter Property="Width"           Value="4"/>
+                    <Setter Property="Background"      Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding"         Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridRowHeader">
+                                <Border x:Name="Bar" Width="4" Background="Transparent"/>
+                                <ControlTemplate.Triggers>
+                                    <DataTrigger
+                                Binding="{Binding IsSelected,
+                                    RelativeSource={RelativeSource AncestorType=DataGridRow}}"
+                                Value="True">
+                                        <Setter TargetName="Bar" Property="Background" Value="#FF1A74C0"/>
+                                    </DataTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </DataGrid.RowHeaderStyle>
+
         </DataGrid>
 
         <!-- Status Bar -->

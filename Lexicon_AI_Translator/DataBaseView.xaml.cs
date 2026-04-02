@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using LexTranslator.ConvertManager;
 using PhoenixEngine;
@@ -601,7 +602,53 @@ namespace LexTranslator
                 CurrentRowid = 0;
         }
 
+     
+        private void SelectNextRow()
+        {
+            if (MainGrid.Items.Count == 0)
+                return;
+
+            int CurrentIndex = MainGrid.SelectedIndex;
+
+            if (CurrentIndex < 0)
+                CurrentIndex = -1;
+
+            int NextIndex = CurrentIndex + 1;
+            if (NextIndex >= MainGrid.Items.Count)
+                NextIndex = 0;
+
+            MainGrid.SelectedIndex = NextIndex;
+
+            MainGrid.ScrollIntoView(MainGrid.SelectedItem);
+        }
        
-      
+        private void MainGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
+            {
+                var Cell = MainGrid.CurrentCell;
+                if (Cell != null)
+                {
+                    if (MainGrid.IsEditing())
+                        return;
+                }
+
+                SelectNextRow();
+                e.Handled = true;
+            }
+        }
+    }
+
+    public static class DataGridExtensions
+    {
+        public static bool IsEditing(this DataGrid Grid)
+        {
+            var Row = (DataGridRow)Grid.ItemContainerGenerator.ContainerFromItem(Grid.SelectedItem);
+            if (Row != null && Row.IsEditing)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

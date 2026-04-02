@@ -22,7 +22,7 @@
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
             <TextBlock Text="Current"
                        Foreground="White" FontSize="22" FontWeight="Bold"/>
-            <TextBlock Text="Real-time Token Usage dashboard"
+            <TextBlock Text="Real-time Token Usage"
                        Foreground="White" FontSize="12" 
                        Margin="0,4,0,0"/>
         </StackPanel>
@@ -51,7 +51,7 @@
         <StackPanel Grid.Row="2" Margin="0,0,0,20">
             <TextBlock Text="Total"
                  Foreground="White" FontSize="22" FontWeight="Bold"/>
-            <TextBlock Text="Total Token Usage dashboard"
+            <TextBlock Text="Total Token Usage"
                  Foreground="White" FontSize="12"
                  Margin="0,4,0,0"/>
         </StackPanel>
