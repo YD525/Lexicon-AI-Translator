@@ -59,16 +59,21 @@ namespace LexTranslator.TranslateManage
             {
                 if (Sign == 5 || Sign == 3)
                 {
+                    long Length = 0;
+
                     if (Any is AICall)
                     {
                         AICall GetCall = (AICall)Any;
 
                         UIHelper.NodeCallCallback(GetCall.CustomID, GetCall.Platform);
 
+                        if (GetCall.SendString != null)
+                        {
+                            Length = GetCall.SendString.Length;
+                        }
+
                         LogHelper.SetInputLog(GetCall.Platform.ToString() + "->\n" + GetCall.SendString);
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);
-
-                        //DashBoardService.TokenStatistics(GetCall.Platform, GetCall.SendString, GetCall.ReceiveString);
                     }
                     if (Any is PlatformCall)
                     {
@@ -76,8 +81,18 @@ namespace LexTranslator.TranslateManage
 
                         UIHelper.NodeCallCallback(GetCall.CustomID, GetCall.Platform);
 
+                        if (GetCall.SendString != null)
+                        {
+                            Length = GetCall.SendString.Length;
+                        }
+
                         LogHelper.SetInputLog(GetCall.Platform.ToString() + "->\n" + GetCall.SendString);
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);
+                    }
+
+                    if (DeFine.ChartDataRef != null)
+                    {
+                        DeFine.ChartDataRef.SetCurrent(Length);
                     }
                 }
             }));

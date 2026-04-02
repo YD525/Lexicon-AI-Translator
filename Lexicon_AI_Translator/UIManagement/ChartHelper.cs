@@ -16,15 +16,30 @@ namespace LexTranslator.UIManagement
         private long SingleUseLimit = 0;
         public double SetCurrent(long Current)
         {
-            if (!Paused)
+            try
             {
-                this.Current = Current;
-                Total += Current;
-                CheckLimit();
-                return this.Current;
-            }
+                if (!Paused)
+                {
+                    this.Current = Current;
+                    Total += Current;
+                    CheckLimit();
+                    return this.Current;
+                }
 
-            return 0;
+                return 0;
+            }
+            catch { return 0; }
+        }
+
+        public double GetCurrent()
+        {
+            try
+            {
+                var CurrentTemp = this.Current;
+                this.Current = 0;
+                return CurrentTemp;
+            }
+            catch { return 0; }
         }
 
         public void ReSet()
@@ -38,24 +53,24 @@ namespace LexTranslator.UIManagement
         // For accurate cost control, please set limits in your service provider's dashboard.
         public void CheckLimit()
         {
-            if(this.SingleUseLimit != 0)
-            if (this.Total > this.SingleUseLimit)
-            {
-                //If the token limit is exceeded, the fuse will trip, forcibly terminating the translation process.
-                TranslatorInterface.TranslationStatus = StateControl.Cancel;
-
-                TranslatorInterface.SyncTransState(new Action(() =>
+            if (this.SingleUseLimit != 0)
+                if (this.Total > this.SingleUseLimit)
                 {
-                    DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
+                    //If the token limit is exceeded, the fuse will trip, forcibly terminating the translation process.
+                    TranslatorInterface.TranslationStatus = StateControl.Cancel;
+
+                    TranslatorInterface.SyncTransState(new Action(() =>
                     {
-                        DeFine.WorkingWin.SyncTransStateUI();
-                    }));
-                }), false);
-            }
+                        DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
+                        {
+                            DeFine.WorkingWin.SyncTransStateUI();
+                        }));
+                    }), false);
+                }
         }
 
         public void SetTokenUseLimit(long MaxToken)
-        { 
+        {
             this.SingleUseLimit = MaxToken;
         }
     }

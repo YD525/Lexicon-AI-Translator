@@ -24,10 +24,5 @@
 			<Begin>"</Begin>
 			<End>"</End>
 		</Span>
-
-		<Span color="StringSingle" multiline="false">
-			<Begin>'</Begin>
-			<End>'</End>
-		</Span>
 	</RuleSet>
 </SyntaxDefinition>

@@ -139,25 +139,23 @@ namespace LexTranslator
         private ScanAnimator ScanAnimator = null;
 
         public IntPtr MainHwnd = IntPtr.Zero;
+
+  
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //ChartData DataRef = new ChartData();
-
-            //YDChart.SetAction(
-            //    new Action<RealtimeLineChart>((Ref) =>
-            //    {
-            //        Ref.PushValue(DataRef.SetCurrent(
-            //            new Random(Guid.NewGuid().GetHashCode()).Next(1000, 9999)
-            //            ));
-            //    }),
-            //    new Action<RealtimeLineChart>((Ref) =>
-            //    {
-            //        Ref.PushValue(DataRef.Total);
-            //    }),
-            //    DataRef
-            //    );
-
             DeFine.Init(this);
+
+             YDChart.SetAction(
+                new Action<RealtimeLineChart>((Ref) =>
+                {
+                    Ref.PushValue(DeFine.ChartDataRef.GetCurrent());
+                }),
+                new Action<RealtimeLineChart>((Ref) =>
+                {
+                    Ref.PushValue(DeFine.ChartDataRef.Total);
+                }),
+               DeFine.ChartDataRef
+                );
 
             AutoShowTraditional();
 
@@ -2154,6 +2152,8 @@ namespace LexTranslator
                 StopXTGlowLoop();
             }
 
+            YDChart.Stop();
+
             switch (View)
             {
                 case "TransHub":
@@ -2171,6 +2171,12 @@ namespace LexTranslator
                         SettingView.Visibility = Visibility.Collapsed;
                         DashBoardView.Visibility = Visibility.Visible;
                         DeFine.CanUpdateChart = true;
+
+                        if (TranslatorInterface.TranslationStatus == StateControl.Run)
+                        {
+                            YDChart.Clear();
+                            YDChart.Start();
+                        }
                     }
                     break;
                 case "Settings":

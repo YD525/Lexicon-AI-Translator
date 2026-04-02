@@ -55,6 +55,8 @@ namespace LexTranslator
         public static ExtendWin ExtendWin = null;
         public static CGView CG = null;
 
+        public static ChartData ChartDataRef = null;
+
         public static void OpenDataBaseView(string SqlOrder = "")
         {
             if (DataBaseView == null)
@@ -187,6 +189,7 @@ namespace LexTranslator
         }
         public static void Init(MainGui Work)
         {
+            ChartDataRef = new ChartData();
             CurrentReplaceView.Owner = Work;
             CurrentReplaceView.Hide();
             RowStyleWin.Hide();

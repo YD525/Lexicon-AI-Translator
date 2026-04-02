@@ -24,6 +24,11 @@ namespace LexTranslator.YDControls
 
         private void BtnClear_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            Clear();
+        }
+
+        public void Clear()
+        {
             TokenChart.Clear();
             TotalTokenChart.Clear();
         }
@@ -41,7 +46,6 @@ namespace LexTranslator.YDControls
                     if(!DataRef.Paused)
                     Current.Invoke(Ref);
                 });
-                TokenChart.Start();
             }
 
             if (Total != null)
@@ -51,7 +55,32 @@ namespace LexTranslator.YDControls
                     if (!DataRef.Paused)
                     Total.Invoke(Ref);
                 });
+            }
+        }
+
+        public void Start()
+        {
+            if (TokenChart.OnTick != null)
+            {
+                TokenChart.Start();
+            }
+
+            if (TotalTokenChart.OnTick != null)
+            {
                 TotalTokenChart.Start();
+            }
+        }
+
+        public void Stop()
+        {
+            if (TokenChart.OnTick != null)
+            {
+                TokenChart.Stop();
+            }
+
+            if (TotalTokenChart.OnTick != null)
+            {
+                TotalTokenChart.Stop();
             }
         }
     }
