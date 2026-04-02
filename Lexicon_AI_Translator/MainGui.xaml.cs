@@ -1696,14 +1696,18 @@ namespace LexTranslator
             if ((CloudTranslationCache.IsChecked == true || UserTranslationCache.IsChecked == true) == false)
             {
                 Check = false;
-                ClearCacheR.Opacity = 0.5;
+                ClearCacheR.Opacity = 0.5;          
                 ClearCacheR.Cursor = null;
+                ShowDataBaseR.Opacity = 0.5;
+                ShowDataBaseR.Cursor = Cursors.Hand;
             }
             else
             {
                 Check = true;
-                ClearCacheR.Opacity = 1;
+                ClearCacheR.Opacity = 1;              
                 ClearCacheR.Cursor = Cursors.Hand;
+                ShowDataBaseR.Opacity = 1;
+                ShowDataBaseR.Cursor = Cursors.Hand;
             }
         }
 
@@ -3919,6 +3923,24 @@ namespace LexTranslator
             e.Handled = true;
         }
 
-      
+        private void ShowDataBaseR_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
+            bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
+
+            DeFine.CloseDataBaseView();
+
+            //If both checkboxes are checked, only one viewer can be opened. I'm leaving it like this for now—I'm too lazy to change it.
+            int Key = Phoenix.GetFileUniqueKey();
+            if (GetCloudTranslationCache == true)
+            {
+                DeFine.OpenDataBaseView($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} Limit 5000");
+            }
+            else
+            if (GetUserTranslationCache == true)
+            {
+                DeFine.OpenDataBaseView($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} Limit 5000");
+            }
+        }
     }
 }

@@ -302,6 +302,12 @@
                                                 <CheckBox Grid.Column="3" Name="UserTranslationCache" VerticalAlignment="Center" Foreground="White" Style="{DynamicResource ToggleCircleCheckBox}" Click="UserTranslationCache_Click"/>
                                             </StackPanel>
 
+                                            <Border Opacity="0.7" Margin="0 10 0 0" Name="ShowDataBaseR" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ShowDataBaseR_PreviewMouseDown">
+                                                <Label Style="{DynamicResource ButtonFont}" Name="ShowDataBaseRButton">
+                                                    Load in the Database Viewer
+                                                </Label>
+                                            </Border>
+
                                             <Border Opacity="0.7" Margin="0 10 0 0" Name="ClearCacheR" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ClearCacheR_PreviewMouseDown">
                                                 <Label Style="{DynamicResource ButtonFont}" Name="ClearCacheRButton">
                                                     ClearCache
