@@ -84,6 +84,7 @@ namespace LexTranslator
         {
             try
             {
+                Test();
                 LastQuery = UserSql;
                 ExtractTableName(UserSql);
                 SetStatus("Querying...", true);
@@ -205,6 +206,11 @@ namespace LexTranslator
             _EditSnapshots.Remove((RowIndex, EditedColumn));
 
             if (NewValue == OldValue) return;
+
+            if (EditedColumn == "Source" || EditedColumn == "Result")
+            {
+                NewValue = SQLSafeCodec.Encode(NewValue);
+            }
 
             string UpdateSql =
                 $"UPDATE {Quote(_TableName)} " +
@@ -428,6 +434,61 @@ namespace LexTranslator
         private void MainGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CurrentRowid = this._RowIds[MainGrid.SelectedIndex];
+        }
+
+        public static string EncodeSQLValues(string Sql)
+        {
+            var Pattern = @"\b(Source|Result)\s*=\s*(['""])(.*?)\2";
+
+            string Result = Regex.Replace(Sql, Pattern, match =>
+            {
+                string Field = match.Groups[1].Value; 
+                string Quote = match.Groups[2].Value; 
+                string Value = match.Groups[3].Value; 
+
+                string SafeValue = SQLSafeCodec.Encode(Value);
+
+                return $"{Field}={Quote}{SafeValue}{Quote}";
+            }, RegexOptions.IgnoreCase);
+
+            var InsertPattern = @"\bVALUES\s*\((.*?)\)";
+            Result = Regex.Replace(Result, InsertPattern, Match =>
+            {
+                string Inside = Match.Groups[1].Value;
+
+                var Parts = Regex.Split(Inside, @"(?<!\\),");
+                for (int i = 0; i < Parts.Length; i++)
+                {
+                    var Part = Parts[i].Trim();
+                    if ((Part.StartsWith("\"") && Part.EndsWith("\"")) || (Part.StartsWith("'") && Part.EndsWith("'")))
+                    {
+                        string Content = Part.Substring(1, Part.Length - 2);
+                        Parts[i] = Part[0] + SQLSafeCodec.Encode(Content) + Part[0];
+                    }
+                }
+                return $"VALUES({string.Join(",", Parts)})";
+            }, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
+            return Result;
+        }
+
+
+        public void Test()
+        {
+            string TestEncode = "";
+            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result, Other) VALUES(\"Hello, world!\", \"Result: 123!\", \"IgnoreMe\");");
+            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result) VALUES\r\n(\"Hello, world!\", \"Result: 123!\"),\r\n(\"Special chars: !@#$%^&*()\", \"Another, value!\"),\r\n(\"Quotes: \\\"double\\\" 'single'\", \"Mix: \\\"'`~\");");
+            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result) VALUES\r\n('O''Reilly', 'Result: it''s tricky!'),\r\n('Newline\\nTab\\t', 'Comma, semicolon; colon:');");
+
+            TestEncode = EncodeSQLValues("SELECT Source, Result FROM MyTable WHERE Source=\"Hello, world!\" AND Result='Result: 123!';");
+            TestEncode = EncodeSQLValues("SELECT * FROM MyTable WHERE Source LIKE \"%Special chars: !@#$%\" OR Result LIKE '%Another, value!%';");
+            TestEncode = EncodeSQLValues("SELECT * FROM MyTable WHERE Source IN (\"O'Reilly\", 'Newline\\nTab\\t') AND Result IN (\"Result: it''s tricky!\", 'Comma, semicolon; colon:');");
+
+            TestEncode = EncodeSQLValues("DELETE FROM MyTable WHERE Source=\"Hello, world!\" AND Result='Result: 123!';");
+            TestEncode = EncodeSQLValues("DELETE FROM MyTable WHERE Result IN (\"Quotes \\\"double\\\" 'single'\", 'Mix: \"\\\"\\'`~\"');");
+
+            TestEncode = EncodeSQLValues("UPDATE MyTable\r\nSET Source=\"Complex! @# $%^ &*()\", Result='Multiple: value, test; ok?'\r\nWHERE Source LIKE \"%Complex%\" AND Result IN (\"Multiple: value, test; ok?\", 'Check: \"yes\"');");
+            TestEncode = EncodeSQLValues("INSERT INTO MyTable (Source, Result)\r\nSELECT Source, Result FROM OtherTable WHERE Source='Need \"encoding\" test' AND Result=\"Special: ,.;!?@#\";");
         }
     }
 }
