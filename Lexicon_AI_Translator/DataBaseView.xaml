@@ -263,19 +263,17 @@
                 <Label Content="Table:" Foreground="#FF888888" VerticalAlignment="Center" Margin="5,0" Grid.Column="1"/>
                 <TextBlock x:Name="TableNameBlock" Foreground="White" Margin="5,0" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Text="—" Grid.Column="2"/>
                 <Label Content="SQL:" Foreground="#FF888888" VerticalAlignment="Center" Margin="5,0" Grid.Column="3"/>
-                <TextBox x:Name="SqlOrder" Padding="5,0" Margin="5,0" Height="28" VerticalContentAlignment="Center"
-                         FontSize="12" Background="Transparent" Foreground="White" CaretBrush="#FF0B74D1"
-                         BorderThickness="1" BorderBrush="#FF555555" Grid.Column="4">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Triggers>
-                                <Trigger Property="IsFocused" Value="True">
-                                    <Setter Property="BorderBrush" Value="#FF0B74D1"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
+                
+                <TextBox Name="SqlOrder" TextWrapping="Wrap" AcceptsReturn="True"  Visibility="Collapsed">
                 </TextBox>
+
+                <Border BorderThickness="1" CornerRadius="3" Grid.Column="4" BorderBrush="#FF9D9D9D" Background="Transparent" Margin="0 10 0 10" Cursor="Hand">
+                    <Label Foreground="#FFBFBFBF" Cursor="Hand">
+                        Execute SQL
+                    </Label>
+                </Border>
+
+
                 <Button Content="▶  Query" Margin="5,0" x:Name="QueryBtn" Width="90" Height="28"
                         Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
                         FontSize="12" Cursor="Hand" Click="QueryDataBase" Grid.Column="5"/>
@@ -346,9 +344,7 @@
                                         <Setter TargetName="RowBorder" Property="Background" Value="#FF162030"/>
                                         <Setter TargetName="Bar"       Property="Fill"       Value="#FF1A74C0"/>
                                     </Trigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="RowBorder" Property="Background" Value="#FF1E2D3E"/>
-                                    </Trigger>
+                                    
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
