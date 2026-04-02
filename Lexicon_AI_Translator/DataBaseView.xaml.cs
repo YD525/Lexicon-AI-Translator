@@ -84,17 +84,88 @@ namespace LexTranslator
         {
             if (string.IsNullOrEmpty(Sql)) return Sql;
 
+            // --- Step 1: Handle Multiple LIKE Clauses (Wildcard Stripping) ---
+            string ProcessedSql = Sql;
+            int SearchPos = 0;
+
+            // Use while loop to find and process every "LIKE" in the SQL string
+            while (true)
+            {
+                int FindLike = ProcessedSql.IndexOf("LIKE", SearchPos, StringComparison.OrdinalIgnoreCase);
+                if (FindLike == -1) break; // Exit loop if no more LIKE is found
+
+                int QuoteStart = -1;
+                char QuoteChar = '\0';
+
+                // Look for the first quote after the current LIKE keyword
+                for (int I = FindLike + 4; I < ProcessedSql.Length; I++)
+                {
+                    char C = ProcessedSql[I];
+                    if (C == '\'' || C == '\"')
+                    {
+                        QuoteStart = I;
+                        QuoteChar = C;
+                        break;
+                    }
+                }
+
+                if (QuoteStart >= 0)
+                {
+                    // Find the corresponding closing quote
+                    int QuoteEnd = ProcessedSql.IndexOf(QuoteChar, QuoteStart + 1);
+                    if (QuoteEnd > QuoteStart)
+                    {
+                        // Extract and strip wildcards
+                        string OriginalContent = ProcessedSql.Substring(QuoteStart + 1, QuoteEnd - QuoteStart - 1);
+                        string Content = OriginalContent;
+                        string Prefix = "";
+                        string Suffix = "";
+
+                        if (Content.StartsWith("%")) { Prefix = "%"; Content = Content.Substring(1); }
+                        if (Content.EndsWith("%") && Content.Length > 0) { Suffix = "%"; Content = Content.Substring(0, Content.Length - 1); }
+
+                        // Encode the core part (e.g., the "2" in "%2%")
+                        string EncodedPart = SQLSafeCodec.Encode(Content);
+
+                        // Reassemble this specific part of the SQL
+                        string Replacement = $"{QuoteChar}{Prefix}{EncodedPart}{Suffix}{QuoteChar}";
+                        string Before = ProcessedSql.Substring(0, QuoteStart);
+                        string After = ProcessedSql.Substring(QuoteEnd + 1);
+
+                        ProcessedSql = Before + Replacement + After;
+
+                        // Update SearchPos to continue searching after the newly encoded string
+                        SearchPos = Before.Length + Replacement.Length;
+                    }
+                    else
+                    {
+                        // If no closing quote is found, move past this LIKE to avoid infinite loop
+                        SearchPos = FindLike + 4;
+                    }
+                }
+                else
+                {
+                    // If no quote is found after this LIKE, move past it
+                    SearchPos = FindLike + 4;
+                }
+
+                // Safety check to prevent out of bounds
+                if (SearchPos >= ProcessedSql.Length) break;
+            }
+
+            // --- Step 2: Global Encoding for All Remaining Quoted Strings ---
+            // This catches assignments (Source="", Values("=xx")) and non-LIKE strings
             string SqlStringLiteral = @"(['""])(?:(?!\1).|\1\1)*?\1";
 
-            return Regex.Replace(Sql, SqlStringLiteral, Match =>
+            return Regex.Replace(ProcessedSql, SqlStringLiteral, M =>
             {
-                string FullValue = Match.Value;
+                string FullValue = M.Value;
                 char Q = FullValue[0];
+                string Content = FullValue.Substring(1, FullValue.Length - 2);
 
-                string Content = FullValue.Substring(1, FullValue.Length - 2).Replace($"{Q}{Q}", $"{Q}");
-
+                // Ensure SQLSafeCodec.Encode is idempotent to handle the already-encoded LIKE parts
                 return $"{Q}{SQLSafeCodec.Encode(Content)}{Q}";
-            }, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            }, RegexOptions.Singleline);
         }
 
         private string LastQuery = "";
@@ -108,9 +179,9 @@ namespace LexTranslator
                 _RowIds.Clear();
 
                 string RewrittenSql = InjectRowid(UserSql);
-
+                string SafeSQL = EncodeSQLValues(RewrittenSql);
                 List<Dictionary<string, object>> Rows =
-                    Phoenix.LocalDB.P_ExecuteQuery(EncodeSQLValues(RewrittenSql));
+                    Phoenix.LocalDB.P_ExecuteQuery(SafeSQL);
 
                 DataTable Table = ToDataTable(Rows);
 
