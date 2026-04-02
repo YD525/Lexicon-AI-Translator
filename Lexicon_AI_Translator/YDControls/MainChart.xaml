@@ -78,14 +78,14 @@
         </Border>
 
         <Grid Grid.Row="4">
-            <StackPanel Orientation="Horizontal">
+            <!--<StackPanel Orientation="Horizontal">
                 <Label Foreground="White" FontSize="21">
                     ModName:
                 </Label>
                 <Label Foreground="White" FontSize="21" Margin="5 0 0 0" Name="Tokens">
                     Current:
                 </Label>
-            </StackPanel>
+            </StackPanel>-->
         </Grid>
 
 

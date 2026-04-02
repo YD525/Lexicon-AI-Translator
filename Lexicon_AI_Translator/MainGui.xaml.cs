@@ -2174,8 +2174,11 @@ namespace LexTranslator
 
                         if (TranslatorInterface.TranslationStatus == StateControl.Run)
                         {
-                            YDChart.Clear();
                             YDChart.Start();
+                        }
+                        else
+                        {
+                            YDChart.Clear();
                         }
                     }
                     break;
