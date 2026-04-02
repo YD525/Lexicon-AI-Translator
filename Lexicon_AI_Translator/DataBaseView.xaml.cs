@@ -84,21 +84,37 @@ namespace LexTranslator
         {
             if (string.IsNullOrEmpty(Sql)) return Sql;
 
-            // --- Step 1: Handle Multiple LIKE Clauses (Wildcard Stripping) ---
             string ProcessedSql = Sql;
             int SearchPos = 0;
 
-            // Use while loop to find and process every "LIKE" in the SQL string
+            // --- Step 1: Handle Multiple LIKE and GLOB Clauses ---
             while (true)
             {
+                // Find both keywords and pick the first one
                 int FindLike = ProcessedSql.IndexOf("LIKE", SearchPos, StringComparison.OrdinalIgnoreCase);
-                if (FindLike == -1) break; // Exit loop if no more LIKE is found
+                int FindGlob = ProcessedSql.IndexOf("GLOB", SearchPos, StringComparison.OrdinalIgnoreCase);
+
+                int FoundIdx = -1;
+                bool IsGlobMode = false;
+
+                if (FindLike >= 0 && (FindGlob < 0 || FindLike < FindGlob))
+                {
+                    FoundIdx = FindLike;
+                    IsGlobMode = false;
+                }
+                else if (FindGlob >= 0)
+                {
+                    FoundIdx = FindGlob;
+                    IsGlobMode = true;
+                }
+
+                if (FoundIdx == -1) break;
 
                 int QuoteStart = -1;
                 char QuoteChar = '\0';
 
-                // Look for the first quote after the current LIKE keyword
-                for (int I = FindLike + 4; I < ProcessedSql.Length; I++)
+                // Find the opening quote after the keyword (LIKE or GLOB)
+                for (int I = FoundIdx + 4; I < ProcessedSql.Length; I++)
                 {
                     char C = ProcessedSql[I];
                     if (C == '\'' || C == '\"')
@@ -111,50 +127,76 @@ namespace LexTranslator
 
                 if (QuoteStart >= 0)
                 {
-                    // Find the corresponding closing quote
                     int QuoteEnd = ProcessedSql.IndexOf(QuoteChar, QuoteStart + 1);
                     if (QuoteEnd > QuoteStart)
                     {
-                        // Extract and strip wildcards
                         string OriginalContent = ProcessedSql.Substring(QuoteStart + 1, QuoteEnd - QuoteStart - 1);
-                        string Content = OriginalContent;
-                        string Prefix = "";
-                        string Suffix = "";
 
-                        if (Content.StartsWith("%")) { Prefix = "%"; Content = Content.Substring(1); }
-                        if (Content.EndsWith("%") && Content.Length > 0) { Suffix = "%"; Content = Content.Substring(0, Content.Length - 1); }
+                        // Determine the primary wildcard based on the operator
+                        char SplitChar = IsGlobMode ? '*' : '%';
 
-                        // Encode the core part (e.g., the "2" in "%2%")
-                        string EncodedPart = SQLSafeCodec.Encode(Content);
+                        // Step A: Split by the primary wildcard (* or %)
+                        string[] Parts = OriginalContent.Split(SplitChar);
+                        for (int J = 0; J < Parts.Length; J++)
+                        {
+                            if (string.IsNullOrEmpty(Parts[J])) continue;
 
-                        // Reassemble this specific part of the SQL
-                        string Replacement = $"{QuoteChar}{Prefix}{EncodedPart}{Suffix}{QuoteChar}";
+                            if (IsGlobMode)
+                            {
+                                // Step B: In GLOB mode, protect [] and ? while encoding the rest
+                                // This pattern captures [ranges] and ? to keep them intact
+                                string GlobPattern = @"(\?|\[.+?\])";
+                                string[] SubParts = Regex.Split(Parts[J], GlobPattern);
+
+                                for (int K = 0; K < SubParts.Length; K++)
+                                {
+                                    if (string.IsNullOrEmpty(SubParts[K])) continue;
+
+                                    // If it's not a protected wildcard, encode it
+                                    if (!Regex.IsMatch(SubParts[K], "^" + GlobPattern + "$"))
+                                    {
+                                        SubParts[K] = SQLSafeCodec.Encode(SubParts[K]);
+                                    }
+                                }
+                                Parts[J] = string.Concat(SubParts);
+                            }
+                            else
+                            {
+                                // In LIKE mode, protect _ (single char wildcard)
+                                string LikePattern = @"(_)";
+                                string[] SubParts = Regex.Split(Parts[J], LikePattern);
+
+                                for (int K = 0; K < SubParts.Length; K++)
+                                {
+                                    if (string.IsNullOrEmpty(SubParts[K])) continue;
+
+                                    if (SubParts[K] != "_")
+                                    {
+                                        SubParts[K] = SQLSafeCodec.Encode(SubParts[K]);
+                                    }
+                                }
+                                Parts[J] = string.Concat(SubParts);
+                            }
+                        }
+
+                        // Join back with the primary wildcard
+                        string EncodedContent = string.Join(SplitChar.ToString(), Parts);
+
+                        string Replacement = $"{QuoteChar}{EncodedContent}{QuoteChar}";
                         string Before = ProcessedSql.Substring(0, QuoteStart);
                         string After = ProcessedSql.Substring(QuoteEnd + 1);
 
                         ProcessedSql = Before + Replacement + After;
-
-                        // Update SearchPos to continue searching after the newly encoded string
                         SearchPos = Before.Length + Replacement.Length;
                     }
-                    else
-                    {
-                        // If no closing quote is found, move past this LIKE to avoid infinite loop
-                        SearchPos = FindLike + 4;
-                    }
+                    else SearchPos = FoundIdx + 4;
                 }
-                else
-                {
-                    // If no quote is found after this LIKE, move past it
-                    SearchPos = FindLike + 4;
-                }
+                else SearchPos = FoundIdx + 4;
 
-                // Safety check to prevent out of bounds
                 if (SearchPos >= ProcessedSql.Length) break;
             }
 
-            // --- Step 2: Global Encoding for All Remaining Quoted Strings ---
-            // This catches assignments (Source="", Values("=xx")) and non-LIKE strings
+            // --- Step 2: Global Encoding for All Other Quoted Literals ---
             string SqlStringLiteral = @"(['""])(?:(?!\1).|\1\1)*?\1";
 
             return Regex.Replace(ProcessedSql, SqlStringLiteral, M =>
@@ -163,7 +205,7 @@ namespace LexTranslator
                 char Q = FullValue[0];
                 string Content = FullValue.Substring(1, FullValue.Length - 2);
 
-                // Ensure SQLSafeCodec.Encode is idempotent to handle the already-encoded LIKE parts
+                // SQLSafeCodec.Encode must be idempotent
                 return $"{Q}{SQLSafeCodec.Encode(Content)}{Q}";
             }, RegexOptions.Singleline);
         }
