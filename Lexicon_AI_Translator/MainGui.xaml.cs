@@ -141,21 +141,21 @@ namespace LexTranslator
         public IntPtr MainHwnd = IntPtr.Zero;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //ChartData DataRef = new ChartData();
+            ChartData DataRef = new ChartData();
 
-            //YDChart.SetAction(
-            //    new Action<RealtimeLineChart>((Ref) =>
-            //    {
-            //        Ref.PushValue(DataRef.SetCurrent(
-            //            new Random(Guid.NewGuid().GetHashCode()).Next(1000, 9999)
-            //            ));
-            //    }),
-            //    new Action<RealtimeLineChart>((Ref) =>
-            //    {
-            //        Ref.PushValue(DataRef.Total);
-            //    }),
-            //    DataRef
-            //    );
+            YDChart.SetAction(
+                new Action<RealtimeLineChart>((Ref) =>
+                {
+                    Ref.PushValue(DataRef.SetCurrent(
+                        new Random(Guid.NewGuid().GetHashCode()).Next(1000, 9999)
+                        ));
+                }),
+                new Action<RealtimeLineChart>((Ref) =>
+                {
+                    Ref.PushValue(DataRef.Total);
+                }),
+                DataRef
+                );
 
             DeFine.Init(this);
 
@@ -3928,21 +3928,19 @@ namespace LexTranslator
             bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
             bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
 
-            DeFine.CloseDataBaseView();
-
             int Key = Phoenix.GetFileUniqueKey();
             if (GetCloudTranslationCache == true)
             {
                 var CloudTrans = new DataBaseView();
                 CloudTrans.Show();
-                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} Limit 5000");
+                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And To = {(int)Phoenix.To} Limit 5000");
             }
 
             if (GetUserTranslationCache == true)
             {
                 var UserTranslation = new DataBaseView();
                 UserTranslation.Show();
-                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} Limit 5000");
+                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And To = {(int)Phoenix.To} Limit 5000");
             }
         }
     }
