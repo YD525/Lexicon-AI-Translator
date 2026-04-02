@@ -57,11 +57,12 @@ namespace LexTranslator
 
         public static ChartData ChartDataRef = null;
 
-        public static void OpenDataBaseView(string SqlOrder = "")
+        public static void OpenDataBaseView(Window Parent,string SqlOrder = "")
         {
             if (DataBaseView == null)
             {
                 DataBaseView = new DataBaseView();
+                DataBaseView.Owner = Parent;
                 DataBaseView.Show();
                 if (SqlOrder.Length > 0)
                 {

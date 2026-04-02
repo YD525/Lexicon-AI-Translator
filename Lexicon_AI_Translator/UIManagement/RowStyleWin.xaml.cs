@@ -340,6 +340,7 @@ namespace LexTranslator.UIManagement
                 GetTranslated.TextArea.Caret.Hide();
                 GetTranslated.IsHitTestVisible = false;
                 GetTranslated.TextArea.Caret.CaretBrush = Brushes.Transparent;
+                GetTranslated.VerticalAlignment = VerticalAlignment.Center;
 
                 ApplyLTROrRtl(GetTranslated);
             }
