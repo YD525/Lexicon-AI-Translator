@@ -13,6 +13,7 @@ using LexTranslator.UIManage;
 using PhoenixEngine;
 using PhoenixEngine.Language;
 using PhoenixEngine.ADO;
+using PhoenixEngine.Engine.ADO;
 
 namespace LexTranslator
 {
@@ -201,12 +202,14 @@ namespace LexTranslator
 
             MakeReady();
 
-            string GetFilePath = GetFullPath(@"\System.db");
+            string GetFilePath = DeFine.GetFullPath(@"\System.db");
 
             WorkingWin = Work;
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            Phoenix.Init();
+            Phoenix.Init(DeFine.GetFullPath(""));
+
+            var GetEnCompleter = WordAutoComplete.WordCompleters[Languages.English];//Test
 
             Thread NewWindowThread = new Thread(() =>
             {

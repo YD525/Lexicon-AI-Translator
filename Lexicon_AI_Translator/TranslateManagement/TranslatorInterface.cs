@@ -12,7 +12,6 @@ using PhoenixEngine.Events;
 using PhoenixEngine.P_Delegate;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Unit;
-using static PhoenixEngine.Events.EngineEvents;
 using PhoenixEngine.Engine;
 using PhoenixEngine.Request;
 using PhoenixEngine.Sequence;
@@ -26,7 +25,7 @@ namespace LexTranslator.TranslateManage
 
         public static void Init()
         {
-            Instance = new Translator(TranslatorInterface.Instance.From, TranslatorInterface.Instance.To,true);
+            Instance = new Translator(DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
 
             EngineEvents.SetDataCall += Recv;
             EngineEvents.SetBaseUnitStateChangedCallback += BaseUnitStateChanged;
