@@ -77,43 +77,43 @@ namespace LexTranslator
                     {
                         case 1:
                             {
-                                SetLog("Creating the master database.");
+                                SetLog("Loading master database...");
                                 Thread.Sleep(SleepMs);
                             }
-                        break;
+                            break;
                         case 2:
                             {
-                                SetLog("Initialize advanced dictionary.");
+                                SetLog("Loading advanced dictionary...");
                                 Thread.Sleep(SleepMs);
                             }
-                         break;
+                            break;
                         case 3:
                             {
-                                SetLog("Initialize Cache System.");
+                                SetLog("Loading cache system...");
                                 Thread.Sleep(SleepMs);
                             }
-                          break;
+                            break;
                         case 5:
                             {
-                                SetLog("Reading records related to Simplified-Traditional conversion.");
+                                SetLog("Loading records for Simplified-Traditional conversion...");
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 6:
                             {
-                                SetLog("Initialize file primary key.");
+                                SetLog("Loading file primary key...");
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 7:
                             {
-                                SetLog("Read the global configuration file.");
+                                SetLog("Loading global configuration file...");
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 8:
                             {
-                                SetLog("Apply Proxy Settings.");
+                                SetLog("Applying proxy settings...");
                                 Thread.Sleep(SleepMs);
                             }
                             break;
@@ -125,7 +125,7 @@ namespace LexTranslator
                             break;
                         case 10:
                             {
-                                SetLog("Initialize API Key Management...");
+                                SetLog("Loading API Key management...");
                                 Thread.Sleep(SleepMs);
                             }
                             break;
