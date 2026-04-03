@@ -67,7 +67,7 @@ namespace LexTranslator
             {
                 SetLog("Initializing...");
 
-                int SleepMs = 200;
+                int SleepMs = 50;
 
                 DeFine.PrepareFileDirectory();
 
@@ -130,10 +130,11 @@ namespace LexTranslator
                             }
                             break;
                     }
-
-                    SetLog("Launching main program...");
-                    Thread.Sleep(SleepMs);
                 }));
+
+                SetLog("Launching main program...");
+                Thread.Sleep(SleepMs);
+
                 var GetEnCompleter = WordAutoComplete.WordCompleters[Languages.English];//Test
 
                
