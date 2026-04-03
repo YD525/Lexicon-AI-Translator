@@ -65,6 +65,12 @@ namespace LexTranslator
 
             LoadingTrd = new Thread(() =>
             {
+                SetLog("Initializing...");
+
+                int SleepMs = 200;
+
+                DeFine.PrepareFileDirectory();
+
                 Phoenix.Init(GetSelfPath, new Action<int>((Step) =>
                 {
                     switch (Step)
@@ -72,51 +78,61 @@ namespace LexTranslator
                         case 1:
                             {
                                 SetLog("Creating the master database.");
+                                Thread.Sleep(SleepMs);
                             }
                         break;
                         case 2:
                             {
                                 SetLog("Initialize advanced dictionary.");
+                                Thread.Sleep(SleepMs);
                             }
                          break;
                         case 3:
                             {
                                 SetLog("Initialize Cache System.");
+                                Thread.Sleep(SleepMs);
                             }
                           break;
                         case 5:
                             {
                                 SetLog("Reading records related to Simplified-Traditional conversion.");
+                                Thread.Sleep(SleepMs);
                             }
                             break;
                         case 6:
                             {
                                 SetLog("Initialize file primary key.");
+                                Thread.Sleep(SleepMs);
                             }
                             break;
                         case 7:
                             {
                                 SetLog("Read the global configuration file.");
+                                Thread.Sleep(SleepMs);
                             }
                             break;
                         case 8:
                             {
                                 SetLog("Apply Proxy Settings.");
+                                Thread.Sleep(SleepMs);
                             }
                             break;
                         case 9:
                             {
                                 SetLog("Loading vocabulary database...");
+                                Thread.Sleep(SleepMs);
                             }
                             break;
                         case 10:
                             {
                                 SetLog("Initialize API Key Management...");
+                                Thread.Sleep(SleepMs);
                             }
                             break;
                     }
 
                     SetLog("Launching main program...");
+                    Thread.Sleep(SleepMs);
                 }));
                 var GetEnCompleter = WordAutoComplete.WordCompleters[Languages.English];//Test
 

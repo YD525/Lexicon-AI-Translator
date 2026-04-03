@@ -134,7 +134,7 @@ namespace LexTranslator
             return GetShellPath + Path;
         }
 
-        public static void MakeReady()
+        public static void PrepareFileDirectory()
         {
             var HasWriteAccess = new DirectoryInfo(DeFine.GetFullPath(@"\")).GetAccessControl().AreAccessRulesProtected == false;
             if (!HasWriteAccess)
@@ -156,9 +156,9 @@ namespace LexTranslator
                 var CreatNewLocalSetting = new LocalSetting();
                 CreatNewLocalSetting.SaveConfig();
             }
-            if (!Directory.Exists(DeFine.GetFullPath(@"\wordfreq")))
+            if (!Directory.Exists(DeFine.GetFullPath(@"\Wordfreq")))
             {
-                Directory.CreateDirectory(DeFine.GetFullPath(@"\wordfreq"));
+                Directory.CreateDirectory(DeFine.GetFullPath(@"\Wordfreq"));
             }
         }
 
@@ -201,8 +201,6 @@ namespace LexTranslator
             CurrentReplaceView.Owner = WorkingWin;
             CurrentReplaceView.Hide();
             RowStyleWin.Hide();
-
-            MakeReady();
 
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
