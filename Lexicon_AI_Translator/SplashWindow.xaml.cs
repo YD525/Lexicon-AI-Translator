@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using PhoenixEngine.Engine.ADO;
 using PhoenixEngine.Language;
 
@@ -74,11 +63,53 @@ namespace LexTranslator
                     switch (Step)
                     {
                         case 1:
-                            { 
-                            
+                            {
+                                SetLog("Creating the master database.");
                             }
                         break;
-                    } 
+                        case 2:
+                            {
+                                SetLog("Initialize advanced dictionary.");
+                            }
+                         break;
+                        case 3:
+                            {
+                                SetLog("Initialize Cache System.");
+                            }
+                          break;
+                        case 5:
+                            {
+                                SetLog("Reading records related to Simplified-Traditional conversion.");
+                            }
+                            break;
+                        case 6:
+                            {
+                                SetLog("Initialize file primary key.");
+                            }
+                            break;
+                        case 7:
+                            {
+                                SetLog("Read the global configuration file.");
+                            }
+                            break;
+                        case 8:
+                            {
+                                SetLog("Apply Proxy Settings.");
+                            }
+                            break;
+                        case 9:
+                            {
+                                SetLog("Loading vocabulary database...");
+                            }
+                            break;
+                        case 10:
+                            {
+                                SetLog("Initialize API Key Management...");
+                            }
+                            break;
+                    }
+
+                    SetLog("Launching main program...");
                 }));
 
             
