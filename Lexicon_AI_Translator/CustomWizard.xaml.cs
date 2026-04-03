@@ -391,8 +391,8 @@ namespace LexTranslator
                         NCustomLocalAIApi.QuickTrans(
                             new List<ReplaceTag>(),
                             TranslatorInterface.Instance.ToUnitGroup(TestUnit),
-                            Phoenix.From,
-                            Phoenix.To,
+                            TranslatorInterface.Instance.From,
+                            TranslatorInterface.Instance.To,
                             false,
                             0,
                             string.Empty,
@@ -414,8 +414,8 @@ namespace LexTranslator
                             ApiKey,
                             new List<ReplaceTag>(),
                             TranslatorInterface.Instance.ToUnitGroup(TestUnit),
-                            Phoenix.From,
-                            Phoenix.To,
+                            TranslatorInterface.Instance.From,
+                            TranslatorInterface.Instance.To,
                             false,
                             0,
                             string.Empty,
@@ -436,8 +436,8 @@ namespace LexTranslator
                         NCustomApi.QuickTrans(
                             ApiKey,
                             TranslatorInterface.Instance.ToUnitGroup(TestUnit),
-                            Phoenix.From,
-                            Phoenix.To,
+                            TranslatorInterface.Instance.From,
+                            TranslatorInterface.Instance.To,
                             ref GenPlatformCall
                         );
 

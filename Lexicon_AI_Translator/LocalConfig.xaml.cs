@@ -236,9 +236,9 @@ namespace LexTranslator
                 var DetectLang = P_Language.DetectLanguageByLine(SourceStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
-                    if (Phoenix.From == Languages.SimplifiedChinese || Phoenix.From == Languages.TraditionalChinese)
+                    if (TranslatorInterface.Instance.From == Languages.SimplifiedChinese || TranslatorInterface.Instance.From == Languages.TraditionalChinese)
                     {
-                        DetectLang = Phoenix.From;
+                        DetectLang = TranslatorInterface.Instance.From;
                     }
                 }
 
@@ -253,9 +253,9 @@ namespace LexTranslator
                 var DetectLang = P_Language.DetectLanguageByLine(TargetStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
-                    if (Phoenix.To == Languages.SimplifiedChinese || Phoenix.To == Languages.TraditionalChinese)
+                    if (TranslatorInterface.Instance.To == Languages.SimplifiedChinese || TranslatorInterface.Instance.To == Languages.TraditionalChinese)
                     {
-                        DetectLang = Phoenix.To;
+                        DetectLang = TranslatorInterface.Instance.To;
                     }
                 }
                 To.SelectedValue = DetectLang.ToString();
@@ -330,8 +330,7 @@ namespace LexTranslator
                 FilterFrom = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            Phoenix.From = FilterFrom;
-            TranslatorInterface.Instance.From = Phoenix.From;
+            TranslatorInterface.Instance.From = FilterFrom;
             DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
             DeFine.GlobalLocalSetting.SaveConfig();
 
@@ -352,8 +351,7 @@ namespace LexTranslator
                 FilterTo = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            Phoenix.To = FilterTo;
-            TranslatorInterface.Instance.To = Phoenix.To;
+            TranslatorInterface.Instance.To = FilterTo;
             DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
             DeFine.GlobalLocalSetting.SaveConfig();
 

@@ -26,7 +26,7 @@ namespace LexTranslator.TranslateManage
 
         public static void Init()
         {
-            Instance = new Translator(Phoenix.From,Phoenix.To,true);
+            Instance = new Translator(TranslatorInterface.Instance.From, TranslatorInterface.Instance.To,true);
 
             EngineEvents.SetDataCall += Recv;
             EngineEvents.SetBaseUnitStateChangedCallback += BaseUnitStateChanged;
@@ -323,7 +323,7 @@ namespace LexTranslator.TranslateManage
                 {
                     if (!string.IsNullOrEmpty(Row.TransText))
                     {
-                        Phoenix.AddAIMemory(Row.GetSource(), Row.TransText);
+                        Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), Row.TransText);
                     }
                 }
 
@@ -352,8 +352,8 @@ namespace LexTranslator.TranslateManage
                                 AutoType,//Automatically determine the type of the current term
                                 Row.GetSource(),//Get the source text corresponding to stringsfile id
                                 Row.TransText,//Get the translation content
-                                Phoenix.From,//Get source language
-                                Phoenix.To,//Get target language
+                                TranslatorInterface.Instance.From,//Get source language
+                                TranslatorInterface.Instance.To,//Get target language
                                 1,//Use full-word matching
                                 0,//Case sensitivity is not ignored
                                 string.Empty
@@ -401,7 +401,7 @@ namespace LexTranslator.TranslateManage
                         if (GetTrans != null)
                         {
                             //Added to context memory. Helps AI improve accuracy.
-                            Phoenix.AddAIMemory(Row.GetSource(), GetTrans.Value);
+                            Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), GetTrans.Value);
                             HasAddAIMemory = true;
 
                             var Link = Instance.GetLink();
@@ -441,13 +441,13 @@ namespace LexTranslator.TranslateManage
 
                     if (Phoenix.Config.EnableGlobalSearch)
                     {
-                        var QueryData = CloudDBCache.MatchOtherCloudItem(-1, (int)Phoenix.To, Row.SourceText);
+                        var QueryData = CloudDBCache.MatchOtherCloudItem(-1, (int)TranslatorInterface.Instance.To, Row.SourceText);
 
                         if (QueryData.Count > 0)
                         {
                             var GetData = QueryData[QueryData.Count - 1];
 
-                            Phoenix.AddAIMemory(Row.GetSource(), GetData.Result);
+                            Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), GetData.Result);
                             HasAddAIMemory = true;
 
                             var Link = Instance.GetLink();
@@ -480,7 +480,7 @@ namespace LexTranslator.TranslateManage
 
                         if (CanSet)
                         {
-                            BaseUnits.Add(new BaseUnit(Phoenix.GetFileUniqueKey(),
+                            BaseUnits.Add(new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(),
                            Row.Key, Row.Type, Row.SourceText, Row.TransText, Row.Score));
                         }
                     }
@@ -712,7 +712,7 @@ namespace LexTranslator.TranslateManage
                                 {
                                     if (!string.IsNullOrEmpty(Row.TransText))
                                     {
-                                        Phoenix.AddAIMemory(Row.GetSource(), Row.TransText);
+                                        Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), Row.TransText);
                                     }
                                 }
                             }

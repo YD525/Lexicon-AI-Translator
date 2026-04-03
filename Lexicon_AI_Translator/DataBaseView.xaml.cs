@@ -18,6 +18,7 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System.Linq;
 using System.Windows.Documents;
+using LexTranslator.TranslateManage;
 
 namespace LexTranslator
 {
@@ -690,8 +691,8 @@ namespace LexTranslator
      
         private static readonly Dictionary<string, Func<string>> BracketDefaults = new Dictionary<string, Func<string>>
         {
-            ["From"] = () => ((int)Phoenix.From).ToString(),
-            ["To"] = () => ((int)Phoenix.To).ToString(),
+            ["From"] = () => ((int)TranslatorInterface.Instance.From).ToString(),
+            ["To"] = () => ((int)TranslatorInterface.Instance.To).ToString(),
         };
 
         private string[] ResolveColumns(string TableOrAlias)

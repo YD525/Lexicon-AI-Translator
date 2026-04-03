@@ -21,6 +21,7 @@ using PhoenixEngine.Translate;
 using PhoenixEngine;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Unit;
+using LexTranslator.TranslateManage;
 
 namespace LexTranslator.UIManage
 {
@@ -183,7 +184,7 @@ namespace LexTranslator.UIManage
 
         public static Grid CreateLine(bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreateLine(IsModify,Height, new BaseUnit(Phoenix.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreateLine(IsModify,Height, new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
             return MainGrid;
         }
 

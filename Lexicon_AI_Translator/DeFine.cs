@@ -155,6 +155,10 @@ namespace LexTranslator
                 var CreatNewLocalSetting = new LocalSetting();
                 CreatNewLocalSetting.SaveConfig();
             }
+            if (!Directory.Exists(DeFine.GetFullPath(@"\wordfreq")))
+            {
+                Directory.CreateDirectory(DeFine.GetFullPath(@"\wordfreq"));
+            }
         }
 
         public static void ShowExtendWin()

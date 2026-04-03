@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using PhoenixEngine.ADO;
 using PhoenixEngine;
 using PhoenixEngine.Engine;
+using LexTranslator.TranslateManage;
 
 namespace LexTranslator
 {
@@ -140,7 +141,7 @@ namespace LexTranslator
             List<string> UniqueResult = new List<string>();
             List<string> UniqueKeys = new List<string>();
 
-            var MatchCloudItems = LocalDBCache.MatchLocalItem((int)Phoenix.To, Original);
+            var MatchCloudItems = LocalDBCache.MatchLocalItem((int)TranslatorInterface.Instance.To, Original);
 
             foreach (var GetMatch in MatchCloudItems)
             {
@@ -162,7 +163,7 @@ namespace LexTranslator
                 }
             }
 
-            foreach (var GetMatch in CloudDBCache.MatchCloudItem((int)Phoenix.To, Original))
+            foreach (var GetMatch in CloudDBCache.MatchCloudItem((int)TranslatorInterface.Instance.To, Original))
             {
                 if (!UniqueResult.Contains(GetMatch.Result))
                 {

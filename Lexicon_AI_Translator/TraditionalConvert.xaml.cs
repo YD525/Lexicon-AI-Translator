@@ -71,7 +71,7 @@ namespace LexTranslator
 
                         DeFine.WorkingWin.TransViewList.RealLines[i].SyncUI(DeFine.WorkingWin.TransViewList);
 
-                        CloudDBCache.AddCache(Phoenix.GetFileUniqueKey(), Key, (int)Phoenix.To, Source, Result);
+                        CloudDBCache.AddCache(TranslatorInterface.Instance.GetFileUniqueKey(), Key, (int)TranslatorInterface.Instance.To, Source, Result);
                     }
 
                     ConvertAllBtn.Dispatcher.Invoke(new Action(() => {

@@ -38,6 +38,7 @@ using PhoenixEngine.Additional;
 using PhoenixEngine.Events;
 using PhoenixEngine.Engine;
 using LexTranslator.YDControls;
+using PhoenixEngine.Engine.ADO;
 
 namespace LexTranslator
 {
@@ -213,11 +214,8 @@ namespace LexTranslator
 
             SyncTransStateUI();
 
-            Phoenix.From = DeFine.GlobalLocalSetting.SourceLanguage;
-            Phoenix.To = DeFine.GlobalLocalSetting.TargetLanguage;
-
-            TranslatorInterface.Instance.From = Phoenix.From;
-            TranslatorInterface.Instance.To = Phoenix.To;
+            TranslatorInterface.Instance.From = DeFine.GlobalLocalSetting.SourceLanguage;
+            TranslatorInterface.Instance.To = DeFine.GlobalLocalSetting.TargetLanguage;
 
             SelectFristSettingNav();
 
@@ -907,7 +905,7 @@ namespace LexTranslator
         }
         public bool CheckDictionary()
         {
-            string SetPath = DeFine.GetFullPath(@"\Librarys\" + Phoenix.LastLoadFileName + ".Json");
+            string SetPath = DeFine.GetFullPath(@"\Librarys\" + TranslatorInterface.Instance.LastLoadFileName + ".Json");
             if (File.Exists(SetPath))
             {
                 return true;
@@ -1022,7 +1020,7 @@ namespace LexTranslator
                 string GetFileName = FilePath.Substring(FilePath.LastIndexOf(@"\") + @"\".Length);
                 //Caption.Text = GetFileName;
 
-                Phoenix.LoadFile(FilePath);
+                TranslatorInterface.Instance.LoadFile(FilePath);
 
                 string GetModName = GetFileName;
                 FModName = LModName = GetModName;
@@ -1200,7 +1198,7 @@ namespace LexTranslator
 
                     if (DeFine.GlobalLocalSetting.EnableLanguageDetect)
                     {
-                        Phoenix.From = DetectLang();
+                        TranslatorInterface.Instance.From = DetectLang();
                     }
                 }
 
@@ -1243,7 +1241,7 @@ namespace LexTranslator
 
             EmptyFromAndToText();
 
-            Phoenix.ChangeUniqueKey(0);
+            TranslatorInterface.Instance.Close();
 
             CurrentSearchData = new SearchData();
 
@@ -1651,7 +1649,6 @@ namespace LexTranslator
             {
                 EmptyFromAndToText();
                 TranslatorInterface.Instance.GetLink().Clear();
-                Phoenix.GetTranslatedCount(Phoenix.GetFileUniqueKey());
 
                 if (TransViewList != null)
                 {
@@ -1741,13 +1738,13 @@ namespace LexTranslator
                 {
                     RefreshButton.Content = UILanguageHelper.UICache["RefreshButton1"];
                 }));
-                var FileUniqueKey = Phoenix.GetFileUniqueKey();
+                var FileUniqueKey = TranslatorInterface.Instance.GetFileUniqueKey();
 
                 if (FileUniqueKey > 0)
                 {
                     int CallFuncCount = 0;
 
-                    string SetPath = DeFine.GetFullPath(@"\Librarys\" + Phoenix.LastLoadFileName + ".Json");
+                    string SetPath = DeFine.GetFullPath(@"\Librarys\" + TranslatorInterface.Instance.LastLoadFileName + ".Json");
 
                     if (File.Exists(SetPath))
                     {
@@ -2092,7 +2089,7 @@ namespace LexTranslator
 
             if (TransViewList.RealLines.Count > 0)
             {
-                DeFine.LocalConfigView.SFrom.SelectedValue = Phoenix.From.ToString();
+                DeFine.LocalConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
             }
             else
             {
@@ -2412,7 +2409,7 @@ namespace LexTranslator
                                 {
                                     if (ConvertHelper.ObjToStr(TransProcess.Content).StartsWith("STRINGS("))
                                     {
-                                        if (Phoenix.From == Phoenix.To)
+                                        if (TranslatorInterface.Instance.From == TranslatorInterface.Instance.To)
                                         {
                                             MessageBoxExtend.Show(this, "The source language and target language cannot be the same!");
                                             CallSucess = false;
@@ -2501,7 +2498,7 @@ namespace LexTranslator
 
                 if (TransViewList != null)
                 {
-                    TransViewList.ChangeFontColor(Phoenix.GetFileUniqueKey(), GetColor.R, GetColor.G, GetColor.B);
+                    TransViewList.ChangeFontColor(TranslatorInterface.Instance.GetFileUniqueKey(), GetColor.R, GetColor.G, GetColor.B);
                 }
             }
         }
@@ -2538,9 +2535,9 @@ namespace LexTranslator
 
                         try
                         {
-                            if (CloudDBCache.FindCache(Phoenix.GetFileUniqueKey(), GetGrid.Key, Phoenix.To).Equals(GetGrid.TransText))
+                            if (CloudDBCache.FindCache(TranslatorInterface.Instance.GetFileUniqueKey(), GetGrid.Key, TranslatorInterface.Instance.To).Equals(GetGrid.TransText))
                             {
-                                LocalDBCache.DeleteCache(Phoenix.GetFileUniqueKey(), GetGrid.Key, Phoenix.To);
+                                LocalDBCache.DeleteCache(TranslatorInterface.Instance.GetFileUniqueKey(), GetGrid.Key, TranslatorInterface.Instance.To);
 
                                 var Link = TranslatorInterface.Instance.GetLink();
 
@@ -2794,10 +2791,10 @@ namespace LexTranslator
 
                             if (QueryGrid.TransText.Length > 0)
                             {
-                                CloudDBCache.DeleteCache(Phoenix.GetFileUniqueKey(), QueryGrid.Key, Phoenix.To);
+                                CloudDBCache.DeleteCache(TranslatorInterface.Instance.GetFileUniqueKey(), QueryGrid.Key, TranslatorInterface.Instance.To);
                             }
 
-                            BaseUnit SetUnit = new BaseUnit(Phoenix.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, 100);
+                            BaseUnit SetUnit = new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, 100);
 
                             bool CanSleep = false;
 
@@ -3095,7 +3092,7 @@ namespace LexTranslator
                 if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
                 {
                     var SourceLang = P_Language.DetectLanguageByLine(GetLine.SourceText);
-                    if (SourceLang != Phoenix.To)
+                    if (SourceLang != TranslatorInterface.Instance.To)
                     {
                         if (GetLine.TransText.Length == 0 ||
                             SourceLang == P_Language.DetectLanguageByLine(GetLine.TransText))
@@ -3194,7 +3191,7 @@ namespace LexTranslator
                                         {
                                             TranslatorInterface.Instance.ClearAICache();
 
-                                            if (CloudDBCache.ClearCloudCache(Phoenix.GetFileUniqueKey()))
+                                            if (CloudDBCache.ClearCloudCache(TranslatorInterface.Instance.GetFileUniqueKey()))
                                             {
                                                 var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
                                                 if (GetBatchCore != null)
@@ -3207,7 +3204,7 @@ namespace LexTranslator
                                         }
                                         if (GetUserTranslationCache == true)
                                         {
-                                            LocalDBCache.ClearLocalCache(Phoenix.GetFileUniqueKey());
+                                            LocalDBCache.ClearLocalCache(TranslatorInterface.Instance.GetFileUniqueKey());
                                             {
                                                 Phoenix.Vacuum();
                                                 CallFuncCount++;
@@ -3937,19 +3934,19 @@ namespace LexTranslator
             bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
             bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
 
-            int Key = Phoenix.GetFileUniqueKey();
+            int Key = TranslatorInterface.Instance.GetFileUniqueKey();
             if (GetCloudTranslationCache == true)
             {
                 var CloudTrans = new DataBaseView();
                 CloudTrans.Show();
-                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)Phoenix.To} Limit 5000");
+                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 5000");
             }
 
             if (GetUserTranslationCache == true)
             {
                 var UserTranslation = new DataBaseView();
                 UserTranslation.Show();
-                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)Phoenix.To} Limit 5000");
+                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 5000");
             }
         }
     }
