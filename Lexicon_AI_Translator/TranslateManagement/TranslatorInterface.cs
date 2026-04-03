@@ -550,7 +550,6 @@ namespace LexTranslator.TranslateManage
                     List<BaseUnit> BaseUnits = GetCanTransUnits();
                     InitTrd = new Thread(() =>
                     {
-                        Instance.ReInit();
                         Instance.Init(BaseUnits, AggregationMode.Aggregation);
                         InitTrd = null;
                     });

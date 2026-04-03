@@ -1272,8 +1272,8 @@ namespace LexTranslator
 
                     CloseAllPointer();
 
+                    TranslatorInterface.Instance.GetBatchCore().Close();
                     TranslatorInterface.Instance.GetLink().Clear();
-                    TranslatorInterface.Instance.ReInit();
                     LoadSaveState = 0;
 
                     CancelBtn.Opacity = 0.3;
@@ -1283,6 +1283,8 @@ namespace LexTranslator
                     YDDictionaryHelper.Close();
 
                     FromStringsFile.Visibility = Visibility.Collapsed;
+
+                    ProcessBar.Width = 0;
                 }
                 catch { }
             }));
@@ -2552,6 +2554,8 @@ namespace LexTranslator
                                 var Link = TranslatorInterface.Instance.GetLink();
 
                                 Link[GetGrid.Key] = GetGrid.TransText;
+
+
                             }
                             else
                             {
@@ -2566,6 +2570,8 @@ namespace LexTranslator
                         GetGrid.SyncUI(TransViewList);
                         //DeFine.ExtendWin.SetOriginal(GetGrid.SourceText, DeFine.WorkingWin.GlobalEspReader.StringsReader.QueryData(GetGrid.Key));
                     }
+
+                    TranslatorInterface.Instance.SyncTranslatedCount();
 
                     UIHelper.ShowButton(ApplyOTButton, false);
                 }
