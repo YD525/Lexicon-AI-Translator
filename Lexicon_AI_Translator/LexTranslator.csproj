@@ -147,6 +147,9 @@
     <Compile Include="SkyrimManagement\StringsFileReader.cs" />
     <Compile Include="SkyrimManagement\XmlReader.cs" />
     <Compile Include="SkyrimManagement\YDDictionaryHelper.cs" />
+    <Compile Include="SplashWindow.xaml.cs">
+      <DependentUpon>SplashWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TraditionalConvert.xaml.cs">
       <DependentUpon>TraditionalConvert.xaml</DependentUpon>
     </Compile>
@@ -227,6 +230,10 @@
     <Page Include="SearchText.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SplashWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\BlueStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
