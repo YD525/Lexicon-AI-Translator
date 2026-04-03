@@ -68,7 +68,7 @@ namespace LexTranslator
             {
                 SetLog("Initializing...");
 
-                int SleepMs = 50;
+                int SleepMs = 0;
 
                 DeFine.PrepareFileDirectory();
 
@@ -79,54 +79,63 @@ namespace LexTranslator
                         case 1:
                             {
                                 SetLog("Loading master database...");
+                                if(SleepMs>0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 2:
                             {
                                 SetLog("Loading advanced dictionary...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 3:
                             {
                                 SetLog("Loading cache system...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 5:
                             {
                                 SetLog("Loading records for Simplified-Traditional conversion...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 6:
                             {
                                 SetLog("Loading file primary key...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 7:
                             {
                                 SetLog("Loading global configuration file...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 8:
                             {
                                 SetLog("Applying proxy settings...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 9:
                             {
                                 SetLog("Loading vocabulary database...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
                         case 10:
                             {
                                 SetLog("Loading API Key management...");
+                                if (SleepMs > 0)
                                 Thread.Sleep(SleepMs);
                             }
                             break;
@@ -134,6 +143,8 @@ namespace LexTranslator
                 }));
 
                 SetLog("Launching main program...");
+
+                if (SleepMs > 0)
                 Thread.Sleep(SleepMs);
 
                 var GetEnCompleter = WordAutoComplete.WordCompleters[Languages.English];//Test
