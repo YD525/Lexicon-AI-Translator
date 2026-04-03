@@ -28,5 +28,10 @@ namespace LexTranslator
         {
             DeFine.CloseAny();
         }
+
+        private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DeFine.CloseAny();
+        }
     }
 }
