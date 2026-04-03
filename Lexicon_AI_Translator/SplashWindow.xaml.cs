@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PhoenixEngine.Engine.ADO;
+using PhoenixEngine.Language;
 
 namespace LexTranslator
 {
@@ -58,10 +63,35 @@ namespace LexTranslator
             }
         }
 
+        public Thread LoadingTrd = null;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            LoadingTrd = new Thread(() =>
+            {
+                DeFine.Init(new Action<int>((Step) =>
+                {
+                    switch (Step)
+                    {
+                        case 1:
+                            { 
+                            
+                            }
+                        break;
+                    } 
+                }));
 
+            
+                var GetEnCompleter = WordAutoComplete.WordCompleters[Languages.English];//Test
+            });
+            LoadingTrd.Start();
+        }
+
+        public void SetLog(string Msg)
+        {
+            this.Dispatcher.Invoke(new Action(() => { 
+                Log.Content = Msg;
+            }));
         }
     }
 }

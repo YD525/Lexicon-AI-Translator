@@ -76,8 +76,8 @@
                 <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25">
                     Lex Translator
                 </Label>
-                <Label Foreground="White" Opacity="0.6" HorizontalAlignment="Center">
-                    Load Data..
+                <Label Name="Log" Foreground="White" Opacity="0.6" HorizontalAlignment="Center">
+                    Initializing...
                 </Label>
             </StackPanel>
         </Grid>

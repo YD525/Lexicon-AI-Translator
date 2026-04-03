@@ -193,10 +193,12 @@ namespace LexTranslator
                 }));
             });
         }
-        public static void Init(MainGui Work)
+        public static void Init(Action<int>StepAction)
         {
+            WorkingWin = new MainGui();
+
             ChartDataRef = new ChartData();
-            CurrentReplaceView.Owner = Work;
+            CurrentReplaceView.Owner = WorkingWin;
             CurrentReplaceView.Hide();
             RowStyleWin.Hide();
 
@@ -204,12 +206,9 @@ namespace LexTranslator
 
             string GetFilePath = DeFine.GetFullPath(@"\System.db");
 
-            WorkingWin = Work;
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            Phoenix.Init(DeFine.GetFullPath(""));
-
-            var GetEnCompleter = WordAutoComplete.WordCompleters[Languages.English];//Test
+            Phoenix.Init(DeFine.GetFullPath(""),StepAction);
 
             Thread NewWindowThread = new Thread(() =>
             {
