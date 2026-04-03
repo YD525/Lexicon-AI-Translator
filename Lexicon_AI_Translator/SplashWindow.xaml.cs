@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Security.RightsManagement;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using PhoenixEngine;
 using PhoenixEngine.Engine.ADO;
 using PhoenixEngine.Language;
 
@@ -18,8 +20,10 @@ namespace LexTranslator
             InitializeComponent();
         }
 
+        public bool CanExit = true;
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if(CanExit)
             DeFine.CloseAny();
         }
 
@@ -53,12 +57,15 @@ namespace LexTranslator
         }
 
         public Thread LoadingTrd = null;
+        public static MainGui Main = null;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            string GetSelfPath = DeFine.GetFullPath(string.Empty);
+
             LoadingTrd = new Thread(() =>
             {
-                DeFine.Init(new Action<int>((Step) =>
+                Phoenix.Init(GetSelfPath, new Action<int>((Step) =>
                 {
                     switch (Step)
                     {
@@ -111,9 +118,18 @@ namespace LexTranslator
 
                     SetLog("Launching main program...");
                 }));
-
-            
                 var GetEnCompleter = WordAutoComplete.WordCompleters[Languages.English];//Test
+
+               
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    SplashWindow.Main = new MainGui();
+                    SplashWindow.Main.Show();
+                    CanExit = false;
+
+                    this.Close();
+                }));
+               
             });
             LoadingTrd.Start();
         }

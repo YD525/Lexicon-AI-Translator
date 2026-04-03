@@ -144,6 +144,8 @@ namespace LexTranslator
   
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            DeFine.Init(this);
+
              YDChart.SetAction(
                 new Action<RealtimeLineChart>((Ref) =>
                 {

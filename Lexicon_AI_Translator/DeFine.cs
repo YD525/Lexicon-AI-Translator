@@ -193,9 +193,9 @@ namespace LexTranslator
                 }));
             });
         }
-        public static void Init(Action<int>StepAction)
+        public static void Init(MainGui Main)
         {
-            WorkingWin = new MainGui();
+            WorkingWin = Main;
 
             ChartDataRef = new ChartData();
             CurrentReplaceView.Owner = WorkingWin;
@@ -204,11 +204,7 @@ namespace LexTranslator
 
             MakeReady();
 
-            string GetFilePath = DeFine.GetFullPath(@"\System.db");
-
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            Phoenix.Init(DeFine.GetFullPath(""),StepAction);
 
             Thread NewWindowThread = new Thread(() =>
             {
