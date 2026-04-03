@@ -39,6 +39,7 @@ using PhoenixEngine.Events;
 using PhoenixEngine.Engine;
 using LexTranslator.YDControls;
 using PhoenixEngine.Engine.ADO;
+using LexTranslator.IDEManagement;
 
 namespace LexTranslator
 {
@@ -141,7 +142,8 @@ namespace LexTranslator
 
         public IntPtr MainHwnd = IntPtr.Zero;
 
-  
+
+        WordCompletionManager CompletionManager = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DeFine.Init(this);
@@ -235,6 +237,9 @@ namespace LexTranslator
             }
 
             UIHelper.SyncNodes();
+
+            CompleteHelper.CheckLang(DeFine.GlobalLocalSetting.TargetLanguage);
+            CompletionManager = new WordCompletionManager(ToStr);
         }
 
 
@@ -362,6 +367,11 @@ namespace LexTranslator
         {
             if (e.Key == Key.Tab)
             {
+                if (CompletionManager != null && CompletionManager.IsCompletionActive)
+                {
+                    return; 
+                }
+
                 if (TransView.IsHitTestVisible == true)
                 {
                     e.Handled = true;

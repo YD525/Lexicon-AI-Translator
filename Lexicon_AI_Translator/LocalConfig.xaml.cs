@@ -17,6 +17,8 @@ using PhoenixEngine.Unit;
 using PhoenixEngine.Language;
 using PhoenixEngine;
 using PhoenixEngine.P_Delegate;
+using PhoenixEngine.Engine.ADO;
+using LexTranslator.IDEManagement;
 
 namespace LexTranslator
 {
@@ -362,6 +364,9 @@ namespace LexTranslator
                 AutoReload();
 
             DeFine.WorkingWin.AutoShowTraditional();
+
+
+            CompleteHelper.CheckLang(FilterTo);
         }
 
         public void SetOutput(string Str)

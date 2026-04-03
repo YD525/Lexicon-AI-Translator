@@ -118,6 +118,7 @@
     <Compile Include="ExtendWin.xaml.cs">
       <DependentUpon>ExtendWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IDEManagement\CompleteHelper.cs" />
     <Compile Include="LocalConfig.xaml.cs">
       <DependentUpon>LocalConfig.xaml</DependentUpon>
     </Compile>

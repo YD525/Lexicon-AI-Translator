@@ -58,6 +58,8 @@ namespace LexTranslator
 
         public static ChartData ChartDataRef = null;
 
+        public static WordAutoComplete WordCompleter = null;
+
         public static void OpenDataBaseView(Window Parent,string SqlOrder = "")
         {
             if (DataBaseView == null)

@@ -19,6 +19,7 @@ using ICSharpCode.AvalonEdit.Editing;
 using System.Linq;
 using System.Windows.Documents;
 using LexTranslator.TranslateManage;
+using LexTranslator.IDEManagement;
 
 namespace LexTranslator
 {
@@ -571,31 +572,7 @@ namespace LexTranslator
         }
 
         #region Completion
-        class MyCompletionData : ICompletionData
-        {
-            private readonly string _Description;
-            private readonly ImageSource _Image;
-
-            public MyCompletionData(string Text, string Description = null, ImageSource Image = null)
-            {
-                this.Text = Text;
-                _Description = Description;
-                _Image = Image;
-            }
-
-            public ImageSource Image => _Image;
-            public string Text { get; private set; }
-            public object Content => Text;
-            public object Description => _Description ?? Text;
-            public double Priority => 0;
-
-            public void Complete(TextArea TextArea, ISegment CompletionSegment, EventArgs E)
-            {
-                TextArea.Document.Replace(CompletionSegment, Text);
-            }
-        }
-
-
+        
         public CompletionWindow Completion;
 
         private static readonly string[] SqlKeywords =
