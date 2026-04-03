@@ -5,16 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="Lex" Height="230" Width="340" WindowStyle="None" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen"  ResizeMode="NoResize" Closing="Window_Closing">
+        Title="Lex" Height="230" Width="340" WindowStyle="None" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="Window_Closing" Loaded="Window_Loaded">
 
-    <Border Margin="5" CornerRadius="8" Background="#FF282828">
+    <Border Margin="5" CornerRadius="8" Background="#FF282828" PreviewMouseLeftButtonDown="WinHead_MouseLeftButtonDown">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <Border Style="{DynamicResource BlockButton}" Grid.Column="6" PreviewMouseDown="Close_PreviewMouseDown" Grid.Row="0" HorizontalAlignment="Right" Margin="0 0 10 0">
+            <Border Style="{DynamicResource BlockButton}" Grid.Column="6" PreviewMouseDown="Close_PreviewMouseDown" Grid.Row="0" HorizontalAlignment="Right" Margin="0 0 10 0" Cursor="Hand">
                 <ContentControl Style="{DynamicResource CloseIconStyle}" Grid.Column="3"/>
             </Border>
 

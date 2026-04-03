@@ -33,5 +33,35 @@ namespace LexTranslator
         {
             DeFine.CloseAny();
         }
+
+        public bool IsLeftMouseDown = false;
+
+        private void WinHead_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                IsLeftMouseDown = true;
+            }
+
+            if (IsLeftMouseDown)
+            {
+                try
+                {
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                        this.DragMove();
+                    }));
+
+                    IsLeftMouseDown = false;
+                }
+                catch { }
+            }
+        }
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
