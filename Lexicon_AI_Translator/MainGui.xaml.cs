@@ -1272,8 +1272,6 @@ namespace LexTranslator
 
                     CloseAllPointer();
 
-                    TranslatorInterface.Instance.GetBatchCore().Close();
-                    TranslatorInterface.Instance.GetLink().Clear();
                     LoadSaveState = 0;
 
                     CancelBtn.Opacity = 0.3;
@@ -3695,6 +3693,14 @@ namespace LexTranslator
         private void SMaxThread_TextChanged(object sender, TextChangedEventArgs e)
         {
             Phoenix.Config.MaxThreadCount = ConvertHelper.ObjToInt(SMaxThread.Text);
+
+            if (TranslatorInterface.Instance != null)
+            {
+                if (TranslatorInterface.Instance.GetBatchCore() != null)
+                {
+                    TranslatorInterface.Instance.GetBatchCore().AutoThreadLimit = Phoenix.Config.MaxThreadCount;
+                }
+            }
         }
 
         private void RTLEnable_Click(object sender, RoutedEventArgs e)
