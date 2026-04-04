@@ -25,7 +25,7 @@ namespace LexTranslator.SkyrimManagement
                 this.EditorID = Item.EDID;
                 this.REC = Item.REC;
 
-                this.Key =Crc32Helper.ComputeCrc32(Item.EDID + "_" + Item.REC + "_");
+                this.Key = Crc32Helper.ComputeCrc32(Item.EDID + "_" + Item.REC);
                 this.SourceText = Item.Source;
 
                 if (Item.Source == Item.Dest)
