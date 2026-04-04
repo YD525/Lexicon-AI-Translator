@@ -914,6 +914,11 @@ Fill="White"/>
                                          Created the Chinese interface for Lex.
                                     </TextBlock>
 
+                                    <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 5 20 0">
+                                    <Run Tag="https://www.nexusmods.com/profile/is365s" Text="is365s" FontWeight="Bold"  Cursor="Hand" Foreground="#FF44A0FF"  MouseDown="OpenUrl_MouseDown"/>
+                                        Reported the issue of duplicate primary keys in the XML file,And help me test the program.
+                                    </TextBlock>
+
 
                                 </StackPanel>
                             </Grid>
