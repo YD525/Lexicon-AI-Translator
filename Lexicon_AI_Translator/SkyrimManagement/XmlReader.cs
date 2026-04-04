@@ -104,7 +104,7 @@ namespace LexTranslator.SkyrimManagement
                   {
                       EDID = (string)x.Element("EDID"),
                       REC = (string)x.Element("REC"),
-                      RECID = x.Element("REC")?.Attribute("ID"),
+                      RECID = x.Element("REC")?.Attribute("id")?.Value,
                       Source = (string)x.Element("Source"),
                       Dest = (string)x.Element("Dest")
                   })
@@ -113,6 +113,7 @@ namespace LexTranslator.SkyrimManagement
                     XmlItem SetItem = new XmlItem(GetItem);
                     if (!UniqueKeys.Contains(SetItem.Key))
                     {
+                        UniqueKeys.Add(SetItem.Key);
                         XmlItems.Add(SetItem);
                     }
                 }
@@ -141,9 +142,9 @@ namespace LexTranslator.SkyrimManagement
                 var DestNode = StringNode.Element("Dest");
                 int RECID = 0;
 
-                if ((StringNode.Element("REC")?.Attribute("ID")) != null)
+                if ((StringNode.Element("REC")?.Attribute("id")) != null)
                 {
-                    RECID = ConvertHelper.ObjToInt((StringNode.Element("REC")?.Attribute("ID")));
+                    RECID = ConvertHelper.ObjToInt((StringNode.Element("REC")?.Attribute("id")?.Value));
                 }
 
                 if (EditorID != null && Rec != null)
