@@ -38,7 +38,7 @@ namespace LexTranslator
 
         public static string BackupPath = @"\BackUpData\";
 
-        public static string CurrentVersion = "3.8.1.2";
+        public static string CurrentVersion = "3.8.1.3";
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
         public static MainGui WorkingWin = null;
