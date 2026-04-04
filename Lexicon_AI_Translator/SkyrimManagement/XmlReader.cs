@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using LexTranslator.ConvertManager;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
+using Newtonsoft.Json.Linq;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -15,6 +17,7 @@ namespace LexTranslator.SkyrimManagement
             public string Type = "";
             public string EditorID = "";
             public string REC = "";
+            public int RECID = 0;
             public string Key = "";
             public string SourceText = "";
             public string TransText = "";
@@ -25,7 +28,12 @@ namespace LexTranslator.SkyrimManagement
                 this.EditorID = Item.EDID;
                 this.REC = Item.REC;
 
-                this.Key = Crc32Helper.ComputeCrc32(Item.EDID + "_" + Item.REC);
+                if (Item.RECID != null)
+                { 
+                    this.RECID = ConvertHelper.ObjToInt(Item.RECID);
+                }
+
+                this.Key = Crc32Helper.ComputeCrc32(this.RECID + "_" + Item.EDID + "_" + Item.REC);
                 this.SourceText = Item.Source;
 
                 if (Item.Source == Item.Dest)
@@ -70,6 +78,8 @@ namespace LexTranslator.SkyrimManagement
         {
             public string EDID { get; set; }
             public string REC { get; set; }
+
+            public object RECID { get; set; }
             public string Source { get; set; }
             public string Dest { get; set; }
         }
@@ -94,6 +104,7 @@ namespace LexTranslator.SkyrimManagement
                   {
                       EDID = (string)x.Element("EDID"),
                       REC = (string)x.Element("REC"),
+                      RECID = x.Element("REC")?.Attribute("ID"),
                       Source = (string)x.Element("Source"),
                       Dest = (string)x.Element("Dest")
                   })
@@ -102,7 +113,6 @@ namespace LexTranslator.SkyrimManagement
                     XmlItem SetItem = new XmlItem(GetItem);
                     if (!UniqueKeys.Contains(SetItem.Key))
                     {
-                        UniqueKeys.Add(SetItem.Key);
                         XmlItems.Add(SetItem);
                     }
                 }
@@ -122,16 +132,23 @@ namespace LexTranslator.SkyrimManagement
 
         public void Save(string Path)
         {
-            var ItemDict = XmlItems.ToDictionary(x => x.EditorID + "|" + x.REC, x => x);
+            var ItemDict = XmlItems.ToDictionary(x =>x.RECID +"_" + x.EditorID + "_" + x.REC, x => x);
 
             foreach (var StringNode in Instance.Descendants("String"))
             {
                 var EditorID = (string)StringNode.Element("EDID");
                 var Rec = (string)StringNode.Element("REC");
                 var DestNode = StringNode.Element("Dest");
+                int RECID = 0;
+
+                if ((StringNode.Element("REC")?.Attribute("ID")) != null)
+                {
+                    RECID = ConvertHelper.ObjToInt((StringNode.Element("REC")?.Attribute("ID")));
+                }
+
                 if (EditorID != null && Rec != null)
                 {
-                    string Key = EditorID + "|" + Rec;
+                    string Key = RECID +"_"+ EditorID + "_" + Rec;
                     if (ItemDict.TryGetValue(Key, out XmlItem Item))
                     {
                         Item.GetTextIfTrans();
