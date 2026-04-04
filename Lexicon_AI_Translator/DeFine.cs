@@ -158,9 +158,9 @@ namespace LexTranslator
                 var CreatNewLocalSetting = new LocalSetting();
                 CreatNewLocalSetting.SaveConfig();
             }
-            if (!Directory.Exists(DeFine.GetFullPath(@"\Wordfreq")))
+            if (!Directory.Exists(DeFine.GetFullPath(@"\CorePlugins")))
             {
-                Directory.CreateDirectory(DeFine.GetFullPath(@"\Wordfreq"));
+                Directory.CreateDirectory(DeFine.GetFullPath(@"\CorePlugins"));
             }
         }
 
