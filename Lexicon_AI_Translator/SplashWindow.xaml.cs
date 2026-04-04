@@ -63,7 +63,7 @@ namespace LexTranslator
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Version.Content = DeFine.CurrentVersion;
-            string GetSelfPath = DeFine.GetFullPath(string.Empty);
+            string GetSelfPath = DeFine.GetFullPath(@"\");
 
             LoadingTrd = new Thread(() =>
             {
