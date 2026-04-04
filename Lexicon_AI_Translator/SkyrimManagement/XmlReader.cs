@@ -25,7 +25,7 @@ namespace LexTranslator.SkyrimManagement
                 this.EditorID = Item.EDID;
                 this.REC = Item.REC;
 
-                this.Key =Crc32Helper.ComputeCrc32(Item.EDID + "_" + Item.REC);
+                this.Key =Crc32Helper.ComputeCrc32(Item.EDID + "_" + Item.REC + "_");
                 this.SourceText = Item.Source;
 
                 if (Item.Source == Item.Dest)
@@ -77,8 +77,11 @@ namespace LexTranslator.SkyrimManagement
         public List<XmlItem> XmlItems = new List<XmlItem>();
         public Encoding CurrentEncoding = null;
         public XDocument Instance = null;
+
+        public HashSet<string> UniqueKeys = new HashSet<string>();
         public void Load(string Path)
         {
+            UniqueKeys.Clear();
             Close();
             CurrentEncoding = DataHelper.GetFileEncodeType(Path);
             XDocument Doc = XDocument.Load(Path);
@@ -97,7 +100,11 @@ namespace LexTranslator.SkyrimManagement
                   .ToList())
                 {
                     XmlItem SetItem = new XmlItem(GetItem);
-                    XmlItems.Add(SetItem);
+                    if (!UniqueKeys.Contains(SetItem.Key))
+                    {
+                        UniqueKeys.Add(SetItem.Key);
+                        XmlItems.Add(SetItem);
+                    }
                 }
             }
             catch 
@@ -108,6 +115,7 @@ namespace LexTranslator.SkyrimManagement
 
         public void Close()
         {
+            UniqueKeys.Clear();
             this.XmlItems.Clear();
             Instance = null;
         }
