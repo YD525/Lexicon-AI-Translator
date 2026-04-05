@@ -9,15 +9,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System.Linq;
-using System.Windows.Documents;
 using LexTranslator.TranslateManage;
 using LexTranslator.IDEManagement;
 
@@ -619,6 +616,7 @@ namespace LexTranslator
             Completion.StartOffset = (Start >= 0 && Doc.GetCharAt(Start) == '[') ? Start : Offset;
 
             StyleCompletionWindow(Completion);
+            AttachCompletionBehavior(Completion);  
 
             foreach (string Kw in BracketKeywords)
                 Completion.CompletionList.CompletionData.Add(
@@ -627,7 +625,6 @@ namespace LexTranslator
             Completion.Show();
             Completion.Closed += (S, E) => Completion = null;
         }
-
 
         private void ShowValueCompletion()
         {
@@ -648,7 +645,6 @@ namespace LexTranslator
             if (BracketStart < 0) return;
 
             string FieldName = Doc.GetText(BracketStart + 1, BracketEnd - BracketStart - 1);
-
             if (!BracketDefaults.TryGetValue(FieldName, out Func<string> GetDefault)) return;
 
             string DefaultValue = GetDefault();
@@ -656,7 +652,9 @@ namespace LexTranslator
             Completion?.Close();
             Completion = new CompletionWindow(SqlIDE.TextArea);
             Completion.StartOffset = Offset;
+
             StyleCompletionWindow(Completion);
+            AttachCompletionBehavior(Completion);  
 
             Completion.CompletionList.CompletionData.Add(
                 new MyCompletionData(DefaultValue, $"Current value for [{FieldName}]", GetValueIcon()));
@@ -665,7 +663,7 @@ namespace LexTranslator
             Completion.Closed += (S, E) => Completion = null;
         }
 
-     
+
         private static readonly Dictionary<string, Func<string>> BracketDefaults = new Dictionary<string, Func<string>>
         {
             ["From"] = () => ((int)TranslatorInterface.Instance.From).ToString(),
@@ -703,17 +701,13 @@ namespace LexTranslator
             Completion.StartOffset = Start;
 
             StyleCompletionWindow(Completion);
+            AttachCompletionBehavior(Completion);  // ← 传入 Completion
 
             var Data = Completion.CompletionList.CompletionData;
-
             foreach (string Kw in SqlKeywords)
                 Data.Add(new MyCompletionData(Kw, $"SQL Keyword: {Kw}", GetKeywordIcon()));
-
             foreach (string Tbl in TableNames)
                 Data.Add(new MyCompletionData(Tbl, $"Table: {Tbl}", GetTableIcon()));
-
-            //foreach (string Tbl in TableColumns.Keys)
-            //    Data.Add(new MyCompletionData(Tbl, $"Table: {Tbl}\nColumns: {string.Join(", ", TableColumns[Tbl])}", GetTableIcon()));
 
             Completion.Show();
             Completion.Closed += (S, E) => Completion = null;
@@ -739,16 +733,55 @@ namespace LexTranslator
 
         private void SqlEditor_TextEntering(object Sender, TextCompositionEventArgs E)
         {
-            if (Completion == null) return;
-            if (E.Text.Length == 0) return;
-
+            if (Completion == null || E.Text.Length == 0) return;
             char C = E.Text[0];
 
-            if (char.IsLetterOrDigit(C) || C == '_' || C == '[') return;
+            if (E.Text == "\n" || E.Text == "\r")
+            {
+                Completion.Close();
+            }
 
-            Completion.CompletionList.RequestInsertion(E);
+            if (char.IsWhiteSpace(C) || IsSqlSeparator(C))
+            {
+                Completion?.Close();
+            }
         }
 
+        private static bool IsSqlSeparator(char C) =>
+    char.IsWhiteSpace(C) ||
+    (char.IsPunctuation(C) && C != '_') ||
+    "()[]{}=,;".Contains(C);
+
+
+        private void AttachCompletionBehavior(CompletionWindow Win)
+        {
+            Win.CloseAutomatically = false;
+            Win.CloseWhenCaretAtBeginning = false;
+            Win.PreviewKeyDown += (S, E) =>
+            {
+                if (E.Key == Key.Space || E.Key == Key.Enter)
+                {
+                    Win.Close();
+                    E.Handled = false;
+                }
+                else if (E.Key == Key.Tab)
+                {
+                    var ListBox = Win.CompletionList.ListBox;
+                    if (ListBox.SelectedItem is ICompletionData Item)
+                    {
+                        Item.Complete(
+                            SqlIDE.TextArea,
+                            new AnchorSegment(
+                                SqlIDE.Document,
+                                Win.StartOffset,
+                                SqlIDE.TextArea.Caret.Offset - Win.StartOffset),
+                            E);
+                    }
+                    Win.Close();
+                    E.Handled = true;
+                }
+            };
+        }
         private void SqlEditor_TextEntered(object Sender, TextCompositionEventArgs E)
         {
             //if (E.Text == ".")
