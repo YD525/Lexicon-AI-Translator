@@ -2863,6 +2863,8 @@ namespace LexTranslator
 
                                 string GetTranslated = "";
 
+                                SetUnit.Translated = string.Empty;
+
                                 UnitGroup Result = TranslatorInterface.Instance.Translate(SetUnit, false);
 
                                 GetTranslated = Result.GetFrist().Translated;

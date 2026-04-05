@@ -640,13 +640,6 @@ namespace LexTranslator.TranslateManage
                 return;
             }
 
-            if (!PreparingComplete)
-            {
-                TranslationStatus = StateControl.Cancel;
-                EndAction.Invoke();
-                return;
-            }
-
             new Thread(() =>
             {
                 var GetBatchCore = Instance.GetBatchCore();
