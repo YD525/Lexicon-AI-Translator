@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 using System.Linq;
+using System.Windows.Documents;
 
 namespace LexTranslator.IDEManagement
 {
@@ -30,6 +31,7 @@ namespace LexTranslator.IDEManagement
 
         private void OnPreviewKeyDown(object Sender, KeyEventArgs E)
         {
+            if (!DeFine.GlobalLocalSetting.WordCompletion) return;
             if (E.Key == Key.Back)
             {
                 _LastPrefix = null;
@@ -58,6 +60,7 @@ namespace LexTranslator.IDEManagement
 
         private void OnTextEntered(object Sender, TextCompositionEventArgs E)
         {
+            if (!DeFine.GlobalLocalSetting.WordCompletion) return;
             if (string.IsNullOrEmpty(E.Text)) return;
             char C = E.Text[0];
 
@@ -72,6 +75,7 @@ namespace LexTranslator.IDEManagement
 
         private void OnTextEntering(object Sender, TextCompositionEventArgs E)
         {
+            if (!DeFine.GlobalLocalSetting.WordCompletion) return;
             if (_Completion == null || E.Text.Length == 0) return;
             char C = E.Text[0];
             if (C == ' ' || C == '\t')
@@ -132,6 +136,7 @@ namespace LexTranslator.IDEManagement
             _Completion.CloseWhenCaretAtBeginning = false;
             _Completion.PreviewKeyDown += (s, e) =>
             {
+                if (!DeFine.GlobalLocalSetting.WordCompletion) return;
                 if (e.Key == Key.Space || e.Key == Key.Enter)
                 {
                     _Completion.Close();
@@ -245,10 +250,12 @@ namespace LexTranslator.IDEManagement
             if (WordAutoComplete.WordCompleters.ContainsKey(Lang))
             {
                 DeFine.WordCompleter = WordAutoComplete.WordCompleters[Lang];
+                DeFine.WorkingWin.ShowWordCompletion();
             }
             else
             {
                 DeFine.WordCompleter = null;
+                DeFine.WorkingWin.HideWordCompletion();
             }
         }
     }

@@ -38,7 +38,7 @@ namespace LexTranslator
 
         public static string BackupPath = @"\BackUpData\";
 
-        public static string CurrentVersion = "3.8.1.3";
+        public static string CurrentVersion = "3.8.1.5";
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
         public static MainGui WorkingWin = null;
@@ -274,6 +274,11 @@ namespace LexTranslator
         public bool GenCSharp { get; set; } = true;
         public bool UseFullPunctuation { get; set; } = false;
 
+
+        public bool TableAuto { get; set; } = false;
+
+        public bool WordCompletion { get; set; } = true;
+
         public void ReadConfig()
         {
             try
@@ -323,6 +328,9 @@ namespace LexTranslator
                             this.GenCSharp = GetSetting.GenCSharp;
 
                             this.UseFullPunctuation = GetSetting.UseFullPunctuation;
+
+                            this.TableAuto = GetSetting.TableAuto;
+                            this.WordCompletion = GetSetting.WordCompletion;
                         }
                     }
                     else

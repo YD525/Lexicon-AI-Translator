@@ -38,7 +38,6 @@ using PhoenixEngine.Additional;
 using PhoenixEngine.Events;
 using PhoenixEngine.Engine;
 using LexTranslator.YDControls;
-using PhoenixEngine.Engine.ADO;
 using LexTranslator.IDEManagement;
 
 namespace LexTranslator
@@ -198,6 +197,8 @@ namespace LexTranslator
 
             LastSetLogButton = InputLogButton;
 
+            CompleteHelper.CheckLang(DeFine.GlobalLocalSetting.TargetLanguage);
+
             SyncConfig();
 
             new Thread(() =>
@@ -236,9 +237,7 @@ namespace LexTranslator
                 SyncCGLocation();
             }
 
-            UIHelper.SyncNodes();
-
-            CompleteHelper.CheckLang(DeFine.GlobalLocalSetting.TargetLanguage);
+            UIHelper.SyncNodes();       
             CompletionManager = new WordCompletionManager(ToStr);
         }
 
@@ -1843,6 +1842,43 @@ namespace LexTranslator
             {
                 AutoSpeak.IsChecked = false;
             }
+
+            if (DeFine.GlobalLocalSetting.TableAuto)
+            {
+                SetHotKeyDot(true);
+                NextAutoEnable = 1;
+                _AutoLoop = true;
+            }
+
+            if (DeFine.GlobalLocalSetting.WordCompletion)
+            {
+                AutoWordCompletion.IsChecked = true;
+            }
+            else
+            {
+                AutoWordCompletion.IsChecked = false;
+            }
+           
+            if (DeFine.WordCompleter == null)
+            {
+                HideWordCompletion();
+            }
+            else
+            {
+                ShowWordCompletion();
+            }
+        }
+
+        public void HideWordCompletion()
+        {
+            AutoWordCompletion.Visibility = Visibility.Collapsed;
+            UIAutoWordCompletion.Visibility = Visibility.Collapsed;
+        }
+
+        public void ShowWordCompletion()
+        {
+            AutoWordCompletion.Visibility = Visibility.Visible;
+            UIAutoWordCompletion.Visibility = Visibility.Visible;
         }
 
         public void EnableNormalModel()
@@ -3105,11 +3141,9 @@ namespace LexTranslator
 
                 if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
                 {
-                    var SourceLang = P_Language.DetectLanguageByLine(GetLine.SourceText);
-                    if (SourceLang != TranslatorInterface.Instance.To)
+                    if (P_Language.DetectLanguageByLine(GetLine.SourceText) != TranslatorInterface.Instance.To)
                     {
-                        if (GetLine.TransText.Length == 0 ||
-                            SourceLang == P_Language.DetectLanguageByLine(GetLine.TransText))
+                        if (GetLine.TransText.Length == 0 && (new TranslationPreprocessor().IsOnlySymbolsAndSpaces(GetLine.SourceText + GetLine.RealSource)) == false)
                         {
                             if (Lines[i].Score > 0)
                             {
@@ -3929,6 +3963,20 @@ namespace LexTranslator
         private const string ToolTipNextAutoOff = "Auto Next: OFF — Click to enable. When enabled, pressing Tab will automatically jump to the next untranslated entry.";
         private const string ToolTipNextAutoOn = "Auto Next: ON — Tab key is now redirected to jump to the next untranslated entry. Click to disable.";
         private bool _AutoLoop = false;
+
+        public void SetHotKeyDot(bool Enable)
+        {
+            if (Enable)
+            {
+                HotKeyDot.Fill = new SolidColorBrush(Color.FromRgb(11, 116, 209));
+                HotKeyArea.ToolTip = ToolTipNextAutoOn;
+            }
+            else
+            {
+                HotKeyDot.Fill = new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xFF, 0xFF));
+                HotKeyArea.ToolTip = ToolTipNextAutoOff;
+            }
+        }
         private void EnableHotKey_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _AutoLoop = !_AutoLoop;
@@ -3937,15 +3985,19 @@ namespace LexTranslator
 
             if (_AutoLoop)
             {
-                HotKeyDot.Fill = new SolidColorBrush(Color.FromRgb(11, 116, 209));
-                HotKeyArea.ToolTip = ToolTipNextAutoOn;
+                SetHotKeyDot(true);
                 NextAutoEnable = 1;
+
+                DeFine.GlobalLocalSetting.TableAuto = true;
+                DeFine.GlobalLocalSetting.SaveConfig();
             }
             else
             {
-                HotKeyDot.Fill = new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xFF, 0xFF));
-                HotKeyArea.ToolTip = ToolTipNextAutoOff;
+                SetHotKeyDot(false);
                 NextAutoEnable = 0;
+
+                DeFine.GlobalLocalSetting.TableAuto = false;
+                DeFine.GlobalLocalSetting.SaveConfig();
             }
 
             e.Handled = true;
@@ -3970,6 +4022,20 @@ namespace LexTranslator
                 UserTranslation.Show();
                 UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 5000");
             }
+        }
+
+        private void AutoWordCompletion_Click(object sender, RoutedEventArgs e)
+        {
+            if (AutoWordCompletion.IsChecked == true)
+            {
+                DeFine.GlobalLocalSetting.WordCompletion = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.WordCompletion = false;
+            }
+
+            DeFine.GlobalLocalSetting.SaveConfig();
         }
     }
 }
