@@ -178,7 +178,14 @@ namespace LexTranslator.UIManagement
                 }
             }
 
-            var QueryTranslated = TranslatorInterface.Instance.QueryTransData(Item.Key,Item.Type,Item.Original);
+            bool CanQueryAdvancedDictionary = false;
+
+            if (Item.GetRealOriginal() != Item.Original && Item.GetRealOriginal().Length > 0 && Item.Original.Length > 0)
+            {
+                CanQueryAdvancedDictionary = true;
+            }
+
+            var QueryTranslated = TranslatorInterface.Instance.QueryTransData(Item.Key,Item.Type,Item.Original,CanQueryAdvancedDictionary);
 
             if (QueryTranslated != null)
             {

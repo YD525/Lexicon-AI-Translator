@@ -438,37 +438,6 @@ namespace LexTranslator.TranslateManage
                         }
                     }
 
-                    if (Phoenix.Config.EnableGlobalSearch)
-                    {
-                        var QueryData = CloudDBCache.MatchOtherCloudItem(-1, (int)TranslatorInterface.Instance.To, Row.SourceText);
-
-                        if (QueryData.Count > 0)
-                        {
-                            var GetData = QueryData[QueryData.Count - 1];
-
-                            Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), GetData.Result);
-                            HasAddAIMemory = true;
-
-                            var Link = Instance.GetLink();
-                            Link[Row.Key] = GetData.Result;
-
-                            var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
-                            if (GetFakeGrid != null)
-                            {
-                                Row.TransText = GetData.Result;
-
-                                Row.SyncUI(GetListView);
-                            }
-
-                            if (EngineEvents.SetDataCall != null)
-                            {
-                                EngineEvents.SetDataCall(0, $"Database information matched, filename:{UniqueKeyHelper.RowidToOriginalKey(GetData.FileUniqueKey)}, value:{GetData.Result}");
-                            }
-
-                            CanSet = false;
-                        }
-                    }
-
                     if (CanSet)
                     {
                         var Link = Instance.GetLink();
@@ -697,25 +666,19 @@ namespace LexTranslator.TranslateManage
                             bool IsCloud = false;
                             Row.SyncData(ref IsCloud);
 
-                            bool HasAddAIMemory = false;
-
-                            if (!HasAddAIMemory)
+                            if (!string.IsNullOrEmpty(Row.TransText))
                             {
-                                if (!string.IsNullOrEmpty(Row.TransText))
-                                {
-                                    Phoenix.AddAIMemory(TranslatorInterface.Instance, Row.GetSource(), Row.TransText);
-                                }
+                                Phoenix.AddAIMemory(TranslatorInterface.Instance, Row.GetSource(), Row.TransText);
                             }
                         }
 
-                        int GetLeaderCount = GetBatchCore.Content.UnionData.Leaders.Count;
                         int ModifyCount = 0;
 
                         if (GetBatchCore != null)
                         {
                             ModifyCount = GetBatchCore.TranslatedCount;
                             GetBatchCore.Close();
-                           
+
                             GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation);
                             GetBatchCore.Start();
                         }
@@ -735,53 +698,79 @@ namespace LexTranslator.TranslateManage
                         }
 
                         bool IsEnd = false;
-
-                        List<BaseUnit> Units = new List<BaseUnit>();
                         int TotalCount = 0;
+
+                        DateTime StartTime = DateTime.Now;
+
                         while (!IsEnd)
                         {
                             try
                             {
+                                if (TranslationStatus == StateControl.Cancel)
+                                {
+                                    break;
+                                }
+
+                                if (!GetBatchCore.IsWork && GetBatchCore.ProcStage != 10)
+                                {
+                                    if ((DateTime.Now - StartTime).TotalSeconds > 30)
+                                        break;
+                                }
+                                else
+                                {
+                                    StartTime = DateTime.Now;
+                                }
+
                                 var GetUnit = GetBatchCore.DequeueTranslated(out IsEnd);
+
                                 if (GetUnit != null)
                                 {
                                     TotalCount++;
-                                    TranslatorInterface.Instance.SetLink(GetUnit.Key,GetUnit.Translated);
-                                    SetTransBarTittle(string.Format("STRINGS({0}/{1})", GetBatchCore.TranslatedCount, GetListView.Rows));
+                                    TranslatorInterface.Instance.SetLink(GetUnit.Key, GetUnit.Translated);
+                                    SetTransBarTittle(string.Format("STRINGS({0}/{1})",
+                                        GetBatchCore.TranslatedCount, GetListView.Rows));
                                 }
-
-                                Thread.Sleep(10);
+                                else 
+                                if (!IsEnd)
+                                {
+                                    Thread.Sleep(10);
+                                }
 
                                 if (WaitStopSign())
                                 {
                                     return;
                                 }
                             }
-                            catch { }
-
-                            if (GetBatchCore.ProcStage == 0)
+                            catch
                             {
-                                break;
+                                Thread.Sleep(10);
                             }
                         }
+
+                        while (!GetBatchCore.TranslatedQueue.IsEmpty)
+                        {
+                            if (GetBatchCore.TranslatedQueue.TryDequeue(out var TailUnit))
+                            {
+                                TranslatorInterface.Instance.SetLink(TailUnit.Key, TailUnit.Translated);
+                            }
+                        }
+
 
                         DeFine.WorkingWin.TransViewList.QuickRefresh();
 
                         var BatchCore = TranslatorInterface.Instance.GetBatchCore();
 
-                        if (BatchCore != null && IsEnd)
+                        if (BatchCore != null)
                         {
                             Thread.Sleep(500);
                             BatchCore.Close();
                         }
 
                         TranslationStatus = StateControl.Cancel;
-
                         EndAction.Invoke();
                     }
                 }
-                else
-                if (TranslationStatus == StateControl.Stop)
+                else if (TranslationStatus == StateControl.Stop)
                 {
                     SyncTransStateFreeze = true;
 
@@ -794,8 +783,7 @@ namespace LexTranslator.TranslateManage
 
                     SyncTransStateFreeze = false;
                 }
-                else
-                if (TranslationStatus == StateControl.Cancel || TranslationStatus == StateControl.Null)
+                else if (TranslationStatus == StateControl.Cancel || TranslationStatus == StateControl.Null)
                 {
                     SyncTransStateFreeze = true;
 

@@ -41,10 +41,6 @@ public class FakeGrid
 
     public string GetSource()
     {
-        if (this.RealSource.Length > 0)
-        {
-            return this.RealSource;
-        }
         return this.SourceText;
     }
 
@@ -74,15 +70,6 @@ public class FakeGrid
 
     public void SyncData(ref bool IsCloud)
     {
-        IsCloud = false;
-        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key,this.Type,this.SourceText);
-
-        if (QueryResult != null)
-        {
-            this.TransText = QueryResult.TransText;
-            IsCloud = QueryResult.FromCloud;
-        }
-
         bool FromDictionary = false;
 
         var FindDictionary = YDDictionaryHelper.CheckDictionary(this.Key);
@@ -110,6 +97,22 @@ public class FakeGrid
                     this.SourceText = this.RealSource;
                 }
             }
+        }
+
+        bool CanQueryAdvancedDictionary = false;
+
+        if (this.RealSource != this.SourceText && this.RealSource.Length > 0 && this.SourceText.Length > 0)
+        {
+            CanQueryAdvancedDictionary = true;
+        }
+
+        IsCloud = false;
+        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key,this.Type,this.SourceText,CanQueryAdvancedDictionary);
+
+        if (QueryResult != null)
+        {
+            this.TransText = QueryResult.TransText;
+            IsCloud = QueryResult.FromCloud;
         }
     }
 
