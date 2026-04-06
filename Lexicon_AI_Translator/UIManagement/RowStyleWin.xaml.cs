@@ -155,6 +155,7 @@ namespace LexTranslator.UIManagement
 
         public static List<string> RecordModifyStates = new List<string>();
 
+        public static HashSet<string> DictionaryKeys = new HashSet<string>();
         public Grid CreateLine(bool IsModify,double Height, BaseUnit Item)
         {
             var FindDictionary = YDDictionaryHelper.CheckDictionary(Item.Key);
@@ -193,7 +194,6 @@ namespace LexTranslator.UIManagement
                 {
                     Item.Translated = QueryTranslated.TransText;
                 }
-               
             }          
 
             Color FontColor = Colors.White;

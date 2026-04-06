@@ -2605,7 +2605,7 @@ namespace LexTranslator
                         //DeFine.ExtendWin.SetOriginal(GetGrid.SourceText, DeFine.WorkingWin.GlobalEspReader.StringsReader.QueryData(GetGrid.Key));
                     }
 
-                    TranslatorInterface.Instance.SyncTranslatedCount();
+                    TranslatorInterface.Instance.SyncTranslatedCount(RowStyleWin.DictionaryKeys.Count);
 
                     UIHelper.ShowButton(ApplyOTButton, false);
                 }

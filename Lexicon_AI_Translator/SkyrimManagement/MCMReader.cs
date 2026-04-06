@@ -107,14 +107,12 @@ namespace LexTranslator.SkyrimManage
 
         public void Close()
         {
-            TranslatorInterface.ClearTranslatorHistoryCache();
             Lines.Clear();
             MCMItems.Clear();
         }
 
         public void LoadMCM(string Path)
         {
-            TranslatorInterface.ClearTranslatorHistoryCache();
             TranslatorInterface.Instance.ClearCache();
             Lines.Clear();
             MCMItems.Clear();
@@ -171,7 +169,6 @@ namespace LexTranslator.SkyrimManage
 
         public void SaveMCMConfig(string OutPutPath)
         {
-            TranslatorInterface.ClearTranslatorHistoryCache();
             if (File.Exists(OutPutPath))
             {
                 return;

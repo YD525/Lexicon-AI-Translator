@@ -39,6 +39,15 @@ public class FakeGrid
         this.Score = Score;
     }
 
+    public string GetRealSource()
+    {
+        if (this.RealSource.Length == 0)
+        {
+            return this.SourceText;
+        }
+
+        return this.RealSource;
+    }
     public string GetSource()
     {
         return this.SourceText;
@@ -108,6 +117,14 @@ public class FakeGrid
 
         IsCloud = false;
         var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key,this.Type,this.SourceText,CanQueryAdvancedDictionary);
+
+        if (QueryResult.FromDictionary)
+        {
+            if (!RowStyleWin.DictionaryKeys.Contains(this.Key))
+            {
+                RowStyleWin.DictionaryKeys.Add(this.Key);
+            }
+        }
 
         if (QueryResult != null)
         {

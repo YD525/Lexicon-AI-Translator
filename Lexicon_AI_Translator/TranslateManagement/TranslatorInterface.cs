@@ -217,12 +217,6 @@ namespace LexTranslator.TranslateManage
 
         public static Dictionary<int, List<TranslatorHistoryCache>> TranslatorHistoryCaches = new Dictionary<int, List<TranslatorHistoryCache>>();
 
-        public static void ClearTranslatorHistoryCache()
-        {
-            RowStyleWin.RecordModifyStates.Clear();
-            TranslatorHistoryCaches.Clear();
-        }
-
         public static void SetTranslatorHistoryCache(string Key, string Translated, bool IsCloud)
         {
             int GetKey = Key.GetHashCode();
@@ -322,7 +316,7 @@ namespace LexTranslator.TranslateManage
                 {
                     if (!string.IsNullOrEmpty(Row.TransText))
                     {
-                        Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), Row.TransText);
+                        TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), Row.TransText);
                     }
                 }
 
@@ -349,7 +343,7 @@ namespace LexTranslator.TranslateManage
                             AdvancedDictionaryItem NewItem = new AdvancedDictionaryItem(
                                 string.Empty,//The rule applies to all files.
                                 AutoType,//Automatically determine the type of the current term
-                                Row.GetSource(),//Get the source text corresponding to stringsfile id
+                                Row.GetRealSource(),//Get the source text corresponding to stringsfile id
                                 Row.TransText,//Get the translation content
                                 TranslatorInterface.Instance.From,//Get source language
                                 TranslatorInterface.Instance.To,//Get target language
@@ -400,7 +394,7 @@ namespace LexTranslator.TranslateManage
                         if (GetTrans != null)
                         {
                             //Added to context memory. Helps AI improve accuracy.
-                            Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), GetTrans.Value);
+                            TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), GetTrans.Value);
                             HasAddAIMemory = true;
 
                             var Link = Instance.GetLink();
@@ -459,7 +453,14 @@ namespace LexTranslator.TranslateManage
         }
 
         public static bool PreparingComplete = false;
-        public static bool FristInit = false;
+
+        private static int _InitGuard = 0;
+        public static bool FristInit
+        {
+            get => Interlocked.CompareExchange(ref _InitGuard, 0, 0) == 1;
+            set => Interlocked.Exchange(ref _InitGuard, value ? 1 : 0);
+        }
+
         public static Thread PreparingTrd = null;
         public static Thread InitTrd = null;
         public static void PreparingTranslationUnits()
@@ -519,7 +520,7 @@ namespace LexTranslator.TranslateManage
                     List<BaseUnit> BaseUnits = GetCanTransUnits();
                     InitTrd = new Thread(() =>
                     {
-                        Instance.Init(BaseUnits, AggregationMode.Aggregation);
+                        Instance.Init(BaseUnits, AggregationMode.Aggregation,RowStyleWin.DictionaryKeys.Count);
                         InitTrd = null;
                     });
 
@@ -668,7 +669,7 @@ namespace LexTranslator.TranslateManage
 
                             if (!string.IsNullOrEmpty(Row.TransText))
                             {
-                                Phoenix.AddAIMemory(TranslatorInterface.Instance, Row.GetSource(), Row.TransText);
+                                TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), Row.TransText);
                             }
                         }
 
@@ -679,7 +680,7 @@ namespace LexTranslator.TranslateManage
                             ModifyCount = GetBatchCore.TranslatedCount;
                             GetBatchCore.Close();
 
-                            GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation);
+                            GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation,RowStyleWin.DictionaryKeys.Count);
                             GetBatchCore.Start();
                         }
 
@@ -836,6 +837,10 @@ namespace LexTranslator.TranslateManage
       
         public static void Close()
         {
+            RowStyleWin.RecordModifyStates.Clear();
+            TranslatorInterface.TranslatorHistoryCaches.Clear();
+            RowStyleWin.DictionaryKeys.Clear();
+
             FristInit = false;
             NeedNextPreparing = false;
 
