@@ -38,7 +38,7 @@ namespace LexTranslator
 
         public static string BackupPath = @"\BackUpData\";
 
-        public static string CurrentVersion = "3.8.1.5";
+        public static string CurrentVersion = "3.8.1.6";
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
         public static MainGui WorkingWin = null;
@@ -262,7 +262,6 @@ namespace LexTranslator
 
         public bool EnableAnalyzingWords { get; set; } = true;
         public bool AutoUpdateStringsFileToDatabase { get; set; } = false;
-        public bool ForceTranslationConsistency { get; set; } = true;
 
         public bool EnableLanguageDetect { get; set; } = true;
         public string P_Placeholders { get; set; } = "<(.*?)>,";
@@ -315,8 +314,6 @@ namespace LexTranslator
 
                             this.EnableAnalyzingWords = GetSetting.EnableAnalyzingWords;
                             this.AutoUpdateStringsFileToDatabase = GetSetting.AutoUpdateStringsFileToDatabase;
-
-                            this.ForceTranslationConsistency = GetSetting.ForceTranslationConsistency;
 
                             this.EnableLanguageDetect = GetSetting.EnableLanguageDetect;
                             this.P_Placeholders = GetSetting.P_Placeholders;

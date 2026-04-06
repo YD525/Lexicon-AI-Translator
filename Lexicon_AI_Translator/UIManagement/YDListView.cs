@@ -75,7 +75,7 @@ public class FakeGrid
     public void SyncData(ref bool IsCloud)
     {
         IsCloud = false;
-        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key);
+        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key,this.Type,this.SourceText);
 
         if (QueryResult != null)
         {

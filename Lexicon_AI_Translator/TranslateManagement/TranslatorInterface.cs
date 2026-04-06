@@ -318,7 +318,7 @@ namespace LexTranslator.TranslateManage
 
                 bool HasAddAIMemory = false;
 
-                if (!HasAddAIMemory && DeFine.GlobalLocalSetting.ForceTranslationConsistency)
+                if (!HasAddAIMemory)
                 {
                     if (!string.IsNullOrEmpty(Row.TransText))
                     {
@@ -646,6 +646,8 @@ namespace LexTranslator.TranslateManage
 
                 if (TranslationStatus == StateControl.Run && !IsKeep)
                 {
+                    DeFine.WorkingWin?.UPDateUI();
+
                     if (NeedNextPreparing)
                     {
                         FristInit = false;
@@ -687,24 +689,21 @@ namespace LexTranslator.TranslateManage
 
                         MakeReady();
 
-                        if (DeFine.GlobalLocalSetting.ForceTranslationConsistency)
+                        SetTransBarTittle("Preparing Consistency...");
+
+                        for (int i = 0; i < GetListView.Rows; i++)
                         {
-                            SetTransBarTittle("Preparing Consistency...");
+                            var Row = GetListView.RealLines[i];
+                            bool IsCloud = false;
+                            Row.SyncData(ref IsCloud);
 
-                            for (int i = 0; i < GetListView.Rows; i++)
+                            bool HasAddAIMemory = false;
+
+                            if (!HasAddAIMemory)
                             {
-                                var Row = GetListView.RealLines[i];
-                                bool IsCloud = false;
-                                Row.SyncData(ref IsCloud);
-
-                                bool HasAddAIMemory = false;
-
-                                if (!HasAddAIMemory && DeFine.GlobalLocalSetting.ForceTranslationConsistency)
+                                if (!string.IsNullOrEmpty(Row.TransText))
                                 {
-                                    if (!string.IsNullOrEmpty(Row.TransText))
-                                    {
-                                        Phoenix.AddAIMemory(TranslatorInterface.Instance,Row.GetSource(), Row.TransText);
-                                    }
+                                    Phoenix.AddAIMemory(TranslatorInterface.Instance, Row.GetSource(), Row.TransText);
                                 }
                             }
                         }
@@ -747,6 +746,7 @@ namespace LexTranslator.TranslateManage
                                 if (GetUnit != null)
                                 {
                                     TotalCount++;
+                                    TranslatorInterface.Instance.SetLink(GetUnit.Key,GetUnit.Translated);
                                     SetTransBarTittle(string.Format("STRINGS({0}/{1})", GetBatchCore.TranslatedCount, GetListView.Rows));
                                 }
 
@@ -776,8 +776,6 @@ namespace LexTranslator.TranslateManage
                         }
 
                         TranslationStatus = StateControl.Cancel;
-
-                        DeFine.WorkingWin?.UPDateUI();
 
                         EndAction.Invoke();
                     }

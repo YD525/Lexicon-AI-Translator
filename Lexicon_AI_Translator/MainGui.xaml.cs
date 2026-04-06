@@ -3073,19 +3073,6 @@ namespace LexTranslator
 
             DeFine.GlobalLocalSetting.SaveConfig();
         }
-        private void ForceTranslationConsistency_Click(object sender, RoutedEventArgs e)
-        {
-            if (ForceTranslationConsistency.IsChecked == true)
-            {
-                DeFine.GlobalLocalSetting.ForceTranslationConsistency = true;
-            }
-            else
-            {
-                DeFine.GlobalLocalSetting.ForceTranslationConsistency = false;
-            }
-
-            DeFine.GlobalLocalSetting.SaveConfig();
-        }
         private void EnableAnalyzingWords_Click(object sender, RoutedEventArgs e)
         {
             if (EnableAnalyzingWords.IsChecked == true)
@@ -3508,15 +3495,6 @@ namespace LexTranslator
                 else
                 {
                     AutoUpdateStringsFileToDatabase.IsChecked = false;
-                }
-
-                if (DeFine.GlobalLocalSetting.ForceTranslationConsistency)
-                {
-                    ForceTranslationConsistency.IsChecked = true;
-                }
-                else
-                {
-                    ForceTranslationConsistency.IsChecked = false;
                 }
 
                 if (DeFine.GlobalLocalSetting.EnableAnalyzingWords)

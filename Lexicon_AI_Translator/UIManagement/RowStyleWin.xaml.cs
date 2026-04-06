@@ -157,14 +157,6 @@ namespace LexTranslator.UIManagement
 
         public Grid CreateLine(bool IsModify,double Height, BaseUnit Item)
         {
-
-            var QueryTranslated = TranslatorInterface.Instance.QueryTransData(Item.Key);
-
-            if (QueryTranslated != null)
-            {
-                Item.Translated = QueryTranslated.TransText;
-            }
-
             var FindDictionary = YDDictionaryHelper.CheckDictionary(Item.Key);
 
             if (FindDictionary != null)
@@ -185,6 +177,17 @@ namespace LexTranslator.UIManagement
                     }
                 }
             }
+
+            var QueryTranslated = TranslatorInterface.Instance.QueryTransData(Item.Key,Item.Type,Item.Original);
+
+            if (QueryTranslated != null)
+            {
+                if (QueryTranslated?.TransText.Length > 0)
+                {
+                    Item.Translated = QueryTranslated.TransText;
+                }
+               
+            }          
 
             Color FontColor = Colors.White;
 

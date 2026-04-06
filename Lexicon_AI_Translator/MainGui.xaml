@@ -1303,25 +1303,6 @@ Fill="White"/>
                                                 </Border>
 
                                                 <Label Style="{DynamicResource TittleFont}">
-                                                    Force Translation Consistency
-                                                </Label>
-
-                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
-                                                    <Grid Margin="0 5 0 5">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="30"/>
-                                                            <ColumnDefinition Width="1*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <CheckBox Name="ForceTranslationConsistency" Style="{DynamicResource DefCheckBox}" VerticalAlignment="Center" Grid.Column="0" HorizontalAlignment="Center" Click="ForceTranslationConsistency_Click">
-
-                                                        </CheckBox>
-                                                        <TextBox  Grid.Column="1" Style="{DynamicResource InFoText}">
-                                                            Once this feature is enabled, any translated fields will be added to the AI ​​cache, including all content from both manual and cloud translations. (Enabling this feature helps the AI ​​mimic the style of user translations.)
-                                                        </TextBox>
-                                                    </Grid>
-                                                </Border>
-
-                                                <Label Style="{DynamicResource TittleFont}">
                                                     Automatic Training Database
                                                 </Label>
 
