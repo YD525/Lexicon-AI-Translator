@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
         Title="NPC Dialogue Locator" Height="150" Width="300" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
-    <Grid>
+    <Grid Background="#FF2F2F2F">
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
-                <Label>
+                <Label Foreground="White">
                     NpcName
                 </Label>
                 <TextBox Name="NpcName" Width="150" TextChanged="TextBox_TextChanged">

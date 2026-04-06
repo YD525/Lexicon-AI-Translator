@@ -70,10 +70,11 @@ namespace LexTranslator
 
                 string Pattern = @"(?i)\b(?:FROM|INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+[`""\[]?(?<TableName>\w+)[`""\]]?";
 
-                Match Match = Regex.Match(Sql, Pattern, RegexOptions.Singleline);
-                if (Match.Success)
+                var Matches = Regex.Matches(Sql, Pattern, RegexOptions.Singleline);
+
+                if (Matches.Count > 0)
                 {
-                    string TableName = Match.Groups["TableName"].Value;
+                    string TableName = Matches[Matches.Count - 1].Groups["TableName"].Value;
                     SetTableName(TableName);
                     return TableName;
                 }
