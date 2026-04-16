@@ -509,7 +509,7 @@ namespace LexTranslator.SkyrimManagement
         private IntPtr _Instance;
         private bool _Disposed = false;
 
-        public static string DllVersion { get; } = ReadDllVersion();
+        public static string Version { get; } = ReadDllVersion();
 
         public Dictionary<string, List<Character>> GameCharacters = new Dictionary<string, List<Character>>();
         public Dictionary<string, RecordItem> Records = new Dictionary<string, RecordItem>();
