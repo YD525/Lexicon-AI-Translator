@@ -750,7 +750,7 @@ namespace LexTranslator
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     FromStringsFile.Visibility = Visibility.Visible;
-                    UIHelper.SyncFromStringsFile(TransViewList);
+                    UIHelper.SyncFromStringsFile(GlobalEspReader,TransViewList);
                 }));
             }
             else
@@ -796,7 +796,7 @@ namespace LexTranslator
                 {
                     if (CurrentTransType == 2)
                     {
-                        EspReader.SelectSig(CurrentSig);
+                        GlobalEspReader.SelectSig(CurrentSig);
 
                         if (DataLoadingTrd != null)
                         {
@@ -1454,7 +1454,7 @@ namespace LexTranslator
                     {
                         string TempFilePath = LastSetPath + ".Temp";
 
-                        int ModifyCount = EspReader.SaveEsp(TempFilePath);
+                        int ModifyCount = GlobalEspReader.SaveEsp(TempFilePath);
 
                         if (ModifyCount == 0)
                         {
@@ -2248,7 +2248,7 @@ namespace LexTranslator
                         Modules.Children.Add(UIHelper.CreatModuleItem("LexTranslator", DeFine.CurrentVersion));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Translation Engine", Phoenix.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Pex Analysis", PexHeuristicAnalysis.Version));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("Esp Reader", EspInterop.Version));
+                        Modules.Children.Add(UIHelper.CreatModuleItem("Esp Reader", EspReader.DllVersion));
                         Modules.Children.Add(UIHelper.CreatModuleItem("Pex Reader", PexInterop.Version));
                         Modules.Children.Add(UIHelper.CreatModuleItem("DSD Convert", DSDConverter.Version));
                     }
@@ -3006,7 +3006,7 @@ namespace LexTranslator
             {
                 if (CurrentTransType == 2 && TransViewList.Rows > 0)
                 {
-                    if (EspReader.Records != null)
+                    if (GlobalEspReader.Records != null)
                     {
                         var GetWritePath = DataHelper.ShowSaveFileDialog(LModName + ".json", "DSD (*.json)|*.json");
 
@@ -3938,6 +3938,8 @@ namespace LexTranslator
         private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             NPCFinder NNPCFinder = new NPCFinder();
+            NNPCFinder.EspInstance = GlobalEspReader;
+
             NNPCFinder.Owner = this;
             NNPCFinder.Show();
         }
