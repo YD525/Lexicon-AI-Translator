@@ -499,7 +499,7 @@
                                             </Label>
                                         </Border>
 
-                                        <Border Name="TestAll" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="TestAll_PreviewMouseDown" Visibility="Visible">
+                                        <Border Name="TestAll" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="TestAll_PreviewMouseDown" Visibility="Collapsed">
                                             <Label Style="{DynamicResource ButtonFont}" Name="TestAllButton">
                                                 TestAll
                                             </Label>
