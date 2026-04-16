@@ -1988,9 +1988,9 @@ namespace LexTranslator
 
             if (CurrentTransType == 2)
             {
-                if (EspReader.Records.ContainsKey(LastSetKey))
+                if (GlobalEspReader.Records.ContainsKey(LastSetKey))
                 {
-                    var GetRecord = EspReader.Records[LastSetKey];
+                    var GetRecord = GlobalEspReader.Records[LastSetKey];
                     SetLog("Select:" + GetRecord.FormID + " | " + GetRecord.ParentSig + " " + GetRecord.ChildSig);
                 }
             }
@@ -1999,11 +1999,11 @@ namespace LexTranslator
                 SetLog("Select:" + LastSetKey);
             }
 
-            if (EspReader.GameCharacters.ContainsKey(Key))
+            if (GlobalEspReader.GameCharacters.ContainsKey(Key))
             {
                 NpcView.Visibility = Visibility.Visible;
-                NpcName.Text = EspReader.GameCharacters[Key][0].Name;
-                NpcSex.Content = EspReader.GameCharacters[Key][0].Gender.ToString();
+                NpcName.Text = GlobalEspReader.GameCharacters[Key][0].Name;
+                NpcSex.Content = GlobalEspReader.GameCharacters[Key][0].Gender.ToString();
             }
             else
             {
@@ -2067,7 +2067,7 @@ namespace LexTranslator
                         AutoLoadHistoryList();
                     }));
 
-                    DeFine.ExtendWin.SetOriginal(GridHandle.SourceText, EspReader.ToStringsFile.QueryData(GridHandle.Key));
+                    DeFine.ExtendWin.SetOriginal(GridHandle.SourceText, GlobalEspReader.ToStringsFile.QueryData(GridHandle.Key));
                 }
             }
         }
@@ -3907,7 +3907,9 @@ namespace LexTranslator
                                 ExtendViewTag.Style = (Style)this.FindResource("ExWinShow");
                                 CodeViewTag.Style = (Style)this.FindResource("ExWinHide");
 
+                                DeFine.ExtendWin.EspInstance = GlobalEspReader;
                                 DeFine.ExtendWin.ShowUI();
+
                                 DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
                                 {
                                     DeFine.CurrentCodeView.Hide();

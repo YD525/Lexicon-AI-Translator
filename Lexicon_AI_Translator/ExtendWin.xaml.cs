@@ -131,6 +131,7 @@ namespace LexTranslator
             }
         }
 
+        public EspReader EspInstance = null;
         public void MatchTransItem(string Original, uint StringKey, CancellationToken CancellationToken)
         {
             MatchView.Dispatcher.Invoke(new Action(() =>
@@ -188,12 +189,12 @@ namespace LexTranslator
             if (StringKey != 0)
                 if (DeFine.WorkingWin.CurrentTransType == 2)
                 {
-                    if (EspReader.ToStringsFile != null)
+                    if (EspInstance.ToStringsFile != null)
                     {
-                        if (EspReader.ToStringsFile.Strings.ContainsKey(StringKey) == true)
+                        if (EspInstance.ToStringsFile.Strings.ContainsKey(StringKey) == true)
                         {
                             string AutoFileName = "Strings";
-                            var FindItem = EspReader.ToStringsFile.Strings[StringKey];
+                            var FindItem = EspInstance.ToStringsFile.Strings[StringKey];
 
                             if (FindItem.Type == StringsFileType.DL)
                             {

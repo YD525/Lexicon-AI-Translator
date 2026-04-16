@@ -188,7 +188,7 @@ namespace LexTranslator.UIManage
             return MainGrid;
         }
 
-        public static void SyncFromStringsFile(YDListView View)
+        public static void SyncFromStringsFile(EspReader EspInstance, YDListView View)
         {
             var CanVasHandle = View.GetMainCanvas();
             CanVasHandle.Dispatcher.Invoke(new Action(() =>
@@ -200,12 +200,12 @@ namespace LexTranslator.UIManage
             {
                 var Line = View.RealLines[i];
 
-                if (EspReader.Records.ContainsKey(Line.Key))
+                if (EspInstance.Records.ContainsKey(Line.Key))
                 {
-                    var GetRealRecord = EspReader.Records[Line.Key];
-                    if (EspReader.FromStringsFile.Strings.ContainsKey(GetRealRecord.StringID))
+                    var GetRealRecord = EspInstance.Records[Line.Key];
+                    if (EspInstance.FromStringsFile.Strings.ContainsKey(GetRealRecord.StringID))
                     {
-                        View.RealLines[i].SourceText = EspReader.FromStringsFile.Strings[GetRealRecord.StringID].Value;
+                        View.RealLines[i].SourceText = EspInstance.FromStringsFile.Strings[GetRealRecord.StringID].Value;
                         View.RealLines[i].RealSource = string.Empty;
                         View.RealLines[i].SyncUI(View);
                     }

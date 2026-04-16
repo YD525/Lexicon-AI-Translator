@@ -595,7 +595,6 @@ namespace LexTranslator.SkyrimManagement
 
             if (File.Exists(Path))
             {
-                Records.Clear();
                 Types.Clear();
 
                 int State = EspNative.C_ReadEsp(_Instance, Path);
