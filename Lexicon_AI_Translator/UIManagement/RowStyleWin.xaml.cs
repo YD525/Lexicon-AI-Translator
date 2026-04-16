@@ -475,6 +475,11 @@ namespace LexTranslator.UIManagement
 
             Value = "\"" + Value + "\"";
 
+            if (LineID == 0)
+            {
+                LineID = 1;
+            }
+
             AutoSelectIDETrd = new Thread(() =>
             {
                 try

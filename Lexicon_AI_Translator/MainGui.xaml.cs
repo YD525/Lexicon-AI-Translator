@@ -856,15 +856,18 @@ namespace LexTranslator
 
                         foreach (var GetItem in Strings)
                         {
-                            int CalcLineIndex = GetItem.FunctionRef.PscStartLineIndex;
+                            if (GetItem.FunctionRef != null)
+                            {
+                                int CalcLineIndex = GetItem.FunctionRef.PscStartLineIndex;
 
-                            if (PexLinks.ContainsKey(GetItem.UniqueKey))
-                            {
-                                PexLinks[GetItem.UniqueKey] = CalcLineIndex;
-                            }
-                            else
-                            {
-                                PexLinks.Add(GetItem.UniqueKey, CalcLineIndex);
+                                if (PexLinks.ContainsKey(GetItem.UniqueKey))
+                                {
+                                    PexLinks[GetItem.UniqueKey] = CalcLineIndex;
+                                }
+                                else
+                                {
+                                    PexLinks.Add(GetItem.UniqueKey, CalcLineIndex);
+                                }
                             }
 
                             this.Dispatcher.Invoke(new Action(() =>
