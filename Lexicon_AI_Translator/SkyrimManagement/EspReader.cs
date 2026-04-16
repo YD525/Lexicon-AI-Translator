@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
 
@@ -418,6 +419,53 @@ namespace LexTranslator.SkyrimManagement
                 FreeSearchResults(ResultsPtr, Count);
             }
         }
+
+        public static IntPtr StringToUtf8Ptr(string s)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(s ?? "");
+            IntPtr ptr = Marshal.AllocHGlobal(bytes.Length + 1);
+            Marshal.Copy(bytes, 0, ptr, bytes.Length);
+            Marshal.WriteByte(ptr, bytes.Length, 0);
+            return ptr;
+        }
+
+
+        public static bool ModifySubRecordByOffset(IntPtr Instance,bool IsCell, int ParentIndex, int SubIndex, string NewUtf8Data)
+        {
+            IntPtr PtrNewData = IntPtr.Zero;
+            try
+            {
+                PtrNewData = StringToUtf8Ptr(NewUtf8Data ?? "");
+                if (IsCell)
+                {
+                    return C_ModifySubRecordByOffset(Instance,1, ParentIndex, SubIndex, PtrNewData);
+                }
+                else
+                {
+                    return C_ModifySubRecordByOffset(Instance,0, ParentIndex, SubIndex, PtrNewData);
+                }
+            }
+            finally
+            {
+                if (PtrNewData != IntPtr.Zero) Marshal.FreeHGlobal(PtrNewData);
+            }
+        }
+
+
+        public static bool SaveEsp(IntPtr Instance, string OutputPath)
+        {
+            IntPtr Ptr = IntPtr.Zero;
+            try
+            {
+                Ptr = StringToUtf8Ptr(OutputPath);
+                return EspNative.C_SaveEsp(Instance, Ptr);
+            }
+            finally 
+            { 
+                if (Ptr != IntPtr.Zero) 
+                    Marshal.FreeHGlobal(Ptr); 
+            }
+        }
     }
 
 
@@ -457,7 +505,7 @@ namespace LexTranslator.SkyrimManagement
     // ============================================================
     public class EspReader : IDisposable
     {
-        private IntPtr _Handle;
+        private IntPtr _Instance;
         private bool _Disposed = false;
 
         public static string DllVersion { get; } = ReadDllVersion();
@@ -470,22 +518,22 @@ namespace LexTranslator.SkyrimManagement
         // ── Constructor / destructor ──────────────────────────
         public EspReader()
         {
-            _Handle = EspNative.C_CreateInstance();
-            if (_Handle == IntPtr.Zero)
+            _Instance = EspNative.C_CreateInstance();
+            if (_Instance == IntPtr.Zero)
                 throw new InvalidOperationException("Failed to create EspInstance in native DLL.");
 
-            EspNative.C_InitDefaultFilter(_Handle);
-            EspNative.C_SetDefaultFilter(_Handle);
+            EspNative.C_InitDefaultFilter(_Instance);
+            EspNative.C_SetDefaultFilter(_Instance);
         }
 
         public void Dispose()
         {
             if (!_Disposed)
             {
-                if (_Handle != IntPtr.Zero)
+                if (_Instance != IntPtr.Zero)
                 {
-                    EspNative.C_DestroyInstance(_Handle);
-                    _Handle = IntPtr.Zero;
+                    EspNative.C_DestroyInstance(_Instance);
+                    _Instance = IntPtr.Zero;
                 }
                 _Disposed = true;
             }
@@ -496,7 +544,7 @@ namespace LexTranslator.SkyrimManagement
 
         private void EnsureNotDisposed()
         {
-            if (_Disposed || _Handle == IntPtr.Zero)
+            if (_Disposed || _Instance == IntPtr.Zero)
                 throw new ObjectDisposedException(nameof(EspReader));
         }
 
@@ -517,22 +565,22 @@ namespace LexTranslator.SkyrimManagement
         public void SetDefaultFilter()
         {
             EnsureNotDisposed();
-            EspNative.C_InitDefaultFilter(_Handle);
-            EspNative.C_SetDefaultFilter(_Handle);
+            EspNative.C_InitDefaultFilter(_Instance);
+            EspNative.C_SetDefaultFilter(_Instance);
         }
 
         public void SetFilter(Dictionary<string, string[]> filterConfig)
         {
             EnsureNotDisposed();
-            EspNative.C_ClearFilter(_Handle);
+            EspNative.C_ClearFilter(_Instance);
             foreach (var kvp in filterConfig)
-                EspNative.C_SetFilter(_Handle, kvp.Key, kvp.Value, kvp.Value.Length);
+                EspNative.C_SetFilter(_Instance, kvp.Key, kvp.Value, kvp.Value.Length);
         }
 
         public void ClearFilter()
         {
             EnsureNotDisposed();
-            EspNative.C_ClearFilter(_Handle);
+            EspNative.C_ClearFilter(_Instance);
         }
 
         // ── IO ───────────────────────────────────────────────
@@ -543,24 +591,49 @@ namespace LexTranslator.SkyrimManagement
         {
             EnsureNotDisposed();
             if (!File.Exists(path)) return false;
-            int result = EspNative.C_ReadEsp(_Handle, path);
+            int result = EspNative.C_ReadEsp(_Instance, path);
             if (result == 0) EspPath = path;
             return result == 0;
         }
 
-        /// <summary>
-        /// Save modified records to <paramref name="outputPath"/>.
-        /// </summary>
-        public bool SaveEsp(string outputPath)
+        public int SaveEsp(string OutPutPath)
         {
-            EnsureNotDisposed();
-            IntPtr ptr = IntPtr.Zero;
-            try
+            int ModifyCount = 0;
+
+            for (int i = 0; i < Records.Count; i++)
             {
-                ptr = StringToUtf8Ptr(outputPath);
-                return EspNative.C_SaveEsp(_Handle, ptr);
+                var Record = Records[Records.ElementAt(i).Key];
+
+                var Link = TranslatorInterface.Instance.GetLink();
+
+                var GetTransData = Link[Record.UniqueKey];
+                if (GetTransData != null)
+                {
+                    if (GetTransData.Length > 0 && GetTransData != Record.String)
+                    {
+                        bool IsCell = false;
+
+                        if (Record.ParentSig == "CELL")
+                        {
+                            IsCell = true;
+                        }
+
+                        if (ConvertHelper.ObjToLong(GetTransData) > 0)
+                        {
+                            continue;
+                        }
+
+                        if (EspNative.ModifySubRecordByOffset(_Instance, IsCell, Record.ParentIndex, Record.SubIndex, GetTransData))
+                        {
+                            ModifyCount++;
+                        }
+                    }
+                }
             }
-            finally { if (ptr != IntPtr.Zero) Marshal.FreeHGlobal(ptr); }
+
+            EspNative.SaveEsp(_Instance,OutPutPath);
+
+            return ModifyCount;
         }
 
         /// <summary>
@@ -568,28 +641,32 @@ namespace LexTranslator.SkyrimManagement
         /// </summary>
         public void Clear()
         {
+            Records.Clear();
+            GameCharacters.Clear();
             EnsureNotDisposed();
             EspPath = string.Empty;
-            EspNative.C_Clear(_Handle);
+            EspNative.C_Clear(_Instance);
         }
 
         // ── Field report ─────────────────────────────────────
         public string GetFieldReport()
         {
             EnsureNotDisposed();
-            int len = EspNative.C_GetFieldReportLength(_Handle);
-            if (len <= 0) return "Validator not initialized";
-            IntPtr ptr = EspNative.C_GetFieldReport(_Handle);
-            if (ptr == IntPtr.Zero) return "Validator not initialized";
-            byte[] buf = new byte[len];
-            Marshal.Copy(ptr, buf, 0, len);
-            return Encoding.UTF8.GetString(buf);
+            int Len = EspNative.C_GetFieldReportLength(_Instance);
+            if (Len <= 0) return "Validator not initialized";
+            IntPtr Ptr = EspNative.C_GetFieldReport(_Instance);
+            if (Ptr == IntPtr.Zero) return "Validator not initialized";
+            byte[] Buffer = new byte[Len];
+            Marshal.Copy(Ptr, Buffer, 0, Len);
+            return Encoding.UTF8.GetString(Buffer);
         }
 
 
         private bool IsFristSelect = true;
         public void SelectSig(string Sig)
         {
+            EnsureNotDisposed();
+
             Records.Clear();
 
             Dictionary<uint, Character> InfoToCharacter = null;
@@ -599,7 +676,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 if (Sig.Equals("ALL"))
                 {
-                    Characters.AddRange(EspNative.GetAllCharacters(_Handle));
+                    Characters.AddRange(EspNative.GetAllCharacters(_Instance));
 
                     InfoToCharacter = new Dictionary<uint, Character>(Characters.Sum(c => c.LinkedInfos.Count));
 
@@ -622,7 +699,7 @@ namespace LexTranslator.SkyrimManagement
                 }
             }
 
-            foreach (var GetRecord in EspNative.SearchBySig(_Handle,Sig))
+            foreach (var GetRecord in EspNative.SearchBySig(_Instance, Sig))
             {
                 uint RealFormID = GetRecord.FormID;
                 string ParentFormID = GetRecord.GetFormIDHex();
@@ -687,143 +764,6 @@ namespace LexTranslator.SkyrimManagement
                 }
             }
         }
-
-        // ── Modify ───────────────────────────────────────────
-        public bool ModifySubRecordByOffset(bool isCell, int parentIndex, int subIndex, string newData)
-        {
-            EnsureNotDisposed();
-            IntPtr ptr = IntPtr.Zero;
-            try
-            {
-                ptr = StringToUtf8Ptr(newData ?? "");
-                return EspNative.C_ModifySubRecordByOffset(_Handle, isCell ? 1 : 0, parentIndex, subIndex, ptr);
-            }
-            finally { if (ptr != IntPtr.Zero) Marshal.FreeHGlobal(ptr); }
-        }
-
-        public bool ModifySubRecord(uint formId, string recordSig, string subSig,
-            int occurrenceIndex, int globalIndex, string newData)
-        {
-            EnsureNotDisposed();
-            IntPtr pRec = IntPtr.Zero, pSub = IntPtr.Zero, pData = IntPtr.Zero;
-            try
-            {
-                pRec = StringToUtf8Ptr(recordSig ?? "");
-                pSub = StringToUtf8Ptr(subSig ?? "");
-                pData = StringToUtf8Ptr(newData ?? "");
-                return EspNative.C_ModifySubRecord(_Handle, formId, pRec, pSub, occurrenceIndex, globalIndex, pData);
-            }
-            finally
-            {
-                if (pRec != IntPtr.Zero) Marshal.FreeHGlobal(pRec);
-                if (pSub != IntPtr.Zero) Marshal.FreeHGlobal(pSub);
-                if (pData != IntPtr.Zero) Marshal.FreeHGlobal(pData);
-            }
-        }
-
-        // ── Character tracker ────────────────────────────────
-        public void ClearCharacterTracker()
-        {
-            EnsureNotDisposed();
-            EspNative.C_ClearCharacterTracker(_Handle);
-        }
-
-        public List<CharacterRecordInfo> GetAllCharacters()
-        {
-            EnsureNotDisposed();
-            int count = EspNative.C_GetCharacterCount(_Handle);
-            var list = new List<CharacterRecordInfo>(count);
-
-            for (int i = 0; i < count; i++)
-            {
-                var ch = new CharacterRecordInfo
-                {
-                    NpcFormID = EspNative.C_GetCharacterFormID(_Handle, i),
-                    Name = GetCharUtf8(i, EspNative.C_GetCharacterName),
-                    EditorID = GetCharUtf8(i, EspNative.C_GetCharacterEditorID),
-                    VoiceType = GetCharUtf8(i, EspNative.C_GetCharacterVoiceType),
-                    Gender = EspNative.C_GetCharacterGender(_Handle, i),
-                };
-
-                int n;
-                n = EspNative.C_GetCharacterLinkedInfoCount(_Handle, i);
-                for (int j = 0; j < n; j++) ch.LinkedInfos.Add(EspNative.C_GetCharacterLinkedInfo(_Handle, i, j));
-
-                n = EspNative.C_GetCharacterLinkedFactionCount(_Handle, i);
-                for (int j = 0; j < n; j++) ch.LinkedFactions.Add(EspNative.C_GetCharacterLinkedFaction(_Handle, i, j));
-
-                n = EspNative.C_GetCharacterLinkedRaceCount(_Handle, i);
-                for (int j = 0; j < n; j++) ch.LinkedRaces.Add(EspNative.C_GetCharacterLinkedRace(_Handle, i, j));
-
-                n = EspNative.C_GetCharacterLinkedVoiceTypeCount(_Handle, i);
-                for (int j = 0; j < n; j++) ch.LinkedVoiceTypes.Add(EspNative.C_GetCharacterLinkedVoiceType(_Handle, i, j));
-
-                list.Add(ch);
-            }
-            return list;
-        }
-
-        // ── Private helpers ──────────────────────────────────
-        private string GetCharUtf8(int index, Func<IntPtr, int, byte[], int, int> getter)
-        {
-            int len = getter(_Handle, index, null, 0);
-            if (len <= 0) return string.Empty;
-            byte[] buf = new byte[len + 1];
-            int actual = getter(_Handle, index, buf, buf.Length);
-            int nullIdx = Array.IndexOf(buf, (byte)0, 0, actual);
-            if (nullIdx >= 0) actual = nullIdx;
-            return Encoding.UTF8.GetString(buf, 0, actual);
-        }
-
-        private static string GetSubRecordStringUtf8(IntPtr subPtr)
-        {
-            int len = EspNative.C_SubRecordData_GetStringUtf8(subPtr, null, 0);
-            if (len <= 0) return string.Empty;
-            byte[] buf = new byte[len + 1];
-            int actual = EspNative.C_SubRecordData_GetStringUtf8(subPtr, buf, buf.Length);
-            int nullIdx = Array.IndexOf(buf, (byte)0, 0, actual);
-            if (nullIdx >= 0) actual = nullIdx;
-            return string.Copy(Encoding.UTF8.GetString(buf, 0, actual));
-        }
-
-        private static string GetSubRecordSigUtf8(IntPtr subPtr)
-        {
-            byte[] buf = new byte[8];
-            int len = EspNative.C_SubRecordData_GetSigUtf8(subPtr, buf, buf.Length);
-            if (len <= 0) return string.Empty;
-            int nullIdx = Array.IndexOf(buf, (byte)0, 0, len);
-            if (nullIdx >= 0) len = nullIdx;
-            return Encoding.UTF8.GetString(buf, 0, len);
-        }
-
-        private static string GetRecordSigUtf8(IntPtr recPtr)
-        {
-            byte[] buf = new byte[8];
-            int len = EspNative.C_GetRecordSig(recPtr, buf, buf.Length);
-            if (len <= 0) return string.Empty;
-            int nullIdx = Array.IndexOf(buf, (byte)0, 0, len);
-            if (nullIdx >= 0) len = nullIdx;
-            return Encoding.UTF8.GetString(buf, 0, len);
-        }
-
-        private static string GetRecordEditorIDStr(IntPtr recPtr)
-        {
-            if (recPtr == IntPtr.Zero) return string.Empty;
-            IntPtr ptr = EspNative.C_GetRecordEditorID(recPtr);
-            if (ptr == IntPtr.Zero) return string.Empty;
-            string s = Marshal.PtrToStringAnsi(ptr) ?? string.Empty;
-            int idx = s.IndexOf('\0');
-            return idx >= 0 ? s.Substring(0, idx) : s;
-        }
-
-        private static IntPtr StringToUtf8Ptr(string s)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(s ?? "");
-            IntPtr ptr = Marshal.AllocHGlobal(bytes.Length + 1);
-            Marshal.Copy(bytes, 0, ptr, bytes.Length);
-            Marshal.WriteByte(ptr, bytes.Length, 0);
-            return ptr;
-        }
     }
 
     // ============================================================
@@ -836,8 +776,8 @@ namespace LexTranslator.SkyrimManagement
         reader1.LoadEsp(@"C:\Skyrim\Data\Mod1.esp");
         reader2.LoadEsp(@"C:\Skyrim\Data\Mod2.esp");
 
-        var records1 = reader1.SearchBySig("NPC_");
-        var records2 = reader2.SearchBySig("NPC_");
+        var records1 = reader1.SelectSig("ALL");
+        var records2 = reader2.SelectSig("ALL");
 
         reader1.ModifySubRecord(0x12345678, "NPC_", "FULL", 0, 0, "New Name");
         reader1.SaveEsp(@"C:\Skyrim\Data\Mod1_translated.esp");
