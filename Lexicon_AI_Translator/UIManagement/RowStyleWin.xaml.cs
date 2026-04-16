@@ -257,9 +257,19 @@ namespace LexTranslator.UIManagement
             StackPanel GetKeyPanel = GetKeyGrid.Children[1] as StackPanel;
             TextBox GetFakeKey = (TextBox)(GetKeyPanel).Children[0];
 
-            if (DeFine.WorkingWin.CurrentTransType == 2 && EspReader.Records.ContainsKey(Item.Key))
+            EspReader EspInstance = null;
+
+            if (DeFine.WorkingWin != null)
             {
-                GetFakeKey.Text = EspReader.Records[Item.Key].FormID + " " + EspReader.Records[Item.Key].ChildSig;
+                if (DeFine.WorkingWin.CurrentTransType == 2)
+                {
+                    EspInstance = DeFine.WorkingWin.GlobalEspReader;
+                }
+            }
+
+            if (EspInstance != null && EspInstance.Records.ContainsKey(Item.Key))
+            {
+                GetFakeKey.Text = EspInstance.Records[Item.Key].FormID + " " + EspInstance.Records[Item.Key].ChildSig;
             }
             else
             {
@@ -319,9 +329,12 @@ namespace LexTranslator.UIManagement
                FontColor = (Color)Application.Current.Resources["DefFontColor"];
             }
 
-            if (EspReader.GameCharacters.ContainsKey(Item.Key))
+            if (EspInstance != null)
             {
-                GetFakeKey.Foreground =new SolidColorBrush(Color.FromRgb(180,224,236));
+                if (EspInstance.GameCharacters.ContainsKey(Item.Key))
+                {
+                    GetFakeKey.Foreground = new SolidColorBrush(Color.FromRgb(180, 224, 236));
+                }
             }
 
             GetTranslated.Foreground = new SolidColorBrush(FontColor);

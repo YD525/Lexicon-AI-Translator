@@ -189,7 +189,17 @@ namespace LexTranslator
             TypeSelector.Items.Clear();
             TypeSelector.Items.Add("ALL");
 
-            foreach (var Value in EspReader.Types)
+            EspReader EspInstance = null;
+            if (DeFine.WorkingWin != null)
+            {
+                if (DeFine.WorkingWin.CurrentTransType == 2)
+                {
+                    EspInstance = DeFine.WorkingWin.GlobalEspReader;
+                }
+            }
+
+            if(EspInstance != null)
+            foreach (var Value in EspInstance.Types)
             {
                 TypeSelector.Items.Add(Value);
             }

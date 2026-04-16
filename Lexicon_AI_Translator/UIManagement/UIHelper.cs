@@ -218,7 +218,7 @@ namespace LexTranslator.UIManage
             }));
         }
 
-        public static void TransViewSyncEspRecord(YDListView View)
+        public static void TransViewSyncEspRecord(EspReader Instance,YDListView View)
         {
             var CanVasHandle = View.GetMainCanvas();
             CanVasHandle.Dispatcher.Invoke(new Action(() =>
@@ -226,7 +226,7 @@ namespace LexTranslator.UIManage
                 CanVasHandle.IsEnabled = false;
             }));
 
-            var AllRecords = EspReader.Records.Values.ToList();
+            var AllRecords = Instance.Records.Values.ToList();
 
             const int BatchSize = 10000;
             int Total = AllRecords.Count;

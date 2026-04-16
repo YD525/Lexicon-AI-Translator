@@ -320,11 +320,22 @@ namespace LexTranslator.TranslateManage
                     }
                 }
 
+                EspReader EspInstance = null;
+                if (DeFine.WorkingWin != null)
+                {
+                    if (DeFine.WorkingWin.CurrentTransType == 2)
+                    {
+                        //IsEspFile
+                        EspInstance = DeFine.WorkingWin.GlobalEspReader;
+                    }
+                }
+
                 if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
                 {
-                    if (EspReader.Records.ContainsKey(Row.Key))
+                    if(EspInstance!=null)
+                    if (EspInstance.Records.ContainsKey(Row.Key))
                     {
-                        var GetRecord = EspReader.Records[Row.Key];
+                        var GetRecord = EspInstance.Records[Row.Key];
 
                         if (GetRecord.StringID > 0 && Row.TransText.Length > 0)
                         {
@@ -387,9 +398,9 @@ namespace LexTranslator.TranslateManage
                         CanSet = false;
                     }
 
-                    if (DeFine.WorkingWin?.CurrentTransType == 2)
+                    if (EspInstance != null)
                     {
-                        var GetTrans = EspReader.ToStringsFile.QueryData(Row.Key);
+                        var GetTrans = EspInstance.ToStringsFile.QueryData(Row.Key);
 
                         if (GetTrans != null)
                         {
@@ -417,13 +428,13 @@ namespace LexTranslator.TranslateManage
                         }
                         else
                         {
-                            if (EspReader.Records.ContainsKey(Row.Key))
+                            if (EspInstance.Records.ContainsKey(Row.Key))
                             {
-                                if (EspReader.Records[Row.Key].StringID > 0)
+                                if (EspInstance.Records[Row.Key].StringID > 0)
                                 {
                                     if (EngineEvents.SetDataCall != null)
                                     {
-                                        EngineEvents.SetDataCall(0, "Skip StringsFile(" + EspReader.Records[Row.Key].String + ") fields:" + Row.Key);
+                                        EngineEvents.SetDataCall(0, "Skip StringsFile(" + EspInstance.Records[Row.Key].String + ") fields:" + Row.Key);
                                     }
 
                                     CanSet = false;

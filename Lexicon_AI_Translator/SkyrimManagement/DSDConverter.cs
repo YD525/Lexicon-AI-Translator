@@ -23,15 +23,15 @@ namespace LexTranslator.SkyrimManagement
             public List<DSDItem> DSDItems = new List<DSDItem>();
         }
 
-        public static DSDFile RecordsToDSDFile()
+        public static DSDFile RecordsToDSDFile(EspReader EspInstance)
         {
             DSDFile NewDSDFile = new DSDFile();
             List <DSDItem> DSDItems = new List<DSDItem>();
 
-            for (int i = 0; i < EspReader.Records.Count; i++)
+            for (int i = 0; i < EspInstance.Records.Count; i++)
             {
-                string GetKey = EspReader.Records.ElementAt(i).Key;
-                var Record = EspReader.Records[GetKey];
+                string GetKey = EspInstance.Records.ElementAt(i).Key;
+                var Record = EspInstance.Records[GetKey];
 
                 var Link = TranslatorInterface.Instance.GetLink();
 

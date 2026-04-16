@@ -1191,7 +1191,7 @@ namespace LexTranslator
                         TransViewList.Clear();
                     }));
 
-                    EspReader.LoadEsp(FilePath);
+                    GlobalEspReader.LoadEsp(FilePath);
 
                     this.Dispatcher.Invoke(new Action(() =>
                     {
@@ -1200,7 +1200,7 @@ namespace LexTranslator
                         LoadSaveState = 1;
                     }));
 
-                    ReSetTransTargetType(EspReader.Types);
+                    ReSetTransTargetType(GlobalEspReader.Types);
                     //ReloadData();
 
                     IsValidFile = true;
@@ -3010,7 +3010,7 @@ namespace LexTranslator
                     {
                         var GetWritePath = DataHelper.ShowSaveFileDialog(LModName + ".json", "DSD (*.json)|*.json");
 
-                        var DSDFile = DSDConverter.RecordsToDSDFile();
+                        var DSDFile = DSDConverter.RecordsToDSDFile(GlobalEspReader);
                         if (DSDFile != null)
                         {
                             if (DSDFile.DSDItems.Count > 0)

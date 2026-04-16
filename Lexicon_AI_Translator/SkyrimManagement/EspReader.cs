@@ -513,7 +513,7 @@ namespace LexTranslator.SkyrimManagement
 
         public Dictionary<string, List<Character>> GameCharacters = new Dictionary<string, List<Character>>();
         public Dictionary<string, RecordItem> Records = new Dictionary<string, RecordItem>();
-        public static List<string> Types = new List<string>();
+        public List<string> Types = new List<string>();
 
         public string EspPath { get; private set; } = "";
 
