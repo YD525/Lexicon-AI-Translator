@@ -614,6 +614,7 @@ namespace LexTranslator.SkyrimManagement
                         }
                     }
 
+                    IsFristSelect = true;
                     return true;
                 }
             }
@@ -666,6 +667,7 @@ namespace LexTranslator.SkyrimManagement
         /// </summary>
         public void Clear()
         {
+            IsFristSelect = true;
             Types.Clear();
             Records.Clear();
             GameCharacters.Clear();
