@@ -615,6 +615,11 @@ namespace LexTranslator.SkyrimManagement
                     }
 
                     IsFristSelect = true;
+
+                    string Report = GetFieldReport();
+                    Report = "Start Heuristic Analysis : " + Path + "\n\n" + Report;
+                    TranslatorInterface.LogCall(Report);
+
                     return true;
                 }
             }
