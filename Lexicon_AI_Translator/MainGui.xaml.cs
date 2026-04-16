@@ -188,7 +188,7 @@ namespace LexTranslator
             }
 
             GlobalRamCacheReader = new RamCacheReader();
-            //GlobalEspReader = new EspReader();
+            GlobalEspReader = new EspReader();
             GlobalMCMReader = new MCMReader();
             GlobalPexReader = new PexHeuristicAnalysis();
             GlobalXmlReader = new R_XmlReader();
@@ -729,6 +729,7 @@ namespace LexTranslator
         string LastSetPath = "";
 
         public RamCacheReader GlobalRamCacheReader = null;
+        public EspReader GlobalEspReader = null;
         public MCMReader GlobalMCMReader = null;
         public PexHeuristicAnalysis GlobalPexReader = null;
         public R_XmlReader GlobalXmlReader = null;
@@ -742,9 +743,9 @@ namespace LexTranslator
 
         public void ReloadStringsFile()
         {
-            EspReader.LoadStringsFile();
+            GlobalEspReader.LoadStringsFile();
 
-            if (EspReader.FromStringsFile.Strings.Count > 0)
+            if ( GlobalEspReader.FromStringsFile.Strings.Count > 0)
             {
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
@@ -1000,7 +1001,7 @@ namespace LexTranslator
         {
             GlobalXmlReader.Close();
             GlobalRamCacheReader.Close();
-            EspReader.Close();
+            GlobalEspReader.Close();
             GlobalMCMReader.Close();
             GlobalPexReader.Core.Close();
         }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Shapes;
 using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
@@ -512,6 +513,7 @@ namespace LexTranslator.SkyrimManagement
 
         public Dictionary<string, List<Character>> GameCharacters = new Dictionary<string, List<Character>>();
         public Dictionary<string, RecordItem> Records = new Dictionary<string, RecordItem>();
+        public static List<string> Types = new List<string>();
 
         public string EspPath { get; private set; } = "";
 
@@ -587,13 +589,37 @@ namespace LexTranslator.SkyrimManagement
         /// <summary>
         /// Load an ESP/ESM file.  Returns true on success.
         /// </summary>
-        public bool LoadEsp(string path)
+        public bool LoadEsp(string Path)
         {
             EnsureNotDisposed();
-            if (!File.Exists(path)) return false;
-            int result = EspNative.C_ReadEsp(_Instance, path);
-            if (result == 0) EspPath = path;
-            return result == 0;
+
+            if (File.Exists(Path))
+            {
+                Records.Clear();
+                Types.Clear();
+
+                int State = EspNative.C_ReadEsp(_Instance, Path);
+
+                if (State >= 0)
+                {
+                    EspPath = Path;
+
+                    foreach (var GetRecord in EspNative.SearchBySig(_Instance,"ALL"))
+                    {
+                        string ParentFormID = GetRecord.GetFormIDHex();
+                        string ParentSig = GetRecord.Sig;
+
+                        if (!Types.Contains(ParentSig))
+                        {
+                            Types.Add(ParentSig);
+                        }
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public int SaveEsp(string OutPutPath)
@@ -641,6 +667,7 @@ namespace LexTranslator.SkyrimManagement
         /// </summary>
         public void Clear()
         {
+            Types.Clear();
             Records.Clear();
             GameCharacters.Clear();
             EnsureNotDisposed();
@@ -764,7 +791,27 @@ namespace LexTranslator.SkyrimManagement
                 }
             }
         }
+
+        public StringsFileReader FromStringsFile = new StringsFileReader();
+        public StringsFileReader ToStringsFile = new StringsFileReader();
+        public void LoadStringsFile()
+        {
+            EnsureNotDisposed();
+
+            FromStringsFile.Close();
+            ToStringsFile.Close();
+
+            FromStringsFile.LoadStringsFiles(EspPath, TranslatorInterface.Instance.From);
+            ToStringsFile.LoadStringsFiles(EspPath, TranslatorInterface.Instance.To);
+        }
+
+        public void Close()
+        {
+            Clear();
+        }
     }
+
+
 
     // ============================================================
     //  Usage example – two independent instances
