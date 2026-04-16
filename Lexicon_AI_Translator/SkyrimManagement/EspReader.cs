@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using LexTranslator.TranslateManagement;
-using LexTranslator.ConvertManager;
-using LexTranslator.TranslateManage;
-using static LexTranslator.SkyrimManagement.EspInterop;
-using PhoenixEngine;
 
 namespace LexTranslator.SkyrimManagement
 {
+    // ============================================================
+    //  Data transfer objects  (unchanged from original)
+    // ============================================================
     public class SubRecordData
     {
         public string Sig { get; set; }
@@ -19,838 +16,561 @@ namespace LexTranslator.SkyrimManagement
         public bool IsLocalized { get; set; }
         public uint StringID { get; set; }
         public string Content { get; set; }
-        public int OccurrenceIndex { get; set; }  
+        public int OccurrenceIndex { get; set; }
         public int Index { get; set; }
     }
 
     public class EspRecordInfo
     {
-        public IntPtr Handle { get; set; }  // Intptr
+        public IntPtr Handle { get; set; }
         public string Sig { get; set; }
         public uint FormID { get; set; }
         public uint Flags { get; set; }
-        public List<SubRecordData> SubRecords { get; set; }
         public int Index { get; set; }
-
         public string EditorID { get; set; }
+        public List<SubRecordData> SubRecords { get; set; } = new List<SubRecordData>();
 
-        public EspRecordInfo()
-        {
-            SubRecords = new List<SubRecordData>();
-        }
-
-        public string GetUniqueKey()
-        {
-            return $"{Sig}:{FormID}";
-        }
-
-        public string GetFormIDHex()
-        {
-            return $"{FormID:X8}";
-        }
-
-        public string GetEditorID()
-        {
-            var edid = SubRecords.Find(s => s.Sig == "EDID");
-            return edid?.Content ?? "";
-        }
-
+        public string GetUniqueKey() => $"{Sig}:{FormID}";
+        public string GetFormIDHex() => $"{FormID:X8}";
+        public string GetEditorID() => SubRecords.Find(s => s.Sig == "EDID")?.Content ?? "";
         public string GetDisplayName()
         {
             var full = SubRecords.Find(s => s.Sig == "FULL");
-            if (full != null && !string.IsNullOrEmpty(full.Content))
-                return full.Content;
-            return GetEditorID();
+            return (!string.IsNullOrEmpty(full?.Content)) ? full.Content : GetEditorID();
         }
     }
 
-    public static class EspInterop
+    public class CharacterRecordInfo
+    {
+        public uint NpcFormID { get; set; }
+        public string Name { get; set; } = "";
+        public string EditorID { get; set; } = "";
+        public string VoiceType { get; set; } = "";
+        public int Gender { get; set; }   // 0=Unknown 1=Male 2=Female
+
+        public List<uint> LinkedInfos { get; set; } = new List<uint>();
+        public List<uint> LinkedFactions { get; set; } = new List<uint>();
+        public List<uint> LinkedRaces { get; set; } = new List<uint>();
+        public List<uint> LinkedVoiceTypes { get; set; } = new List<uint>();
+
+        public string GenderString => Gender == 1 ? "Male" : Gender == 2 ? "Female" : "Unknown";
+        public string FormIDHex => $"{NpcFormID:X8}";
+    }
+
+    // ============================================================
+    //  Raw P/Invoke  –  every DLL function now takes handle first
+    // ============================================================
+    internal static class EspNative
     {
         private const string DllName = "EspReader.dll";
 
-        public static string Version = "";
-
-        #region P/Invoke 
+        // Lifecycle
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr C_CreateInstance();
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr C_GetFieldReport();
+        public static extern void C_DestroyInstance(IntPtr handle);
+
+        // Version  (no handle – global)
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr C_GetVersion();
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetFieldReportLength();
+        public static extern int C_GetVersionLength();
 
-
+        // Filter
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void C_InitDefaultFilter(IntPtr handle);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr C_GetVersion();
+        public static extern int C_SetDefaultFilter(IntPtr handle);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetVersionLength();
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_Init();
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_InitDefaultFilter();
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SetDefaultFilter();
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_ClearFilter();
+        public static extern void C_ClearFilter(IntPtr handle);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern int C_SetFilter(
+            IntPtr handle,
             [MarshalAs(UnmanagedType.LPStr)] string parentSig,
             [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] string[] childSigs,
             int childCount);
 
+        // IO
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public static extern int C_ReadEsp([MarshalAs(UnmanagedType.LPWStr)] string espPath);
+        public static extern int C_ReadEsp(IntPtr handle, [MarshalAs(UnmanagedType.LPWStr)] string espPath);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr C_SearchBySig(
+        public static extern bool C_SaveEsp(IntPtr handle, IntPtr utf8Path);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void C_Clear(IntPtr handle);
+
+        // Field report
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr C_GetFieldReport(IntPtr handle);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int C_GetFieldReportLength(IntPtr handle);
+
+        // Search
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr C_SearchBySig(
+            IntPtr handle,
             [MarshalAs(UnmanagedType.LPStr)] string parentSig,
             [MarshalAs(UnmanagedType.LPStr)] string childSig,
             out int outCount);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void FreeSearchResults(IntPtr arr, int count);
+        public static extern void FreeSearchResults(IntPtr arr, int count);
 
-        // SubRecordData Api
+        // Record accessors  (record pointer only – no instance)
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr C_GetSubRecordData_Ptr(IntPtr record, int index);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SubRecordData_GetOccurrenceIndex(IntPtr subRecord);
+        public static extern int C_GetRecordSig(IntPtr record, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SubRecordData_GetIndex(IntPtr subRecord);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr C_SubRecordData_GetSig(IntPtr subRecord);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr C_SubRecordData_GetString(IntPtr subRecord);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SubRecordData_GetStringUtf8(IntPtr subRecord, byte[] buffer, int bufferSize);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SubRecordData_GetSigUtf8(IntPtr subRecord, byte[] buffer, int bufferSize);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool C_SubRecordData_IsLocalized(IntPtr subRecord);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern uint C_SubRecordData_GetStringID(IntPtr subRecord);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SubRecordData_GetDataSize(IntPtr subRecord);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool C_SubRecordData_GetData(IntPtr subRecord, byte[] buffer, int bufferSize);
-
-        // Record Api
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetRecordSig(IntPtr RecordPtr, byte[] buffer, int bufferSize);
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint C_GetRecordFormID(IntPtr record);
+        public static extern uint C_GetRecordFormID(IntPtr record);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr C_GetRecordEditorID(IntPtr record);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint C_GetRecordFlags(IntPtr record);
+        public static extern uint C_GetRecordFlags(IntPtr record);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetRecordIndex(IntPtr record);
+        public static extern int C_GetRecordIndex(IntPtr record);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetSubRecordCount(IntPtr record);
+        public static extern int C_GetSubRecordCount(IntPtr record);
+
+        // SubRecord accessors
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr C_GetSubRecordData_Ptr(IntPtr record, int index);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool C_ModifySubRecordByOffset(int IsCell, int RecordOffset, int SubOffset, IntPtr NewUtf8Data);
+        public static extern int C_SubRecordData_GetOccurrenceIndex(IntPtr sub);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool C_ModifySubRecord(
-         uint FormID,
-         IntPtr RecordSig,
-         IntPtr SubSig,
-         int OccurrenceIndex,
-         int GlobalIndex,
-         IntPtr NewUtf8Data
-        );
-
-        //--------------------------
+        public static extern int C_SubRecordData_GetIndex(IntPtr sub);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_ClearCharacterTracker();
+        public static extern int C_SubRecordData_GetStringUtf8(IntPtr sub, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterCount();
+        public static extern int C_SubRecordData_GetSigUtf8(IntPtr sub, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint C_GetCharacterFormID(int index);
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool C_SubRecordData_IsLocalized(IntPtr sub);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterGender(int index);
+        public static extern uint C_SubRecordData_GetStringID(IntPtr sub);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterName(int index, byte[] buffer, int bufferSize);
+        public static extern int C_SubRecordData_GetDataSize(IntPtr sub);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterEditorID(int index, byte[] buffer, int bufferSize);
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool C_SubRecordData_GetData(IntPtr sub, byte[] buffer, int bufferSize);
+
+        // Modify
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool C_ModifySubRecordByOffset(IntPtr handle, int isCell, int recordOffset, int subOffset, IntPtr newUtf8Data);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterVoiceType(int index, byte[] buffer, int bufferSize);
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool C_ModifySubRecord(IntPtr handle, uint formID, IntPtr recordSig, IntPtr subSig, int occurrenceIndex, int globalIndex, IntPtr newUtf8Data);
+
+        // Character tracker
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void C_ClearCharacterTracker(IntPtr handle);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterLinkedInfoCount(int index);
+        public static extern int C_GetCharacterCount(IntPtr handle);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint C_GetCharacterLinkedInfo(int index, int linkIndex);
+        public static extern uint C_GetCharacterFormID(IntPtr handle, int index);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterLinkedFactionCount(int index);
+        public static extern int C_GetCharacterGender(IntPtr handle, int index);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint C_GetCharacterLinkedFaction(int index, int linkIndex);
+        public static extern int C_GetCharacterName(IntPtr handle, int index, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterLinkedRaceCount(int index);
+        public static extern int C_GetCharacterEditorID(IntPtr handle, int index, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint C_GetCharacterLinkedRace(int index, int linkIndex);
+        public static extern int C_GetCharacterVoiceType(IntPtr handle, int index, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int C_GetCharacterLinkedVoiceTypeCount(int index);
+        public static extern int C_GetCharacterLinkedInfoCount(IntPtr handle, int index);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint C_GetCharacterLinkedVoiceType(int index, int linkIndex);
-        //--------------------------
+        public static extern uint C_GetCharacterLinkedInfo(IntPtr handle, int index, int linkIndex);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool C_SaveEsp(IntPtr utf8Path);
+        public static extern int C_GetCharacterLinkedFactionCount(IntPtr handle, int index);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_Close();
+        public static extern uint C_GetCharacterLinkedFaction(IntPtr handle, int index, int linkIndex);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_Clear();
+        public static extern int C_GetCharacterLinkedRaceCount(IntPtr handle, int index);
 
-        #endregion
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint C_GetCharacterLinkedRace(IntPtr handle, int index, int linkIndex);
 
-        public static string GetFieldReport()
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int C_GetCharacterLinkedVoiceTypeCount(IntPtr handle, int index);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint C_GetCharacterLinkedVoiceType(IntPtr handle, int index, int linkIndex);
+    }
+
+    // ============================================================
+    //  EspReader  –  managed wrapper, one instance per object
+    //  Use pattern identical to PexReader.
+    // ============================================================
+    public class EspReader : IDisposable
+    {
+        private IntPtr _Handle;
+        private bool _Disposed = false;
+
+        public static string DllVersion { get; } = ReadDllVersion();
+
+        public string EspPath { get; private set; } = "";
+
+        // ── Constructor / destructor ──────────────────────────
+        public EspReader()
         {
-            int Length = C_GetFieldReportLength();
-            if (Length <= 0)
-            {
-                return "Validator not initialized";
-            }
+            _Handle = EspNative.C_CreateInstance();
+            if (_Handle == IntPtr.Zero)
+                throw new InvalidOperationException("Failed to create EspInstance in native DLL.");
 
-            IntPtr Ptr = C_GetFieldReport();
-            if (Ptr == IntPtr.Zero)
-            {
-                return "Validator not initialized";
-            }
-
-            byte[] Buffer = new byte[Length];
-            Marshal.Copy(Ptr, Buffer, 0, Length);
-            return Encoding.UTF8.GetString(Buffer);
+            EspNative.C_InitDefaultFilter(_Handle);
+            EspNative.C_SetDefaultFilter(_Handle);
         }
 
-        private static string GetCharacterUtf8(int index,
-    Func<int, byte[], int, int> getter)
+        public void Dispose()
         {
-            int Len = getter(index, null, 0);
-            if (Len <= 0) return string.Empty;
-
-            byte[] Buffer = new byte[Len + 1];
-            int ActualLen = getter(index, Buffer, Buffer.Length);
-
-            int NullIndex = Array.IndexOf(Buffer, (byte)0, 0, ActualLen);
-            if (NullIndex >= 0) ActualLen = NullIndex;
-
-            return Encoding.UTF8.GetString(Buffer, 0, ActualLen);
-        }
-
-        public static List<CharacterRecordInfo> GetAllCharacters()
-        {
-            int Count = C_GetCharacterCount();
-            var Results = new List<CharacterRecordInfo>(Count);
-
-            for (int i = 0; i < Count; i++)
+            if (!_Disposed)
             {
-                var Record = new CharacterRecordInfo();
-                Record.NpcFormID = C_GetCharacterFormID(i);
-                Record.Name = GetCharacterUtf8(i, C_GetCharacterName);
-                Record.EditorID = GetCharacterUtf8(i, C_GetCharacterEditorID);
-                Record.VoiceType = GetCharacterUtf8(i, C_GetCharacterVoiceType);
-                Record.Gender = C_GetCharacterGender(i);   // 0=Unknown 1=Male 2=Female
-
-                int InfoCount = C_GetCharacterLinkedInfoCount(i);
-                for (int j = 0; j < InfoCount; j++)
-                    Record.LinkedInfos.Add(C_GetCharacterLinkedInfo(i, j));
-
-                int FactionCount = C_GetCharacterLinkedFactionCount(i);
-                for (int j = 0; j < FactionCount; j++)
-                    Record.LinkedFactions.Add(C_GetCharacterLinkedFaction(i, j));
-
-                int RaceCount = C_GetCharacterLinkedRaceCount(i);
-                for (int j = 0; j < RaceCount; j++)
-                    Record.LinkedRaces.Add(C_GetCharacterLinkedRace(i, j));
-
-                int VoiceCount = C_GetCharacterLinkedVoiceTypeCount(i);
-                for (int j = 0; j < VoiceCount; j++)
-                    Record.LinkedVoiceTypes.Add(C_GetCharacterLinkedVoiceType(i, j));
-
-                Results.Add(Record);
-            }
-
-            return Results;
-        }
-
-        public class CharacterRecordInfo
-        {
-            public uint NpcFormID { get; set; }
-            public string Name { get; set; } = "";
-            public string EditorID { get; set; } = "";
-            public string VoiceType { get; set; } = "";
-            public int Gender { get; set; }   
-
-            public List<uint> LinkedInfos { get; set; } = new List<uint>();
-            public List<uint> LinkedFactions { get; set; } = new List<uint>();
-            public List<uint> LinkedRaces { get; set; } = new List<uint>();
-            public List<uint> LinkedVoiceTypes { get; set; } = new List<uint>();
-
-            public string GenderString
-            {
-                get
+                if (_Handle != IntPtr.Zero)
                 {
-                    if (Gender == 1) return "Male";
-                    if (Gender == 2) return "Female";
-                    return "Unknown";
+                    EspNative.C_DestroyInstance(_Handle);
+                    _Handle = IntPtr.Zero;
                 }
+                _Disposed = true;
             }
-
-            public string FormIDHex => $"{NpcFormID:X8}";
+            GC.SuppressFinalize(this);
         }
 
-        public static bool SaveEsp(string path)
+        ~EspReader() { Dispose(); }
+
+        private void EnsureNotDisposed()
         {
+            if (_Disposed || _Handle == IntPtr.Zero)
+                throw new ObjectDisposedException(nameof(EspReader));
+        }
+
+        // ── Version ──────────────────────────────────────────
+        private static string ReadDllVersion()
+        {
+            try
+            {
+                int len = EspNative.C_GetVersionLength();
+                if (len <= 0) return "Unknown";
+                IntPtr ptr = EspNative.C_GetVersion();
+                return ptr == IntPtr.Zero ? "Unknown" : Marshal.PtrToStringAnsi(ptr, len);
+            }
+            catch { return "Error"; }
+        }
+
+        // ── Filter helpers ───────────────────────────────────
+        public void SetDefaultFilter()
+        {
+            EnsureNotDisposed();
+            EspNative.C_InitDefaultFilter(_Handle);
+            EspNative.C_SetDefaultFilter(_Handle);
+        }
+
+        public void SetFilter(Dictionary<string, string[]> filterConfig)
+        {
+            EnsureNotDisposed();
+            EspNative.C_ClearFilter(_Handle);
+            foreach (var kvp in filterConfig)
+                EspNative.C_SetFilter(_Handle, kvp.Key, kvp.Value, kvp.Value.Length);
+        }
+
+        public void ClearFilter()
+        {
+            EnsureNotDisposed();
+            EspNative.C_ClearFilter(_Handle);
+        }
+
+        // ── IO ───────────────────────────────────────────────
+        /// <summary>
+        /// Load an ESP/ESM file.  Returns true on success.
+        /// </summary>
+        public bool LoadEsp(string path)
+        {
+            EnsureNotDisposed();
+            if (!File.Exists(path)) return false;
+            int result = EspNative.C_ReadEsp(_Handle, path);
+            if (result == 0) EspPath = path;
+            return result == 0;
+        }
+
+        /// <summary>
+        /// Save modified records to <paramref name="outputPath"/>.
+        /// </summary>
+        public bool SaveEsp(string outputPath)
+        {
+            EnsureNotDisposed();
             IntPtr ptr = IntPtr.Zero;
             try
             {
-                ptr = StringToUtf8IntPtr(path);
-                return C_SaveEsp(ptr);
+                ptr = StringToUtf8Ptr(outputPath);
+                return EspNative.C_SaveEsp(_Handle, ptr);
             }
-            finally
-            {
-                if (ptr != IntPtr.Zero) Marshal.FreeHGlobal(ptr);
-            }
+            finally { if (ptr != IntPtr.Zero) Marshal.FreeHGlobal(ptr); }
         }
 
-        public static string GetVersion()
+        /// <summary>
+        /// Release parsed data without destroying the instance or its filter.
+        /// </summary>
+        public void Clear()
         {
-            try
-            {
-                int length = C_GetVersionLength();
-                if (length <= 0)
-                {
-                    return "Unknown";
-                }
-
-                IntPtr ptr = C_GetVersion();
-                if (ptr == IntPtr.Zero)
-                {
-                    return "Unknown";
-                }
-
-                return Marshal.PtrToStringAnsi(ptr, length);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error getting version: {ex.Message}");
-                return "Error";
-            }
+            EnsureNotDisposed();
+            EspPath = string.Empty;
+            EspNative.C_Clear(_Handle);
         }
 
-        private static IntPtr StringToUtf8IntPtr(string Str)
+        // ── Field report ─────────────────────────────────────
+        public string GetFieldReport()
         {
-            if (Str == null)
-                Str = "";
-
-            byte[] UTF8 = System.Text.Encoding.UTF8.GetBytes(Str);
-            IntPtr Ptr = Marshal.AllocHGlobal(UTF8.Length + 1);
-
-            Marshal.Copy(UTF8, 0, Ptr, UTF8.Length);
-            Marshal.WriteByte(Ptr, UTF8.Length, 0);
-
-            return Ptr;
+            EnsureNotDisposed();
+            int len = EspNative.C_GetFieldReportLength(_Handle);
+            if (len <= 0) return "Validator not initialized";
+            IntPtr ptr = EspNative.C_GetFieldReport(_Handle);
+            if (ptr == IntPtr.Zero) return "Validator not initialized";
+            byte[] buf = new byte[len];
+            Marshal.Copy(ptr, buf, 0, len);
+            return Encoding.UTF8.GetString(buf);
         }
 
-        public static bool ModifySubRecordByOffset(bool IsCell, int ParentIndex, int SubIndex, string NewUtf8Data)
+        // ── Search ───────────────────────────────────────────
+        public List<EspRecordInfo> SearchBySig(string parentSig = "ALL", string childSig = "")
         {
-            IntPtr PtrNewData = IntPtr.Zero;
-            try
-            {
-                PtrNewData = StringToUtf8IntPtr(NewUtf8Data ?? "");
-                if (IsCell)
-                {
-                    return C_ModifySubRecordByOffset(1, ParentIndex, SubIndex, PtrNewData);
-                }
-                else
-                {
-                    return C_ModifySubRecordByOffset(0, ParentIndex, SubIndex, PtrNewData);
-                }
-            }
-            finally
-            {
-                if (PtrNewData != IntPtr.Zero) Marshal.FreeHGlobal(PtrNewData);
-            }
-        }
+            EnsureNotDisposed();
+            var results = new List<EspRecordInfo>();
 
-        public static bool ModifySubRecord(uint formId,string recordSig,string subSig,int occurrenceIndex,int globalIndex,string newUtf8Data)
-        {
-            IntPtr ptrRecordSig = IntPtr.Zero;
-            IntPtr ptrSubSig = IntPtr.Zero;
-            IntPtr ptrNewData = IntPtr.Zero;
+            int count;
+            IntPtr resultsPtr = EspNative.C_SearchBySig(_Handle, parentSig, childSig, out count);
+            if (resultsPtr == IntPtr.Zero || count == 0) return results;
 
             try
             {
-                ptrRecordSig = StringToUtf8IntPtr(recordSig ?? "");
-                ptrSubSig = StringToUtf8IntPtr(subSig ?? "");
-                ptrNewData = StringToUtf8IntPtr(newUtf8Data ?? "");
-
-                return C_ModifySubRecord(formId, ptrRecordSig, ptrSubSig, occurrenceIndex, globalIndex, ptrNewData);
-            }
-            finally
-            {
-                if (ptrRecordSig != IntPtr.Zero) Marshal.FreeHGlobal(ptrRecordSig);
-                if (ptrSubSig != IntPtr.Zero) Marshal.FreeHGlobal(ptrSubSig);
-                if (ptrNewData != IntPtr.Zero) Marshal.FreeHGlobal(ptrNewData);
-            }
-        }
-
-        public static void SetFilter(Dictionary<string, string[]> filterConfig)
-        {
-            C_ClearFilter();
-
-            foreach (var kvp in filterConfig)
-            {
-                C_SetFilter(kvp.Key, kvp.Value, kvp.Value.Length);
-            }
-        }
-
-        static EspInterop()
-        {
-            C_Init();
-            C_InitDefaultFilter();
-            C_SetDefaultFilter();
-
-            EspInterop.Version = GetVersion();
-        }
-
-        public static int LoadEsp(string Path)
-        {
-            if (File.Exists(Path))
-            {
-                return C_ReadEsp(Path);
-            }
-            return -1;
-        }
-
-        public static string GetRecordEditorID(IntPtr RecordPtr)
-        {
-            if (RecordPtr == IntPtr.Zero)
-                return string.Empty;
-
-            IntPtr EditorIDPtr = C_GetRecordEditorID(RecordPtr);
-
-            if (EditorIDPtr == IntPtr.Zero)
-                return string.Empty;
-
-            string Result = Marshal.PtrToStringAnsi(EditorIDPtr) ?? string.Empty;
-
-            int NullIndex = Result.IndexOf('\0');
-            if (NullIndex >= 0)
-                Result = Result.Substring(0, NullIndex);
-
-            return Result;
-        }
-        public static List<EspRecordInfo> SearchBySig(string ParentSig = "ALL", string ChildSig = "")
-        {
-            int Count;
-            IntPtr ResultsPtr = C_SearchBySig(ParentSig, ChildSig, out Count);
-
-            var Results = new List<EspRecordInfo>();
-
-            if (ResultsPtr == IntPtr.Zero || Count == 0)
-            {
-                return Results;
-            }
-
-            try
-            {
-                for (int i = 0; i < Count; i++)
+                for (int i = 0; i < count; i++)
                 {
-                    IntPtr RecordPtr = Marshal.ReadIntPtr(ResultsPtr, i * IntPtr.Size);
+                    IntPtr recPtr = Marshal.ReadIntPtr(resultsPtr, i * IntPtr.Size);
+                    if (recPtr == IntPtr.Zero) continue;
 
-                    if (RecordPtr == IntPtr.Zero)
-                        continue;
-
-                    var Record = new EspRecordInfo();
-                    Record.Handle = RecordPtr;
-
-                    Record.Sig = GetRecordSigUtf8(RecordPtr);                 
-
-                    Record.FormID = C_GetRecordFormID(RecordPtr);
-                    Record.EditorID = GetRecordEditorID(RecordPtr);
-                    Record.Flags = C_GetRecordFlags(RecordPtr);
-                    Record.Index = C_GetRecordIndex(RecordPtr);
-
-                    int SubRecordCount = C_GetSubRecordCount(RecordPtr);
-
-                    for (int j = 0; j < SubRecordCount; j++)
+                    var rec = new EspRecordInfo
                     {
-                        IntPtr SubRecordPtr = C_GetSubRecordData_Ptr(RecordPtr, j);
-                        if (SubRecordPtr == IntPtr.Zero)
-                            continue;
-
-                        var SubRecord = new SubRecordData();
-
-                        SubRecord.Sig = GetSubRecordSigUtf8(SubRecordPtr);
-                        SubRecord.Content = GetSubRecordStringUtf8(SubRecordPtr);
-                        SubRecord.IsLocalized = C_SubRecordData_IsLocalized(SubRecordPtr);
-                        SubRecord.StringID = C_SubRecordData_GetStringID(SubRecordPtr);
-
-                        SubRecord.OccurrenceIndex = C_SubRecordData_GetOccurrenceIndex(SubRecordPtr);
-                        SubRecord.Index = C_SubRecordData_GetIndex(SubRecordPtr);
-
-                        int DataSize = C_SubRecordData_GetDataSize(SubRecordPtr);
-                        if (DataSize > 0)
-                        {
-                            SubRecord.Data = new byte[DataSize];
-                            C_SubRecordData_GetData(SubRecordPtr, SubRecord.Data, DataSize);
-                        }
-                        else
-                        {
-                            SubRecord.Data = new byte[0];
-                        }
-
-                        Record.SubRecords.Add(SubRecord);
-                    }
-
-                    Results.Add(Record);
-                }
-
-                return Results;
-            }
-            finally
-            {
-                FreeSearchResults(ResultsPtr, Count);
-            }
-        }
-
-        private static string GetSubRecordStringUtf8(IntPtr SubRecordPtr)
-        {
-            int Len = C_SubRecordData_GetStringUtf8(SubRecordPtr, null, 0);
-            if (Len <= 0) return string.Empty;
-
-            byte[] Buffer = new byte[Len + 1]; 
-            int ActualLen = C_SubRecordData_GetStringUtf8(SubRecordPtr, Buffer, Buffer.Length);
-
-            int NullIndex = Array.IndexOf(Buffer, (byte)0, 0, ActualLen);
-            if (NullIndex >= 0)
-                ActualLen = NullIndex;
-
-            string NewStr = Encoding.UTF8.GetString(Buffer, 0, ActualLen);
-
-            return string.Copy(NewStr);
-        }
-
-        private static string GetSubRecordSigUtf8(IntPtr SubRecordPtr)
-        {
-            byte[] Buffer = new byte[8];
-            int Len = C_SubRecordData_GetSigUtf8(SubRecordPtr, Buffer, Buffer.Length);
-            if (Len <= 0) return string.Empty;
-
-            int NullIndex = Array.IndexOf(Buffer, (byte)0, 0, Len);
-            if (NullIndex >= 0)
-                Len = NullIndex;
-
-            return Encoding.UTF8.GetString(Buffer, 0, Len);
-        }
-
-        private static string GetRecordSigUtf8(IntPtr RecordPtr)
-        {
-            byte[] Buffer = new byte[8];
-            int Len = C_GetRecordSig(RecordPtr, Buffer, Buffer.Length);
-            if (Len <= 0) return string.Empty;
-
-            int NullIndex = Array.IndexOf(Buffer, (byte)0, 0, Len);
-            if (NullIndex >= 0)
-                Len = NullIndex;
-
-            return Encoding.UTF8.GetString(Buffer, 0, Len);
-        }
-    }
-
-    public enum CharacterGender
-    {
-        Unknown,
-        Male,
-        Female
-    }
-    public class Character
-    {
-        public string Name { get; set; } = "";
-        public CharacterGender Gender { get; set; }// 0=Unknown 1=Male 2=Female
-        public string VoiceType { get; set; } = "";
-    }
-
-    public static class EspReader
-    {
-        public static StringsFileReader FromStringsFile = new StringsFileReader();
-        public static StringsFileReader ToStringsFile = new StringsFileReader();
-        public static string EspPath = "";
-        public class RecordItem
-        {
-            public uint StringID = 0;      // StringsFile id
-            public uint RealFormID = 0;
-            public string FormID = "";
-            public string EditorID = "";
-            public string ParentSig = "";
-            public string ChildSig = "";
-            public string UniqueKey = "";
-            public string String = "";
-            public int ParentIndex = 0;
-            public int SubIndex = 0;
-            public int OccurrenceIndex = 0;
-            public bool IsModify = false;
-        }
-
-        public static Dictionary<string, List<Character>> GameCharacters = new Dictionary<string, List<Character>>();
-
-        public static Dictionary<string, RecordItem> Records = new Dictionary<string, RecordItem>();
-        public static List<string> Types = new List<string>();
-        private static bool IsFristSelect = true;
-        public static void SelectSig(string Sig)
-        {
-            Records.Clear();
-
-            Dictionary<uint, Character> InfoToCharacter = null;
-            List<CharacterRecordInfo> Characters = new List<CharacterRecordInfo>();
-
-            if (IsFristSelect)
-            {
-                if (Sig.Equals("ALL"))
-                {
-                    Characters.AddRange(EspInterop.GetAllCharacters());
-
-                    InfoToCharacter = new Dictionary<uint, Character>(Characters.Sum(c => c.LinkedInfos.Count));
-
-                    foreach (var Character in Characters)
-                    {
-                        var NCH = new Character
-                        {
-                            Name = Character.Name,
-                            Gender = (CharacterGender)Character.Gender,
-                            VoiceType = Character.VoiceType
-                        };
-                        foreach (var InfoFID in Character.LinkedInfos)
-                        {
-                            if (!InfoToCharacter.ContainsKey(InfoFID))
-                                InfoToCharacter[InfoFID] = NCH;
-                        }
-                    }
-
-                    Characters.Clear();
-                }
-            }
-
-            foreach (var GetRecord in EspInterop.SearchBySig(Sig))
-            {
-                uint RealFormID = GetRecord.FormID;
-                string ParentFormID = GetRecord.GetFormIDHex();
-                string ParentSig = GetRecord.Sig;
-
-                string ParentEditorID = GetRecord.EditorID;
-
-                foreach (var Sub in GetRecord.SubRecords)
-                {
-                    var MergeSig = TranslatorInterface.Instance.GetFileUniqueKey() + ":" + ParentFormID + ":" + ParentSig + ":" + Sub.Sig + ":" + Sub.Index + ":" + ParentEditorID;
-                    string UniqueKey = "[" + Crc32Helper.ComputeCrc32(MergeSig) + "]" + Sub.Sig;
-
-                    RecordItem NRecordItem = new RecordItem
-                    {
-                        RealFormID = RealFormID,
-                        StringID = Sub.StringID,
-                        FormID = ParentFormID,
-                        EditorID = ParentEditorID,
-                        ParentSig = ParentSig,
-                        ChildSig = Sub.Sig,
-                        UniqueKey = UniqueKey,
-                        String = Sub.Content,
-                        ParentIndex = GetRecord.Index,
-                        SubIndex = Sub.Index,
-                        OccurrenceIndex = Sub.OccurrenceIndex
+                        Handle = recPtr,
+                        Sig = GetRecordSigUtf8(recPtr),
+                        FormID = EspNative.C_GetRecordFormID(recPtr),
+                        Flags = EspNative.C_GetRecordFlags(recPtr),
+                        Index = EspNative.C_GetRecordIndex(recPtr),
+                        EditorID = GetRecordEditorIDStr(recPtr),
                     };
 
-                    if (IsFristSelect)
+                    int subCount = EspNative.C_GetSubRecordCount(recPtr);
+                    for (int j = 0; j < subCount; j++)
                     {
-                        if (InfoToCharacter != null && InfoToCharacter.TryGetValue(RealFormID, out var MatchedChar))
+                        IntPtr subPtr = EspNative.C_GetSubRecordData_Ptr(recPtr, j);
+                        if (subPtr == IntPtr.Zero) continue;
+
+                        var sub = new SubRecordData
                         {
-                            if (GameCharacters.TryGetValue(UniqueKey, out var List))
-                                List.Add(MatchedChar);
-                            else
-                                GameCharacters[UniqueKey] = new List<Character> { MatchedChar };
-                        }
+                            Sig = GetSubRecordSigUtf8(subPtr),
+                            Content = GetSubRecordStringUtf8(subPtr),
+                            IsLocalized = EspNative.C_SubRecordData_IsLocalized(subPtr),
+                            StringID = EspNative.C_SubRecordData_GetStringID(subPtr),
+                            OccurrenceIndex = EspNative.C_SubRecordData_GetOccurrenceIndex(subPtr),
+                            Index = EspNative.C_SubRecordData_GetIndex(subPtr),
+                        };
+
+                        int dataSize = EspNative.C_SubRecordData_GetDataSize(subPtr);
+                        sub.Data = dataSize > 0 ? new byte[dataSize] : new byte[0];
+                        if (dataSize > 0) EspNative.C_SubRecordData_GetData(subPtr, sub.Data, dataSize);
+
+                        rec.SubRecords.Add(sub);
                     }
 
-                    if (NRecordItem.String.Length > 0)
-                    {
-                        if (!Records.ContainsKey(NRecordItem.UniqueKey))
-                        {
-                            Records.Add(NRecordItem.UniqueKey, NRecordItem);
-                        }
-                        else
-                        {
-                            throw new Exception("Warning: Duplicate key detected: {NRecordItem.UniqueKey}");
-                        }
-                    }
-                    else
-                    {
-                        
-                    }
+                    results.Add(rec);
                 }
             }
+            finally { EspNative.FreeSearchResults(resultsPtr, count); }
 
-            if (Sig.Equals("ALL"))
+            return results;
+        }
+
+        // ── Modify ───────────────────────────────────────────
+        public bool ModifySubRecordByOffset(bool isCell, int parentIndex, int subIndex, string newData)
+        {
+            EnsureNotDisposed();
+            IntPtr ptr = IntPtr.Zero;
+            try
             {
-                if (IsFristSelect)
-                {
-                    IsFristSelect = false;
-                    EspInterop.C_ClearCharacterTracker();
-                }
+                ptr = StringToUtf8Ptr(newData ?? "");
+                return EspNative.C_ModifySubRecordByOffset(_Handle, isCell ? 1 : 0, parentIndex, subIndex, ptr);
             }
+            finally { if (ptr != IntPtr.Zero) Marshal.FreeHGlobal(ptr); }
         }
 
-        //Fast Load Esp
-        public static bool LoadEsp(string Path)
+        public bool ModifySubRecord(uint formId, string recordSig, string subSig,
+            int occurrenceIndex, int globalIndex, string newData)
         {
-            Records.Clear();
-            Types.Clear();
-            var State = EspInterop.LoadEsp(Path);
-
-            string Report = EspInterop.GetFieldReport();
-            Report =  "Start Heuristic Analysis : " + Path + "\n\n" + Report;
-            TranslatorInterface.LogCall(Report);
-
-            EspPath = Path;
-
-            if (State >= 0)
+            EnsureNotDisposed();
+            IntPtr pRec = IntPtr.Zero, pSub = IntPtr.Zero, pData = IntPtr.Zero;
+            try
             {
-                foreach (var GetRecord in EspInterop.SearchBySig("ALL"))
-                {
-                    string ParentFormID = GetRecord.GetFormIDHex();
-                    string ParentSig = GetRecord.Sig;
-
-                    if (!Types.Contains(ParentSig))
-                    {
-                        Types.Add(ParentSig);
-                    }
-                }
-
-                return true;
+                pRec = StringToUtf8Ptr(recordSig ?? "");
+                pSub = StringToUtf8Ptr(subSig ?? "");
+                pData = StringToUtf8Ptr(newData ?? "");
+                return EspNative.C_ModifySubRecord(_Handle, formId, pRec, pSub, occurrenceIndex, globalIndex, pData);
             }
-
-            return false;
-        }
-
-        public static void LoadStringsFile()
-        {
-            FromStringsFile.Close();
-            ToStringsFile.Close();
-
-            FromStringsFile.LoadStringsFiles(EspPath, TranslatorInterface.Instance.From);
-            ToStringsFile.LoadStringsFiles(EspPath, TranslatorInterface.Instance.To);
-        }
-
-        //public static void TestSaveEsp()
-        //{
-        //    int ModifyCount = 0;
-        //    for (int i = 0; i < Records.Count; i++)
-        //    {
-        //        var Record = Records[Records.ElementAt(i).Key];
-
-        //        bool IsCell = false;
-
-        //        if (Record.ParentSig == "CELL")
-        //        {
-        //            IsCell = true;
-        //        }
-
-        //        if (EspInterop.ModifySubRecord(Record.RealFormID, Record.ParentSig,Record.ChildSig,Record.OccurrenceIndex,Record.SubIndex,i.ToString()))
-        //        {
-        //            ModifyCount++;
-        //        }
-        //    }
-
-        //    EspInterop.SaveEsp(DeFine.GetFullPath(@"\Test.esp"));
-        //}
-
-        public static int SaveEsp(string OutPutPath)
-        {
-            int ModifyCount = 0;
-
-            for (int i = 0; i < Records.Count; i++)
+            finally
             {
-                var Record = Records[Records.ElementAt(i).Key];
-
-                var Link = TranslatorInterface.Instance.GetLink();
-
-                var GetTransData = Link[Record.UniqueKey];
-                if (GetTransData != null)
-                {
-                    if (GetTransData.Length > 0 && GetTransData != Record.String)
-                    {
-                        bool IsCell = false;
-
-                        if (Record.ParentSig == "CELL")
-                        {
-                            IsCell = true;
-                        }
-
-                        if (ConvertHelper.ObjToLong(GetTransData) > 0)
-                        {
-                            continue;
-                        }
-
-                        if (EspInterop.ModifySubRecordByOffset(IsCell, Record.ParentIndex, Record.SubIndex, GetTransData))
-                        {
-                            ModifyCount++;
-                        }
-                    }
-                }
+                if (pRec != IntPtr.Zero) Marshal.FreeHGlobal(pRec);
+                if (pSub != IntPtr.Zero) Marshal.FreeHGlobal(pSub);
+                if (pData != IntPtr.Zero) Marshal.FreeHGlobal(pData);
             }
-
-            EspInterop.SaveEsp(OutPutPath);
-
-            return ModifyCount;
         }
 
-        public static void Close()
+        // ── Character tracker ────────────────────────────────
+        public void ClearCharacterTracker()
         {
-            EspPath = String.Empty;
-            FromStringsFile.Close();
-            ToStringsFile.Close();
-            IsFristSelect = true;       
-            GameCharacters.Clear();    
-            EspInterop.C_Clear();
+            EnsureNotDisposed();
+            EspNative.C_ClearCharacterTracker(_Handle);
+        }
+
+        public List<CharacterRecordInfo> GetAllCharacters()
+        {
+            EnsureNotDisposed();
+            int count = EspNative.C_GetCharacterCount(_Handle);
+            var list = new List<CharacterRecordInfo>(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                var ch = new CharacterRecordInfo
+                {
+                    NpcFormID = EspNative.C_GetCharacterFormID(_Handle, i),
+                    Name = GetCharUtf8(i, EspNative.C_GetCharacterName),
+                    EditorID = GetCharUtf8(i, EspNative.C_GetCharacterEditorID),
+                    VoiceType = GetCharUtf8(i, EspNative.C_GetCharacterVoiceType),
+                    Gender = EspNative.C_GetCharacterGender(_Handle, i),
+                };
+
+                int n;
+                n = EspNative.C_GetCharacterLinkedInfoCount(_Handle, i);
+                for (int j = 0; j < n; j++) ch.LinkedInfos.Add(EspNative.C_GetCharacterLinkedInfo(_Handle, i, j));
+
+                n = EspNative.C_GetCharacterLinkedFactionCount(_Handle, i);
+                for (int j = 0; j < n; j++) ch.LinkedFactions.Add(EspNative.C_GetCharacterLinkedFaction(_Handle, i, j));
+
+                n = EspNative.C_GetCharacterLinkedRaceCount(_Handle, i);
+                for (int j = 0; j < n; j++) ch.LinkedRaces.Add(EspNative.C_GetCharacterLinkedRace(_Handle, i, j));
+
+                n = EspNative.C_GetCharacterLinkedVoiceTypeCount(_Handle, i);
+                for (int j = 0; j < n; j++) ch.LinkedVoiceTypes.Add(EspNative.C_GetCharacterLinkedVoiceType(_Handle, i, j));
+
+                list.Add(ch);
+            }
+            return list;
+        }
+
+        // ── Private helpers ──────────────────────────────────
+        private string GetCharUtf8(int index, Func<IntPtr, int, byte[], int, int> getter)
+        {
+            int len = getter(_Handle, index, null, 0);
+            if (len <= 0) return string.Empty;
+            byte[] buf = new byte[len + 1];
+            int actual = getter(_Handle, index, buf, buf.Length);
+            int nullIdx = Array.IndexOf(buf, (byte)0, 0, actual);
+            if (nullIdx >= 0) actual = nullIdx;
+            return Encoding.UTF8.GetString(buf, 0, actual);
+        }
+
+        private static string GetSubRecordStringUtf8(IntPtr subPtr)
+        {
+            int len = EspNative.C_SubRecordData_GetStringUtf8(subPtr, null, 0);
+            if (len <= 0) return string.Empty;
+            byte[] buf = new byte[len + 1];
+            int actual = EspNative.C_SubRecordData_GetStringUtf8(subPtr, buf, buf.Length);
+            int nullIdx = Array.IndexOf(buf, (byte)0, 0, actual);
+            if (nullIdx >= 0) actual = nullIdx;
+            return string.Copy(Encoding.UTF8.GetString(buf, 0, actual));
+        }
+
+        private static string GetSubRecordSigUtf8(IntPtr subPtr)
+        {
+            byte[] buf = new byte[8];
+            int len = EspNative.C_SubRecordData_GetSigUtf8(subPtr, buf, buf.Length);
+            if (len <= 0) return string.Empty;
+            int nullIdx = Array.IndexOf(buf, (byte)0, 0, len);
+            if (nullIdx >= 0) len = nullIdx;
+            return Encoding.UTF8.GetString(buf, 0, len);
+        }
+
+        private static string GetRecordSigUtf8(IntPtr recPtr)
+        {
+            byte[] buf = new byte[8];
+            int len = EspNative.C_GetRecordSig(recPtr, buf, buf.Length);
+            if (len <= 0) return string.Empty;
+            int nullIdx = Array.IndexOf(buf, (byte)0, 0, len);
+            if (nullIdx >= 0) len = nullIdx;
+            return Encoding.UTF8.GetString(buf, 0, len);
+        }
+
+        private static string GetRecordEditorIDStr(IntPtr recPtr)
+        {
+            if (recPtr == IntPtr.Zero) return string.Empty;
+            IntPtr ptr = EspNative.C_GetRecordEditorID(recPtr);
+            if (ptr == IntPtr.Zero) return string.Empty;
+            string s = Marshal.PtrToStringAnsi(ptr) ?? string.Empty;
+            int idx = s.IndexOf('\0');
+            return idx >= 0 ? s.Substring(0, idx) : s;
+        }
+
+        private static IntPtr StringToUtf8Ptr(string s)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(s ?? "");
+            IntPtr ptr = Marshal.AllocHGlobal(bytes.Length + 1);
+            Marshal.Copy(bytes, 0, ptr, bytes.Length);
+            Marshal.WriteByte(ptr, bytes.Length, 0);
+            return ptr;
         }
     }
+
+    // ============================================================
+    //  Usage example – two independent instances
+    // ============================================================
+    /*
+    using (var reader1 = new EspReader())
+    using (var reader2 = new EspReader())
+    {
+        reader1.LoadEsp(@"C:\Skyrim\Data\Mod1.esp");
+        reader2.LoadEsp(@"C:\Skyrim\Data\Mod2.esp");
+
+        var records1 = reader1.SearchBySig("NPC_");
+        var records2 = reader2.SearchBySig("NPC_");
+
+        reader1.ModifySubRecord(0x12345678, "NPC_", "FULL", 0, 0, "New Name");
+        reader1.SaveEsp(@"C:\Skyrim\Data\Mod1_translated.esp");
+    }  // both instances destroyed here
+    */
 }
