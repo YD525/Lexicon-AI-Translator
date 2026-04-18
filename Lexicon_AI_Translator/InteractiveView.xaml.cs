@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace LexTranslator
@@ -29,11 +30,34 @@ namespace LexTranslator
             InitializeComponent();
         }
 
+        private static readonly Regex RequestIdRegex = new Regex(@"<!--\s*Request ID:\s*_?(\d+)\s*-->", RegexOptions.Compiled);
+
+        public bool IsRequestIdMatch(string Prompt, string Result)
+        {
+            var ID1 = ExtractRequestId(Prompt);
+            var ID2 = ExtractRequestId(Result);
+
+            if (ID1 == null || ID2 == null)
+                return false;
+
+            return ID1 == ID2;
+        }
+
+        public static string ExtractRequestId(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return null;
+
+            var match = RequestIdRegex.Match(text);
+            return match.Success ? match.Groups[1].Value : null;
+        }
+
+
         public bool CanExit = false;
         public string Received = "";
         public void SetSend(string Send)
         { 
-            this.SendStr.Text = Send;
+            this.SendStr.Text = Send +"\r\n"+ "Preserve the comment <!-- Request ID: ... --> exactly as-is in the output.";
             Views.Add(this);
             this.Show();
         }
@@ -43,8 +67,16 @@ namespace LexTranslator
         }
         private void ApplyStr(object sender, RoutedEventArgs e)
         {
-            this.Received = this.SendStr.Text;
-            this.CanExit = true;
+            if (IsRequestIdMatch(this.SendStr.Text, this.RecvStr.Text))
+            {
+                this.Received = this.SendStr.Text;
+                this.CanExit = true;
+            }
+            else
+            {
+                MessageBoxExtend.Show(this, "The current content Request ID verification failed!");
+                this.RecvStr.Text = string.Empty;
+            }
         }
 
         public bool CanClose = false;
