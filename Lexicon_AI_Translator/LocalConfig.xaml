@@ -185,7 +185,7 @@
 
                         <Border  CornerRadius="5" Background="#FF7B7B7B" Grid.Row="1" Cursor="Hand" Margin="5 5 0 5" PreviewMouseDown="OpenDataBase">
                             <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                View Database
+                                Browse Database
                             </Label>
                         </Border>
 
