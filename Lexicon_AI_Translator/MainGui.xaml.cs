@@ -39,7 +39,6 @@ using PhoenixEngine.Events;
 using PhoenixEngine.Engine;
 using LexTranslator.YDControls;
 using LexTranslator.IDEManagement;
-using System.Web.Security;
 
 namespace LexTranslator
 {
