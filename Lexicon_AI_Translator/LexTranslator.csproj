@@ -119,6 +119,9 @@
       <DependentUpon>ExtendWin.xaml</DependentUpon>
     </Compile>
     <Compile Include="IDEManagement\CompleteHelper.cs" />
+    <Compile Include="InteractiveView.xaml.cs">
+      <DependentUpon>InteractiveView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LocalConfig.xaml.cs">
       <DependentUpon>LocalConfig.xaml</DependentUpon>
     </Compile>
@@ -195,6 +198,10 @@
     <Page Include="ExtendWin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="InteractiveView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LocalConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
