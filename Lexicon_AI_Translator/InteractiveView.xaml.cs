@@ -19,6 +19,22 @@ namespace LexTranslator
     /// </summary>
     public partial class InteractiveView : Window
     {
+        public static void CloseAll()
+        {
+            foreach (var Get in InteractiveView.Views)
+            {
+                try
+                {
+                    Get.CanClose = true;
+                    Get.Close();
+                }
+                catch { }
+            }
+
+            InteractiveView.Views.Clear();
+        }
+       
+        public static List<InteractiveView> Views = new List<InteractiveView>();
         public InteractiveView()
         {
             InitializeComponent();
@@ -29,6 +45,7 @@ namespace LexTranslator
         public void SetSend(string Send)
         { 
             this.SendStr.Text = Send;
+            Views.Add(this);
             this.Show();
         }
         private void CopySendStr(object sender, RoutedEventArgs e)
@@ -41,9 +58,14 @@ namespace LexTranslator
             this.CanExit = true;
         }
 
+        public bool CanClose = false;
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //Let the translation thread close this window.
             CanExit = true;
+
+            if(!CanClose)
             e.Cancel = true;
         }
     }

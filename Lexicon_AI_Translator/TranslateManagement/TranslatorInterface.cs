@@ -53,6 +53,7 @@ namespace LexTranslator.TranslateManage
 
                 Application.Current.Dispatcher.Invoke(new Action(() => 
                 {
+                    NInteractiveView.CanClose = true;
                     NInteractiveView.Close();
                 }));
 
@@ -915,6 +916,8 @@ namespace LexTranslator.TranslateManage
                 catch { }
                 InitTrd = null;
             }
+
+            InteractiveView.CloseAll();
         }
     }
 

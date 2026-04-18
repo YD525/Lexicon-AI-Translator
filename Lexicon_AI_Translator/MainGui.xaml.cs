@@ -39,6 +39,7 @@ using PhoenixEngine.Events;
 using PhoenixEngine.Engine;
 using LexTranslator.YDControls;
 using LexTranslator.IDEManagement;
+using System.Web.Security;
 
 namespace LexTranslator
 {
@@ -2860,7 +2861,7 @@ namespace LexTranslator
 
                                 this.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    TranslateOTButtonFont.Content = UILanguageHelper.UICache["TranslateOTButtonFont1"];
+                                    TranslateOTButtonFont.Content = UILanguageHelper.UICache["TranslateOTButtonFont1"] + "(Click to cancel)";
                                     ThreadInFo.Visibility = Visibility.Visible;
                                 }));
 
@@ -2893,6 +2894,24 @@ namespace LexTranslator
 
                             TranslateTrd.Start();
                         }
+                    }
+                    else
+                    {
+                        if (TranslateTrd != null)
+                        {
+                            try
+                            {
+                                TranslateTrd.Abort();
+                            }
+                            catch { }
+                            TranslateTrd = null;
+                        }
+
+                        InteractiveView.CloseAll();
+
+                        TranslateOTButtonFont.Content = UILanguageHelper.UICache["TranslateOTButtonFont"];
+                        SingleTrans = false;
+                        ThreadInFo.Visibility = Visibility.Collapsed;
                     }
                 }
             }
