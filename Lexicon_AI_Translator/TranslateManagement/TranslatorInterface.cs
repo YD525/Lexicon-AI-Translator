@@ -17,6 +17,7 @@ using PhoenixEngine.Request;
 using PhoenixEngine.Sequence;
 using PhoenixEngine.Platform;
 using static PhoenixEngine.Platform.HumanTranslationApi;
+using System.Windows;
 
 namespace LexTranslator.TranslateManage
 {
@@ -29,11 +30,33 @@ namespace LexTranslator.TranslateManage
         {
             HumanTranslationApi.WaitHumanInput += new AwaitHumanTranslationHandler((Send) => 
             {
-                while (true)
+                if (DeFine.WorkingWin == null)
                 {
-                    Thread.Sleep(1000);//Test
+                    return string.Empty;
                 }
-                return "";
+
+                InteractiveView NInteractiveView = null;
+
+                Application.Current.Dispatcher.Invoke(new Action(() => 
+                {
+                    NInteractiveView = new InteractiveView();
+                    NInteractiveView.Owner = DeFine.WorkingWin;
+                    NInteractiveView.SetSend(Send);
+                }));
+
+                while (!NInteractiveView.CanExit)
+                {
+                    Thread.Sleep(500);
+                }
+
+                string Received = NInteractiveView.Received;
+
+                Application.Current.Dispatcher.Invoke(new Action(() => 
+                {
+                    NInteractiveView.Close();
+                }));
+
+                return Received;
             });
 
             Instance = new Translator(DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
