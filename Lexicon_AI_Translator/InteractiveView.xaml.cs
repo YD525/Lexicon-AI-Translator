@@ -40,5 +40,11 @@ namespace LexTranslator
             this.Received = this.SendStr.Text;
             this.CanExit = true;
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CanExit = true;
+            e.Cancel = true;
+        }
     }
 }

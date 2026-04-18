@@ -145,7 +145,6 @@ namespace LexTranslator
         WordCompletionManager CompletionManager = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            new InteractiveView().Show();//Test
             DeFine.Init(this);
 
              YDChart.SetAction(

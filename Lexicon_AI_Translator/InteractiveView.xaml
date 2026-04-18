@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="InteractiveView" Height="450" Width="800" WindowStartupLocation="CenterOwner">
+        Title="Interactive Translation" Height="450" Width="800" WindowStartupLocation="CenterOwner" Closing="Window_Closing">
     <Window.Resources>
         <Style x:Key="for_scrollviewer" TargetType="{x:Type ScrollViewer}">
             <Setter Property="BorderBrush" Value="LightGray"/>
