@@ -73,7 +73,7 @@ namespace LexTranslator
         {
             if (IsRequestIdMatch(this.SendStr.Text, this.RecvStr.Text))
             {
-                this.Received = this.SendStr.Text;
+                this.Received = this.RecvStr.Text;
                 this.CanExit = true;
             }
             else
