@@ -597,6 +597,8 @@ namespace LexTranslator.UIManage
             List<PlatformConfig> CloudAIPlatforms = new List<PlatformConfig>();
             List<PlatformConfig> TraditionalPlatforms = new List<PlatformConfig>();
 
+            List<PlatformConfig> InteractivePlatforms = new List<PlatformConfig>();//This is a special node.
+
             for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
             {
                 var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
@@ -618,7 +620,14 @@ namespace LexTranslator.UIManage
                 }
                 else
                 {
-                    TraditionalPlatforms.Add(Phoenix.Config.PlatformConfigs[GetKey]);
+                    if (Phoenix.Config.PlatformConfigs[GetKey].Platform != PlatformType.HumanTranslation)
+                    {
+                        TraditionalPlatforms.Add(Phoenix.Config.PlatformConfigs[GetKey]);
+                    }
+                    else
+                    {
+                        InteractivePlatforms.Add(Phoenix.Config.PlatformConfigs[GetKey]);
+                    }
                 }
             }
 
@@ -687,6 +696,13 @@ namespace LexTranslator.UIManage
             }
 
             DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.Traditional));
+
+            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Interactive Nodes"));
+
+            foreach (var Get in InteractivePlatforms)
+            {
+                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), Get.Platform, CustomPlatformType.Interactive, 0, Get.Enable));
+            }
 
             DeFine.NodeStyleWin.SyncCount();
         }

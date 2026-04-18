@@ -285,6 +285,29 @@ namespace LexTranslator.UIManagement
                                     SetHeaderTagEnableInFo(SetGrid, string.Format("{0} / {1} Enabled", EnableCount, TotalCount));
                                 }
                             break;
+                            case "Interactive Nodes":
+                                {
+                                    int TotalCount = 0;
+                                    int EnableCount = 0;
+
+                                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                                    {
+                                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+
+                                        if (Phoenix.Config.PlatformConfigs[GetKey].Platform == PlatformType.HumanTranslation)
+                                        {
+                                            if (Phoenix.Config.PlatformConfigs[GetKey].Enable)
+                                            {
+                                                EnableCount++;
+                                            }
+
+                                            TotalCount++;
+                                        }
+                                    }
+
+                                    SetHeaderTagEnableInFo(SetGrid, string.Format("{0} / {1} Enabled", EnableCount, TotalCount));
+                                }
+                            break;
                         }
                     }
                 }

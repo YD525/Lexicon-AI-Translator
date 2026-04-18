@@ -15,6 +15,8 @@ using PhoenixEngine.Unit;
 using PhoenixEngine.Engine;
 using PhoenixEngine.Request;
 using PhoenixEngine.Sequence;
+using PhoenixEngine.Platform;
+using static PhoenixEngine.Platform.HumanTranslationApi;
 
 namespace LexTranslator.TranslateManage
 {
@@ -25,6 +27,15 @@ namespace LexTranslator.TranslateManage
 
         public static void Init()
         {
+            HumanTranslationApi.WaitHumanInput += new AwaitHumanTranslationHandler((Send) => 
+            {
+                while (true)
+                {
+                    Thread.Sleep(1000);//Test
+                }
+                return "";
+            });
+
             Instance = new Translator(DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
 
             EngineEvents.SetDataCall += Recv;
