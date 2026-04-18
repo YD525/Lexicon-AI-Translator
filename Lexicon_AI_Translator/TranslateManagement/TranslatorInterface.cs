@@ -846,6 +846,8 @@ namespace LexTranslator.TranslateManage
                     EndAction.Invoke();
 
                     SyncTransStateFreeze = false;
+
+                    InteractiveView.CloseAll();
                 }
                 else
                 {
@@ -859,6 +861,8 @@ namespace LexTranslator.TranslateManage
                     EndAction.Invoke();
 
                     SyncTransStateFreeze = false;
+
+                    InteractiveView.CloseAll();
                 }
             }).Start();
         }

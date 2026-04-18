@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 
@@ -11,17 +12,20 @@ namespace LexTranslator
     {
         public static void CloseAll()
         {
-            foreach (var Get in InteractiveView.Views)
+            Application.Current.Dispatcher.Invoke(new Action(() => 
             {
-                try
+                foreach (var Get in InteractiveView.Views)
                 {
-                    Get.CanClose = true;
-                    Get.Close();
+                    try
+                    {
+                        Get.CanClose = true;
+                        Get.Close();
+                    }
+                    catch { }
                 }
-                catch { }
-            }
 
-            InteractiveView.Views.Clear();
+                InteractiveView.Views.Clear();
+            }));
         }
        
         public static List<InteractiveView> Views = new List<InteractiveView>();
