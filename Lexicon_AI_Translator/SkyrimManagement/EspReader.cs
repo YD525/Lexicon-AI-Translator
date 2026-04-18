@@ -743,7 +743,7 @@ namespace LexTranslator.SkyrimManagement
                 foreach (var Sub in GetRecord.SubRecords)
                 {
                     var MergeSig = TranslatorInterface.Instance.GetFileUniqueKey() + ":" + ParentFormID + ":" + ParentSig + ":" + Sub.Sig + ":" + Sub.Index + ":" + ParentEditorID;
-                    string UniqueKey = "[" + Crc32Helper.ComputeCrc32(MergeSig) + "]" + Sub.Sig;
+                    string UniqueKey = Crc32Helper.ComputeCrc32(MergeSig);
 
                     RecordItem NRecordItem = new RecordItem
                     {

@@ -28,22 +28,21 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Ellipse Style="{DynamicResource NormalState}">
                                 </Ellipse>
-                                <Label Style="{DynamicResource LineTypeFont}">
-                                    
-                                </Label>
+                                
+                                <TextBox Style ="{DynamicResource LineKeyFont}" Margin="5 0 0 0">
+
+                                </TextBox>
                             </StackPanel>
                         </Grid>
 
                         <Grid Grid.Column="1" Margin="10 0 10 0">
-                            <TextBox Style = "{DynamicResource LineKeyFont}" Visibility="Hidden">
-                               
-                            </TextBox>
-                            
+
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
                                 <TextBox Style = "{DynamicResource LineKeyFont}">
 
                                 </TextBox>
-                               
+
                                 <Grid Width="15" Margin="3 0 0 0" VerticalAlignment="Center" Height="15" Visibility="Hidden" ToolTip="Leader">
                                     <Path Data="M 10,2 L 18,10 L 10,18 C 10,18 8,16 8,10 C 8,4 10,2 10,2 Z" 
                                             Fill="#FF848484"
@@ -52,7 +51,7 @@
                                     </Path>
                                 </Grid>
                             </StackPanel>
-                          
+
                         </Grid>
 
                         <Grid Grid.Column="2">

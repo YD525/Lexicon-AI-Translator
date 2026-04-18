@@ -872,7 +872,7 @@ namespace LexTranslator
 
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreateLine(CurrentSig, ConvertHelper.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
+                                TransViewList.AddRowR(LineRenderer.CreateLine("Auto", ConvertHelper.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
                             }));
                         }
 
@@ -4001,14 +4001,14 @@ namespace LexTranslator
             {
                 var CloudTrans = new DataBaseView();
                 CloudTrans.Show();
-                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 5000");
+                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 100000");
             }
 
             if (GetUserTranslationCache == true)
             {
                 var UserTranslation = new DataBaseView();
                 UserTranslation.Show();
-                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 5000");
+                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 100000");
             }
         }
 

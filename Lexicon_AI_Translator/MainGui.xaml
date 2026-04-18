@@ -304,7 +304,7 @@
 
                                             <Border Opacity="0.7" Margin="0 10 0 0" Name="ShowDataBaseR" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ShowDataBaseR_PreviewMouseDown">
                                                 <Label Style="{DynamicResource ButtonFont}" Name="ShowDataBaseRButton">
-                                                    Load in the Database Viewer
+                                                    View Database
                                                 </Label>
                                             </Border>
 
@@ -457,22 +457,25 @@
 
                                 <Grid Style="{DynamicResource ListViewHeader}" Grid.Row="3" PreviewMouseUp="SyncColumnWidth" Name="TransViewHeader">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="130"/>
                                         <ColumnDefinition Width="1*"/>
                                         <ColumnDefinition Width="1*"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <Label Grid.Column="0" Style="{DynamicResource CaptionTextA}" Name="UIType">
+
+                                    <Label Grid.Column="0" Style="{DynamicResource CaptionTextA}" Name="UIKey">
+                                        Key
+                                    </Label>
+                                    
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Label  Style="{DynamicResource CaptionTextA}" Name="UIType">
                                             Type
                                         </Label>
                                         <ComboBox IsTabStop="True" Name="TypeSelector" Grid.Column="1" VerticalAlignment="Center" Cursor="Hand" Width="20" HorizontalAlignment="Stretch" Style="{StaticResource CustomComboBoxStyleL}" Margin="0 0 8 0" SelectionChanged="TransTargetType_SelectionChanged">
                                         </ComboBox>
                                     </StackPanel>
 
-                                    <Label Grid.Column="1" Style="{DynamicResource CaptionTextA}" Name="UIKey">
-                                        Key
-                                    </Label>
+                                   
                                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Label Style="{DynamicResource CaptionTextA}" Name="UIOriginal">
                                             Original

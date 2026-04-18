@@ -66,33 +66,39 @@ namespace LexTranslator.UIManagement
         public static string GetType(Grid Grid)
         {
             Grid GetDataGrid = ((Grid)((Border)Grid.Children[0]).Child);
-            StackPanel GetStackPanel = (StackPanel)(((Grid)GetDataGrid.Children[0]).Children[0]);
-            Label GetType = (Label)GetStackPanel.Children[1];
 
-            return ConvertHelper.ObjToStr(GetType.Content);
+            Grid GetTypeGrid = (Grid)GetDataGrid.Children[1];
+            StackPanel GetTypePanel = (StackPanel)GetTypeGrid.Children[0];
+
+            TextBox GetType = GetTypePanel.Children[0] as TextBox;
+
+            return GetType.Text;
         }
 
         public static string GetKey(Grid Grid)
         {
-            string GetKey = "";
+            Grid GetDataGrid = ((Grid)((Border)Grid.Children[0]).Child);
+            StackPanel GetStackPanel = (StackPanel)((Grid)GetDataGrid.Children[0]).Children[0];
+            TextBox GetKey = (TextBox)GetStackPanel.Children[1];
 
-            Grid.Dispatcher.Invoke(new Action(() => {
-                GetKey = ConvertHelper.ObjToStr(((Border)Grid.Children[0]).Tag);
-            }));
-
-            return GetKey;
+            return GetKey.Text;
         }
 
         public static void MarkLeader(Grid Grid,bool Visible = true)
         {
             Grid GetDataGrid = ((Grid)((Border)Grid.Children[0]).Child);
-            Grid GetKeyGrid = (Grid)GetDataGrid.Children[1];
-            StackPanel GetKeyPanel = GetKeyGrid.Children[1] as StackPanel;
 
-            if (GetKeyPanel != null && GetKeyPanel.Children.Count > 1)
+            Grid GetKeyGrid = (Grid)GetDataGrid.Children[1];
+            StackPanel GetTypePanel = (StackPanel)GetKeyGrid.Children[0];
+
+            Grid GetLeader = (Grid)(GetTypePanel).Children[1];
+            if (Visible)
             {
-                Grid GetLeader = (Grid)(GetKeyPanel).Children[1];
-                GetLeader.Visibility = Visible ? Visibility.Visible : Visibility.Collapsed;
+                GetLeader.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                GetLeader.Visibility = Visibility.Hidden;
             }
         }
 
@@ -212,6 +218,16 @@ namespace LexTranslator.UIManagement
                 return new Grid();
             }
 
+            EspReader EspInstance = null;
+
+            if (DeFine.WorkingWin != null)
+            {
+                if (DeFine.WorkingWin.CurrentTransType == 2)
+                {
+                    EspInstance = DeFine.WorkingWin.GlobalEspReader;
+                }
+            }
+
             MainGrid.Height = Height;
 
             Border MainBorder = (Border)MainGrid.Children[0];
@@ -233,18 +249,28 @@ namespace LexTranslator.UIManagement
                 State.Fill = new SolidColorBrush(Color.FromRgb(11, 116, 209));
             }
 
-            Label GetType = (Label)GetStackPanel.Children[1];
-            GetType.Content = Item.Type;
+            TextBox GetKey = (TextBox)GetStackPanel.Children[1];
+
+            GetKey.Text = Item.Key;
 
             if (FontColor == Colors.White)
             { 
                FontColor = (Color)Application.Current.Resources["DefFontColor"];
             }
-            GetType.Foreground = new SolidColorBrush(FontColor);
+            GetKey.Foreground = new SolidColorBrush(FontColor);
 
-            Grid GetKeyGrid = (Grid)GetChildGrid.Children[1];
-            TextBox GetKey = (TextBox)GetKeyGrid.Children[0];
-            GetKey.Text = Item.Key;
+            Grid GetTypeGrid = (Grid)GetChildGrid.Children[1];
+            StackPanel GetTypePanel = (StackPanel)GetTypeGrid.Children[0];
+            TextBox GetType = GetTypePanel.Children[0] as TextBox;
+
+            if (EspInstance != null)
+            {
+                GetType.Text = EspInstance.Records[Item.Key].ParentSig + " " + EspInstance.Records[Item.Key].ChildSig;
+            }
+            else
+            {
+                GetType.Text = Item.Type;
+            }  
 
             if (FontColor == Colors.White)
             { 
@@ -254,27 +280,6 @@ namespace LexTranslator.UIManagement
 
             GetKey.PreviewMouseWheel += OnePreviewMouseWheel;
 
-            StackPanel GetKeyPanel = GetKeyGrid.Children[1] as StackPanel;
-            TextBox GetFakeKey = (TextBox)(GetKeyPanel).Children[0];
-
-            EspReader EspInstance = null;
-
-            if (DeFine.WorkingWin != null)
-            {
-                if (DeFine.WorkingWin.CurrentTransType == 2)
-                {
-                    EspInstance = DeFine.WorkingWin.GlobalEspReader;
-                }
-            }
-
-            if (EspInstance != null && EspInstance.Records.ContainsKey(Item.Key))
-            {
-                GetFakeKey.Text = EspInstance.Records[Item.Key].FormID + " " + EspInstance.Records[Item.Key].ChildSig;
-            }
-            else
-            {
-                GetFakeKey.Text = Item.Key;
-            }
 
             if (TranslatorInterface.Instance != null)
             {
@@ -285,17 +290,13 @@ namespace LexTranslator.UIManagement
                     {
                         if (BatchCore.Content.UnionData.Leaders.ContainsKey(Item.Key))
                         {
-                            Grid GetLeader = (Grid)(GetKeyPanel).Children[1];
+                            Grid GetLeader = (Grid)(GetTypePanel).Children[1];
                             GetLeader.Visibility = Visibility.Visible;
                         }
                     }
                 }
                
             }
-
-            GetFakeKey.Foreground = new SolidColorBrush(FontColor);
-            
-            GetFakeKey.PreviewMouseWheel += OnePreviewMouseWheel;
 
             Grid GetOriginalGrid = (Grid)GetChildGrid.Children[2];
             TextBox GetOriginal = (TextBox)GetOriginalGrid.Children[0];
@@ -333,7 +334,7 @@ namespace LexTranslator.UIManagement
             {
                 if (EspInstance.GameCharacters.ContainsKey(Item.Key))
                 {
-                    GetFakeKey.Foreground = new SolidColorBrush(Color.FromRgb(180, 224, 236));
+                    GetKey.Foreground = new SolidColorBrush(Color.FromRgb(180, 224, 236));
                 }
             }
 
@@ -384,9 +385,8 @@ namespace LexTranslator.UIManagement
                 GetKey.Foreground = new SolidColorBrush(Colors.Red);
                 GetOriginal.Foreground = new SolidColorBrush(Colors.Red);
                 GetTranslated.Foreground = new SolidColorBrush(Colors.Red);
+                GetType.Foreground = new SolidColorBrush(Colors.Red);
                 GetTranslatedBorder.Visibility = Visibility.Collapsed;
-                GetFakeKey.Foreground = new SolidColorBrush(Colors.Red);
-
                 GetTranslated.IsReadOnly = true;
             }
 
