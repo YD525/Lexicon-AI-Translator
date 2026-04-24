@@ -578,6 +578,24 @@ namespace LexTranslator.SkyrimManagement
 
         }
 
+        public Dictionary<string, string[]> ParseFilterString(string filterStr)
+        {
+            var result = new Dictionary<string, string[]>();
+            if (string.IsNullOrEmpty(filterStr)) return result;
+
+            foreach (var entry in filterStr.Split(new[] { ';', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                int colon = entry.IndexOf(':');
+                if (colon < 0) continue;
+                string parent = entry.Substring(0, colon).Trim();
+                string[] children = entry.Substring(colon + 1)
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parent.Length > 0 && children.Length > 0)
+                    result[parent] = children;
+            }
+            return result;
+        }
+
         public void ResetToSkyrimFilter()
         {
             EnsureNotDisposed();

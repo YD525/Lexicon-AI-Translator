@@ -135,6 +135,14 @@ namespace LexTranslator
             }
         }
 
+        public void ResetEspFilter()
+        {
+            if (DeFine.GlobalLocalSetting.CustomFilterStr.Trim().Length > 0)
+            {
+                GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(DeFine.GlobalLocalSetting.CustomFilterStr));
+            }
+        }
+
         public YDListView TransViewList = null;
 
         private ScanAnimator ScanAnimator = null;
@@ -189,6 +197,7 @@ namespace LexTranslator
 
             GlobalRamCacheReader = new RamCacheReader();
             GlobalEspReader = new EspReader();
+            ResetEspFilter();
             GlobalMCMReader = new MCMReader();
             GlobalPexReader = new PexHeuristicAnalysis();
             GlobalXmlReader = new R_XmlReader();
