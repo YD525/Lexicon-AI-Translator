@@ -572,7 +572,7 @@ namespace LexTranslator.SkyrimManagement
             RichText = RichText.Replace(";", ";\r\n");
             if (RichText.EndsWith("\r\n"))
             {
-                RichText = RichText.Substring(RichText.Length - "\r\n".Length);
+                RichText = RichText.Substring(0,RichText.Length - "\r\n".Length);
             }
             return RichText;
 
