@@ -496,9 +496,9 @@
                                             Translated
                                         </Label>
 
-                                        <Border Name="ClearCache" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ClearCache_PreviewMouseDown">
-                                            <Label Style="{DynamicResource ButtonFont}" Name="ClearCacheButton">
-                                                ClearCache
+                                        <Border Name="ManageCache" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ManageCache_PreviewMouseDown">
+                                            <Label Style="{DynamicResource ButtonFont}" Name="ManageCacheButton">
+                                                ManageCache
                                             </Label>
                                         </Border>
 

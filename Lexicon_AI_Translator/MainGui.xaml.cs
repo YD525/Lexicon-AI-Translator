@@ -1721,7 +1721,7 @@ namespace LexTranslator
 
         public Thread ClearCacheTrd = null;
 
-        private void ClearCache_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void ManageCache_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (LoadSaveState == 0)
             {
@@ -3229,7 +3229,7 @@ namespace LexTranslator
                 {
                     if (TransViewList.Rows > 0)
                     {
-                        if (ConvertHelper.ObjToStr(ClearCacheButton.Content).Equals(UILanguageHelper.UICache["ClearCacheButton"]))
+                        if (ConvertHelper.ObjToStr(ManageCacheButton.Content).Equals(UILanguageHelper.UICache["ManageCacheButton"]))
                         {
                             if (ClearCacheTrd == null)
                             {
@@ -3240,9 +3240,9 @@ namespace LexTranslator
                                 {
                                     try
                                     {
-                                        ClearCacheButton.Dispatcher.Invoke(new Action(() =>
+                                        ManageCacheButton.Dispatcher.Invoke(new Action(() =>
                                         {
-                                            ClearCacheButton.Content = UILanguageHelper.UICache["ClearCacheButton1"];
+                                            ManageCacheButton.Content = UILanguageHelper.UICache["ManageCacheButton1"];
                                         }));
 
                                         int CallFuncCount = 0;
@@ -3290,9 +3290,9 @@ namespace LexTranslator
                                         Thread.Sleep(100);
                                     }
 
-                                    ClearCacheButton.Dispatcher.Invoke(new Action(() =>
+                                    ManageCacheButton.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        ClearCacheButton.Content = UILanguageHelper.UICache["ClearCacheButton"];
+                                        ManageCacheButton.Content = UILanguageHelper.UICache["ManageCacheButton"];
                                     }));
 
                                     ClearCacheTrd = null;
