@@ -85,20 +85,22 @@ namespace LexTranslator.SkyrimManagement
 
         // Filter
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_InitDefaultFilter(IntPtr handle);
+        public static extern void C_InitFilter(IntPtr handle);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SetDefaultFilter(IntPtr handle);
+        public static extern int C_SetSkyrimFilter(IntPtr handle);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void C_ClearFilter(IntPtr handle);
+        public static extern int C_GetFilter(IntPtr handle, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int C_SetFilter(
-            IntPtr handle,
+        public static extern int C_SetFilter(IntPtr handle,
             [MarshalAs(UnmanagedType.LPStr)] string parentSig,
             [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] string[] childSigs,
             int childCount);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void C_ClearFilter(IntPtr handle);
 
         // IO
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
@@ -467,6 +469,26 @@ namespace LexTranslator.SkyrimManagement
                     Marshal.FreeHGlobal(Ptr); 
             }
         }
+
+        public static Dictionary<string, string[]> GetFilter(IntPtr instance)
+        {
+            int len = C_GetFilter(instance, null, 0);
+            if (len <= 0) return new Dictionary<string, string[]>();
+
+            byte[] buffer = new byte[len + 1];
+            C_GetFilter(instance, buffer, buffer.Length);
+            string raw = Encoding.UTF8.GetString(buffer, 0, len);
+
+            var result = new Dictionary<string, string[]>();
+            foreach (var entry in raw.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                int colon = entry.IndexOf(':');
+                if (colon < 0) continue;
+                result[entry.Substring(0, colon)] = entry.Substring(colon + 1)
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            return result;
+        }
     }
 
 
@@ -524,8 +546,20 @@ namespace LexTranslator.SkyrimManagement
             if (_Instance == IntPtr.Zero)
                 throw new InvalidOperationException("Failed to create EspInstance in native DLL.");
 
-            EspNative.C_InitDefaultFilter(_Instance);
-            EspNative.C_SetDefaultFilter(_Instance);
+            SetDefaultFilter();
+        }
+
+        public Dictionary<string, string[]> GetFilter()
+        {
+            EnsureNotDisposed();
+            return EspNative.GetFilter(_Instance);
+        }
+
+        public void ResetToSkyrimFilter()
+        {
+            EnsureNotDisposed();
+            EspNative.C_InitFilter(_Instance);       
+            EspNative.C_SetSkyrimFilter(_Instance);  
         }
 
         public void Dispose()
@@ -567,8 +601,8 @@ namespace LexTranslator.SkyrimManagement
         public void SetDefaultFilter()
         {
             EnsureNotDisposed();
-            EspNative.C_InitDefaultFilter(_Instance);
-            EspNative.C_SetDefaultFilter(_Instance);
+            EspNative.C_ClearFilter(_Instance);
+            EspNative.C_SetSkyrimFilter(_Instance);
         }
 
         public void SetFilter(Dictionary<string, string[]> filterConfig)
