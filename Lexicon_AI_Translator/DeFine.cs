@@ -278,6 +278,8 @@ namespace LexTranslator
 
         public bool WordCompletion { get; set; } = true;
 
+        public string CustomFilterStr { get; set; } = "";
+
         public void ReadConfig()
         {
             try
@@ -328,6 +330,8 @@ namespace LexTranslator
 
                             this.TableAuto = GetSetting.TableAuto;
                             this.WordCompletion = GetSetting.WordCompletion;
+
+                            this.CustomFilterStr = GetSetting.CustomFilterStr;
                         }
                     }
                     else
