@@ -1732,9 +1732,6 @@ namespace LexTranslator
 
         private void ManageCache_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var GetStr = GlobalEspReader.GetFilterByStr();//Test
-            var Dict = GlobalEspReader.ParseFilterString(GetStr);//Test
-
             if (LoadSaveState == 0)
             {
                 MessageBoxExtend.Show(this, "Only currently open files can have their cache cleared.");
