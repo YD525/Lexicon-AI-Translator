@@ -469,7 +469,17 @@ namespace LexTranslator.SkyrimManagement
                     Marshal.FreeHGlobal(Ptr); 
             }
         }
+        public static string GetFilterByStr(IntPtr instance)
+        {
+            int len = C_GetFilter(instance, null, 0);
+            if (len <= 0) return string.Empty;
 
+            byte[] buffer = new byte[len + 1];
+            C_GetFilter(instance, buffer, buffer.Length);
+            string raw = Encoding.UTF8.GetString(buffer, 0, len);
+
+            return raw;
+        }
         public static Dictionary<string, string[]> GetFilter(IntPtr instance)
         {
             int len = C_GetFilter(instance, null, 0);
@@ -553,6 +563,12 @@ namespace LexTranslator.SkyrimManagement
         {
             EnsureNotDisposed();
             return EspNative.GetFilter(_Instance);
+        }
+
+        public string GetFilterByStr()
+        {
+            EnsureNotDisposed();
+            return EspNative.GetFilterByStr(_Instance);
         }
 
         public void ResetToSkyrimFilter()
