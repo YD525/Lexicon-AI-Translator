@@ -1185,6 +1185,30 @@ Fill="White"/>
                                                     </StackPanel>
                                                 </Border>
 
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    ESP Record Allowed Fields
+                                                </Label>
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Border Height="150">
+                                                            <TextBox Name="EspFilterStr" Margin="5" CaretBrush="White" VerticalScrollBarVisibility="Visible"  FontSize="13.5" TextWrapping="Wrap" AcceptsReturn="True" Background="{x:Null}" BorderThickness="0" Foreground="White">
+                                                            </TextBox>
+                                                        </Border>
+                                                        <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
+                                                            <Border Style="{DynamicResource LiteButton}" PreviewMouseDown="SetFilter">
+                                                                <Label Style="{DynamicResource LiteButtonFont}" Foreground="White">
+                                                                    Set
+                                                                </Label>
+                                                            </Border>
+
+                                                            <Border Style="{DynamicResource LiteButton}" PreviewMouseDown="ReSetFilter">
+                                                                <Label Style="{DynamicResource LiteButtonFont}" Foreground="White">
+                                                                    Reset
+                                                                </Label>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
                                             </StackPanel>
                                         </ScrollViewer>
                                     </Border>

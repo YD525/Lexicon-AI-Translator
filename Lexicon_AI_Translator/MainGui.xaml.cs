@@ -3479,6 +3479,7 @@ namespace LexTranslator
                     SCodeGenStyle.SelectedValue = SCodeGenStyle.Items[1];
                 }
 
+                EspFilterStr.Text = GlobalEspReader.GetFilterByStr();
 
                 //SGameFileEncoding.Items.Clear();
                 //SGameFileEncoding.Items.Add(EncodingTypes.UTF8.ToString());
@@ -4051,6 +4052,17 @@ namespace LexTranslator
             }
 
             DeFine.GlobalLocalSetting.SaveConfig();
+        }
+
+        private void ReSetFilter(object sender, MouseButtonEventArgs e)
+        {
+            GlobalEspReader.ResetToSkyrimFilter();
+            EspFilterStr.Text = GlobalEspReader.GetFilterByStr();
+        }
+
+        private void SetFilter(object sender, MouseButtonEventArgs e)
+        {
+            GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(EspFilterStr.Text));
         }
     }
 }
