@@ -299,7 +299,7 @@ namespace LexTranslator.TranslateManage
                 {
                     if (Instance != null)
                     {
-                        Instance.GetBatchCore()?.Cancel();
+                        Instance.GetBatchCore()?.Close();
                     }
 
                     return true;
@@ -310,7 +310,7 @@ namespace LexTranslator.TranslateManage
             {
                 if (Instance != null)
                 {
-                    Instance.GetBatchCore()?.Cancel();
+                    Instance.GetBatchCore()?.Close();
                 }
 
                 return true;
@@ -758,7 +758,7 @@ namespace LexTranslator.TranslateManage
                                     break;
                                 }
 
-                                if (!GetBatchCore.IsWork && GetBatchCore.ProcStage != 10)
+                                if (!GetBatchCore.IsWorking && GetBatchCore.ProcStage != 10)
                                 {
                                     if ((DateTime.Now - StartTime).TotalSeconds > 30)
                                         break;
@@ -838,7 +838,7 @@ namespace LexTranslator.TranslateManage
                     {
                         try
                         {
-                            GetBatchCore.Cancel();
+                            GetBatchCore.Close();
                         }
                         catch { }
                     }
