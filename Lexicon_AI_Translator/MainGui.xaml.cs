@@ -4065,10 +4065,23 @@ namespace LexTranslator
 
         private void SetFilter(object sender, MouseButtonEventArgs e)
         {
-            GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(EspFilterStr.Text));
+            try
+            {
+                var FilterDict = GlobalEspReader.ParseFilterString(EspFilterStr.Text);
 
-            DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
-            DeFine.GlobalLocalSetting.SaveConfig();
+                var SourceFilterStr = GlobalEspReader.GetFilterByStr();
+
+                if (SourceFilterStr.ToUpper() != EspFilterStr.Text.ToUpper())
+                {
+                    GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(EspFilterStr.Text));
+                    DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
+                    DeFine.GlobalLocalSetting.SaveConfig();
+                }
+            }
+            catch
+            {
+                MessageBoxExtend.Show(this, "The string used to set the filter is incorrect.");
+            }
         }
     }
 }
