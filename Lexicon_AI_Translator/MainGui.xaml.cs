@@ -4073,9 +4073,12 @@ namespace LexTranslator
 
                 if (SourceFilterStr.ToUpper() != EspFilterStr.Text.ToUpper())
                 {
-                    GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(EspFilterStr.Text));
-                    DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
-                    DeFine.GlobalLocalSetting.SaveConfig();
+                    if (FilterDict.Count > 0)
+                    {
+                        GlobalEspReader.SetFilter(FilterDict);
+                        DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
+                        DeFine.GlobalLocalSetting.SaveConfig();
+                    }
                 }
             }
             catch
