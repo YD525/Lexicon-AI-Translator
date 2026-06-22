@@ -135,11 +135,11 @@ namespace LexTranslator
             }
         }
 
-        public void ResetEspFilter()
+        public void SetEspFilter(string FilterStr)
         {
-            if (DeFine.GlobalLocalSetting.CustomFilterStr.Trim().Length > 0)
+            if (FilterStr.Trim().Length > 0)
             {
-                GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(DeFine.GlobalLocalSetting.CustomFilterStr));
+                GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(FilterStr));
             }
         }
 
@@ -197,7 +197,7 @@ namespace LexTranslator
 
             GlobalRamCacheReader = new RamCacheReader();
             GlobalEspReader = new EspReader();
-            ResetEspFilter();
+            SetEspFilter(DeFine.GlobalLocalSetting.CustomFilterStr);
             GlobalMCMReader = new MCMReader();
             GlobalPexReader = new PexHeuristicAnalysis();
             GlobalXmlReader = new R_XmlReader();
@@ -4058,11 +4058,17 @@ namespace LexTranslator
         {
             GlobalEspReader.ResetToSkyrimFilter();
             EspFilterStr.Text = GlobalEspReader.GetFilterByStr();
+
+            DeFine.GlobalLocalSetting.CustomFilterStr = string.Empty;
+            DeFine.GlobalLocalSetting.SaveConfig();
         }
 
         private void SetFilter(object sender, MouseButtonEventArgs e)
         {
             GlobalEspReader.SetFilter(GlobalEspReader.ParseFilterString(EspFilterStr.Text));
+
+            DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
+            DeFine.GlobalLocalSetting.SaveConfig();
         }
     }
 }
