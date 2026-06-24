@@ -613,7 +613,7 @@ namespace LexTranslator
                             var BatchCore = TranslatorInterface.Instance.GetBatchCore();
                             if (ScanAnimator != null)
                             {
-                                if (ModifyCount > 0 && BatchCore.IsWorking && !BatchCore.IsStop)
+                                if (ModifyCount > 0 && BatchCore.IsWorking && !BatchCore.IsStopped)
                                 {
                                     ScanAnimator.Start();
                                 }
@@ -623,7 +623,7 @@ namespace LexTranslator
                                 }
                             }
 
-                            if ((BatchCore.IsWorking && !BatchCore.IsStop) || SingleTrans)
+                            if ((BatchCore.IsWorking && !BatchCore.IsStopped) || SingleTrans)
                             {
                                 int Current = BatchCore.GetWorkingThreadCount();
 
@@ -637,7 +637,7 @@ namespace LexTranslator
                                 }
                             }
                             else
-                            if (BatchCore.IsWorking && BatchCore.IsStop)
+                            if (BatchCore.IsWorking && BatchCore.IsStopped)
                             {
                                 ThreadInFoFont.Content = string.Format("Thread(Current:0,Max:{0})", Phoenix.Config.MaxThreadCount);
                             }
@@ -2636,7 +2636,7 @@ namespace LexTranslator
                 {
                     var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
                     if(GetBatchCore!=null)
-                    if (GetBatchCore.IsWorking && !GetBatchCore.IsStop)
+                    if (GetBatchCore.IsWorking && !GetBatchCore.IsStopped)
                     {
                         ScanAnimator.UpdateAnimationTarget();
                     }
