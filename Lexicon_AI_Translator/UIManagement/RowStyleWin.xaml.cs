@@ -30,7 +30,7 @@ namespace LexTranslator.UIManagement
             this.Hide();
         }
 
-    
+        //Oh no, the way I wrote this is a disaster—I completely forgot the order.
         public static void SetColor(Grid Grid,int R,int G,int B)
         {
             Color FontColor = Color.FromRgb((byte)R, (byte)G, (byte)B);
