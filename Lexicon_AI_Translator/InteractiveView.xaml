@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="Interactive Translation" Height="450" Width="800" WindowStartupLocation="CenterOwner" Closing="Window_Closing">
+        Title="Human Translation" Height="450" Width="800" WindowStartupLocation="CenterOwner" Closing="Window_Closing">
     <Window.Resources>
         <Style x:Key="for_scrollviewer" TargetType="{x:Type ScrollViewer}">
             <Setter Property="BorderBrush" Value="LightGray"/>
@@ -83,13 +83,29 @@
     </Window.Resources>
     <Grid Background="#FF373737">
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Margin="5" Grid.Column="0">
+            <Grid Grid.Column="0" Grid.Row="0">
+                <Label Foreground="White" VerticalAlignment="Center" Margin="5 0 0 0">
+                    Translation Request
+                </Label>
+            </Grid>
+
+            <Grid Grid.Column="2" Grid.Row="0">
+                <Label Foreground="White" VerticalAlignment="Center" Margin="5 0 0 0">
+                    Translation Result
+                </Label>
+            </Grid>
+
+            <Grid Margin="5" Grid.Column="0" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="35"/>
@@ -102,7 +118,7 @@
                 <Button Grid.Row="1" Click="CopySendStr" x:Name="BtnCopy" Content="Copy" Width="110" Height="28" Background="#1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1" FontSize="12" Cursor="Hand" VerticalAlignment="Center" HorizontalAlignment="Right"/>
             </Grid>
 
-            <Grid Margin="5" Grid.Column="2">
+            <Grid Margin="5" Grid.Column="2"  Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="35"/>
