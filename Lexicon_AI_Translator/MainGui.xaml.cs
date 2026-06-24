@@ -602,7 +602,7 @@ namespace LexTranslator
                 var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
                 if (GetBatchCore != null)
                 {
-                    ModifyCount = GetBatchCore.TranslatedCount;
+                    ModifyCount = (GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount);
                 }
 
                 this.Dispatcher.Invoke(new Action(() =>
