@@ -3238,7 +3238,7 @@ namespace LexTranslator
                 {
                     if (TransViewList.Rows > 0)
                     {
-                        if (P_Convert.ObjToStr(ManageCacheButton.Content).Equals(UILanguageHelper.UICache["ManageCacheButton"]))
+                        if (P_Convert.ObjToStr(ClearCacheRButton.Content).Equals(UILanguageHelper.UICache["ClearCacheButton"]))
                         {
                             if (ClearCacheTrd == null)
                             {
@@ -3249,9 +3249,9 @@ namespace LexTranslator
                                 {
                                     try
                                     {
-                                        ManageCacheButton.Dispatcher.Invoke(new Action(() =>
+                                        ClearCacheRButton.Dispatcher.Invoke(new Action(() =>
                                         {
-                                            ManageCacheButton.Content = UILanguageHelper.UICache["ManageCacheButton1"];
+                                            ClearCacheRButton.Content = UILanguageHelper.UICache["ClearCacheButton1"];
                                         }));
 
                                         int CallFuncCount = 0;
@@ -3299,9 +3299,9 @@ namespace LexTranslator
                                         Thread.Sleep(100);
                                     }
 
-                                    ManageCacheButton.Dispatcher.Invoke(new Action(() =>
+                                    ClearCacheRButton.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        ManageCacheButton.Content = UILanguageHelper.UICache["ManageCacheButton"];
+                                        ClearCacheRButton.Content = UILanguageHelper.UICache["ClearCacheButton"];
                                     }));
 
                                     ClearCacheTrd = null;

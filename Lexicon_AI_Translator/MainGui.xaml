@@ -497,7 +497,7 @@
                                         </Label>
 
                                         <Border Name="ManageCache" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ManageCache_PreviewMouseDown">
-                                            <Label Style="{DynamicResource ButtonFont}" Name="ManageCacheButton">
+                                            <Label Style="{DynamicResource ButtonFont}">
                                                 ManageCache
                                             </Label>
                                         </Border>

@@ -723,7 +723,7 @@ namespace LexTranslator.TranslateManage
 
                         if (GetBatchCore != null)
                         {
-                            ModifyCount = GetBatchCore.TranslatedCount;
+                            ModifyCount = GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount;
                             GetBatchCore.Close();
 
                             GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation,RowStyleWin.DictionaryKeys.Count);
@@ -775,7 +775,7 @@ namespace LexTranslator.TranslateManage
                                     TotalCount++;
                                     TranslatorInterface.Instance.SetLink(GetUnit.Key, GetUnit.Translated);
                                     SetTransBarTittle(string.Format("STRINGS({0}/{1})",
-                                        GetBatchCore.TranslatedCount, GetListView.Rows));
+                                          GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount, GetListView.Rows));
                                 }
                                 else 
                                 if (!IsEnd)
