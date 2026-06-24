@@ -3,7 +3,6 @@ using System.Windows;
 using LexTranslator;
 using LexTranslator.UIManage;
 using System.Windows.Media;
-using LexTranslator.ConvertManager;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using LexTranslator.UIManagement;
@@ -16,6 +15,7 @@ using ICSharpCode.AvalonEdit;
 using LexTranslator.TranslateManage;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
+using PhoenixEngine.Common;
 
 // Copyright 2026 YD525
 
@@ -192,7 +192,7 @@ public class YDListView
             LastSetColorCol.Width = new GridLength(0, GridUnitType.Pixel);
         }
 
-        SelectLineID = ConvertHelper.ObjToInt(MainGrid.Tag);
+        SelectLineID = P_Convert.ObjToInt(MainGrid.Tag);
 
         Border MainBorder = (Border)MainGrid.Children[0];
 

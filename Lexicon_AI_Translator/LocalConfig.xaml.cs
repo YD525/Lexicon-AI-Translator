@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using LexTranslator.ConvertManager;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
@@ -17,8 +16,8 @@ using PhoenixEngine.Unit;
 using PhoenixEngine.Language;
 using PhoenixEngine;
 using PhoenixEngine.P_Delegate;
-using PhoenixEngine.Engine.ADO;
 using LexTranslator.IDEManagement;
+using PhoenixEngine.Common;
 
 namespace LexTranslator
 {
@@ -113,11 +112,11 @@ namespace LexTranslator
 
                 if (sender is Border)
                 {
-                    Tag = ConvertHelper.ObjToStr((sender as Border).Tag);
+                    Tag = P_Convert.ObjToStr((sender as Border).Tag);
                 }
                 if (sender is Image)
                 {
-                    Tag = ConvertHelper.ObjToStr((sender as Image).Tag);
+                    Tag = P_Convert.ObjToStr((sender as Image).Tag);
                 }
 
                 switch (Tag)
@@ -327,7 +326,7 @@ namespace LexTranslator
 
         public int CanReload = 1;
 
-        public PageItem<List<AdvancedDictionaryItem>> Pages = null;
+        public P_SQL_Page<List<AdvancedDictionaryItem>> Pages = null;
 
         public int CurrentPage = 1;
         public int MaxPage = 0;
@@ -336,7 +335,7 @@ namespace LexTranslator
 
         private void SFrom_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetLang = ConvertHelper.ObjToStr(SFrom.SelectedValue);
+            string GetLang = P_Convert.ObjToStr(SFrom.SelectedValue);
             if (GetLang.Trim().Length > 0)
             {
                 FilterFrom = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
@@ -357,7 +356,7 @@ namespace LexTranslator
 
         private void STo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetLang = ConvertHelper.ObjToStr(STo.SelectedValue);
+            string GetLang = P_Convert.ObjToStr(STo.SelectedValue);
             if (GetLang.Trim().Length > 0)
             {
                 FilterTo = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
@@ -396,8 +395,8 @@ namespace LexTranslator
 
         private void AddKeyWord(object sender, MouseButtonEventArgs e)
         {
-            string FromStr = ConvertHelper.ObjToStr(From.SelectedValue);
-            string ToStr = ConvertHelper.ObjToStr(To.SelectedValue);
+            string FromStr = P_Convert.ObjToStr(From.SelectedValue);
+            string ToStr = P_Convert.ObjToStr(To.SelectedValue);
 
             int FromID = 0;
             if (FromStr.Trim().Length > 0)
@@ -446,7 +445,7 @@ namespace LexTranslator
                 GetIgnoreCase = 1;
             }
 
-            string GetType = ConvertHelper.ObjToStr(TypeSelector.SelectedValue);
+            string GetType = P_Convert.ObjToStr(TypeSelector.SelectedValue);
 
             if (GetType.Equals("ALL"))
             {
@@ -486,7 +485,7 @@ namespace LexTranslator
             {
                 foreach (var GetItem in KeywordList.SelectedItems)
                 {
-                    int Rowid = ConvertHelper.ObjToInt(ConvertHelper.ObjToStr(KeywordList.SelectedItem.GetType().GetProperty("Rowid").GetValue(GetItem, null)));
+                    int Rowid = P_Convert.ObjToInt(P_Convert.ObjToStr(KeywordList.SelectedItem.GetType().GetProperty("Rowid").GetValue(GetItem, null)));
                     AdvancedDictionary.DeleteByRowid(Rowid);
                 }
 
@@ -498,8 +497,8 @@ namespace LexTranslator
         private static int AutoID = 0;
         private void Execute_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            string GetBtnContent = ConvertHelper.ObjToStr(ExecuteBtn.Content);
-            string GetType = ConvertHelper.ObjToStr(TypeSelector.SelectedValue);
+            string GetBtnContent = P_Convert.ObjToStr(ExecuteBtn.Content);
+            string GetType = P_Convert.ObjToStr(TypeSelector.SelectedValue);
             if (GetBtnContent.Equals("Execute"))
             {
                 AutoID++;
@@ -548,10 +547,10 @@ namespace LexTranslator
             List<string> Removes = new List<string>();
             foreach (var Get in MatchedKeywords.SelectedItems)
             {
-                string GetStr = ConvertHelper.ObjToStr(Get);
+                string GetStr = P_Convert.ObjToStr(Get);
                 if (GetStr.Contains(","))
                 {
-                    int Rowid = ConvertHelper.ObjToInt(GetStr.Split(',')[0]);
+                    int Rowid = P_Convert.ObjToInt(GetStr.Split(',')[0]);
 
                     if (GetStr.Contains("__P") || Rowid == 0)
                     {

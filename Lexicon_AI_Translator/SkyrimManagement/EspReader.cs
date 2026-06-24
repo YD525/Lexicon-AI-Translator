@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Shapes;
-using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
+using PhoenixEngine.Common;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -729,7 +728,7 @@ namespace LexTranslator.SkyrimManagement
                             IsCell = true;
                         }
 
-                        if (ConvertHelper.ObjToLong(GetTransData) > 0)
+                        if (P_Convert.ObjToLong(GetTransData) > 0)
                         {
                             continue;
                         }

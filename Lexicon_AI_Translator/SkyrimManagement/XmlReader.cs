@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using LexTranslator.ConvertManager;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
-using Newtonsoft.Json.Linq;
+using PhoenixEngine.Common;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -30,7 +29,7 @@ namespace LexTranslator.SkyrimManagement
 
                 if (Item.RECID != null)
                 { 
-                    this.RECID = ConvertHelper.ObjToInt(Item.RECID);
+                    this.RECID = P_Convert.ObjToInt(Item.RECID);
                 }
 
                 this.Key = Crc32Helper.ComputeCrc32(this.RECID + "_" + Item.EDID + "_" + Item.REC);
@@ -144,7 +143,7 @@ namespace LexTranslator.SkyrimManagement
 
                 if ((StringNode.Element("REC")?.Attribute("id")) != null)
                 {
-                    RECID = ConvertHelper.ObjToInt((StringNode.Element("REC")?.Attribute("id")?.Value));
+                    RECID = P_Convert.ObjToInt((StringNode.Element("REC")?.Attribute("id")?.Value));
                 }
 
                 if (EditorID != null && Rec != null)

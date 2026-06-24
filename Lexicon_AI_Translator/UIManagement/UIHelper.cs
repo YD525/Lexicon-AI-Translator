@@ -1,7 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
-using LexTranslator.ConvertManager;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
 using System.Threading;
@@ -22,6 +21,7 @@ using PhoenixEngine;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Unit;
 using LexTranslator.TranslateManage;
+using PhoenixEngine.Common;
 
 namespace LexTranslator.UIManage
 {
@@ -472,7 +472,7 @@ namespace LexTranslator.UIManage
 
             TypeLab.MouseLeftButtonDown += new MouseButtonEventHandler((object sender, MouseButtonEventArgs e) =>
             {
-                DeFine.WorkingWin.TransViewList?.Goto(ConvertHelper.ObjToStr(TypeLab.Content));
+                DeFine.WorkingWin.TransViewList?.Goto(P_Convert.ObjToStr(TypeLab.Content));
             });
 
             NewLine.Children.Add(TypeLab);
@@ -542,7 +542,7 @@ namespace LexTranslator.UIManage
                     {
                         if (FindParent<TextBox>(source) != null)
                         {
-                            DeFine.WorkingWin.ToStr.Text = ConvertHelper.ObjToStr(GetGrid.Tag);
+                            DeFine.WorkingWin.ToStr.Text = P_Convert.ObjToStr(GetGrid.Tag);
                         }
                     }
                 }

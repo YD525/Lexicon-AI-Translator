@@ -3,9 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using LexTranslator.ConvertManager;
 using LexTranslator.UIManage;
 using PhoenixEngine;
+using PhoenixEngine.Common;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
 
@@ -172,7 +172,7 @@ namespace LexTranslator.UIManagement
                     Grid SetGrid = (Grid)Get;
                     if (SetGrid.Children[0] is Label)
                     {
-                        string GetName = ConvertHelper.ObjToStr(SetGrid.Tag);
+                        string GetName = P_Convert.ObjToStr(SetGrid.Tag);
                         switch (GetName)
                         {
                             case "Engine Nodes":

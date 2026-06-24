@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
+using PhoenixEngine.Common;
 using PhoenixEngine.Translate;
 
 namespace LexTranslator
@@ -41,8 +41,8 @@ namespace LexTranslator
         {
             if (SourceStr.Text.Trim().Length > 0 && TargetStr.Text.Trim().Length > 0)
             {
-                string GetMode = ConvertHelper.ObjToStr(Mode.SelectedValue);
-                string GetScope = ConvertHelper.ObjToStr(Scope.SelectedValue);
+                string GetMode = P_Convert.ObjToStr(Mode.SelectedValue);
+                string GetScope = P_Convert.ObjToStr(Scope.SelectedValue);
 
                 if (GetMode.Equals("Source text"))
                 {

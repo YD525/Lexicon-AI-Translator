@@ -29,7 +29,6 @@ using static PexInterface.PexHeuristicAnalysis;
 using PhoenixEngine;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
-using LexTranslator.ConvertManager;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Language;
@@ -39,6 +38,7 @@ using PhoenixEngine.Events;
 using PhoenixEngine.Engine;
 using LexTranslator.YDControls;
 using LexTranslator.IDEManagement;
+using PhoenixEngine.Common;
 
 namespace LexTranslator
 {
@@ -529,7 +529,7 @@ namespace LexTranslator
 
         private void Mask_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (ConvertHelper.ObjToInt(Mask.Tag) == 0)
+            if (P_Convert.ObjToInt(Mask.Tag) == 0)
             {
                 ShowLeftMenu(false);
                 LogView.Visibility = Visibility.Collapsed;
@@ -581,7 +581,7 @@ namespace LexTranslator
         {
             if (CurrentTransType == 2)
             {
-                if (ConvertHelper.ObjToStr(TypeSelector.SelectedValue).Equals("ALL"))
+                if (P_Convert.ObjToStr(TypeSelector.SelectedValue).Equals("ALL"))
                 {
                     if (TransViewList != null)
                         GlobalTransCount = TransViewList.RealLines.Count;
@@ -881,7 +881,7 @@ namespace LexTranslator
 
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreateLine("Auto", ConvertHelper.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
+                                TransViewList.AddRowR(LineRenderer.CreateLine("Auto", P_Convert.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
                             }));
                         }
 
@@ -1324,7 +1324,7 @@ namespace LexTranslator
         {
             this.LoadFileButton.Dispatcher.Invoke(new Action(() =>
             {
-                if (ConvertHelper.ObjToStr(LoadFileButton.Content).Equals(UILanguageHelper.UICache["LoadFileButton2"]))
+                if (P_Convert.ObjToStr(LoadFileButton.Content).Equals(UILanguageHelper.UICache["LoadFileButton2"]))
                 {
                     return;
                 }
@@ -1556,7 +1556,7 @@ namespace LexTranslator
         public string CurrentSig = "";
         private void TransTargetType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetSelectValue = ConvertHelper.ObjToStr((sender as ComboBox).SelectedValue);
+            string GetSelectValue = P_Convert.ObjToStr((sender as ComboBox).SelectedValue);
             if (GetSelectValue.Trim().Length > 0)
             {
                 CurrentSig = GetSelectValue;
@@ -1749,7 +1749,7 @@ namespace LexTranslator
             {
                 return;
             }
-            if (ConvertHelper.ObjToStr(RefreshButton.Content).Equals(UILanguageHelper.UICache["RefreshButton1"]))
+            if (P_Convert.ObjToStr(RefreshButton.Content).Equals(UILanguageHelper.UICache["RefreshButton1"]))
             {
                 return;
             }
@@ -2160,7 +2160,7 @@ namespace LexTranslator
 
         private void ShowView(object sender, MouseButtonEventArgs e)
         {
-            ShowView(ConvertHelper.ObjToStr(((Border)sender).Tag));
+            ShowView(P_Convert.ObjToStr(((Border)sender).Tag));
         }
 
         public void SetSelectedNav(string View)
@@ -2170,7 +2170,7 @@ namespace LexTranslator
                 if (MainNav.Children[i] is Grid)
                 {
                     Border CurrentNav = (Border)((Grid)MainNav.Children[i]).Children[0];
-                    string GetName = ConvertHelper.ObjToStr(CurrentNav.Tag);
+                    string GetName = P_Convert.ObjToStr(CurrentNav.Tag);
                     if (View.Equals(GetName))
                     {
                         CurrentNav.Style = (Style)this.FindResource("MenuBlockSelected");
@@ -2466,7 +2466,7 @@ namespace LexTranslator
                         {
                             case "TRun":
                                 {
-                                    if (ConvertHelper.ObjToStr(TransProcess.Content).StartsWith("STRINGS("))
+                                    if (P_Convert.ObjToStr(TransProcess.Content).StartsWith("STRINGS("))
                                     {
                                         if (TranslatorInterface.Instance.From == TranslatorInterface.Instance.To)
                                         {
@@ -2771,7 +2771,7 @@ namespace LexTranslator
                 var GetCol = HistoryList.SelectedItem.GetType().GetProperty("Translated");
                 if (GetCol != null)
                 {
-                    string Translated = ConvertHelper.ObjToStr(ConvertHelper.ObjToStr(GetCol.GetValue(GetItem, null)));
+                    string Translated = P_Convert.ObjToStr(P_Convert.ObjToStr(GetCol.GetValue(GetItem, null)));
                     ToStr.Text = Translated;
                 }
             }
@@ -2785,7 +2785,7 @@ namespace LexTranslator
             if (sender is Label)
             {
                 GetUrl = "";
-                GetTag = ConvertHelper.ObjToStr(((Label)sender).Tag);
+                GetTag = P_Convert.ObjToStr(((Label)sender).Tag);
 
                 if (GetTag.Length > 0)
                 {
@@ -2793,13 +2793,13 @@ namespace LexTranslator
                 }
                 else
                 {
-                    GetUrl = ConvertHelper.ObjToStr(((Label)sender).Content);
+                    GetUrl = P_Convert.ObjToStr(((Label)sender).Content);
                 }
             }
             if (sender is Run)
             {
                 GetUrl = "";
-                GetTag = ConvertHelper.ObjToStr(((Run)sender).Tag);
+                GetTag = P_Convert.ObjToStr(((Run)sender).Tag);
 
                 if (GetTag.Length > 0)
                 {
@@ -2807,7 +2807,7 @@ namespace LexTranslator
                 }
                 else
                 {
-                    GetUrl = ConvertHelper.ObjToStr(((Run)sender).Text);
+                    GetUrl = P_Convert.ObjToStr(((Run)sender).Text);
                 }
             }
 
@@ -2843,7 +2843,7 @@ namespace LexTranslator
             {
                 if (TransViewList != null)
                 {
-                    if (ConvertHelper.ObjToStr(TranslateOTButtonFont.Content).Equals(UILanguageHelper.UICache["TranslateOTButtonFont"]))
+                    if (P_Convert.ObjToStr(TranslateOTButtonFont.Content).Equals(UILanguageHelper.UICache["TranslateOTButtonFont"]))
                     {
                         FakeGrid QueryGrid = TransViewList.KeyToFakeGrid(LastSetKey);
 
@@ -3067,7 +3067,7 @@ namespace LexTranslator
 
         private void UILanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetValue = ConvertHelper.ObjToStr(UILanguages.SelectedValue);
+            string GetValue = P_Convert.ObjToStr(UILanguages.SelectedValue);
             if (GetValue.Length > 0)
             {
                 DeFine.GlobalLocalSetting.CurrentUILanguage = (Languages)Enum.Parse(typeof(Languages), GetValue);
@@ -3238,7 +3238,7 @@ namespace LexTranslator
                 {
                     if (TransViewList.Rows > 0)
                     {
-                        if (ConvertHelper.ObjToStr(ManageCacheButton.Content).Equals(UILanguageHelper.UICache["ManageCacheButton"]))
+                        if (P_Convert.ObjToStr(ManageCacheButton.Content).Equals(UILanguageHelper.UICache["ManageCacheButton"]))
                         {
                             if (ClearCacheTrd == null)
                             {
@@ -3398,7 +3398,7 @@ namespace LexTranslator
                 if (GetMainGrid.Children.Count == 2)
                 {
                     if (GetMainGrid.Children[0] is Label)
-                        return ConvertHelper.ObjToStr(((Label)GetMainGrid.Children[0]).Content);
+                        return P_Convert.ObjToStr(((Label)GetMainGrid.Children[0]).Content);
                 }
             }
             return string.Empty;
@@ -3602,7 +3602,7 @@ namespace LexTranslator
                 if (this.SettingFrames.Children[i] is Border)
                 {
                     Border GetFrame = (Border)this.SettingFrames.Children[i];
-                    string GetTag = ConvertHelper.ObjToStr(GetFrame.Tag);
+                    string GetTag = P_Convert.ObjToStr(GetFrame.Tag);
                     if (GetTag.Equals(Name))
                     {
                         GetFrame.Visibility = Visibility.Visible;
@@ -3627,7 +3627,7 @@ namespace LexTranslator
 
         private void SCodeGenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var GetValue = ConvertHelper.ObjToStr(SCodeGenStyle.SelectedValue);
+            var GetValue = P_Convert.ObjToStr(SCodeGenStyle.SelectedValue);
             if(GetValue.Length>0)
             if (GetValue.Equals("CSharp"))
             {
@@ -3668,7 +3668,7 @@ namespace LexTranslator
 
         private void SContextLimit_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ContextLimit = ConvertHelper.ObjToInt(SContextLimit.Text);
+            Phoenix.Config.ContextLimit = P_Convert.ObjToInt(SContextLimit.Text);
         }
 
         private void SAIKeyword_TextChanged(object sender, TextChangedEventArgs e)
@@ -3704,7 +3704,7 @@ namespace LexTranslator
 
         private void SGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetName = ConvertHelper.ObjToStr(SGame.SelectedValue);
+            string GetName = P_Convert.ObjToStr(SGame.SelectedValue);
             if (GetName.Trim().Length > 0)
             {
                 DeFine.GlobalLocalSetting.GameType = (GameNames)Enum.Parse(typeof(GameNames), GetName);
@@ -3728,17 +3728,17 @@ namespace LexTranslator
         }
         private void SThrottlingRatio_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ThrottleRatio = ConvertHelper.ObjToDouble(SThrottlingRatio.Text);
+            Phoenix.Config.ThrottleRatio = P_Convert.ObjToDouble(SThrottlingRatio.Text);
         }
 
         private void SRotationDelay_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ThrottleDelayMs = ConvertHelper.ObjToInt(SRotationDelay.Text);
+            Phoenix.Config.ThrottleDelayMs = P_Convert.ObjToInt(SRotationDelay.Text);
         }
 
         private void SMaxThread_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.MaxThreadCount = ConvertHelper.ObjToInt(SMaxThread.Text);
+            Phoenix.Config.MaxThreadCount = P_Convert.ObjToInt(SMaxThread.Text);
 
             if (TranslatorInterface.Instance != null)
             {
@@ -3805,7 +3805,7 @@ namespace LexTranslator
                         LastSetLogButton.Style = (Style)this.FindResource("LogViewButtonUnSelected");
                     }
 
-                    string GetContent = ConvertHelper.ObjToStr(((Label)GetBorderHandle.Child).Content);
+                    string GetContent = P_Convert.ObjToStr(((Label)GetBorderHandle.Child).Content);
 
                     if (GetContent == "InputLog")
                     {
@@ -3863,7 +3863,7 @@ namespace LexTranslator
                 TextBlock GetBlock = GetBorderHandle.Child as TextBlock;
 
 
-                string GetExViewName = ConvertHelper.ObjToStr(GetBlock.Text);
+                string GetExViewName = P_Convert.ObjToStr(GetBlock.Text);
                 switch (GetExViewName)
                 {
                     case "Focus Mode":

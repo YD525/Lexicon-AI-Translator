@@ -11,11 +11,11 @@ using System.Collections.Generic;
 using ICSharpCode.AvalonEdit;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManage;
-using LexTranslator.ConvertManager;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
 using PhoenixEngine;
 using PhoenixEngine.Unit;
+using PhoenixEngine.Common;
 
 namespace LexTranslator.UIManagement
 {
@@ -429,7 +429,7 @@ namespace LexTranslator.UIManagement
                 string OriginalText = RTB.Text;
                
                 // Get Key And Target Grid
-                string Key = ConvertHelper.ObjToStr(RTB.Tag);
+                string Key = P_Convert.ObjToStr(RTB.Tag);
                 var Target = DeFine.WorkingWin.TransViewList.KeyToFakeGrid(Key);
 
                 // Update Translation Data And History Cache

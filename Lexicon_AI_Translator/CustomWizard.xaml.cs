@@ -5,10 +5,10 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using LexTranslator.ConvertManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
 using PhoenixEngine;
+using PhoenixEngine.Common;
 using PhoenixEngine.Engine;
 using PhoenixEngine.Memory;
 using PhoenixEngine.P_Delegate;
@@ -111,7 +111,7 @@ namespace LexTranslator
                 if (GetView is Grid)
                 {
                     Grid ViewHandle = (Grid)GetView;
-                    string GetViewName = ConvertHelper.ObjToStr(ViewHandle.Name);
+                    string GetViewName = P_Convert.ObjToStr(ViewHandle.Name);
                     if (GetViewName.Equals(string.Format("View{0}", Step)))
                     {
                         ViewHandle.Visibility = Visibility.Visible;
@@ -268,7 +268,7 @@ namespace LexTranslator
 
         private void PlatformType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var GetSelectValue = ConvertHelper.ObjToStr(PlatformType.SelectedValue);
+            var GetSelectValue = P_Convert.ObjToStr(PlatformType.SelectedValue);
             if (GetSelectValue.Length > 0)
             {
                 CurrentPlatformType = GetSelectValue;
@@ -455,7 +455,7 @@ namespace LexTranslator
 
         private void UrlTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetSelectValue = ConvertHelper.ObjToStr(UrlTags.SelectedValue);
+            string GetSelectValue = P_Convert.ObjToStr(UrlTags.SelectedValue);
             if (GetSelectValue.Trim().Length > 0)
             {
                 TagType = "Url";
@@ -467,7 +467,7 @@ namespace LexTranslator
 
         private void HeaderTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetSelectValue = ConvertHelper.ObjToStr(HeaderTags.SelectedValue);
+            string GetSelectValue = P_Convert.ObjToStr(HeaderTags.SelectedValue);
             if (GetSelectValue.Trim().Length > 0)
             {
                 TagType = "Header";
@@ -479,7 +479,7 @@ namespace LexTranslator
 
         private void PayloadTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetSelectValue = ConvertHelper.ObjToStr(PayloadTags.SelectedValue);
+            string GetSelectValue = P_Convert.ObjToStr(PayloadTags.SelectedValue);
             if (GetSelectValue.Trim().Length > 0)
             {
                 TagType = "Payload";
@@ -543,7 +543,7 @@ namespace LexTranslator
 
         private void BindingTag(object sender, SelectionChangedEventArgs e)
         {
-            string GetAutomaticField = ConvertHelper.ObjToStr(AutomaticFields.SelectedValue);
+            string GetAutomaticField = P_Convert.ObjToStr(AutomaticFields.SelectedValue);
 
             if (GetAutomaticField.Length > 0)
             {
@@ -600,7 +600,7 @@ namespace LexTranslator
 
         private void P_ResponseTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetSelectValue = ConvertHelper.ObjToStr(P_ResponseTags.SelectedValue);
+            string GetSelectValue = P_Convert.ObjToStr(P_ResponseTags.SelectedValue);
             if (GetSelectValue.Trim().Length > 0)
             {
                 string GetKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
@@ -648,7 +648,7 @@ namespace LexTranslator
             else
             if (QueryRule.LeftStr.Trim().Length > 0)
             {
-                TransStr = ConvertHelper.StringDivision(CurrentResponse, QueryRule.LeftStr, QueryRule.RightStr);
+                TransStr = CurrentResponse.StringDivision(QueryRule.LeftStr, QueryRule.RightStr);
             }
             
             MessageBoxExtend.Show(this, TransStr);

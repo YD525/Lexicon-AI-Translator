@@ -5,10 +5,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using LexTranslator.ConvertManager;
 using LexTranslator.FileManagement;
 using LexTranslator.UIManage;
 using PhoenixEngine;
+using PhoenixEngine.Common;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
 
@@ -105,7 +105,7 @@ namespace LexTranslator.UIManagement
         {
             if (sender is Label)
             {
-                string GetUrl = ConvertHelper.ObjToStr((sender as Label).Content);
+                string GetUrl = P_Convert.ObjToStr((sender as Label).Content);
                 if (GetUrl.Length > 0)
                 {
                     if (MessageBoxExtend.Show(DeFine.WorkingWin, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?", MsgAction.YesNo, MsgType.Info) > 0)
@@ -261,7 +261,7 @@ namespace LexTranslator.UIManagement
             {
                 ComboBox GetComboBoxHandle = sender as ComboBox;
                 TextBox GetTargetText = GetComboBoxHandle.Tag as TextBox;
-                GetTargetText.Text = ConvertHelper.ObjToStr(GetComboBoxHandle.SelectedValue);
+                GetTargetText.Text = P_Convert.ObjToStr(GetComboBoxHandle.SelectedValue);
             }
         }
 
@@ -276,9 +276,9 @@ namespace LexTranslator.UIManagement
             StackPanel GetTittlePanel = (Header.Children[0] as Border).Child as StackPanel;
             Label TittleLab = GetTittlePanel.Children[0] as Label;
 
-            int GetCustomID = ConvertHelper.ObjToInt(GetMainBorder.Tag);
+            int GetCustomID = P_Convert.ObjToInt(GetMainBorder.Tag);
 
-            string GetPlatformName = ConvertHelper.ObjToStr(TittleLab.Content);
+            string GetPlatformName = P_Convert.ObjToStr(TittleLab.Content);
             TextBox ModelBox = (((Body.Children[0] as Grid).Children[0] as StackPanel).Children[5] as Border).Child as TextBox;
             string GetModel = ModelBox.Text;
             if (GetModel.Length > 0)
@@ -350,12 +350,12 @@ namespace LexTranslator.UIManagement
             StackPanel GetTittlePanel = (Header.Children[0] as Border).Child as StackPanel;
             Label TittleLab = GetTittlePanel.Children[0] as Label;
 
-            int GetCustomID = ConvertHelper.ObjToInt(GetMainBorder.Tag);
+            int GetCustomID = P_Convert.ObjToInt(GetMainBorder.Tag);
 
-            string GetPlatformName = ConvertHelper.ObjToStr(TittleLab.Content);
+            string GetPlatformName = P_Convert.ObjToStr(TittleLab.Content);
             TextBox GetPortTextBox = (((Body.Children[0] as Grid).Children[0] as StackPanel).Children[1] as Border).Child as TextBox;
 
-            int GetPort = ConvertHelper.ObjToInt(GetPortTextBox.Text);
+            int GetPort = P_Convert.ObjToInt(GetPortTextBox.Text);
 
             if (GetPort > 0)
             {
@@ -402,9 +402,9 @@ namespace LexTranslator.UIManagement
             StackPanel GetTittlePanel = (Header.Children[0] as Border).Child as StackPanel;
             Label TittleLab = GetTittlePanel.Children[0] as Label;
 
-            int GetCustomID = ConvertHelper.ObjToInt(GetMainBorder.Tag);
+            int GetCustomID = P_Convert.ObjToInt(GetMainBorder.Tag);
 
-            string GetPlatformName = ConvertHelper.ObjToStr(TittleLab.Content);
+            string GetPlatformName = P_Convert.ObjToStr(TittleLab.Content);
             TextBox GetKeyTextBox = (((Body.Children[0] as Grid).Children[0] as StackPanel).Children[1] as Border).Child as TextBox;
             ListBox GetKeys = ((Body.Children[0] as Grid).Children[1] as ScrollViewer).Content as ListBox;
 
@@ -505,13 +505,13 @@ namespace LexTranslator.UIManagement
             StackPanel GetTittlePanel = (Header.Children[0] as Border).Child as StackPanel;
             Label TittleLab = GetTittlePanel.Children[0] as Label;
 
-            int GetCustomID = ConvertHelper.ObjToInt(GetMainBorder.Tag);
+            int GetCustomID = P_Convert.ObjToInt(GetMainBorder.Tag);
 
-            string GetPlatformName = ConvertHelper.ObjToStr(TittleLab.Content);
+            string GetPlatformName = P_Convert.ObjToStr(TittleLab.Content);
            
             ListBox GetKeys = ((Body.Children[0] as Grid).Children[1] as ScrollViewer).Content as ListBox;
 
-            string GetApiKey = ConvertHelper.ObjToStr(GetKeys.SelectedValue);
+            string GetApiKey = P_Convert.ObjToStr(GetKeys.SelectedValue);
 
             if (GetApiKey.Trim().Length > 0)
             {
@@ -601,7 +601,7 @@ namespace LexTranslator.UIManagement
             var State = MessageBoxExtend.Show(DeFine.WorkingWin, "Delete Platform", "Are you sure you want to delete this platform? Deleting it will result in the loss of all configuration settings related to this platform.", MsgAction.YesNo, MsgType.Info);
             if (State > 0)
             {
-                int GetID = ConvertHelper.ObjToInt(((sender as Border).Tag as Border).Tag);
+                int GetID = P_Convert.ObjToInt(((sender as Border).Tag as Border).Tag);
 
                 for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
                 {

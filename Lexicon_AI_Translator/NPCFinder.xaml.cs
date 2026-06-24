@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using LexTranslator.ConvertManager;
 using LexTranslator.SkyrimManagement;
+using PhoenixEngine.Common;
 
 namespace LexTranslator
 {
@@ -71,7 +71,7 @@ namespace LexTranslator
 
         private void NpcNames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SearchName = ConvertHelper.ObjToStr(NpcNames.SelectedValue);
+            SearchName = P_Convert.ObjToStr(NpcNames.SelectedValue);
         }
     }
 }

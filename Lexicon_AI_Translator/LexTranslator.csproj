@@ -219,7 +219,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ConvertManagement\ConvertHelper.cs" />
     <Compile Include="FileManagement\DataHelper.cs" />
     <Compile Include="FileManagement\ExplorerHelper.cs" />
     <Compile Include="IDEManagement\RichBorderWidthConverter.cs" />
