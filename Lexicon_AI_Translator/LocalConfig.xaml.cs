@@ -522,7 +522,7 @@ namespace LexTranslator
                         }));
                         bool CanSleep = false;
 
-                        var GetResult = TranslatorInterface.Instance.Translate(NewUnit,false);
+                        var GetResult = TranslatorInterface.Instance.Translate(NewUnit,default,false);
 
                         this.Dispatcher.Invoke(new Action(() =>
                         {

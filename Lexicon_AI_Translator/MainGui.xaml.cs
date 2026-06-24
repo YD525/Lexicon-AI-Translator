@@ -39,6 +39,7 @@ using PhoenixEngine.Engine;
 using LexTranslator.YDControls;
 using LexTranslator.IDEManagement;
 using PhoenixEngine.Common;
+using Newtonsoft.Json.Linq;
 
 namespace LexTranslator
 {
@@ -2833,8 +2834,10 @@ namespace LexTranslator
 
         public object TranslateLocker = new object();
         public Thread TranslateTrd = null;
+        private CancellationTokenSource TranslateCTS = null;
 
         public bool SingleTrans = false;
+
         public void TranslateCurrent()
         {
             TranslatorInterface.MakeReady();
@@ -2859,45 +2862,73 @@ namespace LexTranslator
 
                             BaseUnit SetUnit = new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, 100);
 
-                            bool CanSleep = false;
-
                             CanEditTransView(false);
+
+                            TranslateCTS = new CancellationTokenSource();
+                            CancellationToken Token = TranslateCTS.Token;
 
                             TranslateTrd = new Thread(() =>
                             {
-                                SingleTrans = true;
-
-                                this.Dispatcher.Invoke(new Action(() =>
+                                try
                                 {
-                                    TranslateOTButtonFont.Content = UILanguageHelper.UICache["TranslateOTButtonFont1"] + "(Click to cancel)";
-                                    ThreadInFo.Visibility = Visibility.Visible;
-                                }));
+                                    SingleTrans = true;
 
-
-                                string GetTranslated = "";
-
-                                SetUnit.Translated = string.Empty;
-
-                                UnitGroup Result = TranslatorInterface.Instance.Translate(SetUnit, false);
-
-                                GetTranslated = Result.GetFrist().Translated;
-
-                                CanEditTransView(true);
-
-                                this.Dispatcher.Invoke(new Action(() =>
-                                {
-                                    TranslateOTButtonFont.Content = UILanguageHelper.UICache["TranslateOTButtonFont"];
-
-                                    if (TranslatorInterface.TranslationStatus == StateControl.Null || TranslatorInterface.TranslationStatus == StateControl.Cancel)
+                                    this.Dispatcher.Invoke(new Action(() =>
                                     {
+                                        TranslateOTButtonFont.Content =
+                                            UILanguageHelper.UICache["TranslateOTButtonFont1"] +
+                                            "(Click to cancel)";
+
+                                        ThreadInFo.Visibility = Visibility.Visible;
+                                    }));
+
+                                    SetUnit.Translated = string.Empty;
+                                    UnitGroup Result =
+                                        TranslatorInterface.Instance.Translate(SetUnit, Token, false);
+
+                                    Token.ThrowIfCancellationRequested();
+
+                                    string GetTranslated =
+                                        Result.GetFrist().Translated;
+
+                                    CanEditTransView(true);
+
+                                    this.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        TranslateOTButtonFont.Content =
+                                            UILanguageHelper.UICache["TranslateOTButtonFont"];
+
+                                        if (TranslatorInterface.TranslationStatus == StateControl.Null ||
+                                            TranslatorInterface.TranslationStatus == StateControl.Cancel)
+                                        {
+                                            ThreadInFo.Visibility = Visibility.Collapsed;
+                                        }
+
+                                        ToStr.Text = GetTranslated;
+                                    }));
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                }
+                                finally
+                                {
+                                    CanEditTransView(true);
+
+                                    this.Dispatcher.Invoke(() =>
+                                    {
+                                        TranslateOTButtonFont.Content =
+                                            UILanguageHelper.UICache["TranslateOTButtonFont"];
+
                                         ThreadInFo.Visibility = Visibility.Collapsed;
-                                    }
+                                    });
 
-                                    ToStr.Text = GetTranslated;
-                                }));
+                                    SingleTrans = false;
 
-                                SingleTrans = false;
-                                TranslateTrd = null;
+                                    TranslateCTS?.Dispose();
+                                    TranslateCTS = null;
+
+                                    TranslateTrd = null;
+                                }
                             });
 
                             TranslateTrd.Start();
@@ -2905,19 +2936,13 @@ namespace LexTranslator
                     }
                     else
                     {
-                        if (TranslateTrd != null)
-                        {
-                            try
-                            {
-                                TranslateTrd.Abort();
-                            }
-                            catch { }
-                            TranslateTrd = null;
-                        }
+                        TranslateCTS?.Cancel();
 
                         InteractiveView.CloseAll();
 
-                        TranslateOTButtonFont.Content = UILanguageHelper.UICache["TranslateOTButtonFont"];
+                        TranslateOTButtonFont.Content =
+                            UILanguageHelper.UICache["TranslateOTButtonFont"];
+
                         SingleTrans = false;
                         ThreadInFo.Visibility = Visibility.Collapsed;
                     }
