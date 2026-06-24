@@ -41,16 +41,15 @@ namespace LexTranslator.UIManagement
 
             Grid GetChildGrid = (Grid)MainBorder.Child;
 
-            StackPanel GetStackPanel = (StackPanel)((Grid)GetChildGrid.Children[0]).Children[0];
+            Grid GetTypeGrid = (Grid)GetChildGrid.Children[1];
+            StackPanel GetStackPanel = (StackPanel)GetTypeGrid.Children[0];
 
-            Label GetType = (Label)GetStackPanel.Children[1];
+            TextBox GetType = (TextBox)GetStackPanel.Children[0];
             GetType.Foreground = new SolidColorBrush(FontColor);
 
-            Grid GetKeyGrid = (Grid)GetChildGrid.Children[1];
-            TextBox GetKey = (TextBox)GetKeyGrid.Children[0];
-            TextBox GetFakeKey = (TextBox)(GetKeyGrid.Children[1] as StackPanel).Children[0];
+            StackPanel GetKeyPanel = (StackPanel)((Grid)GetChildGrid.Children[0]).Children[0];
+            TextBox GetKey = (TextBox)GetKeyPanel.Children[1];
             GetKey.Foreground = new SolidColorBrush(FontColor);
-            GetFakeKey.Foreground = new SolidColorBrush(FontColor);
 
             Grid GetOriginalGrid = (Grid)GetChildGrid.Children[2];
             TextBox GetOriginal = (TextBox)GetOriginalGrid.Children[0];
@@ -276,6 +275,9 @@ namespace LexTranslator.UIManagement
             { 
                FontColor = (Color)Application.Current.Resources["DefFontColor"];
             }
+
+            GetType.Foreground = new SolidColorBrush(FontColor);
+
             GetKey.Foreground = new SolidColorBrush(FontColor);
 
             GetKey.PreviewMouseWheel += OnePreviewMouseWheel;
