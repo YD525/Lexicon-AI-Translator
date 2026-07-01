@@ -7,6 +7,19 @@
         mc:Ignorable="d"
         Title="LexTranslator" Height="800" Width="1200" Loaded="Window_Loaded" Style="{DynamicResource DefWin}" PreviewKeyDown="Window_PreviewKeyDown" WindowStartupLocation="CenterScreen" AllowDrop="True" PreviewDragEnter="ModTransView_DragEnter" PreviewDrop="ModTransView_Drop"  PreviewDragLeave="ModTransView_DragLeave" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" Activated="Window_Activated">
 
+    <Window.Resources>
+
+        <Storyboard x:Key="XTGlowLoop">
+            <DoubleAnimation
+            Storyboard.TargetName="LinearGradientBrushAnim"
+            Storyboard.TargetProperty="X"
+            From="0"
+            To="2000"
+            Duration="0:0:30"
+            RepeatBehavior="Forever" />
+        </Storyboard>
+
+    </Window.Resources>
     <Border Background="Transparent"  CornerRadius="9">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -19,7 +32,7 @@
                 <Grid Name="MainNav">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="270"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="1">
@@ -168,10 +181,46 @@ IsHitTestVisible="False"/>
                 </Border.Triggers>
 
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Label Foreground="White" FontWeight="DemiBold" FontSize="50" HorizontalAlignment="Center">
-                        SSE Lexicon
-                    </Label>
-                    <Viewbox Panel.ZIndex="2" Width="500" Height="500" Stretch="Uniform">
+
+
+                   
+                    <StackPanel Orientation="Horizontal">
+                        <Label Grid.Row="0" FontWeight="ExtraBold" FontSize="50">
+                            <Label.Foreground>
+                                <LinearGradientBrush SpreadMethod="Repeat">
+                                    <LinearGradientBrush.Transform>
+                                        <TranslateTransform x:Name="LinearGradientBrushAnim" />
+                                    </LinearGradientBrush.Transform>
+                                    <LinearGradientBrush.GradientStops>
+                                        <GradientStop Offset="0.00" Color="#FFD5A204" />
+                                        <GradientStop Offset="0.20" Color="#FFF2CA06" />
+                                        <GradientStop Offset="0.40" Color="#FFC0B438" />
+                                        <GradientStop Offset="0.60" Color="#FFF2EAC2" />
+                                        <GradientStop Offset="0.80" Color="#FFEDE220" />
+                                        <GradientStop Offset="1.00" Color="#FFFFF4D1" />
+
+                                        <GradientStop Offset="2.00" Color="#FFD5A204" />
+                                        <GradientStop Offset="2.20" Color="#FFF2CA06" />
+                                        <GradientStop Offset="2.40" Color="#FFC0B438" />
+                                        <GradientStop Offset="2.60" Color="#FFF2EAC2" />
+                                        <GradientStop Offset="2.80" Color="#FFEDE220" />
+                                        <GradientStop Offset="3.00" Color="#FFFFF4D1" />
+                                    </LinearGradientBrush.GradientStops>
+                                </LinearGradientBrush>
+                            </Label.Foreground>
+                            Lex
+                        </Label>
+
+                        <Label FontWeight="ExtraBold" FontSize="50" Foreground="White">
+                            Translator
+                        </Label>
+                        <Border CornerRadius="5" Background="#FF4D4D4D" VerticalAlignment="Center" Margin="5">
+                            <Label Foreground="White" Padding="10 2 10 2" FontWeight="DemiBold" FontSize="15">Lite
+                            </Label>
+                        </Border>
+                    </StackPanel>
+
+                    <Viewbox Panel.ZIndex="2" Width="330" Height="330" Stretch="Uniform">
                         <Canvas Width="1000" Height="1000">
                             <Path Data="M120,553 L212,553 L212,1000 L120,1000 Z
              M267,386 L371,386 L371,1000 L267,1000 Z

@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -26,7 +27,7 @@ namespace LexTranslator
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            StartXTGlowLoop();
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -72,6 +73,18 @@ namespace LexTranslator
         private void ShowView(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        public Storyboard XTGlowLoopStoryboard = null;
+        private void StartXTGlowLoop()
+        {
+            XTGlowLoopStoryboard = (Storyboard)FindResource("XTGlowLoop");
+            XTGlowLoopStoryboard.Begin();
+        }
+
+        private void StopXTGlowLoop()
+        {
+            XTGlowLoopStoryboard?.Stop();
         }
     }
 }
