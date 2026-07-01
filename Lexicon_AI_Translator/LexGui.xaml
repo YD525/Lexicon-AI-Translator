@@ -117,8 +117,15 @@ IsHitTestVisible="False"/>
             </Border>
 
             <!--Views-->
-            <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Grid.Triggers>
+            <Border Grid.Column="1" CornerRadius="0 9 9 0">
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFFFD39A" Offset="0.998"/>
+                        <GradientStop Color="White" Offset="0"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Border.Triggers>
                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                         <BeginStoryboard>
                             <Storyboard>
@@ -164,11 +171,11 @@ IsHitTestVisible="False"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>
-                </Grid.Triggers>
+                </Border.Triggers>
 
-                <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Label Foreground="#FF787878" FontWeight="DemiBold" FontSize="50" HorizontalAlignment="Center">
-                        SSE Lexicon
+                        Lexicon
                     </Label>
                     <Viewbox Panel.ZIndex="2" Width="500" Height="500" Stretch="Uniform">
                         <Canvas Width="1000" Height="1000">
@@ -201,7 +208,7 @@ IsHitTestVisible="False"/>
                     </Viewbox>
                 </StackPanel>
 
-            </Grid>
+            </Border>
         </Grid>
     </Border>
 </Window>
