@@ -122,6 +122,9 @@
     <Compile Include="InteractiveView.xaml.cs">
       <DependentUpon>InteractiveView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LexGui.xaml.cs">
+      <DependentUpon>LexGui.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LocalConfig.xaml.cs">
       <DependentUpon>LocalConfig.xaml</DependentUpon>
     </Compile>
@@ -200,6 +203,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="InteractiveView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LexGui.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

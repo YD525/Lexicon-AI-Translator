@@ -154,6 +154,8 @@ namespace LexTranslator
         WordCompletionManager CompletionManager = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            new LexGui().Show();//Test
+
             DeFine.Init(this);
 
              YDChart.SetAction(
