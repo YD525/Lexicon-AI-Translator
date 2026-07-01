@@ -68,5 +68,10 @@ namespace LexTranslator
         {
 
         }
+
+        private void ShowView(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }
