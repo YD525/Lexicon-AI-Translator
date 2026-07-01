@@ -86,5 +86,10 @@ namespace LexTranslator
         {
             XTGlowLoopStoryboard?.Stop();
         }
+
+        private void OpenUrl_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

@@ -180,76 +180,158 @@ IsHitTestVisible="False"/>
                     </EventTrigger>
                 </Border.Triggers>
 
-                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+                    <StackPanel Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
 
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Grid.Row="0" FontWeight="ExtraBold" FontSize="50">
+                                    <Label.Foreground>
+                                        <LinearGradientBrush SpreadMethod="Repeat">
+                                            <LinearGradientBrush.Transform>
+                                                <TranslateTransform x:Name="LinearGradientBrushAnim" />
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.GradientStops>
+                                                <GradientStop Offset="0.00" Color="#FFD5A204" />
+                                                <GradientStop Offset="0.20" Color="#FFF2CA06" />
+                                                <GradientStop Offset="0.40" Color="#FFC0B438" />
+                                                <GradientStop Offset="0.60" Color="#FFF2EAC2" />
+                                                <GradientStop Offset="0.80" Color="#FFEDE220" />
+                                                <GradientStop Offset="1.00" Color="#FFFFF4D1" />
 
-                   
-                    <StackPanel Orientation="Horizontal">
-                        <Label Grid.Row="0" FontWeight="ExtraBold" FontSize="50">
-                            <Label.Foreground>
-                                <LinearGradientBrush SpreadMethod="Repeat">
-                                    <LinearGradientBrush.Transform>
-                                        <TranslateTransform x:Name="LinearGradientBrushAnim" />
-                                    </LinearGradientBrush.Transform>
-                                    <LinearGradientBrush.GradientStops>
-                                        <GradientStop Offset="0.00" Color="#FFD5A204" />
-                                        <GradientStop Offset="0.20" Color="#FFF2CA06" />
-                                        <GradientStop Offset="0.40" Color="#FFC0B438" />
-                                        <GradientStop Offset="0.60" Color="#FFF2EAC2" />
-                                        <GradientStop Offset="0.80" Color="#FFEDE220" />
-                                        <GradientStop Offset="1.00" Color="#FFFFF4D1" />
+                                                <GradientStop Offset="2.00" Color="#FFD5A204" />
+                                                <GradientStop Offset="2.20" Color="#FFF2CA06" />
+                                                <GradientStop Offset="2.40" Color="#FFC0B438" />
+                                                <GradientStop Offset="2.60" Color="#FFF2EAC2" />
+                                                <GradientStop Offset="2.80" Color="#FFEDE220" />
+                                                <GradientStop Offset="3.00" Color="#FFFFF4D1" />
+                                            </LinearGradientBrush.GradientStops>
+                                        </LinearGradientBrush>
+                                    </Label.Foreground>
+                                    Lex
+                                </Label>
 
-                                        <GradientStop Offset="2.00" Color="#FFD5A204" />
-                                        <GradientStop Offset="2.20" Color="#FFF2CA06" />
-                                        <GradientStop Offset="2.40" Color="#FFC0B438" />
-                                        <GradientStop Offset="2.60" Color="#FFF2EAC2" />
-                                        <GradientStop Offset="2.80" Color="#FFEDE220" />
-                                        <GradientStop Offset="3.00" Color="#FFFFF4D1" />
-                                    </LinearGradientBrush.GradientStops>
-                                </LinearGradientBrush>
-                            </Label.Foreground>
-                            Lex
-                        </Label>
+                                <Label FontWeight="ExtraBold" FontSize="50" Foreground="White">
+                                    Translator
+                                </Label>
+                                <Border CornerRadius="5" Background="#FF4D4D4D" VerticalAlignment="Center" Margin="5">
+                                    <Label Foreground="White" Padding="10 2 10 2" FontWeight="DemiBold" FontSize="15">Lite
+                                    </Label>
+                                </Border>
+                            </StackPanel>
 
-                        <Label FontWeight="ExtraBold" FontSize="50" Foreground="White">
-                            Translator
-                        </Label>
-                        <Border CornerRadius="5" Background="#FF4D4D4D" VerticalAlignment="Center" Margin="5">
-                            <Label Foreground="White" Padding="10 2 10 2" FontWeight="DemiBold" FontSize="15">Lite
-                            </Label>
-                        </Border>
+                            <TextBlock Foreground="#FFBFBFBF" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Center">
+( <Run Tag="https://www.nexusmods.com/skyrimspecialedition/mods/143056" Text="Nexus Mods" FontWeight="Bold" Cursor="Hand" Foreground="#FFBFBFBF" MouseDown="OpenUrl_MouseDown"/> | <Run  Tag="https://github.com/YD525" Text="GitHub" FontWeight="Bold" Cursor="Hand" Foreground="#FFBFBFBF" MouseDown="OpenUrl_MouseDown"/> )
+                            </TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Viewbox Panel.ZIndex="2" Width="330" Height="330" Stretch="Uniform">
+                                <Canvas Width="1000" Height="1000">
+                                    <Path Data="M120,553 L212,553 L212,1000 L120,1000 Z
+       M267,386 L371,386 L371,1000 L267,1000 Z
+       M421,223 L545,223 L545,1000 L421,1000 Z
+       M574,445 L598,445 L598,1000 L574,1000 Z"
+Fill="#FFFAE306"
+IsHitTestVisible="False"/>
+                                    <Path Data="M133,642 L523,642 L816,366 L816,458 L523,734 L133,734 Z"
+Fill="White"
+IsHitTestVisible="False"/>
+                                    <Path Data="M223,812 L613,812 L906,536 L906,628 L613,904 L223,904 Z"
+Fill="White"
+IsHitTestVisible="False"/>
+
+                                    <Ellipse x:Name="LightDot1" Width="30" Height="30" IsHitTestVisible="False" Fill="#FFFAE306" Opacity="0">
+                                        <Ellipse.RenderTransform>
+                                            <MatrixTransform x:Name="LightDot1Transform"/>
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+
+                                    <Ellipse x:Name="LightDot2" Width="30" Height="30" IsHitTestVisible="False" Fill="#FFFAE306" Opacity="0">
+                                        <Ellipse.RenderTransform>
+                                            <MatrixTransform x:Name="LightDot2Transform"/>
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+
+                                </Canvas>
+                            </Viewbox>
+                            <StackPanel Orientation="Vertical" Margin="20" VerticalAlignment="Bottom">
+                                <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                    <Ellipse Width="15" Height="15" Fill="#FFFAE306" VerticalAlignment="Center">
+                                    </Ellipse>
+                                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                        Main Program
+                                    </Label>
+                                    <Label Foreground="White">
+                                        3.8.2.8
+                                    </Label>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                    <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                    </Ellipse>
+                                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                        Translation Engine
+                                    </Label>
+                                    <Label Foreground="White">
+                                        3.1.6.8
+                                    </Label>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                    <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                    </Ellipse>
+                                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                        Pex Analysis
+                                    </Label>
+                                    <Label Foreground="White">
+                                        1.0.7 Beta
+                                    </Label>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                    <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                    </Ellipse>
+                                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                        Pex Reader
+                                    </Label>
+                                    <Label Foreground="White">
+                                        2.0.0
+                                    </Label>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                    <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                    </Ellipse>
+                                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                        Esp Reader
+                                    </Label>
+                                    <Label Foreground="White">
+                                        1.5.3
+                                    </Label>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                    <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                    </Ellipse>
+                                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                        DSD Convert
+                                    </Label>
+                                    <Label Foreground="White">
+                                        1.0
+                                    </Label>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </StackPanel>
+
                     </StackPanel>
+                
 
-                    <Viewbox Panel.ZIndex="2" Width="330" Height="330" Stretch="Uniform">
-                        <Canvas Width="1000" Height="1000">
-                            <Path Data="M120,553 L212,553 L212,1000 L120,1000 Z
-             M267,386 L371,386 L371,1000 L267,1000 Z
-             M421,223 L545,223 L545,1000 L421,1000 Z
-             M574,445 L598,445 L598,1000 L574,1000 Z"
-      Fill="White"
-      IsHitTestVisible="False"/>
-                            <Path Data="M133,642 L523,642 L816,366 L816,458 L523,734 L133,734 Z"
-      Fill="#FF6B6B6B"
-      IsHitTestVisible="False"/>
-                            <Path Data="M223,812 L613,812 L906,536 L906,628 L613,904 L223,904 Z"
-      Fill="#FF6B6B6B"
-      IsHitTestVisible="False"/>
+                 
 
-                            <Ellipse x:Name="LightDot1" Width="30" Height="30" IsHitTestVisible="False" Fill="White" Opacity="0">
-                                <Ellipse.RenderTransform>
-                                    <MatrixTransform x:Name="LightDot1Transform"/>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-
-                            <Ellipse x:Name="LightDot2" Width="30" Height="30" IsHitTestVisible="False" Fill="White" Opacity="0">
-                                <Ellipse.RenderTransform>
-                                    <MatrixTransform x:Name="LightDot2Transform"/>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-
-                        </Canvas>
-                    </Viewbox>
-                </StackPanel>
+                  
+                </Grid>
 
             </Border>
         </Grid>
