@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="LexTranslator" Height="800" Width="1200" Loaded="Window_Loaded" Style="{DynamicResource DefWin}" PreviewKeyDown="Window_PreviewKeyDown" WindowStartupLocation="CenterScreen" AllowDrop="True" PreviewDragEnter="ModTransView_DragEnter" PreviewDrop="ModTransView_Drop"  PreviewDragLeave="ModTransView_DragLeave" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" Activated="Window_Activated">
 
-    <Border Background="White" CornerRadius="9">
+    <Border Background="Transparent"  CornerRadius="9">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="55"/>
@@ -15,7 +15,7 @@
             </Grid.ColumnDefinitions>
 
             <!--Nav-->
-            <Border Grid.Column="0" Background="#FFFF9723" CornerRadius="9 0 0 9">
+            <Border Grid.Column="0" Background="#FF4D4D4D" CornerRadius="9 0 0 9">
                 <Grid Name="MainNav">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -117,14 +117,8 @@ IsHitTestVisible="False"/>
             </Border>
 
             <!--Views-->
-            <Border Grid.Column="1" CornerRadius="0 9 9 0">
-                <Border.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFFFD39A" Offset="0.998"/>
-                        <GradientStop Color="White" Offset="0"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-
+            <Border Grid.Column="1" CornerRadius="0 9 9 0" Background="#FF282828">
+                
                 <Border.Triggers>
                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                         <BeginStoryboard>
@@ -174,8 +168,8 @@ IsHitTestVisible="False"/>
                 </Border.Triggers>
 
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Label Foreground="#FF787878" FontWeight="DemiBold" FontSize="50" HorizontalAlignment="Center">
-                        Lexicon
+                    <Label Foreground="White" FontWeight="DemiBold" FontSize="50" HorizontalAlignment="Center">
+                        SSE Lexicon
                     </Label>
                     <Viewbox Panel.ZIndex="2" Width="500" Height="500" Stretch="Uniform">
                         <Canvas Width="1000" Height="1000">
@@ -183,13 +177,13 @@ IsHitTestVisible="False"/>
              M267,386 L371,386 L371,1000 L267,1000 Z
              M421,223 L545,223 L545,1000 L421,1000 Z
              M574,445 L598,445 L598,1000 L574,1000 Z"
-      Fill="#FFFF9723"
+      Fill="White"
       IsHitTestVisible="False"/>
                             <Path Data="M133,642 L523,642 L816,366 L816,458 L523,734 L133,734 Z"
-      Fill="#FFE27F"
+      Fill="#FF6B6B6B"
       IsHitTestVisible="False"/>
                             <Path Data="M223,812 L613,812 L906,536 L906,628 L613,904 L223,904 Z"
-      Fill="#FFE27F"
+      Fill="#FF6B6B6B"
       IsHitTestVisible="False"/>
 
                             <Ellipse x:Name="LightDot1" Width="30" Height="30" IsHitTestVisible="False" Fill="White" Opacity="0">
