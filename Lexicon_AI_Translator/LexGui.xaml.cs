@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using LexTranslator.UIManagement;
+using PhoenixEngine.Common;
 
 namespace LexTranslator
 {
@@ -25,8 +27,10 @@ namespace LexTranslator
             InitializeComponent();
         }
 
+        private PageSwitcher InfoPage = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            InfoPage = new PageSwitcher(this,InFoPages);
             StartXTGlowLoop();
         }
 
@@ -90,6 +94,25 @@ namespace LexTranslator
         private void OpenUrl_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void ChangeInFoPage(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Ellipse)
+            {
+                int Page = P_Convert.ObjToInt((sender as Ellipse).Tag);
+                InfoPage.SwitchPageByHorizontal(Page);
+
+                foreach (var Child in ((sender as Ellipse).Parent as StackPanel).Children)
+                {
+                    if (Child is Ellipse OtherEllipse)
+                    {
+                        OtherEllipse.Style = (Style)FindResource("PageBtn");
+                    }
+                }
+
+                (sender as Ellipse).Style = (Style)FindResource("PageBtnSelected");
+            }
         }
     }
 }

@@ -169,6 +169,7 @@
     <Compile Include="UIManagement\NodeStyleWin.xaml.cs">
       <DependentUpon>NodeStyleWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIManagement\PageSwitcher.cs" />
     <Compile Include="UIManagement\PlatformConfigStyleWin.xaml.cs">
       <DependentUpon>PlatformConfigStyleWin.xaml</DependentUpon>
     </Compile>
@@ -250,10 +251,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\BlueStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\DefStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

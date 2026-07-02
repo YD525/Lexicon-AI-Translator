@@ -1422,4 +1422,13 @@
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
 
+    <Style x:Key="PageBtnSelected" TargetType="Ellipse">
+        <Setter Property="Fill" Value="#FFFAE306"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+    </Style>
+
+    <Style x:Key="PageBtn" TargetType="Ellipse">
+        <Setter Property="Fill" Value="White"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
 </ResourceDictionary>
