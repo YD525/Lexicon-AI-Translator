@@ -16,6 +16,7 @@ using LexTranslator.TranslateManage;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
 using PhoenixEngine.Common;
+using LexTranslator.SkyrimManagement;
 
 // Copyright 2026 YD525
 
@@ -81,7 +82,7 @@ public class FakeGrid
     {
         bool FromDictionary = false;
 
-        var FindDictionary = YDDictionaryHelper.CheckDictionary(this.Key);
+        var FindDictionary = new LexDictionary().CheckDictionary(this.Key);
 
         if (FindDictionary != null)
         {
@@ -181,6 +182,10 @@ public class YDListView
     public Thread SelectLineThread = null;
     private CancellationTokenSource CancelSelectLineThread = null;
     private CancellationToken? CancelToken = null;
+
+
+    public delegate void LineSelected(string Key);
+    public LineSelected LineSelectedEvent = null;
     public void SetSelectLine(Grid MainGrid, bool UPDate)
     {
         if (LastSelectBorder != null)
@@ -207,7 +212,8 @@ public class YDListView
         {
             GetTranslated.Focus();
             string GetKey = RowStyleWin.GetKey(MainGrid);
-            DeFine.WorkingWin.SetSelectFromAndToText(GetKey);
+
+            LineSelectedEvent?.Invoke(GetKey);
 
             if (DeFine.GlobalLocalSetting.ShowCode && DeFine.WorkingWin.CurrentTransType == 3)
             {
@@ -357,8 +363,10 @@ public class YDListView
         return this.RealLines.Count;
     }
 
-    public YDListView(Grid Parent)
+    public ModFile FileRef = null;
+    public YDListView(ModFile File,Grid Parent)
     {
+        this.FileRef = File;
         Style ScrollBarStyle = new Style(typeof(ScrollBar))
         {
             BasedOn = (Style)Application.Current.FindResource("for_scrollbar")
@@ -394,7 +402,7 @@ public class YDListView
                     {
                         try
                         {
-                            DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
+                            this.MainCanvas.Dispatcher.Invoke(new Action(() =>
                             {
                                 UpdateVisibleRows();
                             }));
@@ -535,7 +543,7 @@ public class YDListView
 
                 if (!AlreadyExists)
                 {
-                    Grid Grid = UIHelper.CreateLine(Row);
+                    Grid Grid = UIHelper.CreateLine(FileRef, Row);
                     Grid.Tag = I;
                     Grid.Width = this.Parent.ActualWidth - 15;
                     Grid.PreviewMouseDown += MainGrid_PreviewMouseDown;

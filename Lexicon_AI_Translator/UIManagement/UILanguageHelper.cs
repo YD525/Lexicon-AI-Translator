@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using PhoenixEngine.Language;
+using LexTranslator.TranslateManage;
 
 namespace LexTranslator.UIManage
 {
@@ -162,7 +163,7 @@ namespace LexTranslator.UIManage
         {
             UICache.Clear();
             string SetPath = DeFine.GetFullPath(@"\Interface\Translations\Lex_" + SetLanguage.ToString().ToUpper() + ".txt");
-            MCMReader NewReader = new MCMReader();
+            MCMReader NewReader = new MCMReader(TranslatorInterface.Instance);
             if (File.Exists(SetPath))
             {
                 NewReader.LoadMCM(SetPath);

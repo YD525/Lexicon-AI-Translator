@@ -866,24 +866,6 @@ namespace LexTranslator.TranslateManage
                 }
             }).Start();
         }
-
-        public static int WriteDictionary()
-        {
-            int ReplaceCount = 0;
-            for (int i = 0; i < DeFine.WorkingWin.TransViewList.Rows; i++)
-            {
-                FakeGrid GetFakeGrid = DeFine.WorkingWin.TransViewList.RealLines[i];
-
-                string GetKey = GetFakeGrid.Key;
-                string GetSourceText = GetFakeGrid.SourceText;
-                var TargetText = GetFakeGrid.TransText;
-
-                YDDictionaryHelper.UPDateTransText(GetKey, GetSourceText);
-            }
-
-            return ReplaceCount;
-        }
-
       
         public static void Close()
         {

@@ -194,16 +194,16 @@ namespace LexTranslator
 
             if (TransViewList == null)
             {
-                TransViewList = new YDListView(TransView);
+                TransViewList = new YDListView(new ModFile(""),TransView);
                 TransViewList.Clear();
             }
 
-            GlobalRamCacheReader = new RamCacheReader();
-            GlobalEspReader = new EspReader();
+            GlobalRamCacheReader = new RamCacheReader(TranslatorInterface.Instance);
+            GlobalEspReader = new EspReader(TranslatorInterface.Instance);
             SetEspFilter(DeFine.GlobalLocalSetting.CustomFilterStr);
-            GlobalMCMReader = new MCMReader();
+            GlobalMCMReader = new MCMReader(TranslatorInterface.Instance);
             GlobalPexReader = new PexHeuristicAnalysis();
-            GlobalXmlReader = new R_XmlReader();
+            GlobalXmlReader = new R_XmlReader(TranslatorInterface.Instance);
 
             ScanAnimator = new ScanAnimator(ScanTransform, ProcessBar, 60);
 
@@ -850,7 +850,7 @@ namespace LexTranslator
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransViewList.AddRowR(LineRenderer.CreateLine(GetItem.Type, GetItem.EditorID, GetItem.Key, GetItem.SourceText, GetItem.GetTextIfTransR(), 999));
+                                TransViewList.AddRowR(LineRenderer.CreateLine(GetItem.Type, GetItem.EditorID, GetItem.Key, GetItem.SourceText, GetItem.GetTextIfTransR(TranslatorInterface.Instance), 999));
                             }));
                         }
 
@@ -1065,7 +1065,7 @@ namespace LexTranslator
 
                 CurrentTransType = 0;
 
-                YDDictionaryHelper.ReadDictionary(GetModName);
+                new LexDictionary().ReadDictionary(GetModName);
 
                 LastSetPath = FilePath;
 
@@ -1293,7 +1293,7 @@ namespace LexTranslator
                     CancelBtn.IsEnabled = false;
 
                     TypeSelector.Items.Clear();
-                    YDDictionaryHelper.Close();
+                    new LexDictionary().Close();
 
                     FromStringsFile.Visibility = Visibility.Collapsed;
 
@@ -1526,8 +1526,7 @@ namespace LexTranslator
                             }
                     }
 
-                    TranslatorInterface.WriteDictionary();
-                    YDDictionaryHelper.CreatDictionary();
+                    new LexDictionary().CreatDictionary();
                 }
                 catch (Exception Ex)
                 {
@@ -1778,7 +1777,7 @@ namespace LexTranslator
                         CallFuncCount++;
                     }
 
-                    YDDictionaryHelper.Dictionarys.Clear();
+                    new LexDictionary().Dictionarys.Clear();
 
                     if (TransViewList != null)
                     {

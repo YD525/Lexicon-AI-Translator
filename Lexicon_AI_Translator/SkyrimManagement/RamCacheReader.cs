@@ -4,11 +4,18 @@ using System.Text;
 using Newtonsoft.Json;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator.SkyrimManagement
 {
     public class RamCacheReader
     {
+        public Translator TranslatorRef = null;
+        public RamCacheReader(Translator TranslatorRef)
+        {
+            this.TranslatorRef = TranslatorRef;
+        }
+
         public List<FakeGrid> RamLines = new List<FakeGrid>();
         public void Load(string FilePath)
         {
@@ -23,7 +30,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         foreach (var Get in RamLines)
                         {
-                            TranslatorInterface.Instance.GetLink().Add(Get.Key, Get.TransText);
+                            TranslatorRef.GetLink().Add(Get.Key, Get.TransText);
                         }
                     }
                 }

@@ -169,7 +169,7 @@ namespace LexTranslator.UIManage
             return new FakeGrid(AutoHeight, Type, Key, SourceText, TransText, Score);
         }
 
-        public static Grid CreateLine(FakeGrid Item)
+        public static Grid CreateLine(ModFile File, FakeGrid Item)
         {
             bool IsModify = false;
             if (Item.RealSource.Length > 0)
@@ -179,12 +179,12 @@ namespace LexTranslator.UIManage
                     IsModify = true;
                 }
             }
-            return CreateLine(IsModify,Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText, Item.Score);
+            return CreateLine(File,IsModify, Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText, Item.Score);
         }
 
-        public static Grid CreateLine(bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, double Score)
+        public static Grid CreateLine(ModFile File,bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreateLine(IsModify,Height, new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreateLine(File, IsModify,Height, new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
             return MainGrid;
         }
 

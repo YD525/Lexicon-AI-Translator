@@ -6,81 +6,88 @@ using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator.SkyrimManagement
 {
-    public class R_XmlReader
+    public class XmlItem
     {
-        public class XmlItem
+        public string Type = "";
+        public string EditorID = "";
+        public string REC = "";
+        public int RECID = 0;
+        public string Key = "";
+        public string SourceText = "";
+        public string TransText = "";
+
+        public XmlItem(Translator TranslatorRef, XMLStringItem Item)
         {
-            public string Type = "";
-            public string EditorID = "";
-            public string REC = "";
-            public int RECID = 0;
-            public string Key = "";
-            public string SourceText = "";
-            public string TransText = "";
+            this.Type = "Xml";
+            this.EditorID = Item.EDID;
+            this.REC = Item.REC;
 
-            public XmlItem(StringItem Item)
+            if (Item.RECID != null)
             {
-                this.Type = "Xml";
-                this.EditorID = Item.EDID;
-                this.REC = Item.REC;
-
-                if (Item.RECID != null)
-                { 
-                    this.RECID = P_Convert.ObjToInt(Item.RECID);
-                }
-
-                this.Key = Crc32Helper.ComputeCrc32(this.RECID + "_" + Item.EDID + "_" + Item.REC);
-                this.SourceText = Item.Source;
-
-                if (Item.Source == Item.Dest)
-                {
-                    this.TransText = string.Empty;
-                }
-                else 
-                {
-                    this.TransText = Item.Dest;
-                    TranslatorInterface.Instance.GetLink().Add(this.Key,Item.Dest);
-                }
+                this.RECID = P_Convert.ObjToInt(Item.RECID);
             }
 
-            public string GetTextIfTrans()
+            this.Key = Crc32Helper.ComputeCrc32(this.RECID + "_" + Item.EDID + "_" + Item.REC);
+            this.SourceText = Item.Source;
+
+            if (Item.Source == Item.Dest)
             {
-                string GetKey = this.Key;
-                var Link = TranslatorInterface.Instance.GetLink();
+                this.TransText = string.Empty;
+            }
+            else
+            {
+                this.TransText = Item.Dest;
+                TranslatorRef.GetLink().Add(this.Key, Item.Dest);
+            }
+        }
 
-                var GetResult = Link[GetKey];
-                if (GetResult != null)
-                {
-                    this.TransText = GetResult;
-                    if (this.TransText.Length > 0)
-                    {
-                        return this.TransText;
-                    }
-                    else
-                    {
-                        return this.SourceText;
-                    }
-                }
+        public string GetTextIfTrans(Translator TranslatorRef)
+        {
+            string GetKey = this.Key;
+            var Link = TranslatorRef.GetLink();
 
-                if (this.TransText.Trim().Length > 0)
+            var GetResult = Link[GetKey];
+            if (GetResult != null)
+            {
+                this.TransText = GetResult;
+                if (this.TransText.Length > 0)
                 {
                     return this.TransText;
                 }
-
-                return this.SourceText;
+                else
+                {
+                    return this.SourceText;
+                }
             }
-        }
-        public class StringItem
-        {
-            public string EDID { get; set; }
-            public string REC { get; set; }
 
-            public object RECID { get; set; }
-            public string Source { get; set; }
-            public string Dest { get; set; }
+            if (this.TransText.Trim().Length > 0)
+            {
+                return this.TransText;
+            }
+
+            return this.SourceText;
+        }
+    }
+    public class XMLStringItem
+    {
+        public string EDID { get; set; }
+        public string REC { get; set; }
+
+        public object RECID { get; set; }
+        public string Source { get; set; }
+        public string Dest { get; set; }
+    }
+
+    public class R_XmlReader
+    {
+        public Translator TranslatorRef = null;
+        public R_XmlReader(Translator TranslatorRef)
+        {
+            this.TranslatorRef = TranslatorRef;
         }
 
         public List<XmlItem> XmlItems = new List<XmlItem>();
@@ -99,7 +106,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 foreach (var GetItem in
                   Doc.Descendants("String")
-                  .Select(x => new StringItem
+                  .Select(x => new XMLStringItem
                   {
                       EDID = (string)x.Element("EDID"),
                       REC = (string)x.Element("REC"),
@@ -109,7 +116,7 @@ namespace LexTranslator.SkyrimManagement
                   })
                   .ToList())
                 {
-                    XmlItem SetItem = new XmlItem(GetItem);
+                    XmlItem SetItem = new XmlItem(TranslatorRef,GetItem);
                     if (!UniqueKeys.Contains(SetItem.Key))
                     {
                         UniqueKeys.Add(SetItem.Key);
@@ -151,7 +158,7 @@ namespace LexTranslator.SkyrimManagement
                     string Key = RECID +"_"+ EditorID + "_" + Rec;
                     if (ItemDict.TryGetValue(Key, out XmlItem Item))
                     {
-                        Item.GetTextIfTrans();
+                        Item.GetTextIfTrans(TranslatorRef);
                         DestNode.Value = Item.TransText;
                     }
                 }

@@ -149,6 +149,7 @@
     <Compile Include="SkyrimManagement\DSDConverter.cs" />
     <Compile Include="SkyrimManagement\EspReader.cs" />
     <Compile Include="SkyrimManagement\MCMReader.cs" />
+    <Compile Include="SkyrimManagement\ModFile.cs" />
     <Compile Include="SkyrimManagement\RamCacheReader.cs" />
     <Compile Include="SkyrimManagement\SkyrimHelper.cs" />
     <Compile Include="SkyrimManagement\StringsFileReader.cs" />
@@ -176,6 +177,9 @@
     </Compile>
     <Compile Include="UIManagement\RowStyleWin.xaml.cs">
       <DependentUpon>RowStyleWin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIManagement\TranslateView.xaml.cs">
+      <DependentUpon>TranslateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\UIHelper.cs" />
     <Compile Include="UIManagement\UILanguageHelper.cs" />
@@ -274,6 +278,10 @@
     <Page Include="UIManagement\RowStyleWin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UIManagement\TranslateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="YDControls\MainChart.xaml">
       <SubType>Designer</SubType>

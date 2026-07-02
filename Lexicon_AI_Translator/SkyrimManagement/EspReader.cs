@@ -7,6 +7,7 @@ using System.Text;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -548,9 +549,11 @@ namespace LexTranslator.SkyrimManagement
 
         public string EspPath { get; private set; } = "";
 
+        public Translator TranslatorRef = null;
         // ── Constructor / destructor ──────────────────────────
-        public EspReader()
+        public EspReader(Translator TranslatorRef)
         {
+            this.TranslatorRef = TranslatorRef;
             _Instance = EspNative.C_CreateInstance();
             if (_Instance == IntPtr.Zero)
                 throw new InvalidOperationException("Failed to create EspInstance in native DLL.");
@@ -714,7 +717,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 var Record = Records[Records.ElementAt(i).Key];
 
-                var Link = TranslatorInterface.Instance.GetLink();
+                var Link = TranslatorRef.GetLink();
 
                 var GetTransData = Link[Record.UniqueKey];
                 if (GetTransData != null)
@@ -821,7 +824,7 @@ namespace LexTranslator.SkyrimManagement
 
                 foreach (var Sub in GetRecord.SubRecords)
                 {
-                    var MergeSig = TranslatorInterface.Instance.GetFileUniqueKey() + ":" + ParentFormID + ":" + ParentSig + ":" + Sub.Sig + ":" + Sub.Index + ":" + ParentEditorID;
+                    var MergeSig = TranslatorRef.GetFileUniqueKey() + ":" + ParentFormID + ":" + ParentSig + ":" + Sub.Sig + ":" + Sub.Index + ":" + ParentEditorID;
                     string UniqueKey = Crc32Helper.ComputeCrc32(MergeSig);
 
                     RecordItem NRecordItem = new RecordItem
@@ -886,8 +889,8 @@ namespace LexTranslator.SkyrimManagement
             FromStringsFile.Close();
             ToStringsFile.Close();
 
-            FromStringsFile.LoadStringsFiles(EspPath, TranslatorInterface.Instance.From);
-            ToStringsFile.LoadStringsFiles(EspPath, TranslatorInterface.Instance.To);
+            FromStringsFile.LoadStringsFiles(EspPath, TranslatorRef.From);
+            ToStringsFile.LoadStringsFiles(EspPath, TranslatorRef.To);
         }
 
         public void Close()

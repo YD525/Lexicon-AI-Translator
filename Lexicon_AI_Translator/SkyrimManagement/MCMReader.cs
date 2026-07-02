@@ -5,6 +5,7 @@ using LexTranslator.SkyrimManagement;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using PhoenixEngine.Engine;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator.SkyrimManage
 {
@@ -31,7 +32,7 @@ namespace LexTranslator.SkyrimManage
             this.TransText = string.Empty;
         }
 
-        public string GetTextIfTrans()
+        public string GetTextIfTrans(Translator TranslatorRef)
         {
             if (this.TransText.Trim().Length > 0)
             {
@@ -39,7 +40,7 @@ namespace LexTranslator.SkyrimManage
             }
             string GetKey = SkyrimData.GenUniqueKey(this.EditorID, this.Type);
 
-            var Link = TranslatorInterface.Instance.GetLink();
+            var Link = TranslatorRef.GetLink();
             var GetStr = Link[GetKey];
 
             if (GetStr!=null)
@@ -59,11 +60,11 @@ namespace LexTranslator.SkyrimManage
         }
 
 
-        public string GetTextIfTransR()
+        public string GetTextIfTransR(Translator TranslatorRef)
         {
             string GetKey = SkyrimData.GenUniqueKey(this.EditorID, this.Type);
 
-            var Link = TranslatorInterface.Instance.GetLink();
+            var Link = TranslatorRef.GetLink();
 
             var GetStr = Link[GetKey];
 
@@ -89,6 +90,13 @@ namespace LexTranslator.SkyrimManage
         public List<string> Lines = new List<string>();
         public List<MCMItem> MCMItems = new List<MCMItem>();
         public Encoding CurrentEncoding = null;
+
+        public Translator TranslatorRef = null;
+
+        public MCMReader(Translator TranslatorRef)
+        {
+            this.TranslatorRef = TranslatorRef;
+        }
         public bool CheckIsMCM()
         {
             foreach (var Get in Lines)
@@ -113,7 +121,7 @@ namespace LexTranslator.SkyrimManage
 
         public void LoadMCM(string Path)
         {
-            TranslatorInterface.Instance.ClearCache();
+            TranslatorRef.ClearCache();
             Lines.Clear();
             MCMItems.Clear();
 
@@ -176,7 +184,7 @@ namespace LexTranslator.SkyrimManage
             string RichText = "";
             foreach (var GetMCMItem in this.MCMItems)
             {
-                string NewStr = GetMCMItem.GetTextIfTrans();
+                string NewStr = GetMCMItem.GetTextIfTrans(TranslatorRef);
                 TranslationPreprocessor.Instance.NormalizePunctuation(ref NewStr);
                 RichText += string.Format("${0}\t{1}\n", GetMCMItem.EditorID, NewStr);
             }

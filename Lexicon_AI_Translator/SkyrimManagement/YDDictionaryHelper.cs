@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using LexTranslator.SkyrimModManager;
+using LexTranslator.TranslateManage;
 using Newtonsoft.Json;
 
 namespace LexTranslator.SkyrimManage
@@ -33,22 +34,56 @@ namespace LexTranslator.SkyrimManage
             this.OriginalText = Item.OriginalText;
         }
     }
-    public class YDDictionaryHelper
+    public class LexDictionary
     {
-        public static YDDictionaryFile CurrentFile = null;
-        public static Dictionary<string, YDDictionary> Dictionarys = new Dictionary<string, YDDictionary>();
+        public YDDictionaryFile CurrentFile = null;
+        public Dictionary<string, YDDictionary> Dictionarys = new Dictionary<string, YDDictionary>();
 
-        public static void Close()
+        public void Close()
         {
             CurrentFile = new YDDictionaryFile();
             Dictionarys.Clear();
             CurrentModName = string.Empty;
         }
 
-        public static void CreatDictionary()
+        public bool CheckDictionary()
         {
             string ModName = CurrentModName;
-            string SetPath = DeFine.GetFullPath(@"\Librarys\" + ModName) + ".Json";
+            string SetPath = DeFine.GetFullPath(@"\Library\" + ModName + ".Json");
+            if (File.Exists(SetPath))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public int WriteDictionary(YDListView View)
+        {
+            int ReplaceCount = 0;
+
+            View.MainCanvas.Dispatcher.Invoke(new System.Action(() => {
+               
+                for (int i = 0; i < View.Rows; i++)
+                {
+                    FakeGrid GetFakeGrid = View.RealLines[i];
+
+                    string GetKey = GetFakeGrid.Key;
+                    string GetSourceText = GetFakeGrid.SourceText;
+                    var TargetText = GetFakeGrid.TransText;
+
+                    this.UPDateTransText(GetKey, GetSourceText);
+
+                    ReplaceCount++;
+                }
+            }));
+
+            return ReplaceCount;
+        }
+
+        public void CreatDictionary()
+        {
+            string ModName = CurrentModName;
+            string SetPath = DeFine.GetFullPath(@"\Library\" + ModName) + ".Json";
 
             CurrentFile = new YDDictionaryFile();
 
@@ -68,13 +103,13 @@ namespace LexTranslator.SkyrimManage
             DataHelper.WriteFile(SetPath,Encoding.UTF8.GetBytes(GetJson));
         }
 
-        public static string CurrentModName = string.Empty;
-        public static void ReadDictionary(string ModName)
+        public string CurrentModName = string.Empty;
+        public void ReadDictionary(string ModName)
         {
             CurrentModName = ModName;
             Dictionarys.Clear();
 
-            string SetPath = DeFine.GetFullPath(@"\Librarys\" + ModName) + ".Json";
+            string SetPath = DeFine.GetFullPath(@"\Library\" + ModName) + ".Json";
             if (File.Exists(SetPath))
             {
                 string GetData = Encoding.UTF8.GetString(DataHelper.ReadFile(SetPath));
@@ -91,7 +126,7 @@ namespace LexTranslator.SkyrimManage
             }
         }
 
-        public static YDDictionary CheckDictionary(string Key)
+        public YDDictionary CheckDictionary(string Key)
         {
             if (Dictionarys.ContainsKey(Key))
             { 
@@ -101,7 +136,7 @@ namespace LexTranslator.SkyrimManage
             return null;
         }
 
-        public static int UPDateTransText(string Key,string OriginalText)
+        public int UPDateTransText(string Key,string OriginalText)
         {   
             if (Dictionarys.ContainsKey(Key))
             {

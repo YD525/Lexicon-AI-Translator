@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,7 +39,13 @@ namespace LexTranslator
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (CurrentNav == "TransHub")
+            {
+                if (CurrentTranslateView != null)
+                {
+                    CurrentTranslateView.Window_PreviewKeyDown(sender,e);
+                }
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -245,11 +252,13 @@ namespace LexTranslator
             ShowView(ClickedMenu.Tag?.ToString());
         }
 
+        public string CurrentNav = "";
         public void ShowView(string Name)
         {
             UI(() =>
             {
                 int PageIndex = 0;
+                CurrentNav = Name;
 
                 switch (Name)
                 {
@@ -360,8 +369,34 @@ namespace LexTranslator
             }
         }
 
+        public void LoadFile()
+        {
+            var Dialog = new Microsoft.Win32.OpenFileDialog();
+            Dialog.Title = "Please select a file";
+            Dialog.Filter = "All files|*.*";
+            Dialog.Multiselect = false;
+
+            if (Dialog.ShowDialog() == true)
+            {
+                string SelectedFile = Dialog.FileName;
+                LoadFile(SelectedFile);
+            }
+        }
+
+        public void LoadFile(string Path)
+        {
+            AddTab(Path,true);
+        }
+
+
 
         #region FileTabs
+        public class FileTabContext
+        {
+            public string Path { get; set; }
+            public TranslateView View { get; set; }
+        }
+
 
         private TabItem _DraggedTab;
         private Point _DragStartPoint;
@@ -469,18 +504,32 @@ namespace LexTranslator
                 Current = VisualTreeHelper.GetParent(Current);
             return Current as T;
         }
-
+        public TranslateView CurrentTranslateView = null;
         private void LexTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var TabControl = sender as TabControl;
-            if (TabControl == null)
+            var Tab = LexTabs.SelectedItem as TabItem;
+            if (Tab == null)
                 return;
 
-            var SelectedTab = TabControl.SelectedItem as TabItem;
-            if (SelectedTab == null)
+            var CTX = Tab.Tag as FileTabContext;
+            if (CTX == null)
                 return;
 
-            string HeaderText = SelectedTab.Header?.ToString();
+            foreach (UIElement Child in TabViews.Children)
+            {
+                Child.Visibility = Visibility.Hidden;
+            }
+
+            if (CTX.View != null)
+            {
+                if (!TabViews.Children.Contains(CTX.View))
+                {
+                    TabViews.Children.Add(CTX.View);
+                }
+
+                CTX.View.Visibility = Visibility.Visible;
+                CurrentTranslateView = CTX.View;
+            }
         }
 
         private void LexTabs_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -490,9 +539,9 @@ namespace LexTranslator
             if (Dep == null)
                 return;
 
-            var CloseBtn = FindAncestor<Border>(Dep);
+            var AnyBtn = FindAncestor<Border>(Dep);
 
-            if (CloseBtn != null && CloseBtn.Tag?.ToString() == "LexTabClose")
+            if (AnyBtn != null && AnyBtn.Tag?.ToString() == "LexTabClose")
             {
                 var TabItem = FindAncestor<TabItem>(Dep);
 
@@ -500,24 +549,26 @@ namespace LexTranslator
                 {
                     e.Handled = true;
 
-                    var TabControl = LexTabs;
-
-                    if (TabControl.Items.Contains(TabItem))
-                    {
-                        TabControl.Items.Remove(TabItem);
-                    }
+                    RemoveTab((TabItem.Tag as FileTabContext).Path);
                 }
             }
 
-        }
+            if (AnyBtn != null && AnyBtn.Tag?.ToString() == "LexTabAdd")
+            {
+                e.Handled = true;
 
-        public void AddTab(string Filename, bool Select = true)
+                LoadFile();
+
+                return;
+            }
+        }
+        public void AddTab(string Path, bool Select = true)
         {
             UI(() =>
             {
                 foreach (TabItem Item in LexTabs.Items)
                 {
-                    if (Item.Tag?.ToString() == Filename)
+                    if (Item.Tag is FileTabContext CTX && CTX.Path == Path)
                     {
                         if (Select)
                             LexTabs.SelectedItem = Item;
@@ -526,40 +577,62 @@ namespace LexTranslator
                     }
                 }
 
+                var View = new TranslateView();
+                View.SetFile(Path);
+                View.Visibility = Visibility.Collapsed;
+
+                var CTXNew = new FileTabContext
+                {
+                    Path = Path,
+                    View = View
+                };
+
                 var Tab = new TabItem
                 {
-                    Header = Filename,
-                    Tag = Filename
+                    Header = System.IO.Path.GetFileName(Path),
+                    Tag = CTXNew
                 };
 
                 LexTabs.Items.Add(Tab);
 
+                TabViews.Children.Add(View);
+
                 if (Select)
-                {
                     LexTabs.SelectedItem = Tab;
-                }
             });
         }
-
-        public void RemoveTab(string Filename)
+        public void RemoveTab(string Path)
         {
             UI(() =>
             {
                 TabItem Target = null;
+                FileTabContext CTX = null;
 
-                foreach (TabItem item in LexTabs.Items)
+                foreach (TabItem Item in LexTabs.Items)
                 {
-                    if (item.Tag?.ToString() == Filename)
+                    if (Item.Tag is FileTabContext c && c.Path == Path)
                     {
-                        Target = item;
+                        Target = Item;
+                        CTX = c;
                         break;
                     }
                 }
 
-                if (Target != null)
+                if (Target == null)
+                    return;
+
+                if (CTX != null && CTX.View != null)
                 {
-                    LexTabs.Items.Remove(Target);
+                    CTX.View.Close();
+                    CTX.View.Visibility = Visibility.Collapsed;
                 }
+
+                if (CurrentTranslateView == CTX.View)
+                {
+                    CurrentTranslateView = null;
+                }
+
+                LexTabs.Items.Remove(Target);
             });
         }
         #endregion

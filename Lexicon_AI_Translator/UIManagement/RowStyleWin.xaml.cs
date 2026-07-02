@@ -162,9 +162,9 @@ namespace LexTranslator.UIManagement
         public static List<string> RecordModifyStates = new List<string>();
 
         public static HashSet<string> DictionaryKeys = new HashSet<string>();
-        public Grid CreateLine(bool IsModify,double Height, BaseUnit Item)
+        public Grid CreateLine(ModFile File,bool IsModify,double Height, BaseUnit Item)
         {
-            var FindDictionary = YDDictionaryHelper.CheckDictionary(Item.Key);
+            var FindDictionary = File.Lex_Dictionary.CheckDictionary(Item.Key);
 
             if (FindDictionary != null)
             {
@@ -220,11 +220,11 @@ namespace LexTranslator.UIManagement
 
             EspReader EspInstance = null;
 
-            if (DeFine.WorkingWin != null)
+            if (File != null)
             {
-                if (DeFine.WorkingWin.CurrentTransType == 2)
+                if (File.Type == GameFileType.ESP)
                 {
-                    EspInstance = DeFine.WorkingWin.GlobalEspReader;
+                    EspInstance = File.EspReader;
                 }
             }
 
@@ -317,6 +317,10 @@ namespace LexTranslator.UIManagement
             Border GetTranslatedBorder = (Border)GetTranslatedGrid.Children[0];
 
             Grid GetColorGrid = (Grid)GetTranslatedGrid.Children[1];
+
+            ((Border)GetColorGrid.Children[0]).Tag = File;
+            ((Border)GetColorGrid.Children[1]).Tag = File;
+            ((Border)GetColorGrid.Children[2]).Tag = File;
 
             ((Border)GetColorGrid.Children[0]).PreviewMouseDown += ChangeColor;
             ((Border)GetColorGrid.Children[1]).PreviewMouseDown += ChangeColor;
@@ -565,11 +569,12 @@ namespace LexTranslator.UIManagement
             if (sender is Border)
             {
                 Border ButtonHandle = (Border)sender;
+                ModFile GetMod = ButtonHandle.Tag as ModFile;
                 Color GetColor = ((SolidColorBrush)ButtonHandle.Background).Color;
 
-                if (DeFine.WorkingWin.TransViewList != null)
+                if (GetMod.TranslateView != null)
                 {
-                    DeFine.WorkingWin.TransViewList.ChangeFontColor(TranslatorInterface.Instance.GetFileUniqueKey(), GetColor.R, GetColor.G, GetColor.B);
+                    GetMod.TranslateView.ChangeFontColor(GetMod.P_Translator.GetFileUniqueKey(), GetColor.R, GetColor.G, GetColor.B);
                 }
             }
         }
