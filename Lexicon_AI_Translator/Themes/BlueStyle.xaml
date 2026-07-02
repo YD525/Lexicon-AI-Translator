@@ -1431,4 +1431,95 @@
         <Setter Property="Fill" Value="White"/>
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
+
+    <Style x:Key="ActionButtonBase" TargetType="Button">
+        <Setter Property="Padding" Value="10 5 10 5"/>
+        <Setter Property="Background" Value="#FF3D3D3D"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="5"
+                        Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#FF4D8CF7"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#FF5B9AF7"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#FF3A7BD5"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#FF3A7BD5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TextButton" TargetType="Button" BasedOn="{StaticResource ActionButtonBase}"/>
+
+    <Style x:Key="TextButtonSmall" TargetType="Button" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="Width" Value="100"/>
+        <Setter Property="Height" Value="40"/>
+    </Style>
+
+    <Style x:Key="TextButtonLarge" TargetType="Button" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Height" Value="60"/>
+    </Style>
+
+
+    <Style x:Key="SearchTextBox" TargetType="TextBox">
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="MinWidth" Value="200"/>
+        <Setter Property="Background" Value="#FF3D3D3D"/>
+        <Setter Property="BorderBrush" Value="#FF555555"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CaretBrush" Value="White"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="35,0,10,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="5">
+                        <Grid>
+                            <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="10,0,0,0" 
+                                 HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Canvas Width="1024" Height="1024">
+                                    <Path Data="M426.666667,128 C261.12,128 128,261.12 128,426.666667 C128,592.213333 261.12,725.333333 426.666667,725.333333 C502.613333,725.333333 573.013333,701.44 630.613333,660.906667 L850.346667,880.64 C862.293333,892.586667 881.066667,892.586667 893.013333,880.64 C904.96,868.693333 904.96,849.92 893.013333,838.4 L673.706667,619.093333 C714.666667,561.066667 725.333333,490.666667 725.333333,426.666667 C725.333333,261.12 592.213333,128 426.666667,128 Z M426.666667,661.333333 C296.96,661.333333 192,556.373333 192,426.666667 C192,296.96 296.96,192 426.666667,192 C556.373333,192 661.333333,296.96 661.333333,426.666667 C661.333333,556.373333 556.373333,661.333333 426.666667,661.333333 Z"
+                                      Fill="White" IsHitTestVisible="False"/>
+                                </Canvas>
+                            </Viewbox>
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                      Margin="0" 
+                                      VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="#FF4D8CF7"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="BorderBrush" Value="#FF4D8CF7"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

@@ -205,7 +205,7 @@ IsHitTestVisible="False"/>
                 </Border.Triggers>
 
                 <Grid Name="Views">
-                    <Grid>
+                    <Grid Visibility="Hidden">
                         <StackPanel Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
 
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
@@ -469,7 +469,63 @@ Chinese character processed by —
                     <Grid>
                     </Grid>
 
-                    <Grid>
+                    <Grid Visibility="Visible">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                            <Button Style="{StaticResource ActionButtonBase}" Margin="0,0,20,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Viewbox Width="24" Height="24" Stretch="Uniform" Margin="0,0,10,0">
+                                        <Canvas Width="1024" Height="1024">
+                                            <Path Data="M120,220 L400,220 L480,320 L920,320 L920,860 L120,860 Z" Fill="White" IsHitTestVisible="False"/>
+                                            <Path Data="M400,220 L400,320 L480,320" Fill="White" IsHitTestVisible="False" Opacity="0.5"/>
+                                            <Path Data="M512,500 L632,660 L572,660 L572,820 L452,820 L452,660 L392,660 Z" Stroke="White"  StrokeThickness="30" Fill="Transparent" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                    <TextBlock Text="Load" FontSize="12" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+
+                            <Button Style="{StaticResource ActionButtonBase}" Margin="0,0,20,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Viewbox Width="24" Height="24" Stretch="Uniform" Margin="0,0,10,0">
+                                        <Canvas Width="1024" Height="1024">
+                                            <Path Data="M180,140 L180,884 L844,884 L844,300 L680,140 Z" Fill="White" IsHitTestVisible="False"/>
+                                            <Path Data="M680,140 L844,300 L844,300 L680,300 Z" Fill="White" IsHitTestVisible="False" Opacity="0.4"/>
+                                            <Path Data="M280,420 L744,420 L744,680 L280,680 Z" Fill="#FF1A1A1A" IsHitTestVisible="False"/>
+                                            <Path Data="M380,780 L644,780 L644,840 L380,840 Z" Fill="#FF1A1A1A" IsHitTestVisible="False"/>
+                                            <Path Data="M512,460 L612,600 L562,600 L562,740 L462,740 L462,600 L412,600 Z" Fill="#FF1A1A1A" IsHitTestVisible="False"/>
+                                            <Path Data="M512,440 L632,600 L572,600 L572,760 L452,760 L452,600 L392,600 Z" Stroke="White"  StrokeThickness="30"  Fill="Transparent" StrokeStartLineCap="Round"  StrokeEndLineCap="Round"  IsHitTestVisible="False"/>
+                                            <Path Data="M380,820 L644,820" Stroke="White" StrokeThickness="24" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                    <TextBlock Text="Save" FontSize="12" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Style="{StaticResource ActionButtonBase}" Margin="0,0,20,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Viewbox Width="24" Height="24" Stretch="Uniform" Margin="0,0,10,0">
+                                        <Canvas Width="1024" Height="1024">
+                                            <Path Data="M180,140 L180,884 L844,884 L844,300 L680,140 Z"  Fill="White" IsHitTestVisible="False"/>
+                                            <Path Data="M680,140 L844,300 L844,300 L680,300 Z" Fill="White" IsHitTestVisible="False" Opacity="0.4"/>
+                                            <Path Data="M280,420 L744,420 L744,680 L280,680 Z" Fill="#FF1A1A1A" IsHitTestVisible="False"/>
+                                            <Path Data="M380,780 L644,780 L644,840 L380,840 Z" Fill="#FF1A1A1A" IsHitTestVisible="False"/>
+                                            <Path Data="M340,320 L684,664 M684,320 L340,664" Stroke="White"  StrokeThickness="80" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
+                                            <Path Data="M360,340 L664,644 M664,340 L360,644" Stroke="#FF1A1A1A"  StrokeThickness="40" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                    <TextBlock Text="Discard" FontSize="12" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <TextBox Margin="5 0 0 0" x:Name="SearchBox"  Style="{StaticResource SearchTextBox}"  ToolTip="Search keywords...">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Escape" Command="{Binding ClearSearchCommand}" />
+                                </TextBox.InputBindings>
+                            </TextBox>
+
+                        </StackPanel>
                     </Grid>
 
                     <Grid>
