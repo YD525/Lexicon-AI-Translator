@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +20,13 @@ using PhoenixEngine.ADO;
 using PhoenixEngine.Unit;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
+using LexTranslator.SkyrimModManager;
+using Newtonsoft.Json;
+using System.Text;
+using System.IO;
+using static LexTranslator.SkyrimManagement.DSDConverter;
+using PhoenixEngine.Platform.LocalAI;
+using PhoenixEngine;
 
 namespace LexTranslator.UIManagement
 {
@@ -43,10 +49,13 @@ namespace LexTranslator.UIManagement
             InitializeComponent();
         }
 
-        public void SetFile(string Path)
+        public LexGui Parent = null;
+        public void SetFile(LexGui Parent,string Path)
         {
             if (Mod == null)
             {
+                this.Parent = Parent;
+
                 this.Path = Path;
 
                 Mod = new ModFile(Path);
@@ -572,24 +581,200 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        private void AutoLoadOrSave(object sender, MouseButtonEventArgs e)
+        public void SyncTransStateUI()
         {
+            TStop.Opacity = 0.5;
 
+            if (TranslatorInterface.TranslationStatus == StateControl.Run)
+            {
+                TRun.Visibility = Visibility.Collapsed;
+                TStop.Visibility = Visibility.Visible;
+                TCancel.Visibility = Visibility.Visible;
+
+                //ThreadInFo.Visibility = Visibility.Visible;
+            }
+            else
+            if (TranslatorInterface.TranslationStatus == StateControl.Stop)
+            {
+                TStop.Opacity = 1;
+                TRun.Visibility = Visibility.Collapsed;
+                TStop.Visibility = Visibility.Visible;
+                TCancel.Visibility = Visibility.Visible;
+
+                //ThreadInFo.Visibility = Visibility.Visible;
+            }
+            else
+            if (TranslatorInterface.TranslationStatus == StateControl.Cancel || TranslatorInterface.TranslationStatus == StateControl.Null)
+            {
+                TRun.Visibility = Visibility.Visible;
+                TStop.Visibility = Visibility.Collapsed;
+                TCancel.Visibility = Visibility.Collapsed;
+
+                //ThreadInFo.Visibility = Visibility.Collapsed;
+            }
+
+            if (TranslatorInterface.TranslationStatus == StateControl.Run || TranslatorInterface.TranslationStatus == StateControl.Stop)
+            {
+                DeFine.LocalConfigView.SFrom.IsEnabled = false;
+                DeFine.LocalConfigView.STo.IsEnabled = false;
+            }
+            else
+            {
+                DeFine.LocalConfigView.SFrom.IsEnabled = true;
+                DeFine.LocalConfigView.STo.IsEnabled = true;
+            }
         }
 
-        private void CancelTransEsp(object sender, MouseButtonEventArgs e)
+        private double CalcLeftMenuHeight()
         {
+            //double AutoHeight = 0;
+            //foreach (FrameworkElement GetRow in Nodes.Children)
+            //{
+            //    AutoHeight += GetRow.ActualHeight + 1;
+            //}
+            //return AutoHeight;
 
+            return 0;
+        }
+
+        //Control the speed to a fixed 2000 px/s
+        private const double ExpandAnimationSpeed = 2000;
+        public void SyncAnimation()
+        {
+            //double AutoHeight = CalcLeftMenuHeight();
+
+            //var ExpandMenu = (Storyboard)FindResource("ExpandMenu");
+            //var ExpandAnimation = (DoubleAnimation)ExpandMenu.Children[0];
+            //ExpandAnimation.To = AutoHeight;
+            //ExpandAnimation.Duration = TimeSpan.FromSeconds(Math.Abs(0 - AutoHeight) / ExpandAnimationSpeed);
+
+            //var CollapseMenu = (Storyboard)FindResource("CollapseMenu");
+            //var CollapseAnimation = (DoubleAnimation)CollapseMenu.Children[0];
+            //CollapseAnimation.From = AutoHeight;
+            //CollapseAnimation.Duration = TimeSpan.FromSeconds(Math.Abs(AutoHeight - 0) / ExpandAnimationSpeed);
+
+            //CollapseAnimation.Completed += (_, __) =>
+            //{
+            //    LeftMenu.Visibility = Visibility.Collapsed;
+            //    LeftMenu.BeginAnimation(HeightProperty, null);
+            //};
+        }
+
+        public bool IsExpanded = false;
+        private void ShowLeftMenu(object sender, MouseButtonEventArgs e)
+        {
+            //if (IsExpanded)
+            //{
+            //    SyncAnimation();
+            //    ShowLeftMenu(false);
+            //    LogView.Visibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    SyncAnimation();
+            //    ShowLeftMenu(true);
+            //    LogView.Visibility = Visibility.Visible;
+            //}
         }
 
         private void ChangeTransState(object sender, MouseButtonEventArgs e)
         {
+            bool IsKeep = false;
+            bool CallSucess = false;
+            if (TransListView != null)
+            {
+                if (TransListView.Rows > 0)
+                {
+                    if (sender is Border)
+                    {
+                        Border ButtonHandle = (Border)sender;
 
-        }
+                        string GetButtonName = ButtonHandle.Name;
 
-        private void ApplyTranslatedText(object sender, MouseButtonEventArgs e)
-        {
+                        switch (GetButtonName)
+                        {
+                            case "TRun":
+                                {
+                                    if (P_Convert.ObjToStr(TransProcess.Content).StartsWith("STRINGS("))
+                                    {
+                                        if (TranslatorInterface.Instance.From == TranslatorInterface.Instance.To)
+                                        {
+                                            MessageBoxExtend.Show(this.Parent, "The source language and target language cannot be the same!");
+                                            CallSucess = false;
 
+                                            ShowLocalEngineSettingView(null, null);
+                                            return;
+                                        }
+
+                                        if (!Phoenix.CheckAvailableNodes())
+                                        {
+                                            MessageBoxExtend.Show(this.Parent, "Please enable at least one translation platform node.");
+                                            CallSucess = false;
+
+                                            if (!IsExpanded)
+                                            {
+                                                ShowLeftMenu(TRun, null);
+                                            }
+                                            return;
+                                        }
+
+                                        if (Phoenix.Config.GetPlatformData(LMStudio.Type).Enable)
+                                        {
+                                            LMStudio.CurrentModel = string.Empty;
+                                        }
+
+                                        TRun.Visibility = Visibility.Collapsed;
+
+                                        TranslatorInterface.TranslationStatus = StateControl.Run;
+                                        CallSucess = true;
+                                        IsKeep = false;
+                                    }
+                                }
+                                break;
+                            case "TStop":
+                                {
+                                    if (TStop.Opacity == 0.5)
+                                    {
+                                        TranslatorInterface.TranslationStatus = StateControl.Stop;
+                                        CallSucess = true;
+                                    }
+                                    else
+                                    {
+                                        if (TranslatorInterface.TranslationStatus == StateControl.Stop)
+                                        {
+                                            IsKeep = true;
+                                        }
+
+                                        TranslatorInterface.TranslationStatus = StateControl.Run;
+                                        CallSucess = true;
+                                    }
+                                }
+                                break;
+                            case "TCancel":
+                                {
+                                    TranslatorInterface.TranslationStatus = StateControl.Cancel;
+                                    CallSucess = true;
+                                }
+                                break;
+                        }
+
+                        if (CallSucess)
+                        {
+                            TranslatorInterface.SyncTransState(new Action(() =>
+                            {
+                                this.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    SyncTransStateUI();
+                                }));
+                            }), IsKeep);
+                        }
+                    }
+                }
+            }
+            if (!CallSucess)
+            {
+                MessageBoxExtend.Show(this.Parent, "Batch translation is not possible at the current state.\nPlease wait until the file loading is finished.");
+            }
         }
 
         private void AutoSpeak_Click(object sender, RoutedEventArgs e)
@@ -607,12 +792,6 @@ namespace LexTranslator.UIManagement
         private void ReplaceStr(object sender, MouseButtonEventArgs e)
         {
             DeFine.CurrentReplaceView.Show();
-        }
-
-
-        private void CancelTranslatedText(object sender, MouseButtonEventArgs e)
-        {
-
         }
 
 
@@ -645,47 +824,232 @@ namespace LexTranslator.UIManagement
 
         private void ExportToDsd_Click(object sender, RoutedEventArgs e)
         {
+            if (TransListView != null)
+            {
+                if (Mod.Type == GameFileType.ESP && TransListView.Rows > 0)
+                {
+                    if (Mod.EspReader.Records != null)
+                    {
+                        var GetWritePath = DataHelper.ShowSaveFileDialog(Mod.FileName + ".json", "DSD (*.json)|*.json");
 
+                        var DSDFile = DSDConverter.RecordsToDSDFile(Mod.EspReader);
+                        if (DSDFile != null)
+                        {
+                            if (DSDFile.DSDItems.Count > 0)
+                            {
+                                List<DSDItem> DSDItems = new List<DSDItem>();
+                                DSDItems = DSDFile.DSDItems;
+                                string GetJson = JsonConvert.SerializeObject(DSDItems, Formatting.Indented);
+
+                                if (File.Exists(GetWritePath))
+                                {
+                                    File.Delete(GetWritePath);
+                                }
+                                DataHelper.WriteFile(GetWritePath, Encoding.UTF8.GetBytes(GetJson));
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBoxExtend.Show(this.Parent, "The current file does not support exporting to DSD format.");
+                }
+            }
+        }
+        public void UPDateFile(bool CanSetSource)
+        {
+            if (TransListView != null)
+            {
+                for (int i = 0; i < TransListView.Rows; i++)
+                {
+                    bool IsCloud = false;
+
+                    TransListView.RealLines[i].SyncData(ref IsCloud);
+
+                    string GetKey = TransListView.RealLines[i].Key;
+
+                    string GetTransText = TransListView.RealLines[i].TransText;
+
+                    if (CanSetSource)
+                    {
+                        if (string.IsNullOrEmpty(GetTransText))
+                        {
+                            GetTransText = TransListView.RealLines[i].SourceText;
+                        }
+                    }
+
+                    var Link = TranslatorInterface.Instance.GetLink();
+                    Link[GetKey] = GetTransText;
+                }
+            }
         }
 
         private void ExportToRamCache_Click(object sender, RoutedEventArgs e)
         {
+            if (TransListView != null)
+            {
+                if (TransListView.Rows > 0)
+                {
+                    var GetWritePath = DataHelper.ShowSaveFileDialog(Mod.FileName + "_C.Json", "RamCache (*.Json)|*.Json");
 
+                    UPDateFile(false);
+
+                    string GetJson = JsonConvert.SerializeObject(TransListView.RealLines, Formatting.Indented);
+
+                    if (GetWritePath != null)
+                    {
+                        if (GetWritePath.Trim().Length > 0)
+                        {
+                            if (File.Exists(GetWritePath))
+                            {
+                                File.Delete(GetWritePath);
+                            }
+                            DataHelper.WriteFile(GetWritePath, Encoding.UTF8.GetBytes(GetJson));
+                        }
+                    }
+                }
+            }
         }
 
         private void GridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-
+            DeFine.GlobalLocalSetting.WritingAreaHeight = WritingArea.Height.Value;
         }
 
         private void AutoWordCompletion_Click(object sender, RoutedEventArgs e)
         {
+            if (AutoWordCompletion.IsChecked == true)
+            {
+                DeFine.GlobalLocalSetting.WordCompletion = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.WordCompletion = false;
+            }
 
-        }
-
-        private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-
+            DeFine.GlobalLocalSetting.SaveConfig();
         }
 
         private void HistoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            foreach (var GetItem in HistoryList.SelectedItems)
+            {
+                var GetCol = HistoryList.SelectedItem.GetType().GetProperty("Translated");
+                if (GetCol != null)
+                {
+                    string Translated = P_Convert.ObjToStr(P_Convert.ObjToStr(GetCol.GetValue(GetItem, null)));
+                    ToStr.Text = Translated;
+                }
+            }
         }
 
         private void ImportRamCache_Click(object sender, RoutedEventArgs e)
         {
+            var Dialog = new System.Windows.Forms.OpenFileDialog();
+            Dialog.Title = "Please select a file";
+            Dialog.Filter = "All files|*.*";
+            Dialog.Multiselect = false;
 
+            if (Dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string SelectedFile = Dialog.FileName;
+
+                if (File.Exists(SelectedFile))
+                {
+                    if (TransListView != null)
+                    {
+                        if (TransListView.Rows > 0)
+                        {
+                            string GetRamCache = Encoding.UTF8.GetString(DataHelper.ReadFile(SelectedFile));
+                            List<FakeGrid> RealLines = JsonConvert.DeserializeObject<List<FakeGrid>>(GetRamCache);
+
+                            if (RealLines != null)
+                            {
+                                for (int i = 0; i < RealLines.Count; i++)
+                                {
+                                    if (RealLines[i].SourceText != RealLines[i].TransText)
+                                    {
+                                        TranslatorInterface.Instance.SetLink(RealLines[i].Key, RealLines[i].TransText);
+                                    }
+                                }
+
+                                for (int i = 0; i < TransListView.Rows; i++)
+                                {
+                                    bool IsCloud = false;
+                                    TransListView.RealLines[i].SyncData(ref IsCloud);
+                                    TransListView.RealLines[i].SyncUI(TransListView);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
+        private ScanAnimator ScanAnimator = null;
         private void ProcessBar_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-
+            if (ScanAnimator != null)
+            {
+                if (Mod.P_Translator != null)
+                {
+                    var GetBatchCore = Mod.P_Translator.GetBatchCore();
+                    if (GetBatchCore != null)
+                        if (GetBatchCore.IsWorking && !GetBatchCore.IsStopped)
+                        {
+                            ScanAnimator.UpdateAnimationTarget();
+                        }
+                }
+            }
         }
 
         private void RefreshDictionary_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (MessageBoxExtend.Show(this.Parent, "Msg", "Are you sure you want to refresh the original text record? Doing so will lose the mod's original text information.", MsgAction.YesNo, MsgType.Info) <= 0)
+            {
+                return;
+            }
+            if (P_Convert.ObjToStr(RefreshButton.Content).Equals(UILanguageHelper.UICache["RefreshButton1"]))
+            {
+                return;
+            }
 
+            new Thread(() =>
+            {
+                RefreshButton.Dispatcher.Invoke(new Action(() =>
+                {
+                    RefreshButton.Content = UILanguageHelper.UICache["RefreshButton1"];
+                }));
+                var FileUniqueKey = Mod.P_Translator.GetFileUniqueKey();
+
+                if (FileUniqueKey > 0)
+                {
+                    int CallFuncCount = 0;
+
+                    string SetPath = DeFine.GetFullPath(@"\Library\" + Mod.P_Translator.LastLoadFileName + ".Json");
+
+                    if (File.Exists(SetPath))
+                    {
+                        File.Delete(SetPath);
+
+                        CallFuncCount++;
+                    }
+
+                    Mod.Lex_Dictionary.Dictionarys.Clear();
+
+                    if (TransListView != null)
+                    {
+                        TransListView.QuickRefresh();
+                    }
+
+                    MessageBoxExtend.Show(this.Parent, "Original source text has been refreshed from the current file.");
+                }
+
+                RefreshButton.Dispatcher.Invoke(new Action(() =>
+                {
+                    RefreshButton.Content = UILanguageHelper.UICache["RefreshButton"];
+                }));
+            }).Start();
         }
 
  
@@ -770,40 +1134,123 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        private void ShowHistorys(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
         private void ShowLocalEngineSettingView(object sender, MouseButtonEventArgs e)
         {
+            DeFine.LocalConfigView.Owner = this.Parent;
+            DeFine.LocalConfigView.Show();
+            DeFine.LocalConfigView.SetTypes();
 
+            if (TransListView.RealLines.Count > 0)
+            {
+                DeFine.LocalConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
+            }
+            else
+            {
+                DeFine.LocalConfigView.SFrom.SelectedValue = Languages.English.ToString();
+            }
+
+            DeFine.LocalConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
         }
+
         private void SyncColumnWidth(object sender, MouseButtonEventArgs e)
         {
+            for (int i = 0; i < this.TransListView.VisibleRows.Count; i++)
+            {
+                Grid GetGrid = ((Border)(this.TransListView.VisibleRows[i].View.Children[0])).Child as Grid;
 
+                for (int ir = 0; ir < GetGrid.ColumnDefinitions.Count; ir++)
+                {
+                    GetGrid.ColumnDefinitions[ir].Width = TransViewHeader.ColumnDefinitions[ir].Width;
+                }
+            }
         }
 
         private void TestAll_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            for (int i = 0; i < TransListView.RealLines.Count; i++)
+            {
+                TransListView.RealLines[i].TransText = TransListView.RealLines[i].SourceText + "(" + i.ToString() + ")";
 
-        }
+                var Link = TranslatorInterface.Instance.GetLink();
+                Link[TransListView.RealLines[i].Key] = TransListView.RealLines[i].TransText;
 
-        private void ToStr_MouseEnter(object sender, MouseEventArgs e)
-        {
-
+                TransListView.RealLines[i].SyncUI(TransListView);
+            }
         }
 
         private void Traditional_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            new TraditionalConvert().Show();
         }
 
+        public void CheckCanClearCache(out bool Check)
+        {
+            if ((CloudTranslationCache.IsChecked == true || UserTranslationCache.IsChecked == true) == false)
+            {
+                Check = false;
+                ClearCacheR.Opacity = 0.5;
+                ClearCacheR.Cursor = null;
+                ShowDataBaseR.Opacity = 0.5;
+                ShowDataBaseR.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                Check = true;
+                ClearCacheR.Opacity = 1;
+                ClearCacheR.Cursor = Cursors.Hand;
+                ShowDataBaseR.Opacity = 1;
+                ShowDataBaseR.Cursor = Cursors.Hand;
+            }
+        }
         private void ManageCache_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (Mod.State != GameFileState.Load)
+            {
+                MessageBoxExtend.Show(this.Parent, "Only currently open files can have their cache cleared.");
+                return;
+            }
 
+            CheckCanClearCache(out bool Check);
+
+            ClearCacheView.Visibility = Visibility.Visible;
         }
 
+
+        private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NPCFinder NNPCFinder = new NPCFinder();
+            NNPCFinder.EspInstance = Mod.EspReader;
+
+            NNPCFinder.Owner = Parent;
+            NNPCFinder.Show();
+        }
+        public void AutoSizeHistoryList()
+        {
+            if (HistoryLayer.Visibility == Visibility.Visible)
+            {
+                ChangeTimeCol.Width = 150;
+                double Width = HistoryLayer.ActualWidth - 150;
+                if (Width < 0) Width = 300;
+                TranslatedCol.Width = Width;
+            }
+        }
+        private void ShowHistorys(object sender, MouseButtonEventArgs e)
+        {
+            if (HistoryLayer.Visibility == Visibility.Collapsed)
+            {
+                HistoryLayer.Visibility = Visibility.Visible;
+
+                AutoSizeHistoryList();
+                HistoryButtonFont.Content = UILanguageHelper.UICache["HistoryButtonFont1"];
+
+                AutoLoadHistoryList();
+            }
+            else
+            {
+                HistoryLayer.Visibility = Visibility.Collapsed;
+                HistoryButtonFont.Content = UILanguageHelper.UICache["HistoryButtonFont"];
+            }
+        }
         private void SpeakFromStr(object sender, MouseButtonEventArgs e)
         {
             SpeechHelper.TryPlaySound(FromStr.Text);
@@ -881,6 +1328,29 @@ namespace LexTranslator.UIManagement
             }
         }
 
+        public void CanEditTransView(bool Check)
+        {
+            this.Dispatcher.Invoke(new Action(() =>
+            {
+                TransView.IsHitTestVisible = Check;
+            }));
+        }
+
+        public void ShowClearToStrButton(bool Enable)
+        {
+            UIHelper.ShowButton(ClearToStrButton, Enable);
+        }
+
+        private void CancelTranslatedText(object sender, MouseButtonEventArgs e)
+        {
+            EmptyFromAndToText();
+
+            UIHelper.ShowButton(CancelOTButton, false);
+            UIHelper.ShowButton(ApplyOTButton, false);
+
+            ShowClearToStrButton(false);
+        }
+
         public void ApplyTranslatedText()
         {
             if (TransListView != null)
@@ -903,11 +1373,11 @@ namespace LexTranslator.UIManagement
 
                         try
                         {
-                            if (CloudDBCache.FindCache(TranslatorInterface.Instance.GetFileUniqueKey(), GetGrid.Key, TranslatorInterface.Instance.To).Equals(GetGrid.TransText))
+                            if (CloudDBCache.FindCache(Mod.P_Translator.GetFileUniqueKey(), GetGrid.Key, Mod.P_Translator.To).Equals(GetGrid.TransText))
                             {
-                                LocalDBCache.DeleteCache(TranslatorInterface.Instance.GetFileUniqueKey(), GetGrid.Key, TranslatorInterface.Instance.To);
+                                LocalDBCache.DeleteCache(Mod.P_Translator.GetFileUniqueKey(), GetGrid.Key, Mod.P_Translator.To);
 
-                                var Link = TranslatorInterface.Instance.GetLink();
+                                var Link = Mod.P_Translator.GetLink();
 
                                 Link[GetGrid.Key] = GetGrid.TransText;
 
@@ -934,12 +1404,14 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        public void CanEditTransView(bool Check)
+        private void ApplyTranslatedText(object sender, MouseButtonEventArgs e)
         {
-            this.Dispatcher.Invoke(new Action(() =>
-            {
-                TransView.IsHitTestVisible = Check;
-            }));
+            ApplyTranslatedText();
+        }
+
+        private void TranslateOTButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TranslateCurrent();
         }
 
 
@@ -1103,11 +1575,6 @@ namespace LexTranslator.UIManagement
         }
 
 
-        private void TranslateOTButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
         private void TransTargetType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string GetSelectValue = P_Convert.ObjToStr((sender as ComboBox).SelectedValue);
@@ -1165,32 +1632,180 @@ namespace LexTranslator.UIManagement
 
         private void ToStr_TextChanged(object sender, EventArgs e)
         {
+            if (ToStr.Text.Length > 0)
+            {
+                ShowClearToStrButton(true);
+                UIHelper.ShowButton(ApplyOTButton, true);
+            }
+            else
+            {
+                ShowClearToStrButton(false);
+            }
 
+            UIHelper.ShowButton(ApplyOTButton, true);
         }
 
         private void ShowDataBaseR_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
+            bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
 
+            int Key = TranslatorInterface.Instance.GetFileUniqueKey();
+            if (GetCloudTranslationCache == true)
+            {
+                var CloudTrans = new DataBaseView();
+                CloudTrans.Show();
+                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 100000");
+            }
+
+            if (GetUserTranslationCache == true)
+            {
+                var UserTranslation = new DataBaseView();
+                UserTranslation.Show();
+                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 100000");
+            }
         }
 
+        public void UPDateUI()
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                EmptyFromAndToText();
+                TranslatorInterface.Instance.GetLink().Clear();
+
+                if (TransListView != null)
+                {
+                    if (TransListView.Rows > 0)
+                    {
+                        TransListView.QuickRefresh();
+                    }
+                }
+            }));
+        }
+
+        public Thread ClearCacheTrd = null;
         private void ClearCacheR_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            CheckCanClearCache(out bool Check);
+            if (Check)
+            {
+                if (MessageBoxExtend.Show(this.Parent, "Waring", "Are you sure you want to clear the database records? Doing so will lose all translated content. (Note: Under no circumstances should you click this button arbitrarily.)", MsgAction.YesNo, MsgType.Waring) <= 0)
+                {
+                    return;
+                }
 
+                if (TransListView != null)
+                {
+                    if (TransListView.Rows > 0)
+                    {
+                        if (P_Convert.ObjToStr(ClearCacheRButton.Content).Equals(UILanguageHelper.UICache["ClearCacheButton"]))
+                        {
+                            if (ClearCacheTrd == null)
+                            {
+                                bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
+                                bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
+
+                                ClearCacheTrd = new Thread(() =>
+                                {
+                                    try
+                                    {
+                                        ClearCacheRButton.Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            ClearCacheRButton.Content = UILanguageHelper.UICache["ClearCacheButton1"];
+                                        }));
+
+                                        int CallFuncCount = 0;
+                                        if (GetCloudTranslationCache == true)
+                                        {
+                                            TranslatorInterface.Instance.ClearAICache();
+
+                                            if (CloudDBCache.ClearCloudCache(TranslatorInterface.Instance.GetFileUniqueKey()))
+                                            {
+                                                var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
+                                                if (GetBatchCore != null)
+                                                {
+                                                    GetBatchCore.TranslatedCount = 0;
+                                                }
+                                                Phoenix.Vacuum();
+                                                CallFuncCount++;
+                                            }
+                                        }
+                                        if (GetUserTranslationCache == true)
+                                        {
+                                            LocalDBCache.ClearLocalCache(TranslatorInterface.Instance.GetFileUniqueKey());
+                                            {
+                                                Phoenix.Vacuum();
+                                                CallFuncCount++;
+                                            }
+
+                                            ToStr.Dispatcher.Invoke(new Action(() =>
+                                            {
+                                                ToStr.Text = "";
+                                            }));
+                                        }
+
+                                        UPDateUI();
+                                    }
+                                    catch
+                                    {
+
+                                    }
+
+                                    TranslatorInterface.Close();
+                                    TranslatorInterface.PreparingTranslationUnits();
+
+                                    while (TranslatorInterface.PreparingTrd != null)
+                                    {
+                                        Thread.Sleep(100);
+                                    }
+
+                                    ClearCacheRButton.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        ClearCacheRButton.Content = UILanguageHelper.UICache["ClearCacheButton"];
+                                    }));
+
+                                    ClearCacheTrd = null;
+                                });
+
+                                ClearCacheTrd.Start();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void UserTranslationCache_Click(object sender, RoutedEventArgs e)
         {
+            if (UserTranslationCache.IsChecked == true)
+            {
+                DeFine.GlobalLocalSetting.CanClearUserInputTranslationCache = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.CanClearUserInputTranslationCache = false;
+            }
 
+            CheckCanClearCache(out bool Check);
         }
 
         private void CloudTranslationCache_Click(object sender, RoutedEventArgs e)
         {
+            if (CloudTranslationCache.IsChecked == true)
+            {
+                DeFine.GlobalLocalSetting.CanClearCloudTranslationCache = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.CanClearCloudTranslationCache = false;
+            }
 
+            CheckCanClearCache(out bool Check);
         }
 
         private void ClearCacheViewClose_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            ClearCacheView.Visibility = Visibility.Collapsed;
         }
     }
 }

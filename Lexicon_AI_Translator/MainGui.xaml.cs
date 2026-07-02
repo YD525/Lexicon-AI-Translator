@@ -2711,11 +2711,6 @@ namespace LexTranslator
         }
 
 
-        private void ToStr_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-        }
-
         public void AutoSizeHistoryList()
         {
             if (HistoryLayer.Visibility == Visibility.Visible)

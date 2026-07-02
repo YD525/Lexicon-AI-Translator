@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -578,7 +576,7 @@ namespace LexTranslator
                 }
 
                 var View = new TranslateView();
-                View.SetFile(Path);
+                View.SetFile(this,Path);
                 View.Visibility = Visibility.Collapsed;
 
                 var CTXNew = new FileTabContext

@@ -702,7 +702,7 @@ Fill="White"/>
                                                     </Border>
                                                 </Grid>
                                                 <Border Style="{DynamicResource IDEBorder}" Grid.Row="1">
-                                                    <avalonEdit:TextEditor Style="{DynamicResource IDEStyle}" MouseEnter="ToStr_MouseEnter" Margin="5" Name="ToStr" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontFamily="Consolas" FontSize="16" ShowLineNumbers="True" WordWrap="True" TextOptions.TextFormattingMode="Display" TextChanged="ToStr_TextChanged">
+                                                    <avalonEdit:TextEditor Style="{DynamicResource IDEStyle}"  Margin="5" Name="ToStr" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontFamily="Consolas" FontSize="16" ShowLineNumbers="True" WordWrap="True" TextOptions.TextFormattingMode="Display" TextChanged="ToStr_TextChanged">
 
                                                     </avalonEdit:TextEditor>
                                                 </Border>

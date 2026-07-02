@@ -22,6 +22,10 @@ namespace LexTranslator.SkyrimManagement
     { 
        Null = 0,ESP = 1,PEX = 2,MCM = 3,XML = 5,JSON = 6
     }
+    public enum GameFileState
+    { 
+       Null = 0,Load = 1,Save = 2
+    }
     public class ModFile
     {
         public string Path = "";
@@ -39,6 +43,8 @@ namespace LexTranslator.SkyrimManagement
 
         public Translator P_Translator = null;
         public YDListView TranslateView = null;
+
+        public GameFileState State = GameFileState.Null;
 
         public ModFile(string Path)
         {
@@ -115,16 +121,19 @@ namespace LexTranslator.SkyrimManagement
                     case GameFileType.XML:
                         {
                             XmlReader.Load(this.Path);
+                            State = GameFileState.Load;
                         }
                         break;
                     case GameFileType.JSON:
                         {
                             RamCacheReader.Load(this.Path);
+                            State = GameFileState.Load;
                         }
                         break;
                     case GameFileType.ESP:
                         {
                             EspReader.LoadEsp(this.Path);
+                            State = GameFileState.Load;
                         }
                         break;
                     case GameFileType.PEX:
@@ -137,11 +146,13 @@ namespace LexTranslator.SkyrimManagement
                             }
 
                             PexReader.Core.LoadPex(this.Path).ReadStrings().GetPsc(out this.PSCCode, DeFine.GlobalLocalSetting.ShowAssembly, AutoStyle).AnalysisStrings();
+                            State = GameFileState.Load;
                         }
                         break;
                     case GameFileType.MCM:
                         {
                             MCMReader.LoadMCM(this.Path);
+                            State = GameFileState.Load;
                         }
                         break;
                 }
@@ -210,6 +221,7 @@ namespace LexTranslator.SkyrimManagement
                     case GameFileType.XML:
                         {
                             XmlReader.Save(this.Path);
+                            State = GameFileState.Save;
                         }
                         break;
                     case GameFileType.JSON:
@@ -219,6 +231,7 @@ namespace LexTranslator.SkyrimManagement
                                 ClearBackup();
                                 MessageBox.Show("Build RamCache Error!");
                             }
+                            State = GameFileState.Save;
                         }
                         break;
                     case GameFileType.ESP:
@@ -228,6 +241,7 @@ namespace LexTranslator.SkyrimManagement
                             {
                                 ClearBackup();
                             }
+                            State = GameFileState.Save;
                         }
                         break;
                     case GameFileType.PEX:
@@ -235,6 +249,7 @@ namespace LexTranslator.SkyrimManagement
                             PexReader.Core.GetStrings(out List<PexStringItem> Strings);
 
                             int TranslateCount = 0;
+
                             for (int i = 0; i < Strings.Count; i++)
                             {
                                 var StringItem = Strings[i];
@@ -255,11 +270,13 @@ namespace LexTranslator.SkyrimManagement
                                     MessageBox.Show("Build Script Error!");
                                 }
                             }
+                            State = GameFileState.Save;
                         }
                         break;
                     case GameFileType.MCM:
                         {
                             MCMReader.SaveMCMConfig(this.Path);
+                            State = GameFileState.Save;
                         }
                         break;
                 }
