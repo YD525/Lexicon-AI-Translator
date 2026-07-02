@@ -53,9 +53,9 @@ Fill="White"
 IsHitTestVisible="False"/>
                                         </Canvas>
                                     </Viewbox>
-                                    <Grid Panel.ZIndex="1" Width="5" Height="20" Background="White" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <Grid Visibility="Hidden" Panel.ZIndex="1" Width="5" Height="20" Background="White" VerticalAlignment="Center" HorizontalAlignment="Right">
                                     </Grid>
-                                    <Grid Panel.ZIndex="0" Background="Black" Opacity="0.2">
+                                    <Grid Visibility="Hidden" Panel.ZIndex="0" Background="Black" Opacity="0.2">
                                     </Grid>
                                 </Grid>
                             </Border>
@@ -107,7 +107,7 @@ IsHitTestVisible="False"/>
                         </Grid>
 
                         <Grid Grid.Row="3">
-                            <Border Tag="About" ToolTip="About"  Background="Transparent"  Margin="0" CornerRadius="0" Style="{DynamicResource MenuBlockStyle}" PreviewMouseDown="ShowView">
+                            <Border Tag="InFo" ToolTip="About"  Background="Transparent"  Margin="0" CornerRadius="0" Style="{DynamicResource MenuBlockStyle}" PreviewMouseDown="ShowView">
                                 <Grid>
                                     <Viewbox Panel.ZIndex="2" Width="23" Height="23" Stretch="Uniform">
                                         <Canvas Width="1024" Height="1024">
@@ -129,8 +129,32 @@ IsHitTestVisible="False"/>
                 </Grid>
             </Border>
 
+            <Grid Grid.Column="0" Grid.ColumnSpan="2" Panel.ZIndex="9" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Height="50">
+                <Grid Grid.Row="1" Background="Transparent" MouseLeftButtonDown="WinHead_MouseLeftButtonDown">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="10"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="2" PreviewMouseDown="Min_PreviewMouseDown">
+                        <ContentControl Style="{DynamicResource MinimizeIconStyle}"/>
+                    </Border>
+
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="3" PreviewMouseDown="AutoMax_PreviewMouseDown">
+                        <ContentControl Style="{DynamicResource MaximizeIconStyle}"/>
+                    </Border>
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="4" PreviewMouseDown="Close_PreviewMouseDown">
+                        <ContentControl Style="{DynamicResource CloseIconStyle}" Grid.Column="3"/>
+                    </Border>
+                </Grid>
+            </Grid>
+
             <!--Views-->
-            <Border Grid.Column="1" CornerRadius="0 9 9 0" Background="#FF282828">
+            <Border Grid.Column="1" CornerRadius="0 9 9 0" Background="#FF282828" Panel.ZIndex="8">
 
                 <Border.Triggers>
                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
@@ -180,267 +204,279 @@ IsHitTestVisible="False"/>
                     </EventTrigger>
                 </Border.Triggers>
 
-                <Grid>
-                    <StackPanel Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid Name="Views">
+                    <Grid>
+                        <StackPanel Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <Label Grid.Row="0" FontWeight="ExtraBold" FontSize="50">
-                                    <Label.Foreground>
-                                        <LinearGradientBrush SpreadMethod="Repeat">
-                                            <LinearGradientBrush.Transform>
-                                                <TranslateTransform x:Name="LinearGradientBrushAnim" />
-                                            </LinearGradientBrush.Transform>
-                                            <LinearGradientBrush.GradientStops>
-                                                <GradientStop Offset="0.00" Color="#FFD5A204" />
-                                                <GradientStop Offset="0.20" Color="#FFF2CA06" />
-                                                <GradientStop Offset="0.40" Color="#FFC0B438" />
-                                                <GradientStop Offset="0.60" Color="#FFF2EAC2" />
-                                                <GradientStop Offset="0.80" Color="#FFEDE220" />
-                                                <GradientStop Offset="1.00" Color="#FFFFF4D1" />
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Grid.Row="0" FontWeight="ExtraBold" FontSize="50">
+                                        <Label.Foreground>
+                                            <LinearGradientBrush SpreadMethod="Repeat">
+                                                <LinearGradientBrush.Transform>
+                                                    <TranslateTransform x:Name="LinearGradientBrushAnim" />
+                                                </LinearGradientBrush.Transform>
+                                                <LinearGradientBrush.GradientStops>
+                                                    <GradientStop Offset="0.00" Color="#FFD5A204" />
+                                                    <GradientStop Offset="0.20" Color="#FFF2CA06" />
+                                                    <GradientStop Offset="0.40" Color="#FFC0B438" />
+                                                    <GradientStop Offset="0.60" Color="#FFF2EAC2" />
+                                                    <GradientStop Offset="0.80" Color="#FFEDE220" />
+                                                    <GradientStop Offset="1.00" Color="#FFFFF4D1" />
 
-                                                <GradientStop Offset="2.00" Color="#FFD5A204" />
-                                                <GradientStop Offset="2.20" Color="#FFF2CA06" />
-                                                <GradientStop Offset="2.40" Color="#FFC0B438" />
-                                                <GradientStop Offset="2.60" Color="#FFF2EAC2" />
-                                                <GradientStop Offset="2.80" Color="#FFEDE220" />
-                                                <GradientStop Offset="3.00" Color="#FFFFF4D1" />
-                                            </LinearGradientBrush.GradientStops>
-                                        </LinearGradientBrush>
-                                    </Label.Foreground>
-                                    Lex
-                                </Label>
-
-                                <Label FontWeight="ExtraBold" FontSize="50" Foreground="White">
-                                    Translator
-                                </Label>
-                                <Border CornerRadius="5" Background="#FF4D4D4D" VerticalAlignment="Center" Margin="5">
-                                    <Label Foreground="White" Padding="10 2 10 2" FontWeight="DemiBold" FontSize="15">Lite
+                                                    <GradientStop Offset="2.00" Color="#FFD5A204" />
+                                                    <GradientStop Offset="2.20" Color="#FFF2CA06" />
+                                                    <GradientStop Offset="2.40" Color="#FFC0B438" />
+                                                    <GradientStop Offset="2.60" Color="#FFF2EAC2" />
+                                                    <GradientStop Offset="2.80" Color="#FFEDE220" />
+                                                    <GradientStop Offset="3.00" Color="#FFFFF4D1" />
+                                                </LinearGradientBrush.GradientStops>
+                                            </LinearGradientBrush>
+                                        </Label.Foreground>
+                                        Lex
                                     </Label>
-                                </Border>
+
+                                    <Label FontWeight="ExtraBold" FontSize="50" Foreground="White">
+                                        Translator
+                                    </Label>
+                                    <Border CornerRadius="5" Background="#FF4D4D4D" VerticalAlignment="Center" Margin="5">
+                                        <Label Foreground="White" Padding="10 2 10 2" FontWeight="DemiBold" FontSize="15">Lite
+                                        </Label>
+                                    </Border>
+                                </StackPanel>
+
+                                <TextBlock Foreground="#FFBFBFBF" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Center">
+( <Run Tag="https://www.nexusmods.com/skyrimspecialedition/mods/143056" Text="Nexus Mods" FontWeight="Bold" Cursor="Hand" Foreground="#FFBFBFBF" MouseDown="OpenUrl_MouseDown"/> | <Run  Tag="https://github.com/YD525" Text="GitHub" FontWeight="Bold" Cursor="Hand" Foreground="#FFBFBFBF" MouseDown="OpenUrl_MouseDown"/> )
+                                </TextBlock>
                             </StackPanel>
 
-                            <TextBlock Foreground="#FFBFBFBF" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Center">
-( <Run Tag="https://www.nexusmods.com/skyrimspecialedition/mods/143056" Text="Nexus Mods" FontWeight="Bold" Cursor="Hand" Foreground="#FFBFBFBF" MouseDown="OpenUrl_MouseDown"/> | <Run  Tag="https://github.com/YD525" Text="GitHub" FontWeight="Bold" Cursor="Hand" Foreground="#FFBFBFBF" MouseDown="OpenUrl_MouseDown"/> )
-                            </TextBlock>
-                        </StackPanel>
-
-                        <Grid Name="InFoPages">
-                            <Grid>
-                                <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <Viewbox Panel.ZIndex="2" Width="330" Height="330" Stretch="Uniform">
-                                        <Canvas Width="1000" Height="1000">
-                                            <Path Data="M120,553 L212,553 L212,1000 L120,1000 Z
+                            <Grid Name="InFoPages">
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Viewbox Panel.ZIndex="2" Width="330" Height="330" Stretch="Uniform">
+                                            <Canvas Width="1000" Height="1000">
+                                                <Path Data="M120,553 L212,553 L212,1000 L120,1000 Z
        M267,386 L371,386 L371,1000 L267,1000 Z
        M421,223 L545,223 L545,1000 L421,1000 Z
        M574,445 L598,445 L598,1000 L574,1000 Z"
 Fill="#FFFAE306"
 IsHitTestVisible="False"/>
-                                            <Path Data="M133,642 L523,642 L816,366 L816,458 L523,734 L133,734 Z"
+                                                <Path Data="M133,642 L523,642 L816,366 L816,458 L523,734 L133,734 Z"
 Fill="White"
 IsHitTestVisible="False"/>
-                                            <Path Data="M223,812 L613,812 L906,536 L906,628 L613,904 L223,904 Z"
+                                                <Path Data="M223,812 L613,812 L906,536 L906,628 L613,904 L223,904 Z"
 Fill="White"
 IsHitTestVisible="False"/>
 
-                                            <Ellipse x:Name="LightDot1" Width="30" Height="30" IsHitTestVisible="False" Fill="#FFFAE306" Opacity="0">
-                                                <Ellipse.RenderTransform>
-                                                    <MatrixTransform x:Name="LightDot1Transform"/>
-                                                </Ellipse.RenderTransform>
-                                            </Ellipse>
+                                                <Ellipse x:Name="LightDot1" Width="30" Height="30" IsHitTestVisible="False" Fill="#FFFAE306" Opacity="0">
+                                                    <Ellipse.RenderTransform>
+                                                        <MatrixTransform x:Name="LightDot1Transform"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
 
-                                            <Ellipse x:Name="LightDot2" Width="30" Height="30" IsHitTestVisible="False" Fill="#FFFAE306" Opacity="0">
-                                                <Ellipse.RenderTransform>
-                                                    <MatrixTransform x:Name="LightDot2Transform"/>
-                                                </Ellipse.RenderTransform>
-                                            </Ellipse>
+                                                <Ellipse x:Name="LightDot2" Width="30" Height="30" IsHitTestVisible="False" Fill="#FFFAE306" Opacity="0">
+                                                    <Ellipse.RenderTransform>
+                                                        <MatrixTransform x:Name="LightDot2Transform"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
 
-                                        </Canvas>
-                                    </Viewbox>
-                                    <StackPanel Orientation="Vertical" Margin="20" VerticalAlignment="Bottom">
-                                        <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                                            <Ellipse Width="15" Height="15" Fill="#FFFAE306" VerticalAlignment="Center">
-                                            </Ellipse>
-                                            <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                                                Main Program
-                                            </Label>
-                                            <Label Foreground="White">
-                                                3.8.2.8
-                                            </Label>
+                                            </Canvas>
+                                        </Viewbox>
+                                        <StackPanel Orientation="Vertical" Margin="20" VerticalAlignment="Bottom">
+                                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                                <Ellipse Width="15" Height="15" Fill="#FFFAE306" VerticalAlignment="Center">
+                                                </Ellipse>
+                                                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                                    Main Program
+                                                </Label>
+                                                <Label Foreground="White" Name="LexVer">
+                                                   
+                                                </Label>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                                <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                                </Ellipse>
+                                                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                                    Translation Engine
+                                                </Label>
+                                                <Label Foreground="White" Name="EngineVer">
+                                                   
+                                                </Label>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                                <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                                </Ellipse>
+                                                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                                    PEX Analysis
+                                                </Label>
+                                                <Label Foreground="White" Name="PEXAnalysisVer">
+                                                   
+                                                </Label>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                                <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                                </Ellipse>
+                                                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                                    PEX Reader
+                                                </Label>
+                                                <Label Foreground="White" Name="PEXReaderVer">
+                                                   
+                                                </Label>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                                <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                                </Ellipse>
+                                                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                                    ESP Reader
+                                                </Label>
+                                                <Label Foreground="White" Name="ESPReaderVer">
+                                                    
+                                                </Label>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                                <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
+                                                </Ellipse>
+                                                <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
+                                                    DSD Convert
+                                                </Label>
+                                                <Label Foreground="White" Name="DSDConvertVer">
+                                                    
+                                                </Label>
+                                            </StackPanel>
+
                                         </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                                            <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
-                                            </Ellipse>
-                                            <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                                                Translation Engine
-                                            </Label>
-                                            <Label Foreground="White">
-                                                3.1.6.8
-                                            </Label>
-                                        </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                                            <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
-                                            </Ellipse>
-                                            <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                                                PEX Analysis
-                                            </Label>
-                                            <Label Foreground="White">
-                                                1.0.7 Beta
-                                            </Label>
-                                        </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                                            <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
-                                            </Ellipse>
-                                            <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                                                PEX Reader
-                                            </Label>
-                                            <Label Foreground="White">
-                                                2.0.0
-                                            </Label>
-                                        </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                                            <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
-                                            </Ellipse>
-                                            <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                                                ESP Reader
-                                            </Label>
-                                            <Label Foreground="White">
-                                                1.5.3
-                                            </Label>
-                                        </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                                            <Ellipse Width="15" Height="15" Fill="#FFFFB024" VerticalAlignment="Center">
-                                            </Ellipse>
-                                            <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
-                                                DSD Convert
-                                            </Label>
-                                            <Label Foreground="White">
-                                                1.0
-                                            </Label>
-                                        </StackPanel>
-
                                     </StackPanel>
-                                </StackPanel>
-                            </Grid>
+                                </Grid>
 
-                            <Grid Visibility="Collapsed"  Margin="0 10 0 10">
+                                <Grid Visibility="Collapsed"  Margin="0 10 0 10">
 
-                                <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Height="330" Width="500">
-                                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10 0 10 20">
+                                    <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Height="330" Width="500">
+                                        <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10 0 10 20">
 
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
-                                            <Label Foreground="White" FontSize="15" FontWeight="Bold">Created by YD525</Label>
-                                        </StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
+                                                <Label Foreground="White" FontSize="15" FontWeight="Bold">Created by YD525</Label>
+                                            </StackPanel>
 
-                                        <StackPanel Margin="0 10 0 10" Orientation="Vertical" HorizontalAlignment="Center" Name="Modules">
-                                        </StackPanel>
+                                            <StackPanel Margin="0 10 0 10" Orientation="Vertical" HorizontalAlignment="Center" Name="Modules">
+                                            </StackPanel>
 
-                                        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="14" Margin="0 5 0 0">
+                                            <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="14" Margin="0 5 0 0">
             Interface improvements — 
             <Run Cursor="Hand" Tag="https://github.com/YD525" FontWeight="Bold" Foreground="#FFFAE306" Text="YD525" MouseDown="OpenUrl_MouseDown"/>, 
             <Run Cursor="Hand" Tag="https://github.com/cutleast" FontWeight="Bold" Foreground="#FFFAE306" Text="Cutleast" MouseDown="OpenUrl_MouseDown"/>
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="14" Margin="0 5 0 0">
+                                            <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="14" Margin="0 5 0 0">
             ESP file parsing — YD525, Cutleast, 
             <Run Cursor="Hand" Tag="https://www.nexusmods.com/skyrimspecialedition/mods/111491" FontWeight="Bold" Foreground="#FFFAE306" Text="SSEAT" MouseDown="OpenUrl_MouseDown"/>
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="14" Margin="0 5 0 0">
+                                            <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="14" Margin="0 5 0 0">
 Chinese character processed by — 
 <Run Cursor="Hand" Tag="https://zhconvert.org" FontWeight="Bold" Foreground="#FFFAE306" Text="https://zhconvert.org (繁化姬)" MouseDown="OpenUrl_MouseDown"/>
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="20" FontWeight="DemiBold" Margin="0 25 0 10" HorizontalAlignment="Center" TextAlignment="Center">
+                                            <TextBlock Foreground="White" FontSize="20" FontWeight="DemiBold" Margin="0 25 0 10" HorizontalAlignment="Center" TextAlignment="Center">
             Special Thanks
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://github.com/Noggog" Text="Noggog" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/>, 
             <Run Tag="https://github.com/Mutagen-Modding/Mutagen" Text="Mutagen" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Helped identify and fix issues when reading ESP files, suggested exporting Strings files, and assisted with resolving framework conflicts.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://github.com/cutleast" Text="Cutleast" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/>, 
             <Run Tag="https://github.com/SkyHorizon3" Text="SkyHorizon3" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Helped resolve issues regarding the generation of specific JSON fields within DSD files.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/csavasvdb" Text="csavasvdb" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Recommended "Sequential Text Mode" to improve translation accuracy in conversational mods, and proposed ideas for manual bucketing.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://next.nexusmods.com/profile/walkswithwolf" Text="walkswithwolf" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Provided valuable insights to help me understand the core structure of Skyrim files.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://next.nexusmods.com/profile/Kanie17" Text="Kanie17" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Suggested multi-color highlighting, improved the keyword search, and actively assisted in testing the program.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/Neko41" Text="Neko41" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Helped create the German dictionaries for Lex Translator.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://home.gamer.com.tw/profile/index.php?owner=jacky66666" Text="Jacky66evil" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Suggested separating the translation cache by model name and helped build the Traditional Chinese dictionaries.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/50809501" Text="50809501" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Helped create the Simplified Chinese dictionaries for Lex Translator.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/is365s" Text="is365s" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Reported primary key duplication bugs within XML files and continuously helped test the application.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://home.gamer.com.tw/profile/index.php?owner=salunt" Text="撒倫" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
             Offered numerous meaningful suggestions regarding Traditional Chinese recognition and translation.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
+                                            <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/zhuabaobao123" Text="zhuabaobao123" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
              created the localized Chinese interface for Lex.
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                    </StackPanel>
-                                </ScrollViewer>
+                                        </StackPanel>
+                                    </ScrollViewer>
 
+                                </Grid>
                             </Grid>
-                        </Grid>
 
 
-                        <Border  CornerRadius="5" Margin="0 30 0 0" HorizontalAlignment="Center" Background="#FF6A6A6A">
-                            <StackPanel Orientation="Horizontal" Margin="15 5 15 5">
-                                <Ellipse Style="{DynamicResource PageBtnSelected}" Height="12" Width="12" Tag="0" PreviewMouseDown="ChangeInFoPage">
-                                </Ellipse>
-                                <Ellipse Style="{DynamicResource PageBtn}" Height="12" Width="12" Margin="10 0 0 0" Tag="1" PreviewMouseDown="ChangeInFoPage">
-                                </Ellipse>
-                            </StackPanel>
-                        </Border>
+                            <Border  CornerRadius="5" Margin="0 30 0 0" HorizontalAlignment="Center" Background="#FF6A6A6A">
+                                <StackPanel Orientation="Horizontal" Margin="15 5 15 5">
+                                    <Ellipse Style="{DynamicResource PageBtnSelected}" Height="12" Width="12" Tag="0" PreviewMouseDown="ChangeInFoPage">
+                                    </Ellipse>
+                                    <Ellipse Style="{DynamicResource PageBtn}" Height="12" Width="12" Margin="10 0 0 0" Tag="1" PreviewMouseDown="ChangeInFoPage">
+                                    </Ellipse>
+                                </StackPanel>
+                            </Border>
 
-                    </StackPanel>
-
-
+                        </StackPanel>
 
 
 
+
+
+                    </Grid>
+
+                    <Grid>
+                    </Grid>
+
+                    <Grid>
+                    </Grid>
+
+                    <Grid>
+                    </Grid>
                 </Grid>
 
+                
             </Border>
         </Grid>
     </Border>
