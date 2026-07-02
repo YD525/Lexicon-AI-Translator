@@ -234,6 +234,33 @@ namespace LexTranslator.SkyrimManagement
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern uint C_GetCharacterLinkedVoiceType(IntPtr handle, int index, int linkIndex);
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct C_DialResponseNode
+        {
+            public uint ResponseID;
+            public uint EmotionType;
+            public IntPtr ActorLine;      
+            public IntPtr TrdtDataPtr;    
+            public uint TrdtDataSize;
+            public IntPtr Nam1DataPtr;    
+            public uint Nam1DataSize;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct C_LinkDIAL
+        {
+            public int HasData;
+            public C_DialResponseNode Head;
+            public IntPtr Links;          
+            public uint LinkCount;
+        }
+
+        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        public static extern C_LinkDIAL C_GetDialContext(IntPtr handle, uint infoFormID);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        public static extern void C_FreeDialContext(ref C_LinkDIAL context);
+
         private static string GetCharacterUtf8(IntPtr Instance,int Index,Func<IntPtr,int, byte[], int, int> Getter)
         {
             int Len = Getter(Instance,Index, null, 0);
@@ -508,6 +535,21 @@ namespace LexTranslator.SkyrimManagement
         Male,
         Female
     }
+
+    public class ManagedDialNode
+    {
+        public uint ResponseID { get; set; }
+        public uint EmotionType { get; set; }
+        public string ActorLine { get; set; }
+        public byte[] TrdtData { get; set; }
+        public byte[] Nam1Data { get; set; }
+    }
+
+    public class ManagedDialContext
+    {
+        public ManagedDialNode Head { get; set; }
+        public List<ManagedDialNode> Links { get; set; } = new List<ManagedDialNode>();
+    }
     public class Character
     {
         public string Name { get; set; } = "";
@@ -776,6 +818,85 @@ namespace LexTranslator.SkyrimManagement
             return Encoding.UTF8.GetString(Buffer);
         }
 
+        public ManagedDialContext GetDialContext(uint infoFormID)
+        {
+            EnsureNotDisposed();
+            if (_Instance == IntPtr.Zero) return null;
+
+            EspNative.C_LinkDIAL rawContext = EspNative.C_GetDialContext(_Instance, infoFormID);
+
+            if (rawContext.HasData == 0) return null;
+
+            try
+            {
+                var managedContext = new ManagedDialContext();
+
+                managedContext.Head = ConvertNode(rawContext.Head);
+
+                if (rawContext.LinkCount > 0 && rawContext.Links != IntPtr.Zero)
+                {
+                    int structSize = Marshal.SizeOf(typeof(EspNative.C_DialResponseNode));
+                    for (int i = 0; i < rawContext.LinkCount; i++)
+                    {
+                        IntPtr elementPtr = new IntPtr(rawContext.Links.ToInt64() + (i * structSize));
+
+                        var rawNode = (EspNative.C_DialResponseNode)Marshal.PtrToStructure(elementPtr, typeof(EspNative.C_DialResponseNode));
+
+                        managedContext.Links.Add(ConvertNode(rawNode));
+                    }
+                }
+
+                return managedContext;
+            }
+            finally
+            {
+                EspNative.C_FreeDialContext(ref rawContext);
+            }
+        }
+
+        private ManagedDialNode ConvertNode(EspNative.C_DialResponseNode rawNode)
+        {
+            var node = new ManagedDialNode
+            {
+                ResponseID = rawNode.ResponseID,
+                EmotionType = rawNode.EmotionType,
+                ActorLine = Utf8PtrToString(rawNode.ActorLine)
+            };
+
+            if (rawNode.TrdtDataSize > 0 && rawNode.TrdtDataPtr != IntPtr.Zero)
+            {
+                node.TrdtData = new byte[rawNode.TrdtDataSize];
+                Marshal.Copy(rawNode.TrdtDataPtr, node.TrdtData, 0, (int)rawNode.TrdtDataSize);
+            }
+            else
+            {
+                node.TrdtData = Array.Empty<byte>();
+            }
+
+            if (rawNode.Nam1DataSize > 0 && rawNode.Nam1DataPtr != IntPtr.Zero)
+            {
+                node.Nam1Data = new byte[rawNode.Nam1DataSize];
+                Marshal.Copy(rawNode.Nam1DataPtr, node.Nam1Data, 0, (int)rawNode.Nam1DataSize);
+            }
+            else
+            {
+                node.Nam1Data = Array.Empty<byte>();
+            }
+
+            return node;
+        }
+        private string Utf8PtrToString(IntPtr ptr)
+        {
+            if (ptr == IntPtr.Zero) return string.Empty;
+
+            int len = 0;
+            while (Marshal.ReadByte(ptr, len) != 0) len++;
+            if (len == 0) return string.Empty;
+
+            byte[] buffer = new byte[len];
+            Marshal.Copy(ptr, buffer, 0, len);
+            return Encoding.UTF8.GetString(buffer);
+        }
 
         private bool IsFristSelect = true;
         public void SelectSig(string Sig)

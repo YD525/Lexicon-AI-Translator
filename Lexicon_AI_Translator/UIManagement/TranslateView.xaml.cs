@@ -65,6 +65,22 @@ namespace LexTranslator.UIManagement
                 TransListView.LineSelectedEvent += new YDListView.LineSelected((Key) => {
                     this.Dispatcher.Invoke(new Action(() => {
                         SetSelectFromAndToText(Key);
+                        if (Mod.EspReader.Records.ContainsKey(Key))
+                        {
+                            var InFo = Mod.EspReader.GetDialContext(Mod.EspReader.Records[Key].RealFormID);
+
+                            string RichText = "";
+
+                            RichText += InFo?.Head.ActorLine + "\r\n";
+
+                            if(InFo!=null)
+                            foreach (var Get in InFo.Links)
+                            {
+                                RichText += Get.ActorLine + "\r\n";
+                            }
+
+                            MessageBox.Show(RichText);
+                        }
                     }));
                 });
 
@@ -1080,9 +1096,6 @@ namespace LexTranslator.UIManagement
 
                 for (int i = 0; i < TransListView.RealLines.Count; i++)
                 {
-                    bool IsCloud = false;
-                    TransListView.RealLines[i].SyncData(ref IsCloud);
-
                     if (TransListView.RealLines[i].Key.Contains(SearchAny) ||
                         TransListView.RealLines[i].SourceText.Contains(SearchAny) ||
                         TransListView.RealLines[i].TransText.Contains(SearchAny)
