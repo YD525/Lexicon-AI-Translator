@@ -129,8 +129,9 @@ IsHitTestVisible="False"/>
                 </Grid>
             </Border>
 
-            <Grid Grid.Column="0" Grid.ColumnSpan="2" Panel.ZIndex="9" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Height="50">
-                <Grid Grid.Row="1" Background="Transparent" MouseLeftButtonDown="WinHead_MouseLeftButtonDown">
+
+            <Grid Grid.Column="0" Grid.ColumnSpan="2" Panel.ZIndex="9" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Height="40">
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="10"/>
@@ -154,7 +155,7 @@ IsHitTestVisible="False"/>
             </Grid>
 
             <!--Views-->
-            <Border Grid.Column="1" CornerRadius="0 9 9 0" Background="#FF282828" Panel.ZIndex="8">
+            <Border Grid.Column="1" CornerRadius="0 9 9 0"  Panel.ZIndex="8" Background="#FF282828" MouseDown="WinHead_MouseLeftButtonDown">
 
                 <Border.Triggers>
                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
@@ -470,8 +471,52 @@ Chinese character processed by —
                     </Grid>
 
                     <Grid Visibility="Visible">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
+                        <TabControl x:Name="LexTabs" Grid.Row="0" Style="{DynamicResource LexTabControl}"
+            PreviewMouseDown="LexTabs_PreviewMouseDown"
+            PreviewMouseMove="LexTabs_PreviewMouseMove"
+            PreviewMouseUp="LexTabs_PreviewMouseUp"
+            PreviewMouseLeftButtonDown="LexTabs_PreviewMouseLeftButtonDown"
+            SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
+
+                            <TabItem Header="Chatty NPCs.esp"/>
+                            <TabItem Header="Dawnguard.esp"/>
+                        </TabControl>
+
+                        <Grid Margin="5 0 5 0" Visibility="Hidden">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="80"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBox Background="{x:Null}" BorderThickness="0" IsReadOnly="True" FontWeight="DemiBold"  Grid.Row="0" Foreground="White" FontSize="15" VerticalAlignment="Center">
+                                XXX.esp
+                            </TextBox>
+
+
+
+                        </Grid>
+
+
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible">
+
+                            <Button Grid.Column="2" 
+Style="{StaticResource ModeSwitchButton}" 
+ToolTip="Dark Mode"
+Tag="Dark"
+>
+                                <ContentControl Style="{StaticResource DarkModeIcon}"/>
+                            </Button>
+
+                            <Button Grid.Column="4" 
+Style="{StaticResource ModeSwitchButton}" 
+ToolTip="Light Mode"
+Tag="Light"
+>
+                                <ContentControl Style="{StaticResource LightModeIcon}"/>
+                            </Button>
+                            
                             <Button Style="{StaticResource ActionButtonBase}" Margin="0,0,20,0">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Viewbox Width="24" Height="24" Stretch="Uniform" Margin="0,0,10,0">

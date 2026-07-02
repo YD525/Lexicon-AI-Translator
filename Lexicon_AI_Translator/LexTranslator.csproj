@@ -163,6 +163,7 @@
     <Compile Include="TranslateManagement\Crc32Helper.cs" />
     <Compile Include="TranslateManagement\TranslatorInterface.cs" />
     <Compile Include="UIManagement\ChartHelper.cs" />
+    <Compile Include="UIManagement\DragAdorner.cs" />
     <Compile Include="UIManagement\LineRenderer.cs" />
     <Compile Include="UIManagement\LogHelper.cs" />
     <Compile Include="UIManagement\MutiWinHelper.cs" />

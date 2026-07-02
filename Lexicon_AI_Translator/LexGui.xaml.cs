@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using LexTranslator.FileManagement;
 using LexTranslator.SkyrimManagement;
+using LexTranslator.UIManagement;
 using PexInterface;
 using PhoenixEngine;
 using PhoenixEngine.Common;
@@ -133,6 +136,14 @@ namespace LexTranslator
 
         #region WinControl
 
+        private void UI(Action Action)
+        {
+            if (Dispatcher.CheckAccess())
+                Action();
+            else
+                Dispatcher.BeginInvoke(Action);
+        }
+
         public bool IsLeftMouseDown = false;
 
         private void WinHead_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -236,13 +247,13 @@ namespace LexTranslator
 
         public void ShowView(string Name)
         {
-            this.Dispatcher.Invoke(new Action(() => 
+            UI(() =>
             {
                 int PageIndex = 0;
 
                 switch (Name)
                 {
-                    case "InFo": 
+                    case "InFo":
                         {
                             PageIndex = 0;
                             StartLexGlowLoop();
@@ -252,25 +263,25 @@ namespace LexTranslator
                             PEXReaderVer.Content = PexInterop.Version;
                             ESPReaderVer.Content = EspReader.Version;
                             DSDConvertVer.Content = DSDConverter.Version;
-                        } 
+                        }
                         break;
                     case "DashBoard":
                         {
                             PageIndex = 1;
                             StopLexGlowLoop();
-                        }  
+                        }
                         break;
                     case "TransHub":
                         {
                             PageIndex = 2;
                             StopLexGlowLoop();
-                        }  
+                        }
                         break;
                     case "Settings":
                         {
                             PageIndex = 3;
                             StopLexGlowLoop();
-                        } 
+                        }
                         break;
 
                     default: return;
@@ -295,7 +306,7 @@ namespace LexTranslator
                         }
                     }
                 }
-            }));
+            });
         }
 
         private void SetMenuSelectedState(Border MenuBorder, bool IsSelected)
@@ -323,6 +334,234 @@ namespace LexTranslator
             }
         }
 
+        #endregion
+
+        private void ApplyTheme(string mode)
+        {
+            var resources = this.Resources;
+
+            switch (mode)
+            {
+                case "Dark":
+                    Application.Current.Resources["BackgroundColor"] = "#FF282828";
+                    Application.Current.Resources["ForegroundColor"] = "White";
+                    Application.Current.Resources["BorderColor"] = "#FF555555";
+                    Application.Current.Resources["AccentColor"] = "#FF4D8CF7";
+                    Application.Current.Resources["PanelBackground"] = "#FF3D3D3D";
+                    break;
+
+                case "Light":
+                    Application.Current.Resources["BackgroundColor"] = "#FFF5F5F5";
+                    Application.Current.Resources["ForegroundColor"] = "Black";
+                    Application.Current.Resources["BorderColor"] = "#FFCCCCCC";
+                    Application.Current.Resources["AccentColor"] = "#FF4D8CF7";
+                    Application.Current.Resources["PanelBackground"] = "White";
+                    break;
+            }
+        }
+
+
+        #region FileTabs
+
+        private TabItem _DraggedTab;
+        private Point _DragStartPoint;
+        private Border _DraggedTabBg;
+        private AdornerLayer _AdornerLayer;
+        private DragAdorner _DragAdorner;
+
+        private void LexTabs_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _DragStartPoint = e.GetPosition(null);
+            _DraggedTab = FindAncestor<TabItem>(e.OriginalSource as DependencyObject);
+        }
+
+        private void LexTabs_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_DraggedTab == null || e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            Point CurrentPos = e.GetPosition(null);
+            if (Math.Abs(CurrentPos.X - _DragStartPoint.X) < SystemParameters.MinimumHorizontalDragDistance &&
+                Math.Abs(CurrentPos.Y - _DragStartPoint.Y) < SystemParameters.MinimumVerticalDragDistance)
+                return;
+
+            if (_DraggedTabBg == null)
+            {
+                _DraggedTabBg = FindTabBg(_DraggedTab);
+                AnimateOpacity(_DraggedTab, 0.35, 120);
+                _DraggedTab.Cursor = Cursors.SizeWE;
+
+                _AdornerLayer = AdornerLayer.GetAdornerLayer(LexTabs);
+                _DragAdorner = new DragAdorner(LexTabs, _DraggedTab, e.GetPosition(LexTabs));
+                _AdornerLayer.Add(_DragAdorner);
+            }
+
+            _DragAdorner.UpdatePosition(e.GetPosition(LexTabs));
+
+            TabItem TargetTab = FindAncestor<TabItem>(e.OriginalSource as DependencyObject);
+            if (TargetTab == null || TargetTab == _DraggedTab)
+                return;
+
+            int DraggedIndex = LexTabs.Items.IndexOf(_DraggedTab);
+            int TargetIndex = LexTabs.Items.IndexOf(TargetTab);
+            if (DraggedIndex < 0 || TargetIndex < 0)
+                return;
+
+            LexTabs.Items.RemoveAt(DraggedIndex);
+            LexTabs.Items.Insert(TargetIndex, _DraggedTab);
+            LexTabs.SelectedItem = _DraggedTab;
+
+            FlashSwap(TargetTab);
+        }
+
+        private void LexTabs_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_DraggedTab != null)
+            {
+                AnimateOpacity(_DraggedTab, 1.0, 150);
+                _DraggedTab.ClearValue(FrameworkElement.CursorProperty);
+            }
+
+            if (_AdornerLayer != null && _DragAdorner != null)
+            {
+                _AdornerLayer.Remove(_DragAdorner);
+            }
+
+            _DraggedTab = null;
+            _DraggedTabBg = null;
+            _AdornerLayer = null;
+            _DragAdorner = null;
+        }
+
+        private void AnimateOpacity(TabItem Tab, double ToValue, int DurationMs)
+        {
+            DoubleAnimation Anim = new DoubleAnimation(ToValue, TimeSpan.FromMilliseconds(DurationMs));
+            Tab.BeginAnimation(TabItem.OpacityProperty, Anim);
+        }
+
+        private void FlashSwap(TabItem Tab)
+        {
+            Border TabBg = FindTabBg(Tab);
+            if (TabBg == null)
+                return;
+
+            SolidColorBrush FlashBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2A2A2A"));
+            TabBg.Background = FlashBrush;
+
+            ColorAnimation Anim = new ColorAnimation
+            {
+                From = (Color)ColorConverter.ConvertFromString("#FFFAE306"),
+                To = (Color)ColorConverter.ConvertFromString("#FF2A2A2A"),
+                Duration = TimeSpan.FromMilliseconds(280)
+            };
+            FlashBrush.BeginAnimation(SolidColorBrush.ColorProperty, Anim);
+        }
+
+        private Border FindTabBg(TabItem Tab)
+        {
+            Tab.ApplyTemplate();
+            return Tab.Template?.FindName("TabBg", Tab) as Border;
+        }
+
+        private static T FindAncestor<T>(DependencyObject Current) where T : DependencyObject
+        {
+            while (Current != null && !(Current is T))
+                Current = VisualTreeHelper.GetParent(Current);
+            return Current as T;
+        }
+
+        private void LexTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var TabControl = sender as TabControl;
+            if (TabControl == null)
+                return;
+
+            var SelectedTab = TabControl.SelectedItem as TabItem;
+            if (SelectedTab == null)
+                return;
+
+            string HeaderText = SelectedTab.Header?.ToString();
+        }
+
+        private void LexTabs_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var Dep = e.OriginalSource as DependencyObject;
+
+            if (Dep == null)
+                return;
+
+            var CloseBtn = FindAncestor<Border>(Dep);
+
+            if (CloseBtn != null && CloseBtn.Tag?.ToString() == "LexTabClose")
+            {
+                var TabItem = FindAncestor<TabItem>(Dep);
+
+                if (TabItem != null)
+                {
+                    e.Handled = true;
+
+                    var TabControl = LexTabs;
+
+                    if (TabControl.Items.Contains(TabItem))
+                    {
+                        TabControl.Items.Remove(TabItem);
+                    }
+                }
+            }
+
+        }
+
+        public void AddTab(string Filename, bool Select = true)
+        {
+            UI(() =>
+            {
+                foreach (TabItem Item in LexTabs.Items)
+                {
+                    if (Item.Tag?.ToString() == Filename)
+                    {
+                        if (Select)
+                            LexTabs.SelectedItem = Item;
+
+                        return;
+                    }
+                }
+
+                var Tab = new TabItem
+                {
+                    Header = Filename,
+                    Tag = Filename
+                };
+
+                LexTabs.Items.Add(Tab);
+
+                if (Select)
+                {
+                    LexTabs.SelectedItem = Tab;
+                }
+            });
+        }
+
+        public void RemoveTab(string Filename)
+        {
+            UI(() =>
+            {
+                TabItem Target = null;
+
+                foreach (TabItem item in LexTabs.Items)
+                {
+                    if (item.Tag?.ToString() == Filename)
+                    {
+                        Target = item;
+                        break;
+                    }
+                }
+
+                if (Target != null)
+                {
+                    LexTabs.Items.Remove(Target);
+                }
+            });
+        }
         #endregion
     }
 }

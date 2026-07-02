@@ -1522,4 +1522,175 @@
         </Setter>
     </Style>
 
+
+
+    <Style x:Key="DarkModeIcon" TargetType="ContentControl">
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Viewbox Stretch="Uniform">
+                        <Canvas Width="1024" Height="1024">
+                            <Path Data="M710,133 A411,411 0 1 0 710,891 A329,329 0 0 1 710,133 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                        </Canvas>
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="LightModeIcon" TargetType="ContentControl">
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Viewbox Stretch="Uniform">
+                        <Canvas Width="1024" Height="1024">
+                            <Path Data="M512,170.666667 C427.733333,170.666667 345.6,204.8 284.8,265.6 C224,326.4 189.866667,408.533333 189.866667,492.8 C189.866667,577.066667 224,659.2 284.8,720 C345.6,780.8 427.733333,814.933333 512,814.933333 C596.266667,814.933333 678.4,780.8 739.2,720 C800,659.2 834.133333,577.066667 834.133333,492.8 C834.133333,408.533333 800,326.4 739.2,265.6 C678.4,204.8 596.266667,170.666667 512,170.666667 Z M512,725.333333 C384,725.333333 277.333333,618.666667 277.333333,490.666667 C277.333333,362.666667 384,256 512,256 C640,256 746.666667,362.666667 746.666667,490.666667 C746.666667,618.666667 640,725.333333 512,725.333333 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M512,64 C533.333333,64 554.666667,85.333333 554.666667,106.666667 L554.666667,170.666667 C554.666667,192 533.333333,213.333333 512,213.333333 C490.666667,213.333333 469.333333,192 469.333333,170.666667 L469.333333,106.666667 C469.333333,85.333333 490.666667,64 512,64 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M512,768 C533.333333,768 554.666667,789.333333 554.666667,810.666667 L554.666667,874.666667 C554.666667,896 533.333333,917.333333 512,917.333333 C490.666667,917.333333 469.333333,896 469.333333,874.666667 L469.333333,810.666667 C469.333333,789.333333 490.666667,768 512,768 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M64,490.666667 C64,469.333333 85.333333,448 106.666667,448 L170.666667,448 C192,448 213.333333,469.333333 213.333333,490.666667 C213.333333,512 192,533.333333 170.666667,533.333333 L106.666667,533.333333 C85.333333,533.333333 64,512 64,490.666667 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M810.666667,490.666667 C810.666667,469.333333 832,448 853.333333,448 L917.333333,448 C938.666667,448 960,469.333333 960,490.666667 C960,512 938.666667,533.333333 917.333333,533.333333 L853.333333,533.333333 C832,533.333333 810.666667,512 810.666667,490.666667 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M171.733333,150.4 C188.8,133.333333 214.4,133.333333 231.466667,150.4 L277.333333,196.266667 C294.4,213.333333 294.4,238.933333 277.333333,256 C260.266667,273.066667 234.666667,273.066667 217.6,256 L171.733333,209.6 C154.666667,192.533333 154.666667,167.466667 171.733333,150.4 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M792.533333,150.4 C809.6,167.466667 809.6,193.066667 792.533333,210.133333 L746.666667,256 C729.6,273.066667 704,273.066667 686.933333,256 C669.866667,238.933333 669.866667,213.333333 686.933333,196.266667 L732.8,150.4 C749.866667,133.333333 775.466667,133.333333 792.533333,150.4 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M171.733333,785.066667 C154.666667,768 154.666667,742.4 171.733333,725.333333 L217.6,679.466667 C234.666667,662.4 260.266667,662.4 277.333333,679.466667 C294.4,696.533333 294.4,722.133333 277.333333,739.2 L231.466667,785.066667 C214.4,802.133333 188.8,802.133333 171.733333,785.066667 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                            <Path Data="M792.533333,785.066667 C775.466667,802.133333 749.866667,802.133333 732.8,785.066667 L686.933333,739.2 C669.866667,722.133333 669.866667,696.533333 686.933333,679.466667 C704,662.4 729.6,662.4 746.666667,679.466667 L792.533333,725.333333 C809.6,742.4 809.6,768 792.533333,785.066667 Z"
+                              Fill="White" IsHitTestVisible="False"/>
+                        </Canvas>
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style x:Key="ModeSwitchButton" TargetType="Button">
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="36"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#FF555555"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="6">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#FF4D8CF7"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#FF4D8CF7"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#FF3A7BD5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LexTabItem" TargetType="TabItem">
+        <Setter Property="Padding" Value="12 6 8 6"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid Name="Root" Margin="0 0 2 0">
+                        <Border Name="TabBg" CornerRadius="8 8 0 0" Background="#FF2A2A2A">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" MinWidth="60"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Ellipse Name="Dot" Grid.Column="0" Width="6" Height="6" Fill="#FF9A9A9A" VerticalAlignment="Center" Margin="0 0 8 0"/>
+
+                                <TextBlock Name="Label" Grid.Column="1" Text="{TemplateBinding Header}" Foreground="#FFCFCFCF" FontSize="12" FontWeight="Medium" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+
+                                <Border Name="CloseBtn" Cursor="Hand" Tag="LexTabClose" Grid.Column="2" Width="16" Height="16" CornerRadius="4" Margin="8 0 0 0" Background="Transparent" Visibility="Collapsed">
+                                    <Viewbox Width="9" Height="9" Stretch="Uniform">
+                                        <Canvas Width="12" Height="12">
+                                            <Path Data="M2,2 L10,10 M10,2 L2,10" Stroke="#FF9A9A9A" StrokeThickness="1.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Name="ActiveMark" Height="2" VerticalAlignment="Bottom" Margin="8 0 8 0" CornerRadius="2" Background="#FFFAE306" Visibility="Collapsed"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="TabBg" Property="Background" Value="#FF333333"/>
+                            <Setter TargetName="Label" Property="Foreground" Value="White"/>
+                            <Setter TargetName="Dot" Property="Fill" Value="#FFFAE306"/>
+                            <Setter TargetName="ActiveMark" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Root" Property="Opacity" Value="1"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="TabBg" Property="Background" Value="#FF242424"/>
+                            <Setter TargetName="Label" Property="Foreground" Value="#FFB5B5B5"/>
+                            <Setter TargetName="Dot" Property="Fill" Value="#FF7A7A7A"/>
+                            <Setter TargetName="Root" Property="Opacity" Value="0.9"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="CloseBtn" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Root" Property="Opacity" Value="0.9"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsSelected" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Root" Property="Opacity" Value="1"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LexTabControl" TargetType="TabControl">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource LexTabItem}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Top" Background="Transparent" Padding="8 4 8 0" VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TabPanel Name="HeaderPanel" IsItemsHost="True" VerticalAlignment="Center"/>
+                                <Border Name="AddTabBtn" Cursor="Hand" Tag="LexTabAdd" Width="22" Height="22" Margin="4 0 0 0" CornerRadius="5" Background="Transparent" VerticalAlignment="Center">
+                                    <Viewbox Width="10" Height="10" Stretch="Uniform">
+                                        <Canvas Width="12" Height="12">
+                                            <Path Data="M6,1 L6,11 M1,6 L11,6" Stroke="#FF9A9A9A" StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border>
+                            <ContentPresenter Name="PART_SelectedContentHost" ContentSource="SelectedContent"/>
+                        </Border>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
