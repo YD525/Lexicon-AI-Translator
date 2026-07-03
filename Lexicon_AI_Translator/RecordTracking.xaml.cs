@@ -9,13 +9,6 @@ using LexTranslator.SkyrimManagement;
 
 namespace LexTranslator
 {
-    public class DialogueRecordItem
-    {
-        public string Text;
-        public string Emotion;
-        public string ResponseId;
-    }
-
     public partial class RecordTracking : Window
     {
         private Window _Owner;
@@ -181,7 +174,7 @@ namespace LexTranslator
             }
         }
 
-        public void LoadDialogueRecords(List<DialogueRecordItem> Records)
+        public void LoadDialogueRecords(List<ManagedDialNode> Records)
         {
             DialogueListPanel.Children.Clear();
 
@@ -258,7 +251,7 @@ namespace LexTranslator
             return CardBorder;
         }
 
-        private Border BuildDialogueCard(DialogueRecordItem Item)
+        private Border BuildDialogueCard(ManagedDialNode Item)
         {
             Border CardBorder = new Border();
             CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
@@ -270,7 +263,7 @@ namespace LexTranslator
             ContentPanel.Orientation = Orientation.Vertical;
 
             TextBlock TextLine = new TextBlock();
-            TextLine.Text = Item.Text;
+            TextLine.Text = Item.ActorLine;
             TextLine.Foreground = Brushes.White;
             TextLine.FontSize = 13;
             TextLine.TextWrapping = TextWrapping.Wrap;
@@ -281,14 +274,24 @@ namespace LexTranslator
             InfoLine.Margin = new Thickness(0, 4, 0, 0);
 
             TextBlock EmotionText = new TextBlock();
-            EmotionText.Text = Item.Emotion;
+            EmotionText.Text = EmotionTypeHelper.FromRaw(Item.EmotionType).ToString();
             EmotionText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
             EmotionText.FontSize = 12;
             EmotionText.FontWeight = FontWeights.DemiBold;
             InfoLine.Children.Add(EmotionText);
 
+            int ResponseId = 0;
+
+            if (Item.TrdtData != null)
+            {
+                if (Item.TrdtData.Length > 16)
+                {
+                    ResponseId = Item.TrdtData[16];//ResponseNumber offset 0x10 1byte
+                }
+            }
+
             TextBlock ResponseIdText = new TextBlock();
-            ResponseIdText.Text = "  #" + Item.ResponseId;
+            ResponseIdText.Text = "  #" + ResponseId;
             ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
             ResponseIdText.FontSize = 12;
             InfoLine.Children.Add(ResponseIdText);

@@ -22,26 +22,56 @@ namespace LexTranslator.UIManagement
                         if (TrackingWin == null)
                         {
                             TrackingWin = new RecordTracking(CurrentWin);
-                            
+
                         }
                         else
                         {
                             TrackingWin.Owner = CurrentWin;
                         }
 
+                        RecordItem GetRecord = null;
+
                         if (Mod.EspReader.Records.ContainsKey(SelectKey))
                         {
-                            var GetRecord = Mod.EspReader.Records[SelectKey];
+                            GetRecord = Mod.EspReader.Records[SelectKey];
+                        }
 
+                        if (GetRecord != null)
+                        {
                             //Find NPC
                             if (Mod.EspReader.GameCharacters.ContainsKey(SelectKey))
                             {
-                                if (Mod.EspReader.GameCharacters[SelectKey].Count>1)
-                                TrackingWin.LoadNpcRecord(GetRecord,
-                                    Mod.EspReader.GameCharacters[SelectKey][0].Name,
-                                       Mod.EspReader.GameCharacters[SelectKey][0].Gender.ToString());
+                                if (Mod.EspReader.GameCharacters[SelectKey].Count > 1)
+                                    TrackingWin.LoadNpcRecord(GetRecord,
+                                        Mod.EspReader.GameCharacters[SelectKey][0].Name,
+                                           Mod.EspReader.GameCharacters[SelectKey][0].Gender.ToString());
+                            }
+                            else
+                            {
+                                TrackingWin.NpcListPanel.Children.Clear();
+                            }
+
+                            //SearchDialogue
+                            var DialogueLink = Mod.EspReader.GetDialContext(Mod.EspReader.Records[SelectKey].RealFormID);
+
+                            if (DialogueLink != null)
+                            {
+                                List<DialogueRecordItem> Dialogues = new List<DialogueRecordItem>();
+
+                                if (DialogueLink.Head != null)
+                                {
+                                    TrackingWin.LoadDialogueRecords(DialogueLink.Head);
+                                }
+
+                               
+                             
+                            }
+                            else
+                            {
+                                TrackingWin.DialogueListPanel.Children.Clear();
                             }
                         }
+                       
                     }
                 break;
                 case GameFileType.PEX:
