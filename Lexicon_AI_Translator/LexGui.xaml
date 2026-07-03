@@ -21,7 +21,7 @@
         </Storyboard>
 
     </Window.Resources>
-    <Border Background="Transparent"  CornerRadius="9">
+    <Border Background="Transparent" CornerRadius="9">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>

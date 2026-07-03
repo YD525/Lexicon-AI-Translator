@@ -63,8 +63,13 @@ namespace LexTranslator.UIManagement
                 TransListView.Clear();
 
                 TransListView.LineSelectedEvent += new YDListView.LineSelected((Key) => {
-                    this.Dispatcher.Invoke(new Action(() => {
+                    this.Dispatcher.Invoke(new Action(() => 
+                    {
                         SetSelectFromAndToText(Key);
+
+                        //Auto Show View
+
+
                         if (Mod.EspReader.Records.ContainsKey(Key))
                         {
                             var InFo = Mod.EspReader.GetDialContext(Mod.EspReader.Records[Key].RealFormID);

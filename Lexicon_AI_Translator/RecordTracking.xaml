@@ -5,9 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
-        Title="RecordTracking" Height="450" Width="800" Style="{DynamicResource DefWin}">
-    
+        Title="RecordTracking" Height="800" Width="300"
+        Style="{DynamicResource DefWin}"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual">
+
     <Border Background="Transparent" CornerRadius="9">
-        
+        <Border Background="#FF282828" CornerRadius="9">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <!--NPC-->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 6">
+                    <Border Width="4" Height="14" Background="#FFFAE306" CornerRadius="2" VerticalAlignment="Center"/>
+                    <Label Content="Related NPCs" Foreground="White" FontWeight="Bold" FontSize="13" Margin="6 0 0 0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <ScrollViewer Grid.Row="1" Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 10">
+                    <StackPanel Name="NpcListPanel" Orientation="Vertical"/>
+                </ScrollViewer>
+
+                <!--Related Text-->
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 0 0 6">
+                    <Border Width="4" Height="14" Background="#FFFAE306" CornerRadius="2" VerticalAlignment="Center"/>
+                    <Label Content="Related Text Entries" Foreground="White" FontWeight="Bold" FontSize="13" Margin="6 0 0 0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <ScrollViewer Grid.Row="3" Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 10">
+                    <StackPanel Name="RelatedTextListPanel" Orientation="Vertical"/>
+                </ScrollViewer>
+
+                <!--Dialogue Scene-->
+                <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0 0 0 6">
+                    <Border Width="4" Height="14" Background="#FFFAE306" CornerRadius="2" VerticalAlignment="Center"/>
+                    <Label Content="Related Dialogue Scenes" Foreground="White" FontWeight="Bold" FontSize="13" Margin="6 0 0 0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <ScrollViewer Grid.Row="5" Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Name="DialogueListPanel" Orientation="Vertical"/>
+                </ScrollViewer>
+
+            </Grid>
+        </Border>
     </Border>
 </Window>

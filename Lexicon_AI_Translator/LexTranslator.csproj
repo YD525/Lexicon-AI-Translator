@@ -140,6 +140,9 @@
     <Compile Include="NPCFinder.xaml.cs">
       <DependentUpon>NPCFinder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RecordTracking.xaml.cs">
+      <DependentUpon>RecordTracking.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ReplaceWin.xaml.cs">
       <DependentUpon>ReplaceWin.xaml</DependentUpon>
     </Compile>
@@ -240,6 +243,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="NPCFinder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RecordTracking.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
