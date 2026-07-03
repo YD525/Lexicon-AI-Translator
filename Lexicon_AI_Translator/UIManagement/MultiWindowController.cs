@@ -48,33 +48,23 @@ namespace LexTranslator.UIManagement
                                     TrackingWin.NpcListPanel.Children.Clear();
                                 }
 
-                                //SearchDialogue
-                                //var DialogueLink = Mod.EspReader.GetDialContext(Mod.EspReader.Records[SelectKey].ParentIndex, Mod.EspReader.Records[SelectKey].SubIndex);
+                                var DialogueLink = Mod.EspReader.GetDialContext(0,Mod.EspReader.Records[SelectKey].ParentIndex, Mod.EspReader.Records[SelectKey].SubIndex);
 
-                                //if (DialogueLink != null)
-                                //{
-                                //    List<ManagedDialNode> Dialogues = new List<ManagedDialNode>();
-
-                                //    if (DialogueLink.Count != null)
-                                //    {
-                                //        Dialogues.AddRange(DialogueLink.Links);
-                                //    }
-
-                                //    bool Find = DialogueLink.Links.Any(x => x.ActorLine == GetRecord.String && x.ResponseID == GetRecord.RealFormID);
-
-                                //    if (Find)
-                                //    {
-                                //        TrackingWin.LoadDialogueRecords(Dialogues);
-                                //    }
-                                //    else
-                                //    {
-                                //        TrackingWin.DialogueListPanel.Children.Clear();
-                                //    }
-                                //}
-                                //else
-                                //{
-                                //    TrackingWin.DialogueListPanel.Children.Clear();
-                                //}
+                                if (DialogueLink != null)
+                                {
+                                    if (DialogueLink.Links != null)
+                                    {
+                                        TrackingWin.LoadDialogueRecords(Mod,DialogueLink.Links);
+                                    }
+                                    else
+                                    {
+                                        TrackingWin.DialogueListPanel.Children.Clear();
+                                    }
+                                }
+                                else
+                                {
+                                    TrackingWin.DialogueListPanel.Children.Clear();
+                                }
 
                                 //MatchRelated
                                 List<RecordItem> Records = new List<RecordItem>();

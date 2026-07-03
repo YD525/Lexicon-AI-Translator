@@ -195,7 +195,7 @@ namespace LexTranslator
             }
         }
 
-        public void LoadDialogueRecords(List<ManagedDialNode> Records)
+        public void LoadDialogueRecords(ModFile ModRef, List<ManagedDialNode> Records)
         {
             DialogueListPanel.Children.Clear();
 
@@ -206,7 +206,7 @@ namespace LexTranslator
 
             for (int i = 0; i < Records.Count; i++)
             {
-                DialogueListPanel.Children.Add(BuildDialogueCard(Records[i]));
+                DialogueListPanel.Children.Add(BuildDialogueCard(ModRef, Records[i]));
             }
         }
 
@@ -272,7 +272,7 @@ namespace LexTranslator
             return CardBorder;
         }
 
-        private Border BuildDialogueCard(ManagedDialNode Item)
+        private Border BuildDialogueCard(ModFile ModRef, ManagedDialNode Item)
         {
             Border CardBorder = new Border();
             CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
@@ -287,6 +287,7 @@ namespace LexTranslator
             TextLine.Foreground = Brushes.White;
             TextLine.FontSize = 13;
             TextLine.TextWrapping = TextWrapping.Wrap;
+            TextLine.Text = ModRef.EspReader.GetRecordItemByOffsets(0, Item.RecordOffset, Item.SubOffset).String;
             ContentPanel.Children.Add(TextLine);
 
             StackPanel InfoLine = new StackPanel();
@@ -299,19 +300,10 @@ namespace LexTranslator
             EmotionText.FontSize = 12;
             EmotionText.FontWeight = FontWeights.DemiBold;
             InfoLine.Children.Add(EmotionText);
-
-            int ResponseId = 0;
-
-            //if (Item.TrdtData != null)
-            //{
-            //    if (Item.TrdtData.Length > 16)
-            //    {
-            //        ResponseId = Item.TrdtData[16];//ResponseNumber offset 0x10 1byte
-            //    }
-            //}
+           
 
             TextBlock ResponseIdText = new TextBlock();
-            ResponseIdText.Text = "  #" + ResponseId;
+            ResponseIdText.Text = "  #" + Item.ResponseID;
             ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
             ResponseIdText.FontSize = 12;
             InfoLine.Children.Add(ResponseIdText);

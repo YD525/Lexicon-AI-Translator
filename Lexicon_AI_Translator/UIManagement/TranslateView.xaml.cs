@@ -66,17 +66,8 @@ namespace LexTranslator.UIManagement
                     this.Dispatcher.Invoke(new Action(() => 
                     {
                         SetSelectFromAndToText(Key);
-
                         //Auto Show View
-
                         MultiWindowController.AttachMod(Key,Parent,Mod);
-
-                        //Test 👇
-                        if (Mod.EspReader.Records.ContainsKey(Key))
-                        {
-                            var InFo = Mod.EspReader.GetDialContext(0, Mod.EspReader.Records[Key].ParentIndex, Mod.EspReader.Records[Key].SubIndex);
-
-                        }
                     }));
                 });
 

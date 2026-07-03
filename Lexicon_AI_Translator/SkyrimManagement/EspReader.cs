@@ -1046,6 +1046,13 @@ namespace LexTranslator.SkyrimManagement
             }
         }
 
+        public RecordItem GetRecordItemByOffsets(int IsCell, int ParentIndex, int SubIndex)
+        {
+            return Records.Values.FirstOrDefault(Record =>
+                Record.ParentIndex == ParentIndex && Record.SubIndex == SubIndex &&
+                (IsCell == 1 ? Record.ParentSig == "CELL" : Record.ParentSig != "CELL"));
+        }
+
         public StringsFileReader FromStringsFile = new StringsFileReader();
         public StringsFileReader ToStringsFile = new StringsFileReader();
         public void LoadStringsFile()
