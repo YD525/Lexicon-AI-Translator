@@ -18,7 +18,7 @@ namespace LexTranslator.UIManagement
                             if (TrackingWin == null)
                             {
                                 TrackingWin = new RecordTracking(CurrentWin);
-
+                                TrackingWin.Show();
                             }
                             else
                             {
@@ -84,7 +84,7 @@ namespace LexTranslator.UIManagement
                                     }
                                 }
 
-                                if (Records.Count > 0)
+                                if (Records.Count > 1)
                                 {
                                     TrackingWin.LoadRelatedTextRecords(Records);
                                 }

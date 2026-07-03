@@ -8,7 +8,7 @@
         Title="RecordTracking" Height="800" Width="300"
         Style="{DynamicResource DefWin}"
         ShowInTaskbar="False"
-        WindowStartupLocation="Manual">
+        WindowStartupLocation="Manual" Closed="Window_Closed">
 
     <Border Background="Transparent" CornerRadius="9">
         <Border Background="#FF282828" CornerRadius="9">

@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using LexTranslator.SkyrimManagement;
+using LexTranslator.UIManagement;
 
 namespace LexTranslator
 {
@@ -109,9 +110,10 @@ namespace LexTranslator
                 ExpandSection(ContentHost, ChevronRotate);
             }
         }
-
         private void CollapseSection(Border ContentHost, RotateTransform ChevronRotate)
         {
+            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
+
             double StartHeight = double.IsNaN(ContentHost.Height) ? ContentHost.ActualHeight : ContentHost.Height;
 
             DoubleAnimation HeightAnimation = new DoubleAnimation();
@@ -119,6 +121,11 @@ namespace LexTranslator
             HeightAnimation.To = 0;
             HeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
             HeightAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
+            HeightAnimation.Completed += delegate
+            {
+                ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
+                ContentHost.Height = 0;
+            };
 
             DoubleAnimation RotateAnimation = new DoubleAnimation();
             RotateAnimation.To = 180;
@@ -131,16 +138,30 @@ namespace LexTranslator
 
         private void ExpandSection(Border ContentHost, RotateTransform ChevronRotate)
         {
+            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
+
+            double CollapsedHeight = ContentHost.Height;
+            if (double.IsNaN(CollapsedHeight))
+            {
+                CollapsedHeight = 0;
+            }
+
+            ContentHost.Height = double.NaN;
             double AvailableWidth = ContentHost.ActualWidth > 0 ? ContentHost.ActualWidth : double.PositiveInfinity;
             ContentHost.Measure(new Size(AvailableWidth, double.PositiveInfinity));
             double TargetHeight = ContentHost.DesiredSize.Height;
+            ContentHost.Height = CollapsedHeight;
 
             DoubleAnimation HeightAnimation = new DoubleAnimation();
-            HeightAnimation.From = 0;
+            HeightAnimation.From = CollapsedHeight;
             HeightAnimation.To = TargetHeight;
             HeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
             HeightAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
-            HeightAnimation.Completed += delegate { ContentHost.Height = double.NaN; };
+            HeightAnimation.Completed += delegate
+            {
+                ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
+                ContentHost.Height = double.NaN;
+            };
 
             DoubleAnimation RotateAnimation = new DoubleAnimation();
             RotateAnimation.To = 0;
@@ -300,6 +321,11 @@ namespace LexTranslator
             CardBorder.Child = ContentPanel;
 
             return CardBorder;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            MultiWindowController.TrackingWin = null;
         }
     }
 }
