@@ -69,7 +69,9 @@ namespace LexTranslator.UIManagement
 
                         //Auto Show View
 
+                        MultiWindowController.AttachMod(Key,Parent,Mod);
 
+                        //Test 👇
                         if (Mod.EspReader.Records.ContainsKey(Key))
                         {
                             var InFo = Mod.EspReader.GetDialContext(Mod.EspReader.Records[Key].RealFormID);

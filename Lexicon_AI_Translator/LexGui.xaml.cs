@@ -141,7 +141,7 @@ namespace LexTranslator
 
         #region WinControl
 
-        private void UI(Action Action)
+        public void UI(Action Action)
         {
             if (Dispatcher.CheckAccess())
                 Action();
