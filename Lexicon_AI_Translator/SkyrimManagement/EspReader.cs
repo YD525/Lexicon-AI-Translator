@@ -574,6 +574,51 @@ namespace LexTranslator.SkyrimManagement
     }
 
 
+    public enum EmotionType : uint
+    {
+        Neutral = 0,
+        Anger = 1,
+        Disgust = 2,
+        Fear = 3,
+        Sad = 4,
+        Happy = 5,
+        Surprise = 6,
+        Puzzled = 7,
+        Unknown = 255
+    }
+
+    public static class EmotionTypeHelper
+    {
+        public static EmotionType FromRaw(uint RawValue)
+        {
+            if (RawValue <= (uint)EmotionType.Puzzled)
+                return (EmotionType)RawValue;
+
+            return EmotionType.Unknown;
+        }
+
+        public static string ToDisplayName(EmotionType Emotion)
+        {
+            switch (Emotion)
+            {
+                case EmotionType.Neutral: return "Neutral";
+                case EmotionType.Anger: return "Anger";
+                case EmotionType.Disgust: return "Disgust";
+                case EmotionType.Fear: return "Fear";
+                case EmotionType.Sad: return "Sad";
+                case EmotionType.Happy: return "Happy";
+                case EmotionType.Surprise: return "Surprise";
+                case EmotionType.Puzzled: return "Puzzled";
+                default: return "Unknown";
+            }
+        }
+
+        public static string ToDisplayName(uint RawValue)
+        {
+            return ToDisplayName(FromRaw(RawValue));
+        }
+    }
+
     // ============================================================
     //  EspReader  –  managed wrapper, one instance per object
     //  Use pattern identical to PexReader.

@@ -69,17 +69,40 @@ namespace LexTranslator.UIManagement
                         {
                             var InFo = Mod.EspReader.GetDialContext(Mod.EspReader.Records[Key].RealFormID);
 
-                            string RichText = "";
-
-                            RichText += InFo?.Head.ActorLine + "\r\n";
-
-                            if(InFo!=null)
-                            foreach (var Get in InFo.Links)
+                            if (InFo != null)
                             {
-                                RichText += Get.ActorLine + "\r\n";
-                            }
+                                string RichText = "";
 
-                            MessageBox.Show(RichText);
+                             
+
+                               
+
+                                RichText += InFo?.Head.ActorLine + "\r\n";
+
+                                if (InFo.Head.ResponseID.Equals(Mod.EspReader.Records[Key].RealFormID))
+                                {
+                                    var Emotion = EmotionTypeHelper.FromRaw(InFo.Head.EmotionType);
+                                }
+
+                                if (InFo.Links != null)
+                                    foreach (var Get in InFo.Links)
+                                    {
+                                        if (Get.ResponseID.Equals(Mod.EspReader.Records[Key].RealFormID))
+                                        {
+                                            var Emotion = EmotionTypeHelper.FromRaw(Get.EmotionType);
+                                        }
+                                        RichText += Get.ActorLine + "\r\n";
+                                        if (Get.Nam1Data != null)
+                                        {
+                                            if (Get.Nam1Data.Length > 0)
+                                            {
+                                                var LLLLL = Encoding.UTF8.GetString(Get.Nam1Data);
+                                            }
+                                        }
+                                    }
+
+                                //MessageBox.Show(RichText);
+                            }
                         }
                     }));
                 });
