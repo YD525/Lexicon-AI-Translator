@@ -7,18 +7,6 @@ using LexTranslator.SkyrimManagement;
 
 namespace LexTranslator
 {
-    public class NpcRecordItem
-    {
-        public string Text;
-        public string NpcName;
-        public string Gender;
-    }
-
-    public class SameTextRecordItem
-    {
-        public string Text;
-    }
-
     public class DialogueRecordItem
     {
         public string Text;
@@ -28,22 +16,22 @@ namespace LexTranslator
 
     public partial class RecordTracking : Window
     {
-        private Window _OwnerMainWindow;
+        private Window _Owner;
 
-        public RecordTracking(Window OwnerMainWindow)
+        public RecordTracking(Window Owner)
         {
             InitializeComponent();
 
-            _OwnerMainWindow = OwnerMainWindow;
+            _Owner = Owner;
 
-            this.Owner = _OwnerMainWindow;
+            this.Owner = _Owner;
             this.Loaded += RecordTracking_Loaded;
             this.Closed += RecordTracking_Closed;
 
-            _OwnerMainWindow.LocationChanged += OwnerMainWindow_LocationChanged;
-            _OwnerMainWindow.SizeChanged += OwnerMainWindow_SizeChanged;
-            _OwnerMainWindow.StateChanged += OwnerMainWindow_StateChanged;
-            _OwnerMainWindow.Closed += OwnerMainWindow_Closed;
+            _Owner.LocationChanged += OwnerMainWindow_LocationChanged;
+            _Owner.SizeChanged += OwnerMainWindow_SizeChanged;
+            _Owner.StateChanged += OwnerMainWindow_StateChanged;
+            _Owner.Closed += OwnerMainWindow_Closed;
         }
 
         private void RecordTracking_Loaded(object Sender, RoutedEventArgs E)
@@ -63,7 +51,7 @@ namespace LexTranslator
 
         private void OwnerMainWindow_StateChanged(object Sender, EventArgs E)
         {
-            if (_OwnerMainWindow.WindowState == WindowState.Minimized)
+            if (_Owner.WindowState == WindowState.Minimized)
             {
                 this.Hide();
             }
@@ -81,19 +69,19 @@ namespace LexTranslator
 
         private void RecordTracking_Closed(object Sender, EventArgs E)
         {
-            _OwnerMainWindow.LocationChanged -= OwnerMainWindow_LocationChanged;
-            _OwnerMainWindow.SizeChanged -= OwnerMainWindow_SizeChanged;
-            _OwnerMainWindow.StateChanged -= OwnerMainWindow_StateChanged;
-            _OwnerMainWindow.Closed -= OwnerMainWindow_Closed;
+            _Owner.LocationChanged -= OwnerMainWindow_LocationChanged;
+            _Owner.SizeChanged -= OwnerMainWindow_SizeChanged;
+            _Owner.StateChanged -= OwnerMainWindow_StateChanged;
+            _Owner.Closed -= OwnerMainWindow_Closed;
         }
 
         private void UpdateFollowPosition()
         {
             double Gap = 8;
 
-            this.Left = _OwnerMainWindow.Left + _OwnerMainWindow.ActualWidth + Gap;
-            this.Top = _OwnerMainWindow.Top;
-            this.Height = _OwnerMainWindow.ActualHeight;
+            this.Left = _Owner.Left + _Owner.ActualWidth + Gap;
+            this.Top = _Owner.Top;
+            this.Height = _Owner.ActualHeight;
         }
 
         //Data loading
