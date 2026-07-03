@@ -12,24 +12,26 @@ namespace LexTranslator
     /// </summary>
     public partial class NPCFinder : Window
     {
-        public NPCFinder()
+        public ModFile ModRef = null;
+        public NPCFinder(ModFile ModRef)
         {
+            this.ModRef = ModRef;
             InitializeComponent();
         }
 
         public string SearchName = "";
-        public EspReader EspInstance = null;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < DeFine.WorkingWin.TransViewList.RealLines.Count; i++)
+            for (int i = 0; i < ModRef.TranslateView.RealLines.Count; i++)
             {
-                var Key = DeFine.WorkingWin.TransViewList.RealLines[i].Key;
-                if (EspInstance.GameCharacters.ContainsKey(Key))
+                var Key = ModRef.TranslateView.RealLines[i].Key;
+
+                if (ModRef.EspReader.GameCharacters.ContainsKey(Key))
                 {
-                    if (EspInstance.GameCharacters[Key][0].Name.Equals(SearchName))
+                    if (ModRef.EspReader.GameCharacters[Key][0].Name.Equals(SearchName))
                     {
-                        DeFine.WorkingWin.TransViewList.Goto(Key);
+                        ModRef.TranslateView.Goto(Key);
                         return;
                     }
                 }
@@ -57,7 +59,7 @@ namespace LexTranslator
         {
             NpcNames.Items.Clear();
 
-            foreach (var GetNpc in EspInstance.GameCharacters.ToList())
+            foreach (var GetNpc in ModRef.EspReader.GameCharacters.ToList())
             {
                 var Name = GetNpc.Value[0].Name;
 

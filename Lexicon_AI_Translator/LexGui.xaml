@@ -29,7 +29,7 @@
             </Grid.ColumnDefinitions>
 
             <!--Nav-->
-            <Border Grid.Column="0" Background="#FF4D4D4D" CornerRadius="9 0 0 9">
+            <Border Grid.Column="0" Background="#FF3D3D3D" CornerRadius="9 0 0 9">
                 <Grid Name="MainNav">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>

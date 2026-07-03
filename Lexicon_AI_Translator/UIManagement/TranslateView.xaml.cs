@@ -73,10 +73,6 @@ namespace LexTranslator.UIManagement
                             {
                                 string RichText = "";
 
-                             
-
-                               
-
                                 RichText += InFo?.Head.ActorLine + "\r\n";
 
                                 if (InFo.Head.ResponseID.Equals(Mod.EspReader.Records[Key].RealFormID))
@@ -87,10 +83,6 @@ namespace LexTranslator.UIManagement
                                 if (InFo.Links != null)
                                     foreach (var Get in InFo.Links)
                                     {
-                                        if (Get.ResponseID.Equals(Mod.EspReader.Records[Key].RealFormID))
-                                        {
-                                            var Emotion = EmotionTypeHelper.FromRaw(Get.EmotionType);
-                                        }
                                         RichText += Get.ActorLine + "\r\n";
                                         if (Get.Nam1Data != null)
                                         {
@@ -1254,9 +1246,7 @@ namespace LexTranslator.UIManagement
 
         private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            NPCFinder NNPCFinder = new NPCFinder();
-            NNPCFinder.EspInstance = Mod.EspReader;
-
+            NPCFinder NNPCFinder = new NPCFinder(Mod);
             NNPCFinder.Owner = Parent;
             NNPCFinder.Show();
         }

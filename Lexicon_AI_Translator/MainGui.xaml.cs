@@ -3989,9 +3989,7 @@ namespace LexTranslator
 
         private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            NPCFinder NNPCFinder = new NPCFinder();
-            NNPCFinder.EspInstance = GlobalEspReader;
-
+            NPCFinder NNPCFinder = new NPCFinder(new ModFile(""));
             NNPCFinder.Owner = this;
             NNPCFinder.Show();
         }
