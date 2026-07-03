@@ -56,15 +56,14 @@ namespace LexTranslator.UIManagement
 
                             if (DialogueLink != null)
                             {
-                                List<DialogueRecordItem> Dialogues = new List<DialogueRecordItem>();
+                                List<ManagedDialNode> Dialogues = new List<ManagedDialNode>();
 
                                 if (DialogueLink.Head != null)
                                 {
-                                    TrackingWin.LoadDialogueRecords(DialogueLink.Head);
+                                    Dialogues.AddRange(DialogueLink.Links);
                                 }
 
-                               
-                             
+                                TrackingWin.LoadDialogueRecords(Dialogues);
                             }
                             else
                             {
