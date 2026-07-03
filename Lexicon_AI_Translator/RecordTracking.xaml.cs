@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using LexTranslator.SkyrimManagement;
 
 namespace LexTranslator
@@ -84,21 +86,84 @@ namespace LexTranslator
             this.Height = _Owner.ActualHeight;
         }
 
+        //Section collapse / expand
+
+        private void NpcHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
+        {
+            ToggleSection(NpcContentHost, NpcChevronRotate);
+        }
+
+        private void RelatedTextHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
+        {
+            ToggleSection(RelatedTextContentHost, RelatedTextChevronRotate);
+        }
+
+        private void DialogueHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
+        {
+            ToggleSection(DialogueContentHost, DialogueChevronRotate);
+        }
+
+        private void ToggleSection(Border ContentHost, RotateTransform ChevronRotate)
+        {
+            bool IsExpanded = double.IsNaN(ContentHost.Height) || ContentHost.Height > 0;
+
+            if (IsExpanded)
+            {
+                CollapseSection(ContentHost, ChevronRotate);
+            }
+            else
+            {
+                ExpandSection(ContentHost, ChevronRotate);
+            }
+        }
+
+        private void CollapseSection(Border ContentHost, RotateTransform ChevronRotate)
+        {
+            double StartHeight = double.IsNaN(ContentHost.Height) ? ContentHost.ActualHeight : ContentHost.Height;
+
+            DoubleAnimation HeightAnimation = new DoubleAnimation();
+            HeightAnimation.From = StartHeight;
+            HeightAnimation.To = 0;
+            HeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
+            HeightAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
+
+            DoubleAnimation RotateAnimation = new DoubleAnimation();
+            RotateAnimation.To = 180;
+            RotateAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
+            RotateAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
+
+            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, HeightAnimation);
+            ChevronRotate.BeginAnimation(RotateTransform.AngleProperty, RotateAnimation);
+        }
+
+        private void ExpandSection(Border ContentHost, RotateTransform ChevronRotate)
+        {
+            double AvailableWidth = ContentHost.ActualWidth > 0 ? ContentHost.ActualWidth : double.PositiveInfinity;
+            ContentHost.Measure(new Size(AvailableWidth, double.PositiveInfinity));
+            double TargetHeight = ContentHost.DesiredSize.Height;
+
+            DoubleAnimation HeightAnimation = new DoubleAnimation();
+            HeightAnimation.From = 0;
+            HeightAnimation.To = TargetHeight;
+            HeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
+            HeightAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
+            HeightAnimation.Completed += delegate { ContentHost.Height = double.NaN; };
+
+            DoubleAnimation RotateAnimation = new DoubleAnimation();
+            RotateAnimation.To = 0;
+            RotateAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
+            RotateAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
+
+            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, HeightAnimation);
+            ChevronRotate.BeginAnimation(RotateTransform.AngleProperty, RotateAnimation);
+        }
+
         //Data loading
 
-        public void LoadNpcRecords(List<RecordItem> Records)
+        public void LoadNpcRecord(RecordItem Record,string NpcName,string Gender)
         {
             NpcListPanel.Children.Clear();
-
-            if (Records == null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < Records.Count; i++)
-            {
-                NpcListPanel.Children.Add(BuildNpcCard(Records[i],"",""));
-            }
+            NpcListPanel.Children.Add(BuildNpcCard(Record, NpcName, Gender));
         }
 
         public void LoadRelatedTextRecords(List<RecordItem> Records)
@@ -132,7 +197,8 @@ namespace LexTranslator
         }
 
         //Card builders
-        private Border BuildNpcCard(RecordItem Item,string NpcName,string Gender)
+
+        private Border BuildNpcCard(RecordItem Item, string NpcName, string Gender)
         {
             Border CardBorder = new Border();
             CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
