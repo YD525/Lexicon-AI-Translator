@@ -74,34 +74,8 @@ namespace LexTranslator.UIManagement
                         //Test 👇
                         if (Mod.EspReader.Records.ContainsKey(Key))
                         {
-                            var InFo = Mod.EspReader.GetDialContext(Mod.EspReader.Records[Key].RealFormID);
+                            var InFo = Mod.EspReader.GetDialContext(0, Mod.EspReader.Records[Key].ParentIndex, Mod.EspReader.Records[Key].SubIndex);
 
-                            if (InFo != null)
-                            {
-                                string RichText = "";
-
-                                RichText += InFo?.Head.ActorLine + "\r\n";
-
-                                if (InFo.Head.ResponseID.Equals(Mod.EspReader.Records[Key].RealFormID))
-                                {
-                                    var Emotion = EmotionTypeHelper.FromRaw(InFo.Head.EmotionType);
-                                }
-
-                                if (InFo.Links != null)
-                                    foreach (var Get in InFo.Links)
-                                    {
-                                        RichText += Get.ActorLine + "\r\n";
-                                        if (Get.Nam1Data != null)
-                                        {
-                                            if (Get.Nam1Data.Length > 0)
-                                            {
-                                                var LLLLL = Encoding.UTF8.GetString(Get.Nam1Data);
-                                            }
-                                        }
-                                    }
-
-                                //MessageBox.Show(RichText);
-                            }
                         }
                     }));
                 });

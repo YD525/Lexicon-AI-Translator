@@ -284,7 +284,6 @@ namespace LexTranslator
             ContentPanel.Orientation = Orientation.Vertical;
 
             TextBlock TextLine = new TextBlock();
-            TextLine.Text = Item.ActorLine;
             TextLine.Foreground = Brushes.White;
             TextLine.FontSize = 13;
             TextLine.TextWrapping = TextWrapping.Wrap;
@@ -303,13 +302,13 @@ namespace LexTranslator
 
             int ResponseId = 0;
 
-            if (Item.TrdtData != null)
-            {
-                if (Item.TrdtData.Length > 16)
-                {
-                    ResponseId = Item.TrdtData[16];//ResponseNumber offset 0x10 1byte
-                }
-            }
+            //if (Item.TrdtData != null)
+            //{
+            //    if (Item.TrdtData.Length > 16)
+            //    {
+            //        ResponseId = Item.TrdtData[16];//ResponseNumber offset 0x10 1byte
+            //    }
+            //}
 
             TextBlock ResponseIdText = new TextBlock();
             ResponseIdText.Text = "  #" + ResponseId;

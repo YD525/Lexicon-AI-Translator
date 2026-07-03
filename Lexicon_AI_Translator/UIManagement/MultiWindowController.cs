@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LexTranslator.SkyrimManagement;
 
 namespace LexTranslator.UIManagement
@@ -48,23 +49,32 @@ namespace LexTranslator.UIManagement
                                 }
 
                                 //SearchDialogue
-                                var DialogueLink = Mod.EspReader.GetDialContext(Mod.EspReader.Records[SelectKey].RealFormID);
+                                //var DialogueLink = Mod.EspReader.GetDialContext(Mod.EspReader.Records[SelectKey].ParentIndex, Mod.EspReader.Records[SelectKey].SubIndex);
 
-                                if (DialogueLink != null)
-                                {
-                                    List<ManagedDialNode> Dialogues = new List<ManagedDialNode>();
+                                //if (DialogueLink != null)
+                                //{
+                                //    List<ManagedDialNode> Dialogues = new List<ManagedDialNode>();
 
-                                    if (DialogueLink.Head != null)
-                                    {
-                                        Dialogues.AddRange(DialogueLink.Links);
-                                    }
+                                //    if (DialogueLink.Count != null)
+                                //    {
+                                //        Dialogues.AddRange(DialogueLink.Links);
+                                //    }
 
-                                    TrackingWin.LoadDialogueRecords(Dialogues);
-                                }
-                                else
-                                {
-                                    TrackingWin.DialogueListPanel.Children.Clear();
-                                }
+                                //    bool Find = DialogueLink.Links.Any(x => x.ActorLine == GetRecord.String && x.ResponseID == GetRecord.RealFormID);
+
+                                //    if (Find)
+                                //    {
+                                //        TrackingWin.LoadDialogueRecords(Dialogues);
+                                //    }
+                                //    else
+                                //    {
+                                //        TrackingWin.DialogueListPanel.Children.Clear();
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    TrackingWin.DialogueListPanel.Children.Clear();
+                                //}
 
                                 //MatchRelated
                                 List<RecordItem> Records = new List<RecordItem>();

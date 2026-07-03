@@ -234,16 +234,16 @@ namespace LexTranslator.SkyrimManagement
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern uint C_GetCharacterLinkedVoiceType(IntPtr handle, int index, int linkIndex);
 
+        // ============================================================
+        //  Dialogue Context  –  NEW: based on offsets, not FormID
+        // ============================================================
         [StructLayout(LayoutKind.Sequential)]
         public struct C_DialResponseNode
         {
             public uint ResponseID;
             public uint EmotionType;
-            public IntPtr ActorLine;      
-            public IntPtr TrdtDataPtr;    
-            public uint TrdtDataSize;
-            public IntPtr Nam1DataPtr;    
-            public uint Nam1DataSize;
+            public int RecordOffset;
+            public int SubOffset;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -251,23 +251,25 @@ namespace LexTranslator.SkyrimManagement
         {
             public int HasData;
             public C_DialResponseNode Head;
-            public IntPtr Links;          
+            public IntPtr Links;      // pointer to array of C_DialResponseNode
             public uint LinkCount;
         }
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
-        public static extern C_LinkDIAL C_GetDialContext(IntPtr handle, uint infoFormID);
+        public static extern C_LinkDIAL C_GetDialContext(IntPtr handle, int IsCell, int RecordOffset, int SubOffset);
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
         public static extern void C_FreeDialContext(ref C_LinkDIAL context);
 
-        private static string GetCharacterUtf8(IntPtr Instance,int Index,Func<IntPtr,int, byte[], int, int> Getter)
+        // ---- Helper methods for character records ----
+
+        private static string GetCharacterUtf8(IntPtr Instance, int Index, Func<IntPtr, int, byte[], int, int> Getter)
         {
-            int Len = Getter(Instance,Index, null, 0);
+            int Len = Getter(Instance, Index, null, 0);
             if (Len <= 0) return string.Empty;
 
             byte[] Buffer = new byte[Len + 1];
-            int ActualLen = Getter(Instance,Index, Buffer, Buffer.Length);
+            int ActualLen = Getter(Instance, Index, Buffer, Buffer.Length);
 
             int NullIndex = Array.IndexOf(Buffer, (byte)0, 0, ActualLen);
             if (NullIndex >= 0) ActualLen = NullIndex;
@@ -283,11 +285,11 @@ namespace LexTranslator.SkyrimManagement
             for (int i = 0; i < Count; i++)
             {
                 var Record = new CharacterRecordInfo();
-                Record.NpcFormID = C_GetCharacterFormID(Instance,i);
-                Record.Name = GetCharacterUtf8(Instance,i, C_GetCharacterName);
+                Record.NpcFormID = C_GetCharacterFormID(Instance, i);
+                Record.Name = GetCharacterUtf8(Instance, i, C_GetCharacterName);
                 Record.EditorID = GetCharacterUtf8(Instance, i, C_GetCharacterEditorID);
                 Record.VoiceType = GetCharacterUtf8(Instance, i, C_GetCharacterVoiceType);
-                Record.Gender = C_GetCharacterGender(Instance,i);   // 0=Unknown 1=Male 2=Female
+                Record.Gender = C_GetCharacterGender(Instance, i);   // 0=Unknown 1=Male 2=Female
 
                 int InfoCount = C_GetCharacterLinkedInfoCount(Instance, i);
                 for (int j = 0; j < InfoCount; j++)
@@ -376,7 +378,7 @@ namespace LexTranslator.SkyrimManagement
             return string.Copy(NewStr);
         }
 
-        public static List<EspRecordInfo> SearchBySig(IntPtr Instance,string ParentSig = "ALL", string ChildSig = "")
+        public static List<EspRecordInfo> SearchBySig(IntPtr Instance, string ParentSig = "ALL", string ChildSig = "")
         {
             int Count;
             IntPtr ResultsPtr = C_SearchBySig(Instance, ParentSig, ChildSig, out Count);
@@ -460,7 +462,7 @@ namespace LexTranslator.SkyrimManagement
         }
 
 
-        public static bool ModifySubRecordByOffset(IntPtr Instance,bool IsCell, int ParentIndex, int SubIndex, string NewUtf8Data)
+        public static bool ModifySubRecordByOffset(IntPtr Instance, bool IsCell, int ParentIndex, int SubIndex, string NewUtf8Data)
         {
             IntPtr PtrNewData = IntPtr.Zero;
             try
@@ -468,11 +470,11 @@ namespace LexTranslator.SkyrimManagement
                 PtrNewData = StringToUtf8Ptr(NewUtf8Data ?? "");
                 if (IsCell)
                 {
-                    return C_ModifySubRecordByOffset(Instance,1, ParentIndex, SubIndex, PtrNewData);
+                    return C_ModifySubRecordByOffset(Instance, 1, ParentIndex, SubIndex, PtrNewData);
                 }
                 else
                 {
-                    return C_ModifySubRecordByOffset(Instance,0, ParentIndex, SubIndex, PtrNewData);
+                    return C_ModifySubRecordByOffset(Instance, 0, ParentIndex, SubIndex, PtrNewData);
                 }
             }
             finally
@@ -490,10 +492,10 @@ namespace LexTranslator.SkyrimManagement
                 Ptr = StringToUtf8Ptr(OutputPath);
                 return EspNative.C_SaveEsp(Instance, Ptr);
             }
-            finally 
-            { 
-                if (Ptr != IntPtr.Zero) 
-                    Marshal.FreeHGlobal(Ptr); 
+            finally
+            {
+                if (Ptr != IntPtr.Zero)
+                    Marshal.FreeHGlobal(Ptr);
             }
         }
         public static string GetFilterByStr(IntPtr instance)
@@ -536,13 +538,15 @@ namespace LexTranslator.SkyrimManagement
         Female
     }
 
+    // ============================================================
+    //  Managed Dialogue Context  –  updated to match new C++ API
+    // ============================================================
     public class ManagedDialNode
     {
         public uint ResponseID { get; set; }
         public uint EmotionType { get; set; }
-        public string ActorLine { get; set; }
-        public byte[] TrdtData { get; set; }
-        public byte[] Nam1Data { get; set; }
+        public int RecordOffset { get; set; }
+        public int SubOffset { get; set; }
     }
 
     public class ManagedDialContext
@@ -550,6 +554,7 @@ namespace LexTranslator.SkyrimManagement
         public ManagedDialNode Head { get; set; }
         public List<ManagedDialNode> Links { get; set; } = new List<ManagedDialNode>();
     }
+
     public class Character
     {
         public string Name { get; set; } = "";
@@ -661,7 +666,7 @@ namespace LexTranslator.SkyrimManagement
             RichText = RichText.Replace(";", ";\r\n");
             if (RichText.EndsWith("\r\n"))
             {
-                RichText = RichText.Substring(0,RichText.Length - "\r\n".Length);
+                RichText = RichText.Substring(0, RichText.Length - "\r\n".Length);
             }
             return RichText;
 
@@ -693,8 +698,8 @@ namespace LexTranslator.SkyrimManagement
         public void ResetToSkyrimFilter()
         {
             EnsureNotDisposed();
-            EspNative.C_InitFilter(_Instance);       
-            EspNative.C_SetSkyrimFilter(_Instance);  
+            EspNative.C_InitFilter(_Instance);
+            EspNative.C_SetSkyrimFilter(_Instance);
         }
 
         public void Dispose()
@@ -772,7 +777,7 @@ namespace LexTranslator.SkyrimManagement
                 {
                     EspPath = Path;
 
-                    foreach (var GetRecord in EspNative.SearchBySig(_Instance,"ALL"))
+                    foreach (var GetRecord in EspNative.SearchBySig(_Instance, "ALL"))
                     {
                         string ParentFormID = GetRecord.GetFormIDHex();
                         string ParentSig = GetRecord.Sig;
@@ -831,7 +836,7 @@ namespace LexTranslator.SkyrimManagement
                 }
             }
 
-            EspNative.SaveEsp(_Instance,OutPutPath);
+            EspNative.SaveEsp(_Instance, OutPutPath);
 
             return ModifyCount;
         }
@@ -863,12 +868,20 @@ namespace LexTranslator.SkyrimManagement
             return Encoding.UTF8.GetString(Buffer);
         }
 
-        public ManagedDialContext GetDialContext(uint infoFormID)
+        // ── Dialogue Context ──────────────────────────────────
+        /// <summary>
+        /// Get dialogue context for a specific dialogue node using record offset and sub-offset.
+        /// </summary>
+        /// <param name="IsCell">0 for main records, 1 for CELL records (CELL records have no dialogue context)</param>
+        /// <param name="RecordOffset">Index of the record in the records array</param>
+        /// <param name="SubOffset">Index of the sub-record (NAM1) within the record</param>
+        /// <returns>ManagedDialContext or null if not found</returns>
+        public ManagedDialContext GetDialContext(int IsCell, int RecordOffset, int SubOffset)
         {
             EnsureNotDisposed();
             if (_Instance == IntPtr.Zero) return null;
 
-            EspNative.C_LinkDIAL rawContext = EspNative.C_GetDialContext(_Instance, infoFormID);
+            EspNative.C_LinkDIAL rawContext = EspNative.C_GetDialContext(_Instance, IsCell, RecordOffset, SubOffset);
 
             if (rawContext.HasData == 0) return null;
 
@@ -899,51 +912,38 @@ namespace LexTranslator.SkyrimManagement
             }
         }
 
+        /// <summary>
+        /// Get dialogue context for a specific RecordItem.
+        /// </summary>
+        public ManagedDialContext GetDialContext(RecordItem recordItem)
+        {
+            if (recordItem == null) return null;
+            bool IsCell = (recordItem.ParentSig == "CELL");
+            return GetDialContext(IsCell ? 1 : 0, recordItem.ParentIndex, recordItem.SubIndex);
+        }
+
+        /// <summary>
+        /// Get dialogue context for a specific record and sub-record index.
+        /// </summary>
+        public ManagedDialContext GetDialContext(string ParentSig, int RecordOffset, int SubOffset)
+        {
+            bool IsCell = (ParentSig == "CELL");
+            return GetDialContext(IsCell ? 1 : 0, RecordOffset, SubOffset);
+        }
+
         private ManagedDialNode ConvertNode(EspNative.C_DialResponseNode rawNode)
         {
-            var node = new ManagedDialNode
+            return new ManagedDialNode
             {
                 ResponseID = rawNode.ResponseID,
                 EmotionType = rawNode.EmotionType,
-                ActorLine = Utf8PtrToString(rawNode.ActorLine)
+                RecordOffset = rawNode.RecordOffset,
+                SubOffset = rawNode.SubOffset
             };
-
-            if (rawNode.TrdtDataSize > 0 && rawNode.TrdtDataPtr != IntPtr.Zero)
-            {
-                node.TrdtData = new byte[rawNode.TrdtDataSize];
-                Marshal.Copy(rawNode.TrdtDataPtr, node.TrdtData, 0, (int)rawNode.TrdtDataSize);
-            }
-            else
-            {
-                node.TrdtData = Array.Empty<byte>();
-            }
-
-            if (rawNode.Nam1DataSize > 0 && rawNode.Nam1DataPtr != IntPtr.Zero)
-            {
-                node.Nam1Data = new byte[rawNode.Nam1DataSize];
-                Marshal.Copy(rawNode.Nam1DataPtr, node.Nam1Data, 0, (int)rawNode.Nam1DataSize);
-            }
-            else
-            {
-                node.Nam1Data = Array.Empty<byte>();
-            }
-
-            return node;
-        }
-        private string Utf8PtrToString(IntPtr ptr)
-        {
-            if (ptr == IntPtr.Zero) return string.Empty;
-
-            int len = 0;
-            while (Marshal.ReadByte(ptr, len) != 0) len++;
-            if (len == 0) return string.Empty;
-
-            byte[] buffer = new byte[len];
-            Marshal.Copy(ptr, buffer, 0, len);
-            return Encoding.UTF8.GetString(buffer);
         }
 
         private bool IsFristSelect = true;
+
         public void SelectSig(string Sig)
         {
             EnsureNotDisposed();
@@ -1064,24 +1064,4 @@ namespace LexTranslator.SkyrimManagement
             Clear();
         }
     }
-
-
-
-    // ============================================================
-    //  Usage example – two independent instances
-    // ============================================================
-    /*
-    using (var reader1 = new EspReader())
-    using (var reader2 = new EspReader())
-    {
-        reader1.LoadEsp(@"C:\Skyrim\Data\Mod1.esp");
-        reader2.LoadEsp(@"C:\Skyrim\Data\Mod2.esp");
-
-        var records1 = reader1.SelectSig("ALL");
-        var records2 = reader2.SelectSig("ALL");
-
-        reader1.ModifySubRecord(0x12345678, "NPC_", "FULL", 0, 0, "New Name");
-        reader1.SaveEsp(@"C:\Skyrim\Data\Mod1_translated.esp");
-    }  // both instances destroyed here
-    */
 }
