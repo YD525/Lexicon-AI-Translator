@@ -69,12 +69,45 @@ namespace LexTranslator.UIManagement
                             {
                                 TrackingWin.DialogueListPanel.Children.Clear();
                             }
+
+                            //MatchRelated
+                            List<RecordItem> Records = new List<RecordItem>();
+
+                            Records.Add(GetRecord);
+
+                            for (int i = 0; i < Mod.TranslateView.RealLines.Count; i++)
+                            {
+                                if (Mod.TranslateView.RealLines[i].Key != SelectKey)
+                                {
+                                    if (Mod.TranslateView.RealLines[i].RealSource.Contains(GetRecord.String)||
+                                        Mod.TranslateView.RealLines[i].SourceText.Contains(GetRecord.String)
+                                    )
+                                    {
+                                        Records.Add(Mod.EspReader.Records[Mod.TranslateView.RealLines[i].Key]);
+                                    }
+                                }
+                            }
+
+                            if (Records.Count > 0)
+                            {
+                                TrackingWin.LoadRelatedTextRecords(Records);
+                            }
+                            else
+                            {
+                                TrackingWin.RelatedTextListPanel.Children.Clear();
+                            }
+                             
                         }
                        
                     }
                 break;
                 case GameFileType.PEX:
-                    { 
+                    {
+                        if (TrackingWin != null)
+                        {
+                            TrackingWin.Close();
+                            TrackingWin = null;
+                        }
                     }
                 break;
             }
