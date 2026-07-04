@@ -75,9 +75,6 @@ namespace LexTranslator
                 UpdateFollowPosition();
             }
         }
-
-
-
         private static class Win32
         {
             public static readonly IntPtr HWND_TOP = new IntPtr(0);
@@ -130,15 +127,8 @@ namespace LexTranslator
             _Owner.SizeChanged -= OwnerMainWindow_SizeChanged;
             _Owner.StateChanged -= OwnerMainWindow_StateChanged;
             _Owner.Closed -= OwnerMainWindow_Closed;
-
-            this.Hide();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            this.Hide();
-        }
 
         public bool IsLeftMouseDown = false;
 

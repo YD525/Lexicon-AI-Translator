@@ -9,7 +9,7 @@
         Title="CodeView" Background="Transparent"
         WindowStyle="None"
         ResizeMode="CanResize"
-        AllowsTransparency="True" ContentRendered="Window_ContentRendered" Height="750" Width="800" Loaded="Window_Loaded" Closed="Window_Closed" Closing="Window_Closing" KeyDown="Window_KeyDown" ShowInTaskbar="False">
+        AllowsTransparency="True" ContentRendered="Window_ContentRendered" Height="750" Width="800" Loaded="Window_Loaded" Closed="Window_Closed" KeyDown="Window_KeyDown" ShowInTaskbar="False">
     
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5"/>

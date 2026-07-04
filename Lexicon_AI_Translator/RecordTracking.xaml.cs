@@ -54,7 +54,6 @@ namespace LexTranslator
 
         public void UpdateAllSectionHeights()
         {
-            // 定义一个辅助结构来管理面板状态
             var sections = new[]
             {
                 new { Row = NpcRow, Panel = NpcListPanel, Rotate = NpcChevronRotate, Expanded = (bool?)null },
