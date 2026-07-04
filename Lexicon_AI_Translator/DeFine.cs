@@ -44,11 +44,10 @@ namespace LexTranslator
         public static MainGui WorkingWin = null;
         public static ReplaceWin CurrentReplaceView = new ReplaceWin();
         public static TextEditor ActiveIDE = null;
-        public static LocalConfig LocalConfigView = null;
 
         public static RowStyleWin RowStyleWin = new RowStyleWin();
         public static NodeStyleWin NodeStyleWin = new NodeStyleWin();
-        public static PlatformConfigStyleWin PlatformConfigStyleWin = new PlatformConfigStyleWin();
+        public static PlatformConfigStyleWin PlatformConfigStyleWin = new PlatformConfigStyleWin(null);
 
         public static DataBaseView DataBaseView = null;
 
@@ -187,10 +186,6 @@ namespace LexTranslator
             RowStyleWin.Hide();
 
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            LocalConfigView = new LocalConfig();
-            LocalConfigView.Hide();
-            LocalConfigView.Init();
 
             ExtendWin = new ExtendWin();
 

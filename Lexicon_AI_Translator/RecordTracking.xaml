@@ -15,12 +15,11 @@
             <Grid Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Name="NpcRow" Height="1*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Name="RelatedTextRow" Height="1*"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="1*"/>
+                    <RowDefinition Name="DialogueRow" Height="1*"/>
                 </Grid.RowDefinitions>
 
                 <!--NPC-->
@@ -48,7 +47,7 @@
                         </Path>
                     </Grid>
                 </Border>
-                <Border Grid.Row="1" Name="NpcContentHost" ClipToBounds="True" MaxHeight="220" Margin="0 0 0 10">
+                <Border Grid.Row="1" Name="NpcContentHost" ClipToBounds="True" Margin="0 0 0 10">
                     <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Name="NpcListPanel" Orientation="Vertical"/>
                     </ScrollViewer>
@@ -79,7 +78,7 @@
                         </Path>
                     </Grid>
                 </Border>
-                <Border Grid.Row="3" Name="RelatedTextContentHost" ClipToBounds="True" MaxHeight="220" Margin="0 0 0 10">
+                <Border Grid.Row="3" Name="RelatedTextContentHost" ClipToBounds="True" Margin="0 0 0 10">
                     <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Name="RelatedTextListPanel" Orientation="Vertical"/>
                     </ScrollViewer>
@@ -110,13 +109,11 @@
                         </Path>
                     </Grid>
                 </Border>
-                <Border Grid.Row="5" Name="DialogueContentHost" ClipToBounds="True" MaxHeight="220" Margin="0 0 0 10">
+                <Border Grid.Row="5" Name="DialogueContentHost" ClipToBounds="True" Margin="0 0 0 10">
                     <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Name="DialogueListPanel" Orientation="Vertical"/>
                     </ScrollViewer>
                 </Border>
-
-                <Grid Grid.Row="6"/>
 
             </Grid>
         </Border>

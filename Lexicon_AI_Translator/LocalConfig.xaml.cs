@@ -18,6 +18,7 @@ using PhoenixEngine;
 using PhoenixEngine.P_Delegate;
 using LexTranslator.IDEManagement;
 using PhoenixEngine.Common;
+using LexTranslator.UIManagement;
 
 namespace LexTranslator
 {
@@ -38,9 +39,11 @@ namespace LexTranslator
     /// </summary>
     public partial class LocalConfig : Window
     {
-        public LocalConfig()
+        private TranslateView _Owner;
+        public LocalConfig(TranslateView Owner)
         {
             InitializeComponent();
+            this._Owner = Owner;
         }
 
 
@@ -189,11 +192,11 @@ namespace LexTranslator
             TypeSelector.Items.Add("ALL");
 
             EspReader EspInstance = null;
-            if (DeFine.WorkingWin != null)
+            if (_Owner != null)
             {
-                if (DeFine.WorkingWin.CurrentTransType == 2)
+                if (_Owner.Mod.Type == GameFileType.ESP)
                 {
-                    EspInstance = DeFine.WorkingWin.GlobalEspReader;
+                    EspInstance = _Owner.Mod.EspReader;
                 }
             }
 
@@ -345,13 +348,13 @@ namespace LexTranslator
             DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
             DeFine.GlobalLocalSetting.SaveConfig();
 
-            DeFine.WorkingWin.ReloadStringsFile();
-            DeFine.WorkingWin.UPDateUI();
+            _Owner.ReloadStringsFile();
+            _Owner.UPDateUI();
 
             if (CanReload > 0)
                 AutoReload();
 
-            DeFine.WorkingWin.AutoShowTraditional();
+            _Owner.AutoShowTraditional();
         }
 
         private void STo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -366,13 +369,13 @@ namespace LexTranslator
             DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
             DeFine.GlobalLocalSetting.SaveConfig();
 
-            DeFine.WorkingWin.ReloadStringsFile();
-            DeFine.WorkingWin.UPDateUI();
+            _Owner.ReloadStringsFile();
+            _Owner.UPDateUI();
 
             if (CanReload > 0)
                 AutoReload();
 
-            DeFine.WorkingWin.AutoShowTraditional();
+            _Owner.AutoShowTraditional();
 
 
             CompleteHelper.CheckLang(FilterTo);

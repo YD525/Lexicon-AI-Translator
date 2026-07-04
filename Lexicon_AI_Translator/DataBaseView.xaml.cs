@@ -488,11 +488,6 @@ namespace LexTranslator
                 {
                     Phoenix.LocalDB.P_ExecuteQuery($"Delete From {_TableName} Where Rowid = {CurrentRowid}");
                     RunQuery();
-
-                    if (DeFine.LocalConfigView != null)
-                    {
-                        DeFine.LocalConfigView.AutoReload();
-                    }
                 }
             }
         }

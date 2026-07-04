@@ -91,7 +91,7 @@
                 </Label>
             </StackPanel>
 
-            <Border Grid.Row="2" Background="#FF1090CD" CornerRadius="0 0 8 8">
+            <Border Grid.Row="2" Background="#FFFAE306" CornerRadius="0 0 8 8">
             </Border>
         </Grid>
         

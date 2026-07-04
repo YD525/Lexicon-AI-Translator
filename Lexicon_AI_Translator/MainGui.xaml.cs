@@ -249,7 +249,7 @@ namespace LexTranslator
                 SyncCGLocation();
             }
 
-            UIHelper.SyncNodes();       
+            //UIHelper.SyncNodes();       
             CompletionManager = new WordCompletionManager(ToStr);
         }
 
@@ -2143,20 +2143,20 @@ namespace LexTranslator
         }
         private void ShowLocalEngineSettingView(object sender, MouseButtonEventArgs e)
         {
-            DeFine.LocalConfigView.Owner = this;
-            DeFine.LocalConfigView.Show();
-            DeFine.LocalConfigView.SetTypes();
+            //DeFine.LocalConfigView.Owner = this;
+            //DeFine.LocalConfigView.Show();
+            //DeFine.LocalConfigView.SetTypes();
 
-            if (TransViewList.RealLines.Count > 0)
-            {
-                DeFine.LocalConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
-            }
-            else
-            {
-                DeFine.LocalConfigView.SFrom.SelectedValue = Languages.English.ToString();
-            }
+            //if (TransViewList.RealLines.Count > 0)
+            //{
+            //    DeFine.LocalConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
+            //}
+            //else
+            //{
+            //    DeFine.LocalConfigView.SFrom.SelectedValue = Languages.English.ToString();
+            //}
 
-            DeFine.LocalConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
+            //DeFine.LocalConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
         }
 
         private void ShowView(object sender, MouseButtonEventArgs e)
@@ -2439,13 +2439,13 @@ namespace LexTranslator
 
             if (TranslatorInterface.TranslationStatus == StateControl.Run || TranslatorInterface.TranslationStatus == StateControl.Stop)
             {
-                DeFine.LocalConfigView.SFrom.IsEnabled = false;
-                DeFine.LocalConfigView.STo.IsEnabled = false;
+                //DeFine.LocalConfigView.SFrom.IsEnabled = false;
+                //DeFine.LocalConfigView.STo.IsEnabled = false;
             }
             else
             {
-                DeFine.LocalConfigView.SFrom.IsEnabled = true;
-                DeFine.LocalConfigView.STo.IsEnabled = true;
+                //DeFine.LocalConfigView.SFrom.IsEnabled = true;
+                //DeFine.LocalConfigView.STo.IsEnabled = true;
             }
         }
 

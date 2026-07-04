@@ -43,6 +43,7 @@ namespace LexTranslator.UIManagement
         public YDListView TransListView = null;
         public string Path = "";
         public ModFile Mod = null;
+        public LocalConfig LocalConfigView = null;
 
         public TranslateView()
         {
@@ -82,6 +83,14 @@ namespace LexTranslator.UIManagement
                 }
 
                 ReSetTypes();
+
+                CompletionManager = new WordCompletionManager(ToStr);
+
+                if (LocalConfigView == null)
+                {
+                    LocalConfigView = new LocalConfig(this);
+                    LocalConfigView.Hide();
+                }
             }
         }
 
@@ -295,16 +304,20 @@ namespace LexTranslator.UIManagement
                 SetLog("Select:" + LastSetKey);
             }
 
-            if (Mod.EspReader.GameCharacters.ContainsKey(Key))
+            if (Mod.Type == GameFileType.ESP)
             {
-                NpcView.Visibility = Visibility.Visible;
-                NpcName.Text = Mod.EspReader.GameCharacters[Key][0].Name;
-                NpcSex.Content = Mod.EspReader.GameCharacters[Key][0].Gender.ToString();
+                if (Mod.EspReader.GameCharacters.ContainsKey(Key))
+                {
+                    NpcView.Visibility = Visibility.Visible;
+                    NpcName.Text = Mod.EspReader.GameCharacters[Key][0].Name;
+                    NpcSex.Content = Mod.EspReader.GameCharacters[Key][0].Gender.ToString();
+                }
+                else
+                {
+                    NpcView.Visibility = Visibility.Collapsed;
+                }
             }
-            else
-            {
-                NpcView.Visibility = Visibility.Collapsed;
-            }
+           
 
             if (Key.Length > 0)
             {
@@ -425,7 +438,23 @@ namespace LexTranslator.UIManagement
                 ReloadDebounceTimer.Start();
             }
         }
+        public void AutoShowTraditional()
+        {
+            bool IsVisible = false;
+            if (DeFine.GlobalLocalSetting.SourceLanguage == Languages.SimplifiedChinese || DeFine.GlobalLocalSetting.SourceLanguage == Languages.TraditionalChinese)
+            {
+                if (DeFine.GlobalLocalSetting.SourceLanguage == Languages.TraditionalChinese || DeFine.GlobalLocalSetting.SourceLanguage == Languages.SimplifiedChinese)
+                {
+                    Traditional.Visibility = Visibility.Visible;
+                    IsVisible = true;
+                }
+            }
 
+            if (!IsVisible)
+            {
+                Traditional.Visibility = Visibility.Collapsed;
+            }
+        }
         public void ReloadStringsFile()
         {
            Mod.EspReader.LoadStringsFile();
@@ -639,13 +668,13 @@ namespace LexTranslator.UIManagement
 
             if (TranslatorInterface.TranslationStatus == StateControl.Run || TranslatorInterface.TranslationStatus == StateControl.Stop)
             {
-                DeFine.LocalConfigView.SFrom.IsEnabled = false;
-                DeFine.LocalConfigView.STo.IsEnabled = false;
+                LocalConfigView.SFrom.IsEnabled = false;
+                LocalConfigView.STo.IsEnabled = false;
             }
             else
             {
-                DeFine.LocalConfigView.SFrom.IsEnabled = true;
-                DeFine.LocalConfigView.STo.IsEnabled = true;
+                LocalConfigView.SFrom.IsEnabled = true;
+                LocalConfigView.STo.IsEnabled = true;
             }
         }
 
@@ -1157,20 +1186,20 @@ namespace LexTranslator.UIManagement
 
         private void ShowLocalEngineSettingView(object sender, MouseButtonEventArgs e)
         {
-            DeFine.LocalConfigView.Owner = this.Parent;
-            DeFine.LocalConfigView.Show();
-            DeFine.LocalConfigView.SetTypes();
+            LocalConfigView.Owner = this.Parent;
+            LocalConfigView.Show();
+            LocalConfigView.SetTypes();
 
             if (TransListView.RealLines.Count > 0)
             {
-                DeFine.LocalConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
+                LocalConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
             }
             else
             {
-                DeFine.LocalConfigView.SFrom.SelectedValue = Languages.English.ToString();
+                LocalConfigView.SFrom.SelectedValue = Languages.English.ToString();
             }
 
-            DeFine.LocalConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
+            LocalConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
         }
 
         private void SyncColumnWidth(object sender, MouseButtonEventArgs e)

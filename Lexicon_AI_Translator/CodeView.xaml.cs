@@ -9,6 +9,7 @@ using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using LexTranslator.UIManagement;
+using LexTranslator.SkyrimManagement;
 
 namespace LexTranslator
 {
@@ -18,13 +19,15 @@ namespace LexTranslator
     public partial class CodeView : Window
     {
         private Window _Owner;
-        public CodeView(Window Owner)
+        public ModFile ModRef = null;
+        public CodeView(ModFile Mod,Window Owner)
         {
             InitializeComponent();
 
             _Owner = Owner;
 
             this.Owner = _Owner;
+            this.ModRef = Mod;
 
             _Owner.LocationChanged += OwnerMainWindow_LocationChanged;
             _Owner.SizeChanged += OwnerMainWindow_SizeChanged;
@@ -109,11 +112,25 @@ namespace LexTranslator
             }
 
             DeFine.ActiveIDE = TextEditor;
+
+            UpdateFollowPosition();
+
+            SetText(ModRef.PSCCode);
+        }
+
+        public void SyncCode(string SearchText = "")
+        {
+            SetText(ModRef.PSCCode);
         }
 
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            _Owner.LocationChanged -= OwnerMainWindow_LocationChanged;
+            _Owner.SizeChanged -= OwnerMainWindow_SizeChanged;
+            _Owner.StateChanged -= OwnerMainWindow_StateChanged;
+            _Owner.Closed -= OwnerMainWindow_Closed;
+
             this.Hide();
         }
 
@@ -190,7 +207,7 @@ namespace LexTranslator
             SyncZIndex();
         }
 
-        public void SetText(string Text)
+        private void SetText(string Text)
         {
             MultiWindowController.CodeWin.Dispatcher.Invoke(() =>
             {

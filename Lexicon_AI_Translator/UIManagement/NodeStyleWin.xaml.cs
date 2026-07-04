@@ -118,22 +118,25 @@ namespace LexTranslator.UIManagement
 
         public class HeaderInFo
         {
+            public StackPanel Parent;
             public PlatformType MainType;
             public CustomPlatformType Type;
             public int CustomID;
+       
 
-            public HeaderInFo(PlatformType mainType, CustomPlatformType type, int customID)
+            public HeaderInFo(StackPanel Parent, PlatformType mainType, CustomPlatformType type, int customID)
             {
+                this.Parent = Parent;
                 MainType = mainType;
                 Type = type;
                 CustomID = customID;
             }
         }
 
-        public Grid GenNode(string PlatformName, PlatformType MainType,CustomPlatformType Type,int CustomID, bool Enable)
+        public Grid GenNode(StackPanel MainStack,string PlatformName, PlatformType MainType,CustomPlatformType Type,int CustomID, bool Enable)
         {
             Grid NodeGrid = UIHelper.CloneElement(Node);
-            NodeGrid.Tag = new HeaderInFo(MainType,Type,CustomID);
+            NodeGrid.Tag = new HeaderInFo(MainStack,MainType, Type,CustomID);
 
             Grid GetMask = NodeGrid.Children[0] as Grid;
 
@@ -163,9 +166,9 @@ namespace LexTranslator.UIManagement
             return NodeGrid;
         }
 
-        public void SyncCount()
+        public void SyncCount(StackPanel Nodes)
         {
-            foreach (var Get in DeFine.WorkingWin.Nodes.Children)
+            foreach (var Get in Nodes.Children)
             {
                 if (Get is Grid)
                 { 
@@ -352,7 +355,7 @@ namespace LexTranslator.UIManagement
             GetMask.Visibility = Visibility.Visible;
 
             Phoenix.SaveConfig();
-            SyncCount();
+            SyncCount((GetNodeGrid.Tag as HeaderInFo).Parent);
         }
 
         private void GetEnableBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -393,7 +396,7 @@ namespace LexTranslator.UIManagement
             GetMask.Visibility = Visibility.Collapsed;
 
             Phoenix.SaveConfig();
-            SyncCount();
+            SyncCount((GetNodeGrid.Tag as HeaderInFo).Parent);
         }
 
         public Grid GenEmptyNode(CustomPlatformType Type)
@@ -415,7 +418,7 @@ namespace LexTranslator.UIManagement
                Border GetBtnHandle = (Border)sender;
                CustomPlatformType GetType = (CustomPlatformType)GetBtnHandle.Tag;
 
-                CustomWizard NCustomWizard = new CustomWizard();
+                CustomWizard NCustomWizard = new CustomWizard(null);
                 NCustomWizard.Owner = DeFine.WorkingWin;
                 NCustomWizard.Show();
                 NCustomWizard.SelectPlatformType(GetType);

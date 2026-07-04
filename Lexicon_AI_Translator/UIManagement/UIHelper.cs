@@ -589,7 +589,7 @@ namespace LexTranslator.UIManage
         }
 
 
-        public static void SyncNodes()
+        public static void SyncNodes(StackPanel Nodes)
         {
             List<PlatformConfig> CustomPlatforms = new List<PlatformConfig>();
 
@@ -631,15 +631,15 @@ namespace LexTranslator.UIManage
                 }
             }
 
-            DeFine.WorkingWin.Nodes.Children.Clear();
+            Nodes.Children.Clear();
 
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenMainNodeTree("Engine Nodes"));
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode("PreTranslate Node", PlatformType.Null, CustomPlatformType.Null, 0, Phoenix.Config.PreTranslateEnable));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenMainNodeTree("Engine Nodes"));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,"PreTranslate Node", PlatformType.Null, CustomPlatformType.Null, 0, Phoenix.Config.PreTranslateEnable));
 
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Cloud AI Nodes"));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Cloud AI Nodes"));
             foreach (var Get in CloudAIPlatforms)
             {
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), Get.Platform, CustomPlatformType.CloudAI, 0, Get.Enable));
+                Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,Get.Platform.ToString(), Get.Platform, CustomPlatformType.CloudAI, 0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -648,14 +648,14 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.CloudAI)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
+                        Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
                     }
                 }
             }
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.CloudAI));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.CloudAI));
 
 
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Local AI Nodes"));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Local AI Nodes"));
             foreach (var Get in LocalAIPlatforms)
             {
                 string AutoName = Get.Platform.ToString();
@@ -663,7 +663,7 @@ namespace LexTranslator.UIManage
                 {
                     AutoName = "LM Studio";
                 }
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(AutoName, Get.Platform, CustomPlatformType.LocalAI, 0, Get.Enable));
+                Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,AutoName, Get.Platform, CustomPlatformType.LocalAI, 0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -672,16 +672,16 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.LocalAI)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
+                        Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
                     }
                 }
             }
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.LocalAI));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.LocalAI));
 
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Traditional Nodes"));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Traditional Nodes"));
             foreach (var Get in TraditionalPlatforms)
             {
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), Get.Platform, CustomPlatformType.Traditional, 0, Get.Enable));
+                Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,Get.Platform.ToString(), Get.Platform, CustomPlatformType.Traditional, 0, Get.Enable));
             }
 
             foreach (var Get in CustomPlatforms)
@@ -690,21 +690,21 @@ namespace LexTranslator.UIManage
                 {
                     if (Get.CustomInFo.Type == CustomPlatformType.Traditional)
                     {
-                        DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
+                        Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,Get.CustomInFo.Name, Get.Platform, Get.CustomInFo.Type, Get.CustomInFo.CustomID, Get.Enable));
                     }
                 }
             }
 
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.Traditional));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenEmptyNode(CustomPlatformType.Traditional));
 
-            DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Interactive Nodes"));
+            Nodes.Children.Add(DeFine.NodeStyleWin.GenNodeTree("Interactive Nodes"));
 
             foreach (var Get in InteractivePlatforms)
             {
-                DeFine.WorkingWin.Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Get.Platform.ToString(), Get.Platform, CustomPlatformType.Interactive, 0, Get.Enable));
+                Nodes.Children.Add(DeFine.NodeStyleWin.GenNode(Nodes,Get.Platform.ToString(), Get.Platform, CustomPlatformType.Interactive, 0, Get.Enable));
             }
 
-            DeFine.NodeStyleWin.SyncCount();
+            DeFine.NodeStyleWin.SyncCount(Nodes);
         }
 
     }

@@ -24,9 +24,11 @@ namespace LexTranslator
     /// </summary>
     public partial class CustomWizard : Window
     {
-        public CustomWizard()
+        private LexGui _Owner;
+        public CustomWizard(LexGui Owner)
         {
             InitializeComponent();
+            this._Owner = Owner;
         }
 
         public void SelectPlatformType(CustomPlatformType Type)
@@ -676,7 +678,7 @@ namespace LexTranslator
 
             ClearValue();
 
-            UIHelper.SyncNodes();
+            UIHelper.SyncNodes(_Owner.Nodes);
             Phoenix.ReSetKeyData();
 
             this.Close();

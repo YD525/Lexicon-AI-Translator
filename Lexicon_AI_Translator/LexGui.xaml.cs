@@ -1,14 +1,18 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LexTranslator.FileManagement;
 using LexTranslator.SkyrimManagement;
+using LexTranslator.UIManage;
 using LexTranslator.UIManagement;
 using PexInterface;
 using PhoenixEngine;
@@ -33,6 +37,30 @@ namespace LexTranslator
             InfoPage = new PageSwitcher(this,InFoPages);
             MainPage = new PageSwitcher(this,Views);
             ShowView("InFo");
+
+            UIHelper.SyncNodes(Nodes);
+
+            //If you like anime, you can place a CG.png in the program's installation directory, making sure the dimensions are correct. It will display an anime character at the top of the software.
+            string CheckCGPath = DeFine.GetFullPath(@"\CG.png");
+            if (File.Exists(CheckCGPath))
+            {
+                DeFine.CG = new CGView();
+                DeFine.CG.Hide();
+                DeFine.CG.CG.Source = new BitmapImage(new Uri(CheckCGPath));
+
+                DeFine.CG.Owner = this;
+                DeFine.CG.Show();
+                SyncCGLocation();
+            }
+        }
+
+        public void SyncCGLocation()
+        {
+            if (DeFine.CG != null)
+            {
+                DeFine.CG.Top = (this.Top - DeFine.CG.ActualHeight) + 1;
+                DeFine.CG.Left = this.Left + 100;
+            }
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -634,5 +662,96 @@ namespace LexTranslator
             });
         }
         #endregion
+
+        #region Nodes
+        public bool IsExpanded = false;
+        private void ShowLeftMenu(object sender, MouseButtonEventArgs e)
+        {
+            if (IsExpanded)
+            {
+                SyncAnimation();
+                ShowLeftMenu(false);
+                LogView.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                SyncAnimation();
+                ShowLeftMenu(true);
+                LogView.Visibility = Visibility.Visible;
+            }
+        }
+
+
+     
+        private double CalcLeftMenuHeight()
+        {
+            double AutoHeight = 0;
+            foreach (FrameworkElement GetRow in Nodes.Children)
+            {
+                AutoHeight += GetRow.ActualHeight + 1;
+            }
+            return AutoHeight;
+        }
+
+        //Control the speed to a fixed 2000 px/s
+        private const double ExpandAnimationSpeed = 2000;
+        public void SyncAnimation()
+        {
+            double AutoHeight = CalcLeftMenuHeight();
+
+            var ExpandMenu = (Storyboard)FindResource("ExpandMenu");
+            var ExpandAnimation = (DoubleAnimation)ExpandMenu.Children[0];
+            ExpandAnimation.To = AutoHeight;
+            ExpandAnimation.Duration = TimeSpan.FromSeconds(Math.Abs(0 - AutoHeight) / ExpandAnimationSpeed);
+
+            var CollapseMenu = (Storyboard)FindResource("CollapseMenu");
+            var CollapseAnimation = (DoubleAnimation)CollapseMenu.Children[0];
+            CollapseAnimation.From = AutoHeight;
+            CollapseAnimation.Duration = TimeSpan.FromSeconds(Math.Abs(AutoHeight - 0) / ExpandAnimationSpeed);
+
+            CollapseAnimation.Completed += (_, __) =>
+            {
+                LeftMenu.Visibility = Visibility.Collapsed;
+                LeftMenu.BeginAnimation(HeightProperty, null);
+            };
+        }
+
+        public void ShowLeftMenu(bool Show)
+        {
+            this.Dispatcher.Invoke(new Action(() =>
+            {
+                if (Show)
+                {
+                    UIHelper.LeftMenuIsShow = true;
+                    Mask.Visibility = Visibility.Visible;
+                    Storyboard Storyboard = (Storyboard)this.Resources["ExpandMenu"];
+                    Storyboard.Begin();
+
+                    IsExpanded = true;
+                    LeftMenu.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    UIHelper.LeftMenuIsShow = false;
+                    Mask.Visibility = Visibility.Collapsed;
+                    Storyboard Storyboard = (Storyboard)this.Resources["CollapseMenu"];
+                    Storyboard.Begin();
+
+                    IsExpanded = false;
+                }
+            }));
+        }
+
+        #endregion
+
+        private void Mask_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void SelectLogNav(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

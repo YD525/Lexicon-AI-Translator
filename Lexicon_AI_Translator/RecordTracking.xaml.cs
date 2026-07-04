@@ -14,11 +14,18 @@ namespace LexTranslator
     {
         private Window _Owner;
 
-        public RecordTracking(Window Owner)
+        private bool _NpcExpanded = true;
+        private bool _RelatedTextExpanded = true;
+        private bool _DialogueExpanded = true;
+
+        public ModFile ModRef = null;
+
+        public RecordTracking(ModFile Mod,Window Owner)
         {
             InitializeComponent();
 
             _Owner = Owner;
+            this.ModRef = Mod;
 
             this.Owner = _Owner;
             this.Loaded += RecordTracking_Loaded;
@@ -45,6 +52,36 @@ namespace LexTranslator
             UpdateFollowPosition();
         }
 
+        public void UpdateAllSectionHeights()
+        {
+            // 定义一个辅助结构来管理面板状态
+            var sections = new[]
+            {
+                new { Row = NpcRow, Panel = NpcListPanel, Rotate = NpcChevronRotate, Expanded = (bool?)null },
+                new { Row = RelatedTextRow, Panel = RelatedTextListPanel, Rotate = RelatedTextChevronRotate, Expanded = (bool?)null },
+                new { Row = DialogueRow, Panel = DialogueListPanel, Rotate = DialogueChevronRotate, Expanded = (bool?)null }
+            };
+
+            foreach (var sec in sections)
+            {
+                bool hasData = sec.Panel.Children.Count > 0;
+
+                if (hasData)
+                {
+                    sec.Row.Height = new GridLength(1, GridUnitType.Star);
+                    sec.Rotate.Angle = 0;
+                }
+                else
+                {
+                    sec.Row.Height = new GridLength(0, GridUnitType.Star);
+                    sec.Rotate.Angle = 180;
+                }
+            }
+
+            _NpcExpanded = NpcListPanel.Children.Count > 0;
+            _RelatedTextExpanded = RelatedTextListPanel.Children.Count > 0;
+            _DialogueExpanded = DialogueListPanel.Children.Count > 0;
+        }
         private void OwnerMainWindow_StateChanged(object Sender, EventArgs E)
         {
             if (_Owner.WindowState == WindowState.Minimized)
@@ -85,114 +122,99 @@ namespace LexTranslator
 
         private void NpcHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
         {
-            ToggleSection(NpcContentHost, NpcChevronRotate);
+            ToggleSection(NpcContentHost, NpcRow, NpcChevronRotate, ref _NpcExpanded);
         }
 
         private void RelatedTextHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
         {
-            ToggleSection(RelatedTextContentHost, RelatedTextChevronRotate);
+            ToggleSection(RelatedTextContentHost, RelatedTextRow, RelatedTextChevronRotate, ref _RelatedTextExpanded);
         }
 
         private void DialogueHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
         {
-            ToggleSection(DialogueContentHost, DialogueChevronRotate);
+            ToggleSection(DialogueContentHost, DialogueRow, DialogueChevronRotate, ref _DialogueExpanded);
         }
 
-        private void ToggleSection(Border ContentHost, RotateTransform ChevronRotate)
+        private void ToggleSection(Border ContentHost, RowDefinition Row, RotateTransform ChevronRotate, ref bool IsExpanded)
         {
-            bool IsExpanded = double.IsNaN(ContentHost.Height) || ContentHost.Height > 0;
-
             if (IsExpanded)
             {
-                CollapseSection(ContentHost, ChevronRotate);
+                CollapseSection(Row, ChevronRotate);
             }
             else
             {
-                ExpandSection(ContentHost, ChevronRotate);
+                ExpandSection(Row, ChevronRotate);
             }
+
+            IsExpanded = !IsExpanded;
         }
-        private void CollapseSection(Border ContentHost, RotateTransform ChevronRotate)
+
+        private void CollapseSection(RowDefinition Row, RotateTransform ChevronRotate)
         {
-            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
+            Row.BeginAnimation(RowDefinition.HeightProperty, null);
+            ChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
 
-            double StartHeight = double.IsNaN(ContentHost.Height) ? ContentHost.ActualHeight : ContentHost.Height;
-
-            DoubleAnimation HeightAnimation = new DoubleAnimation();
-            HeightAnimation.From = StartHeight;
-            HeightAnimation.To = 0;
+            GridLengthAnimation HeightAnimation = new GridLengthAnimation();
+            HeightAnimation.From = Row.Height;
+            HeightAnimation.To = new GridLength(0, GridUnitType.Star);
             HeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
             HeightAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
-            HeightAnimation.Completed += delegate
-            {
-                ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
-                ContentHost.Height = 0;
-            };
+            HeightAnimation.FillBehavior = FillBehavior.HoldEnd;
 
             DoubleAnimation RotateAnimation = new DoubleAnimation();
             RotateAnimation.To = 180;
             RotateAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
-            RotateAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
+            RotateAnimation.FillBehavior = FillBehavior.HoldEnd;
 
-            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, HeightAnimation);
+            Row.BeginAnimation(RowDefinition.HeightProperty, HeightAnimation);
             ChevronRotate.BeginAnimation(RotateTransform.AngleProperty, RotateAnimation);
         }
-
-        private void ExpandSection(Border ContentHost, RotateTransform ChevronRotate)
+        private void ExpandSection(RowDefinition Row, RotateTransform ChevronRotate)
         {
-            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
+            Row.BeginAnimation(RowDefinition.HeightProperty, null);
+            ChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
 
-            double CollapsedHeight = ContentHost.Height;
-            if (double.IsNaN(CollapsedHeight))
-            {
-                CollapsedHeight = 0;
-            }
-
-            ContentHost.Height = double.NaN;
-            double AvailableWidth = ContentHost.ActualWidth > 0 ? ContentHost.ActualWidth : double.PositiveInfinity;
-            ContentHost.Measure(new Size(AvailableWidth, double.PositiveInfinity));
-            double TargetHeight = ContentHost.DesiredSize.Height;
-            ContentHost.Height = CollapsedHeight;
-
-            DoubleAnimation HeightAnimation = new DoubleAnimation();
-            HeightAnimation.From = CollapsedHeight;
-            HeightAnimation.To = TargetHeight;
+            GridLengthAnimation HeightAnimation = new GridLengthAnimation();
+            HeightAnimation.From = Row.Height;
+            HeightAnimation.To = new GridLength(1, GridUnitType.Star);
             HeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
             HeightAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
-            HeightAnimation.Completed += delegate
-            {
-                ContentHost.BeginAnimation(FrameworkElement.HeightProperty, null);
-                ContentHost.Height = double.NaN;
-            };
+            HeightAnimation.FillBehavior = FillBehavior.HoldEnd;
 
             DoubleAnimation RotateAnimation = new DoubleAnimation();
             RotateAnimation.To = 0;
             RotateAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(220));
-            RotateAnimation.EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut };
+            RotateAnimation.FillBehavior = FillBehavior.HoldEnd;
 
-            ContentHost.BeginAnimation(FrameworkElement.HeightProperty, HeightAnimation);
+            Row.BeginAnimation(RowDefinition.HeightProperty, HeightAnimation);
             ChevronRotate.BeginAnimation(RotateTransform.AngleProperty, RotateAnimation);
         }
 
-        //Data loading
-
-        public void LoadNpcRecord(RecordItem Record,string NpcName,string Gender)
+        public void LoadNpcRecord(RecordItem Record, string NpcName, string Gender)
         {
             NpcListPanel.Children.Clear();
-            NpcListPanel.Children.Add(BuildNpcCard(Record, NpcName, Gender));
+
+            bool HasData = Record != null;
+
+            if (HasData)
+            {
+                NpcListPanel.Children.Add(BuildNpcCard(Record, NpcName, Gender));
+            }
         }
 
         public void LoadRelatedTextRecords(List<RecordItem> Records)
         {
             RelatedTextListPanel.Children.Clear();
 
-            if (Records == null)
-            {
-                return;
-            }
+            int Count = Records != null ? Records.Count : 0;
+            bool HasData = Count > 0;
 
-            for (int i = 0; i < Records.Count; i++)
+            if (HasData)
             {
-                RelatedTextListPanel.Children.Add(BuildRelatedTextCard(Records[i]));
+                for (int i = 0; i < Records.Count; i++)
+                {
+                    RelatedTextListPanel.Children.Add(BuildRelatedTextCard(Records[i]));
+                }
             }
         }
 
@@ -200,14 +222,15 @@ namespace LexTranslator
         {
             DialogueListPanel.Children.Clear();
 
-            if (Records == null)
-            {
-                return;
-            }
+            int Count = Records != null ? Records.Count : 0;
+            bool HasData = Count > 0;
 
-            for (int i = 0; i < Records.Count; i++)
+            if (HasData)
             {
-                DialogueListPanel.Children.Add(BuildDialogueCard(ModRef, Records[i]));
+                for (int i = 0; i < Records.Count; i++)
+                {
+                    DialogueListPanel.Children.Add(BuildDialogueCard(ModRef, Records[i]));
+                }
             }
         }
 
@@ -301,7 +324,7 @@ namespace LexTranslator
             EmotionText.FontSize = 12;
             EmotionText.FontWeight = FontWeights.DemiBold;
             InfoLine.Children.Add(EmotionText);
-           
+
 
             TextBlock ResponseIdText = new TextBlock();
             ResponseIdText.Text = "  #" + Item.ResponseID;

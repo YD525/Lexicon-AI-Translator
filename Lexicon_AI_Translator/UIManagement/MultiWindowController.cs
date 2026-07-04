@@ -21,11 +21,11 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        private static void OpenCodeWin(LexGui Win)
+        private static void OpenCodeWin(ModFile Mod,LexGui Win)
         {
             if (CodeWin == null)
             {
-                CodeWin = new CodeView(Win);
+                CodeWin = new CodeView(Mod,Win);
                 CodeWin.Show();
             }
             else
@@ -43,11 +43,11 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        private static void OpenTrackingWin(LexGui Win)
+        private static void OpenTrackingWin(ModFile Mod,LexGui Win)
         {
             if (TrackingWin == null)
             {
-                TrackingWin = new RecordTracking(Win);
+                TrackingWin = new RecordTracking(Mod,Win);
                 TrackingWin.Show();
             }
             else
@@ -66,7 +66,7 @@ namespace LexTranslator.UIManagement
                     case GameFileType.ESP:
                         {
                             CloseCodeWin();
-                            OpenTrackingWin(CurrentWin);
+                            OpenTrackingWin(Mod,CurrentWin);
 
                             RecordItem GetRecord = null;
 
@@ -135,6 +135,8 @@ namespace LexTranslator.UIManagement
                                     TrackingWin.RelatedTextListPanel.Children.Clear();
                                 }
 
+
+                                TrackingWin.UpdateAllSectionHeights();
                             }
 
                         }
@@ -142,7 +144,7 @@ namespace LexTranslator.UIManagement
                     case GameFileType.PEX:
                         {
                             CloseTrackingWin();
-                            OpenCodeWin(CurrentWin);
+                            OpenCodeWin(Mod,CurrentWin);
                         }
                         break;
                 }

@@ -19,9 +19,11 @@ namespace LexTranslator.UIManagement
     /// </summary>
     public partial class PlatformConfigStyleWin : Window
     {
-        public PlatformConfigStyleWin()
+        private LexGui _Owner;
+        public PlatformConfigStyleWin(LexGui Owner)
         {
             InitializeComponent();
+            this._Owner = Owner;
         }
 
         public Border GenCloudAIConfig(int Key,string PlatformName, string Document, bool IsSystemNode, List<string> Keys, string Model, CustomPlatformType CustomType, List<string> Models)
@@ -613,7 +615,7 @@ namespace LexTranslator.UIManagement
                             Phoenix.Config.PlatformConfigs.Remove(GetKey);
                             Phoenix.SaveConfig();
                             DeFine.WorkingWin.SyncPlatformConfig();
-                            UIHelper.SyncNodes();
+                            UIHelper.SyncNodes(_Owner.Nodes);
                             break;
                         }
                     }
