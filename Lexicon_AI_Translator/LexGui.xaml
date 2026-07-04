@@ -618,7 +618,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="5"/>
-                                    <RowDefinition Height="45"/>
+                                    <RowDefinition Height="50"/>
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="5"/>
                                 </Grid.RowDefinitions>

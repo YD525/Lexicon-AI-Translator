@@ -471,8 +471,6 @@ namespace LexTranslator
             AddTab(Path,true);
         }
 
-
-
         #region FileTabs
         private void UpdateEmptyState()
         {
