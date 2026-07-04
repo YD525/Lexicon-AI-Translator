@@ -44,6 +44,7 @@ namespace LexTranslator.UIManagement
         public string Path = "";
         public ModFile Mod = null;
         public LocalConfig LocalConfigView = null;
+        public Completer Completer = null;
 
         public TranslateView()
         {
@@ -63,6 +64,8 @@ namespace LexTranslator.UIManagement
                 TransListView = new YDListView(Mod, TransView);
                 TransListView.Clear();
 
+                Mod.Win = this;
+
                 TransListView.LineSelectedEvent += new YDListView.LineSelected((Key) => {
                     this.Dispatcher.Invoke(new Action(() => 
                     {
@@ -72,7 +75,7 @@ namespace LexTranslator.UIManagement
                     }));
                 });
 
-                Mod.SetTranslateView(TransListView);
+                Mod.SetListView(TransListView);
                 Mod.Load();
 
                 SyncConfig();
@@ -91,6 +94,9 @@ namespace LexTranslator.UIManagement
                     LocalConfigView = new LocalConfig(this);
                     LocalConfigView.Hide();
                 }
+
+                Completer = new Completer(this);
+                UIHelper.SyncAvalonEditTextLayout(this);
             }
         }
 
@@ -844,7 +850,7 @@ namespace LexTranslator.UIManagement
 
         private void ReplaceStr(object sender, MouseButtonEventArgs e)
         {
-            DeFine.CurrentReplaceView.Show();
+             new ReplaceWin(this).Show();
         }
 
 
@@ -1230,7 +1236,7 @@ namespace LexTranslator.UIManagement
 
         private void Traditional_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            new TraditionalConvert().Show();
+            new TraditionalConvert(this).Show();
         }
 
         public void CheckCanClearCache(out bool Check)

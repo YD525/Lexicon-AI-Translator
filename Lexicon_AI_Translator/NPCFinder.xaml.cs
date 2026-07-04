@@ -23,15 +23,15 @@ namespace LexTranslator
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < ModRef.TranslateView.RealLines.Count; i++)
+            for (int i = 0; i < ModRef.ListView.RealLines.Count; i++)
             {
-                var Key = ModRef.TranslateView.RealLines[i].Key;
+                var Key = ModRef.ListView.RealLines[i].Key;
 
                 if (ModRef.EspReader.GameCharacters.ContainsKey(Key))
                 {
                     if (ModRef.EspReader.GameCharacters[Key][0].Name.Equals(SearchName))
                     {
-                        ModRef.TranslateView.Goto(Key);
+                        ModRef.ListView.Goto(Key);
                         return;
                     }
                 }

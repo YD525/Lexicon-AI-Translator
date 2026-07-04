@@ -377,8 +377,7 @@ namespace LexTranslator
 
             _Owner.AutoShowTraditional();
 
-
-            CompleteHelper.CheckLang(FilterTo);
+            _Owner.Completer?.CheckLang(FilterTo);
         }
 
         public void SetOutput(string Str)

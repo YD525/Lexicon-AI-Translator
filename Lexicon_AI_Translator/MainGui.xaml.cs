@@ -156,7 +156,7 @@ namespace LexTranslator
         {
             new LexGui().Show();//Test
 
-            DeFine.Init(this);
+            DeFine.Init(new LexGui());
 
              YDChart.SetAction(
                 new Action<RealtimeLineChart>((Ref) =>
@@ -174,7 +174,7 @@ namespace LexTranslator
 
             TranslatorInterface.Init();
 
-            MainHwnd = new WindowInteropHelper(DeFine.WorkingWin).Handle;
+            //MainHwnd = new WindowInteropHelper(DeFine.WorkingWin).Handle;
 
             UILanguageHelper.ChangeLanguage(DeFine.GlobalLocalSetting.CurrentUILanguage);
 
@@ -209,7 +209,7 @@ namespace LexTranslator
 
             LastSetLogButton = InputLogButton;
 
-            CompleteHelper.CheckLang(DeFine.GlobalLocalSetting.TargetLanguage);
+            //CompleteHelper.CheckLang(DeFine.GlobalLocalSetting.TargetLanguage);
 
             SyncConfig();
 
@@ -234,7 +234,7 @@ namespace LexTranslator
 
             SelectFristSettingNav();
 
-            UIHelper.SyncAvalonEditTextLayout();
+            //UIHelper.SyncAvalonEditTextLayout();
 
             //If you like anime, you can place a CG.png in the program's installation directory, making sure the dimensions are correct. It will display an anime character at the top of the software.
             string CheckCGPath = DeFine.GetFullPath(@"\CG.png");
@@ -335,7 +335,7 @@ namespace LexTranslator
 
         private void Traditional_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            new TraditionalConvert().Show();
+            new TraditionalConvert(new TranslateView()).Show();
         }
 
         #endregion
@@ -484,31 +484,31 @@ namespace LexTranslator
 
         public void ShowLeftMenu(bool Show)
         {
-            if (DeFine.WorkingWin != null)
-            {
-                DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
-                {
-                    if (Show)
-                    {
-                        UIHelper.LeftMenuIsShow = true;
-                        Mask.Visibility = Visibility.Visible;
-                        Storyboard Storyboard = (Storyboard)this.Resources["ExpandMenu"];
-                        Storyboard.Begin();
+            //if (DeFine.WorkingWin != null)
+            //{
+            //    DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
+            //    {
+            //        if (Show)
+            //        {
+            //            UIHelper.LeftMenuIsShow = true;
+            //            Mask.Visibility = Visibility.Visible;
+            //            Storyboard Storyboard = (Storyboard)this.Resources["ExpandMenu"];
+            //            Storyboard.Begin();
 
-                        IsExpanded = true;
-                        LeftMenu.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        UIHelper.LeftMenuIsShow = false;
-                        Mask.Visibility = Visibility.Collapsed;
-                        Storyboard Storyboard = (Storyboard)this.Resources["CollapseMenu"];
-                        Storyboard.Begin();
+            //            IsExpanded = true;
+            //            LeftMenu.Visibility = Visibility.Visible;
+            //        }
+            //        else
+            //        {
+            //            UIHelper.LeftMenuIsShow = false;
+            //            Mask.Visibility = Visibility.Collapsed;
+            //            Storyboard Storyboard = (Storyboard)this.Resources["CollapseMenu"];
+            //            Storyboard.Begin();
 
-                        IsExpanded = false;
-                    }
-                }));
-            }
+            //            IsExpanded = false;
+            //        }
+            //    }));
+            //}
         }
 
         public bool IsExpanded = false;
@@ -2706,7 +2706,7 @@ namespace LexTranslator
 
         private void ReplaceStr(object sender, MouseButtonEventArgs e)
         {
-            DeFine.CurrentReplaceView.Show();
+           
         }
 
 
@@ -3780,7 +3780,7 @@ namespace LexTranslator
                 DeFine.GlobalLocalSetting.TextDisplay = TextLayout.LTR;
             }
 
-            UIHelper.SyncAvalonEditTextLayout();
+            //UIHelper.SyncAvalonEditTextLayout();
         }
 
         private void CanTranslateBook_Click(object sender, RoutedEventArgs e)

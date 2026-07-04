@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
+using LexTranslator.UIManagement;
 using PhoenixEngine.Common;
 using PhoenixEngine.Translate;
 
@@ -11,9 +12,11 @@ namespace LexTranslator
     /// </summary>
     public partial class ReplaceWin : Window
     {
-        public ReplaceWin()
+        private TranslateView _Owner;
+        public ReplaceWin(TranslateView Owner)
         {
             InitializeComponent();
+            this._Owner = Owner;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -48,15 +51,15 @@ namespace LexTranslator
                 {
                     if (GetScope.Equals("Current"))
                     {
-                        DeFine.WorkingWin.ToStr.Text = DeFine.WorkingWin.FromStr.Text.Replace(SourceStr.Text,TargetStr.Text);
+                        _Owner.ToStr.Text = _Owner.FromStr.Text.Replace(SourceStr.Text,TargetStr.Text);
                     }
                     else
                     {
-                        if (DeFine.WorkingWin.TransViewList != null)
+                        if (_Owner.TransListView != null)
                         {
-                            for (int i = 0; i < DeFine.WorkingWin.TransViewList.Rows; i++)
+                            for (int i = 0; i < _Owner.TransListView.Rows; i++)
                             {
-                                var GetRow = DeFine.WorkingWin.TransViewList.RealLines[i];
+                                var GetRow = _Owner.TransListView.RealLines[i];
 
                                 bool IsCloud = false;
                                 GetRow.SyncData(ref IsCloud);
@@ -71,7 +74,7 @@ namespace LexTranslator
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
-                                    GetRow.SyncUI(DeFine.WorkingWin.TransViewList);
+                                    GetRow.SyncUI(_Owner.TransListView);
                                 }
                             }
                         }
@@ -82,15 +85,15 @@ namespace LexTranslator
                 {
                     if (GetScope.Equals("Current"))
                     {
-                        DeFine.WorkingWin.ToStr.Text = DeFine.WorkingWin.ToStr.Text.Replace(SourceStr.Text, TargetStr.Text);
+                        _Owner.ToStr.Text = _Owner.ToStr.Text.Replace(SourceStr.Text, TargetStr.Text);
                     }
                     else
                     {
-                        if (DeFine.WorkingWin.TransViewList != null)
+                        if (_Owner.TransListView != null)
                         {
-                            for (int i = 0; i < DeFine.WorkingWin.TransViewList.Rows; i++)
+                            for (int i = 0; i < _Owner.TransListView.Rows; i++)
                             {
-                                var GetRow = DeFine.WorkingWin.TransViewList.RealLines[i];
+                                var GetRow = _Owner.TransListView.RealLines[i];
 
                                 bool IsCloud = false;
                                 GetRow.SyncData(ref IsCloud);
@@ -105,8 +108,7 @@ namespace LexTranslator
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
-                                  
-                                    GetRow.SyncUI(DeFine.WorkingWin.TransViewList);
+                                    GetRow.SyncUI(_Owner.TransListView);
                                 }
                             }
                         }

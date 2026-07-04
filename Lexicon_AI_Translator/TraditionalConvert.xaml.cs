@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using LexTranslator.TranslateManage;
+using LexTranslator.UIManagement;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Language;
@@ -14,28 +15,30 @@ namespace LexTranslator
     /// </summary>
     public partial class TraditionalConvert : Window
     {
-        public TraditionalConvert()
+        private TranslateView _Owner;
+        public TraditionalConvert(TranslateView Owner)
         {
             InitializeComponent();
+            this._Owner = Owner;
         }
-
+     
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Owner = DeFine.WorkingWin;
+            this.Owner = _Owner.Parent;
         }
 
         public Thread ConvertTrd = null;
         private void ConvertCurrent_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            string GetOriginal = DeFine.WorkingWin.FromStr.Text;
+            string GetOriginal = _Owner.FromStr.Text;
             ConvertTrd = new Thread(() =>
             {
                 string Result = ChineseVariantMap.SimplifiedToTraditionalByReq(GetOriginal);
 
                 if (Result.Length > 0)
                 {
-                    DeFine.WorkingWin.Dispatcher.Invoke(new Action(() => {
-                        DeFine.WorkingWin.ToStr.Text = Result;
+                    _Owner.Dispatcher.Invoke(new Action(() => {
+                        _Owner.ToStr.Text = Result;
                     }));
                 }
 
@@ -48,28 +51,28 @@ namespace LexTranslator
         {
             ConvertTrd = new Thread(() =>
             {
-                int Total = DeFine.WorkingWin.TransViewList.RealLines.Count;
+                int Total = _Owner.TransListView.RealLines.Count;
 
-                for (int i = 0; i < DeFine.WorkingWin.TransViewList.RealLines.Count; i++)
+                for (int i = 0; i < _Owner.TransListView.RealLines.Count; i++)
                 {
-                    if (DeFine.WorkingWin.TransViewList.RealLines[i].Score <= 0)
+                    if (_Owner.TransListView.RealLines[i].Score <= 0)
                     {
                         continue;
                     }
-                    string Source = DeFine.WorkingWin.TransViewList.RealLines[i].SourceText;
+                    string Source = _Owner.TransListView.RealLines[i].SourceText;
                     var Result = ChineseVariantMap.SimplifiedToTraditionalByReq(Source);
 
                     if (Source.ToLower().Replace(" ","") != Result.ToLower().Replace(" ", ""))
                     {
-                        DeFine.WorkingWin.TransViewList.RealLines[i].TransText = Result;
+                        _Owner.TransListView.RealLines[i].TransText = Result;
 
-                        var Key = DeFine.WorkingWin.TransViewList.RealLines[i].Key;
+                        var Key = _Owner.TransListView.RealLines[i].Key;
 
                         var Link = TranslatorInterface.Instance.GetLink();
 
                         Link[Key] = Result;
 
-                        DeFine.WorkingWin.TransViewList.RealLines[i].SyncUI(DeFine.WorkingWin.TransViewList);
+                        _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
 
                         CloudDBCache.AddCache(TranslatorInterface.Instance.GetFileUniqueKey(), Key, (int)TranslatorInterface.Instance.To, Source, Result);
                     }

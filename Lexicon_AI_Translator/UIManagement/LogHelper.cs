@@ -16,25 +16,25 @@ namespace LexTranslator.UIManagement
 
         public static void SetInputLog(string Text)
         {
-            if (DeFine.WorkingWin != null)
+            if (DeFine.WorkWin != null)
             {
-                SetLog(DeFine.WorkingWin.InputLog, Text);
+                SetLog(DeFine.WorkWin.InputLog, Text);
             }
         }
 
         public static void SetOutputLog(string Text)
         {
-            if (DeFine.WorkingWin != null)
+            if (DeFine.WorkWin != null)
             {
-                SetLog(DeFine.WorkingWin.OutputLog, Text);
+                SetLog(DeFine.WorkWin.OutputLog, Text);
             }
         }
 
         public static void SetMainLog(string Text)
         {
-            if (DeFine.WorkingWin != null)
+            if (DeFine.WorkWin != null)
             {
-                SetLog(DeFine.WorkingWin.MainLog, Text);
+                SetLog(DeFine.WorkWin.MainLog, Text);
             }
         }
     }

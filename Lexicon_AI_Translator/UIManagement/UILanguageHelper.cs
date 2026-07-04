@@ -52,111 +52,111 @@ namespace LexTranslator.UIManage
 
         public static void UPDateUI(string Key, string Value)
         {
-            switch (Key)
-            {
-                case "﻿UINormal":
-                    {
-                        DeFine.WorkingWin.UINormal.Content = Value;
-                    }
-                break;
-                case "UIQuick":
-                    {
-                        DeFine.WorkingWin.UIQuick.Content = Value;
-                    }
-                break;
-                case "LoadFileButton":
-                    {
-                        DeFine.WorkingWin.LoadFileButton.Content = Value;
-                    }
-                break;
-                case "RefreshButton":
-                    {
-                        DeFine.WorkingWin.RefreshButton.Content = Value;
-                    }
-                break;
-                case "UIClone":
-                    { 
-                       DeFine.WorkingWin.UIClone.Content = Value;
-                    }
-                break;
-                case "UIClear":
-                    {
-                        DeFine.WorkingWin.UIClear.Content = Value;
-                    }
-                break;
-                case "UIReplace":
-                    {
-                        DeFine.WorkingWin.UIReplace.Content = Value;
-                    }
-                break;
-                case "HistoryButtonFont":
-                    {
-                        DeFine.WorkingWin.HistoryButtonFont.Content = Value;
-                    }
-                break;
-                case "UIType":
-                    {
-                        DeFine.WorkingWin.UIType.Content = Value;
-                    }
-                break;
-                case "UIKey":
-                    {
-                        DeFine.WorkingWin.UIKey.Content = Value;
-                    }
-                break;
-                case "UIOriginal":
-                    {
-                        DeFine.WorkingWin.UIOriginal.Content = Value;
-                    }
-                break;
-                case "UITranslated":
-                    {
-                        DeFine.WorkingWin.UITranslated.Content = Value;
-                    }
-                break;
-                case "UIOriginalCap":
-                    {
-                        DeFine.WorkingWin.UIOriginalCap.Content = Value;
-                    }
-                break;
-                case "UITranslatedCap":
-                    {
-                        DeFine.WorkingWin.UITranslatedCap.Content = Value;
-                    }
-                break;
-                //HistoryList
-                case "ChangeTime":
-                    {
-                        ((GridView)DeFine.WorkingWin.HistoryList.View).Columns[0].Header = Value;
-                    }
-                break;
-                case "Translated":
-                    {
-                        ((GridView)DeFine.WorkingWin.HistoryList.View).Columns[1].Header = Value;
-                    }
-                break;
-                //Footer
-                case "UIAutoSpeak":
-                    { 
-                        DeFine.WorkingWin.UIAutoSpeak.Content = Value;
-                    }
-                break;
-                case "UICancel":
-                    {
-                        DeFine.WorkingWin.UICancel.Content = Value;
-                    }
-                break;
-                case "TranslateOTButtonFont":
-                    {
-                        DeFine.WorkingWin.TranslateOTButtonFont.Content = Value;
-                    }
-                break;
-                case "UIApply":
-                    {
-                        DeFine.WorkingWin.UIApply.Content = Value;
-                    }
-                break;
-            }
+            //switch (Key)
+            //{
+            //    case "﻿UINormal":
+            //        {
+            //            DeFine.WorkingWin.UINormal.Content = Value;
+            //        }
+            //    break;
+            //    case "UIQuick":
+            //        {
+            //            DeFine.WorkingWin.UIQuick.Content = Value;
+            //        }
+            //    break;
+            //    case "LoadFileButton":
+            //        {
+            //            DeFine.WorkingWin.LoadFileButton.Content = Value;
+            //        }
+            //    break;
+            //    case "RefreshButton":
+            //        {
+            //            DeFine.WorkingWin.RefreshButton.Content = Value;
+            //        }
+            //    break;
+            //    case "UIClone":
+            //        { 
+            //           DeFine.WorkingWin.UIClone.Content = Value;
+            //        }
+            //    break;
+            //    case "UIClear":
+            //        {
+            //            DeFine.WorkingWin.UIClear.Content = Value;
+            //        }
+            //    break;
+            //    case "UIReplace":
+            //        {
+            //            DeFine.WorkingWin.UIReplace.Content = Value;
+            //        }
+            //    break;
+            //    case "HistoryButtonFont":
+            //        {
+            //            DeFine.WorkingWin.HistoryButtonFont.Content = Value;
+            //        }
+            //    break;
+            //    case "UIType":
+            //        {
+            //            DeFine.WorkingWin.UIType.Content = Value;
+            //        }
+            //    break;
+            //    case "UIKey":
+            //        {
+            //            DeFine.WorkingWin.UIKey.Content = Value;
+            //        }
+            //    break;
+            //    case "UIOriginal":
+            //        {
+            //            DeFine.WorkingWin.UIOriginal.Content = Value;
+            //        }
+            //    break;
+            //    case "UITranslated":
+            //        {
+            //            DeFine.WorkingWin.UITranslated.Content = Value;
+            //        }
+            //    break;
+            //    case "UIOriginalCap":
+            //        {
+            //            DeFine.WorkingWin.UIOriginalCap.Content = Value;
+            //        }
+            //    break;
+            //    case "UITranslatedCap":
+            //        {
+            //            DeFine.WorkingWin.UITranslatedCap.Content = Value;
+            //        }
+            //    break;
+            //    //HistoryList
+            //    case "ChangeTime":
+            //        {
+            //            ((GridView)DeFine.WorkingWin.HistoryList.View).Columns[0].Header = Value;
+            //        }
+            //    break;
+            //    case "Translated":
+            //        {
+            //            ((GridView)DeFine.WorkingWin.HistoryList.View).Columns[1].Header = Value;
+            //        }
+            //    break;
+            //    //Footer
+            //    case "UIAutoSpeak":
+            //        { 
+            //            DeFine.WorkingWin.UIAutoSpeak.Content = Value;
+            //        }
+            //    break;
+            //    case "UICancel":
+            //        {
+            //            DeFine.WorkingWin.UICancel.Content = Value;
+            //        }
+            //    break;
+            //    case "TranslateOTButtonFont":
+            //        {
+            //            DeFine.WorkingWin.TranslateOTButtonFont.Content = Value;
+            //        }
+            //    break;
+            //    case "UIApply":
+            //        {
+            //            DeFine.WorkingWin.UIApply.Content = Value;
+            //        }
+            //    break;
+            //}
         }
         public static Dictionary<string, string> UICache = new Dictionary<string, string>();
         public static void ChangeLanguage(Languages SetLanguage)

@@ -14,6 +14,7 @@ using PhoenixEngine;
 using PhoenixEngine.Language;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine.ADO;
+using System.Runtime.CompilerServices;
 
 namespace LexTranslator
 {
@@ -41,8 +42,6 @@ namespace LexTranslator
         public static string CurrentVersion = "3.8.2.8";
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
-        public static MainGui WorkingWin = null;
-        public static ReplaceWin CurrentReplaceView = new ReplaceWin();
         public static TextEditor ActiveIDE = null;
 
         public static RowStyleWin RowStyleWin = new RowStyleWin();
@@ -50,6 +49,8 @@ namespace LexTranslator
         public static PlatformConfigStyleWin PlatformConfigStyleWin = new PlatformConfigStyleWin(null);
 
         public static DataBaseView DataBaseView = null;
+
+        public static LexGui WorkWin = null;
 
         public static ExtendWin ExtendWin = null;
         public static CGView CG = null;
@@ -82,16 +83,6 @@ namespace LexTranslator
 
         public static void CloseAny()
         {
-            if (WorkingWin != null)
-            {
-                //WorkingWin.SaveApiKey(PlatformType.Gemini, WorkingWin.SGeminiKey.Text);
-                //WorkingWin.SaveApiKey(PlatformType.ChatGpt, WorkingWin.SChatGptKey.Text);
-                //WorkingWin.SaveApiKey(PlatformType.DeepSeek, WorkingWin.SDeepSeekKey.Text);
-                //WorkingWin.SaveApiKey(PlatformType.DeepL, WorkingWin.SDeepLKey.Text);
-
-                WorkingWin.Hide();
-            }
-
             Phoenix.SaveConfig();
             DeFine.GlobalLocalSetting.SaveConfig();
             Environment.Exit(0);
@@ -145,51 +136,41 @@ namespace LexTranslator
             }
         }
 
-        public static void ShowExtendWin()
-        {
-            ExtendWin.ShowUI();
-            ExtendWin.Owner = DeFine.WorkingWin;
-        }
-
-        public static void CloseExtendWin()
-        {
-            ExtendWin.CloseUI();
-        }
-
         private static object ErrorReportLocker = new object();
         public static void SetSQLErrorReport()
         {
-            P_SQLite.OnError += new Action<string>((ErrorMsg) => 
+            P_SQLite.OnError += new Action<string>((ErrorMsg) =>
             {
-                lock(ErrorReportLocker)
-                Application.Current.Dispatcher.Invoke(new Action(() => 
-                {
-                    if (DeFine.DataBaseView != null)
+                lock (ErrorReportLocker)
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        MessageBoxExtend.Show(DeFine.DataBaseView, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
-                    }
-                    else
-                    if (DeFine.WorkingWin != null)
-                    {
-                        MessageBoxExtend.Show(DeFine.WorkingWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
-                    }
-                }));
+                        if (DeFine.DataBaseView != null)
+                        {
+                            MessageBoxExtend.Show(DeFine.DataBaseView, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                        }
+                        else
+                        if (DeFine.WorkWin != null)
+                        {
+                            MessageBoxExtend.Show(DeFine.WorkWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                        }
+                    }));
             });
         }
-        public static void Init(MainGui Main)
+        public static void Init(LexGui Win)
         {
-            WorkingWin = Main;
+            if (Win != null)
+            {
+                DeFine.WorkWin = Win;
+                ChartDataRef = new ChartData();
 
-            ChartDataRef = new ChartData();
-            CurrentReplaceView.Owner = WorkingWin;
-            CurrentReplaceView.Hide();
-            RowStyleWin.Hide();
+                RowStyleWin.Hide();
 
-            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            ExtendWin = new ExtendWin();
+                ExtendWin = new ExtendWin();
 
-            SetSQLErrorReport();
+                SetSQLErrorReport();
+            }
         }
     }
 

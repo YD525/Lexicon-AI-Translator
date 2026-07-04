@@ -61,9 +61,9 @@ namespace LexTranslator.UIManagement
 
                     TranslatorInterface.SyncTransState(new Action(() =>
                     {
-                        DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
+                        DeFine.WorkWin.Dispatcher.Invoke(new Action(() =>
                         {
-                            DeFine.WorkingWin.SyncTransStateUI();
+                            //DeFine.WorkWin.SyncTransStateUI();
                         }));
                     }), false);
                 }

@@ -215,20 +215,20 @@ public class YDListView
 
             LineSelectedEvent?.Invoke(GetKey);
 
-            if (DeFine.GlobalLocalSetting.ShowCode && DeFine.WorkingWin.CurrentTransType == 3)
-            {
-                string AutoValue = KeyToFakeGrid(GetKey).RealSource;
+            //if (DeFine.GlobalLocalSetting.ShowCode && DeFine.WorkingWin.CurrentTransType == 3)
+            //{
+            //    string AutoValue = KeyToFakeGrid(GetKey).RealSource;
 
-                if (DeFine.WorkingWin.PexLinks.ContainsKey(GetKey))
-                {
-                    if (AutoValue == "")
-                    {
-                        AutoValue = RowStyleWin.GetOriginal(MainGrid);
-                    }
-                }
+            //    if (DeFine.WorkingWin.PexLinks.ContainsKey(GetKey))
+            //    {
+            //        if (AutoValue == "")
+            //        {
+            //            AutoValue = RowStyleWin.GetOriginal(MainGrid);
+            //        }
+            //    }
 
-                RowStyleWin.SelectLineFromIDE(DeFine.WorkingWin.PexLinks[GetKey], AutoValue);
-            }
+            //    RowStyleWin.SelectLineFromIDE(DeFine.WorkingWin.PexLinks[GetKey], AutoValue);
+            //}
         }
 
         MainBorder.BorderBrush = new SolidColorBrush((Color)Application.Current.Resources["LineASelected"]);

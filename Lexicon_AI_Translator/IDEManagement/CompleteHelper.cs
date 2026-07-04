@@ -10,6 +10,7 @@ using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 using System.Linq;
 using System.Windows.Documents;
+using LexTranslator.UIManagement;
 
 namespace LexTranslator.IDEManagement
 {
@@ -243,19 +244,24 @@ namespace LexTranslator.IDEManagement
     }
 
 
-    public class CompleteHelper
+    public class Completer
     {
-        public static void CheckLang(Languages Lang)
+        public TranslateView View = null;
+        public Completer(TranslateView View)
+        { 
+           this.View = View;
+        }
+        public void CheckLang(Languages Lang)
         {
             if (WordAutoComplete.WordCompleters.ContainsKey(Lang))
             {
                 DeFine.WordCompleter = WordAutoComplete.WordCompleters[Lang];
-                DeFine.WorkingWin.ShowWordCompletion();
+                View.ShowWordCompletion();
             }
             else
             {
                 DeFine.WordCompleter = null;
-                DeFine.WorkingWin.HideWordCompletion();
+                View.HideWordCompletion();
             }
         }
     }

@@ -113,15 +113,15 @@ namespace LexTranslator.UIManagement
 
                                 Records.Add(GetRecord);
 
-                                for (int i = 0; i < Mod.TranslateView.RealLines.Count; i++)
+                                for (int i = 0; i < Mod.ListView.RealLines.Count; i++)
                                 {
-                                    if (Mod.TranslateView.RealLines[i].Key != SelectKey)
+                                    if (Mod.ListView.RealLines[i].Key != SelectKey)
                                     {
-                                        if (Mod.TranslateView.RealLines[i].RealSource.Contains(GetRecord.String) ||
-                                            Mod.TranslateView.RealLines[i].SourceText.Contains(GetRecord.String)
+                                        if (Mod.ListView.RealLines[i].RealSource.Contains(GetRecord.String) ||
+                                            Mod.ListView.RealLines[i].SourceText.Contains(GetRecord.String)
                                         )
                                         {
-                                            Records.Add(Mod.EspReader.Records[Mod.TranslateView.RealLines[i].Key]);
+                                            Records.Add(Mod.EspReader.Records[Mod.ListView.RealLines[i].Key]);
                                         }
                                     }
                                 }

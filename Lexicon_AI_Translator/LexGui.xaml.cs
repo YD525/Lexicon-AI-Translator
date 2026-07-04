@@ -34,6 +34,8 @@ namespace LexTranslator
         private PageSwitcher MainPage = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            DeFine.Init(this);
+
             InfoPage = new PageSwitcher(this,InFoPages);
             MainPage = new PageSwitcher(this,Views);
             ShowView("InFo");
@@ -797,5 +799,12 @@ namespace LexTranslator
             }
         }
         #endregion
+
+        public void SyncPlatformConfig()
+        { 
+        
+        }
+
+
     }
 }

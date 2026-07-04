@@ -29,7 +29,7 @@ namespace LexTranslator.TranslateManage
         {
             HumanTranslationApi.WaitHumanInput += new AwaitHumanTranslationHandler((Send) => 
             {
-                if (DeFine.WorkingWin == null)
+                if (DeFine.WorkWin == null)
                 {
                     return string.Empty;
                 }
@@ -39,7 +39,7 @@ namespace LexTranslator.TranslateManage
                 Application.Current.Dispatcher.Invoke(new Action(() => 
                 {
                     NInteractiveView = new InteractiveView();
-                    NInteractiveView.Owner = DeFine.WorkingWin;
+                    NInteractiveView.Owner = DeFine.WorkWin;
                     NInteractiveView.SetSend(Send);
                 }));
 
@@ -138,25 +138,27 @@ namespace LexTranslator.TranslateManage
         /// <returns></returns>
         public static UnitContext<BaseUnit> BaseUnitStateChanged(BaseUnit Item, UnitTranslationState State)
         {
-            if (State == UnitTranslationState.Queued)
-            {
-                if (DeFine.WorkingWin != null)
-                {
-                    if (DeFine.WorkingWin.TransViewList != null)
-                    {
-                        FakeGrid QueryGrid = DeFine.WorkingWin.TransViewList.KeyToFakeGrid(Item.Key);
+            //if (State == UnitTranslationState.Queued)
+            //{
+            //    if (DeFine.WorkWin != null)
+            //    {
+            //        if (DeFine.WorkWin.TransListView != null)
+            //        {
+            //            FakeGrid QueryGrid = DeFine.WorkWin.TransViewList.KeyToFakeGrid(Item.Key);
 
-                        if (QueryGrid != null)
-                        {
-                            if (QueryGrid.TransText.Length == 0)
-                            {
-                                bool IsCloud = false;
-                                QueryGrid.SyncData(ref IsCloud);
-                            }
-                        }
-                    }
-                }
-            }
+            //            if (QueryGrid != null)
+            //            {
+            //                if (QueryGrid.TransText.Length == 0)
+            //                {
+            //                    bool IsCloud = false;
+            //                    QueryGrid.SyncData(ref IsCloud);
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return new UnitContext<BaseUnit>();
 
             return new UnitContext<BaseUnit>();
         }
@@ -240,11 +242,11 @@ namespace LexTranslator.TranslateManage
 
         public static void LogCall(string Log)
         {
-            if (DeFine.WorkingWin != null)
+            if (DeFine.WorkWin != null)
             {
-                DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
+                DeFine.WorkWin.Dispatcher.Invoke(new Action(() =>
                 {
-                    DeFine.WorkingWin.MainLog.Text = Log;
+                    DeFine.WorkWin.MainLog.Text = Log;
                 }));
             }
         }
@@ -279,13 +281,13 @@ namespace LexTranslator.TranslateManage
 
         public static void SetTransBarTittle(string Log)
         {
-            if (DeFine.WorkingWin != null)
-            {
-                DeFine.WorkingWin.Dispatcher.Invoke(new Action(() =>
-                {
-                    DeFine.WorkingWin.TransProcess.Content = Log;
-                }));
-            }
+            //if (DeFine.WorkWin != null)
+            //{
+            //    DeFine.WorkWin.Dispatcher.Invoke(new Action(() =>
+            //    {
+            //        DeFine.WorkWin.TransProcess.Content = Log;
+            //    }));
+            //}
         }
 
         public static bool WaitStopSign()
@@ -335,166 +337,167 @@ namespace LexTranslator.TranslateManage
 
         public static List<BaseUnit> GetCanTransUnits()
         {
-            YDListView GetListView = DeFine.WorkingWin.TransViewList;
-            List<BaseUnit> BaseUnits = new List<BaseUnit>();
+            return new List<BaseUnit>();
+            //YDListView GetListView = DeFine.WorkingWin.TransViewList;
+            //List<BaseUnit> BaseUnits = new List<BaseUnit>();
 
-            for (int i = 0; i < GetListView.Rows; i++)
-            {
-                var Row = GetListView.RealLines[i];
-                bool IsCloud = false;
-                Row.SyncData(ref IsCloud);
+            //for (int i = 0; i < GetListView.Rows; i++)
+            //{
+            //    var Row = GetListView.RealLines[i];
+            //    bool IsCloud = false;
+            //    Row.SyncData(ref IsCloud);
 
-                bool HasAddAIMemory = false;
+            //    bool HasAddAIMemory = false;
 
-                if (!HasAddAIMemory)
-                {
-                    if (!string.IsNullOrEmpty(Row.TransText))
-                    {
-                        TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), Row.TransText);
-                    }
-                }
+            //    if (!HasAddAIMemory)
+            //    {
+            //        if (!string.IsNullOrEmpty(Row.TransText))
+            //        {
+            //            TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), Row.TransText);
+            //        }
+            //    }
 
-                EspReader EspInstance = null;
-                if (DeFine.WorkingWin != null)
-                {
-                    if (DeFine.WorkingWin.CurrentTransType == 2)
-                    {
-                        //IsEspFile
-                        EspInstance = DeFine.WorkingWin.GlobalEspReader;
-                    }
-                }
+            //    EspReader EspInstance = null;
+            //    if (DeFine.WorkingWin != null)
+            //    {
+            //        if (DeFine.WorkingWin.CurrentTransType == 2)
+            //        {
+            //            //IsEspFile
+            //            EspInstance = DeFine.WorkingWin.GlobalEspReader;
+            //        }
+            //    }
 
-                if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
-                {
-                    if(EspInstance!=null)
-                    if (EspInstance.Records.ContainsKey(Row.Key))
-                    {
-                        var GetRecord = EspInstance.Records[Row.Key];
+            //    if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
+            //    {
+            //        if(EspInstance!=null)
+            //        if (EspInstance.Records.ContainsKey(Row.Key))
+            //        {
+            //            var GetRecord = EspInstance.Records[Row.Key];
 
-                        if (GetRecord.StringID > 0 && Row.TransText.Length > 0)
-                        {
-                            string AutoType = Row.Type;
+            //            if (GetRecord.StringID > 0 && Row.TransText.Length > 0)
+            //            {
+            //                string AutoType = Row.Type;
 
-                            if (AutoType == "Papyrus" || AutoType == "MCM")
-                            {
-                                AutoType = string.Empty;
-                            }
-                            else
-                            if (AutoType != "NPC_" && AutoType != "WRLD" && AutoType != "CLAS" && AutoType != "ARMO" && AutoType != "AMMO")
-                            {
-                                AutoType = string.Empty;
-                            }
+            //                if (AutoType == "Papyrus" || AutoType == "MCM")
+            //                {
+            //                    AutoType = string.Empty;
+            //                }
+            //                else
+            //                if (AutoType != "NPC_" && AutoType != "WRLD" && AutoType != "CLAS" && AutoType != "ARMO" && AutoType != "AMMO")
+            //                {
+            //                    AutoType = string.Empty;
+            //                }
 
-                            AdvancedDictionaryItem NewItem = new AdvancedDictionaryItem(
-                                string.Empty,//The rule applies to all files.
-                                AutoType,//Automatically determine the type of the current term
-                                Row.GetRealSource(),//Get the source text corresponding to stringsfile id
-                                Row.TransText,//Get the translation content
-                                TranslatorInterface.Instance.From,//Get source language
-                                TranslatorInterface.Instance.To,//Get target language
-                                1,//Use full-word matching
-                                0,//Case sensitivity is not ignored
-                                string.Empty
-                                );
-                            if (!AdvancedDictionary.CheckSame(NewItem))
-                            {
-                                AdvancedDictionary.AddItem(NewItem);
-                            }
-                        }
+            //                AdvancedDictionaryItem NewItem = new AdvancedDictionaryItem(
+            //                    string.Empty,//The rule applies to all files.
+            //                    AutoType,//Automatically determine the type of the current term
+            //                    Row.GetRealSource(),//Get the source text corresponding to stringsfile id
+            //                    Row.TransText,//Get the translation content
+            //                    TranslatorInterface.Instance.From,//Get source language
+            //                    TranslatorInterface.Instance.To,//Get target language
+            //                    1,//Use full-word matching
+            //                    0,//Case sensitivity is not ignored
+            //                    string.Empty
+            //                    );
+            //                if (!AdvancedDictionary.CheckSame(NewItem))
+            //                {
+            //                    AdvancedDictionary.AddItem(NewItem);
+            //                }
+            //            }
 
-                    }
-                }
+            //        }
+            //    }
 
-                if (Row.TransText.Trim().Length == 0)
-                {
-                    bool CanSet = true;
+            //    if (Row.TransText.Trim().Length == 0)
+            //    {
+            //        bool CanSet = true;
 
-                    if (Row.Type.Equals("BOOK"))
-                    {
-                        if (Row.Key.EndsWith("DESC") && !DeFine.GlobalLocalSetting.CanTranslateBook)
-                        {
-                            if (EngineEvents.SetDataCall != null)
-                            {
-                                EngineEvents.SetDataCall(0, "Skip Book fields:" + Row.Key);
-                            }
+            //        if (Row.Type.Equals("BOOK"))
+            //        {
+            //            if (Row.Key.EndsWith("DESC") && !DeFine.GlobalLocalSetting.CanTranslateBook)
+            //            {
+            //                if (EngineEvents.SetDataCall != null)
+            //                {
+            //                    EngineEvents.SetDataCall(0, "Skip Book fields:" + Row.Key);
+            //                }
 
-                            CanSet = false;
-                        }
-                    }
-                    else
-                    if (Row.Score <= 0)
-                    {
-                        if (EngineEvents.SetDataCall != null)
-                        {
-                            EngineEvents.SetDataCall(0, "Skip Dangerous fields:" + Row.Key);
-                        }
+            //                CanSet = false;
+            //            }
+            //        }
+            //        else
+            //        if (Row.Score <= 0)
+            //        {
+            //            if (EngineEvents.SetDataCall != null)
+            //            {
+            //                EngineEvents.SetDataCall(0, "Skip Dangerous fields:" + Row.Key);
+            //            }
 
-                        CanSet = false;
-                    }
+            //            CanSet = false;
+            //        }
 
-                    if (EspInstance != null)
-                    {
-                        var GetTrans = EspInstance.ToStringsFile.QueryData(Row.Key);
+            //        if (EspInstance != null)
+            //        {
+            //            var GetTrans = EspInstance.ToStringsFile.QueryData(Row.Key);
 
-                        if (GetTrans != null)
-                        {
-                            //Added to context memory. Helps AI improve accuracy.
-                            TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), GetTrans.Value);
-                            HasAddAIMemory = true;
+            //            if (GetTrans != null)
+            //            {
+            //                //Added to context memory. Helps AI improve accuracy.
+            //                TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), GetTrans.Value);
+            //                HasAddAIMemory = true;
 
-                            var Link = Instance.GetLink();
-                            Link[Row.Key] = GetTrans.Value;
+            //                var Link = Instance.GetLink();
+            //                Link[Row.Key] = GetTrans.Value;
 
-                            var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
-                            if (GetFakeGrid != null)
-                            {
-                                Row.TransText = GetTrans.Value;
+            //                var GetFakeGrid = GetListView.KeyToFakeGrid(Row.Key);
+            //                if (GetFakeGrid != null)
+            //                {
+            //                    Row.TransText = GetTrans.Value;
 
-                                Row.SyncUI(GetListView);
-                            }
+            //                    Row.SyncUI(GetListView);
+            //                }
 
-                            if (EngineEvents.SetDataCall != null)
-                            {
-                                EngineEvents.SetDataCall(0, "Skip StringsFile(" + GetTrans.Type.ToString() + ") fields:" + Row.Key);
-                            }
+            //                if (EngineEvents.SetDataCall != null)
+            //                {
+            //                    EngineEvents.SetDataCall(0, "Skip StringsFile(" + GetTrans.Type.ToString() + ") fields:" + Row.Key);
+            //                }
 
-                            CanSet = false;
-                        }
-                        else
-                        {
-                            if (EspInstance.Records.ContainsKey(Row.Key))
-                            {
-                                if (EspInstance.Records[Row.Key].StringID > 0)
-                                {
-                                    if (EngineEvents.SetDataCall != null)
-                                    {
-                                        EngineEvents.SetDataCall(0, "Skip StringsFile(" + EspInstance.Records[Row.Key].String + ") fields:" + Row.Key);
-                                    }
+            //                CanSet = false;
+            //            }
+            //            else
+            //            {
+            //                if (EspInstance.Records.ContainsKey(Row.Key))
+            //                {
+            //                    if (EspInstance.Records[Row.Key].StringID > 0)
+            //                    {
+            //                        if (EngineEvents.SetDataCall != null)
+            //                        {
+            //                            EngineEvents.SetDataCall(0, "Skip StringsFile(" + EspInstance.Records[Row.Key].String + ") fields:" + Row.Key);
+            //                        }
 
-                                    CanSet = false;
-                                }
-                            }
-                        }
-                    }
+            //                        CanSet = false;
+            //                    }
+            //                }
+            //            }
+            //        }
 
-                    if (CanSet)
-                    {
-                        var Link = Instance.GetLink();
-                        if (Link[Row.Key] != null)
-                        {
-                            CanSet = false;
-                        }
+            //        if (CanSet)
+            //        {
+            //            var Link = Instance.GetLink();
+            //            if (Link[Row.Key] != null)
+            //            {
+            //                CanSet = false;
+            //            }
 
-                        if (CanSet)
-                        {
-                            BaseUnits.Add(new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(),
-                           Row.Key, Row.Type, Row.SourceText, Row.TransText, Row.Score));
-                        }
-                    }
-                }
-            }
+            //            if (CanSet)
+            //            {
+            //                BaseUnits.Add(new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(),
+            //               Row.Key, Row.Type, Row.SourceText, Row.TransText, Row.Score));
+            //            }
+            //        }
+            //    }
+            //}
 
-            return BaseUnits;
+            //return BaseUnits;
         }
 
         public static bool PreparingComplete = false;
@@ -510,128 +513,128 @@ namespace LexTranslator.TranslateManage
         public static Thread InitTrd = null;
         public static void PreparingTranslationUnits()
         {
-            if (Instance != null)
-            {
-                var BatchCore = Instance.GetBatchCore();
-                if (BatchCore != null)
-                {
-                    BatchCore.Close();
-                }
-            }
+            //if (Instance != null)
+            //{
+            //    var BatchCore = Instance.GetBatchCore();
+            //    if (BatchCore != null)
+            //    {
+            //        BatchCore.Close();
+            //    }
+            //}
            
-            if (!FristInit)
-            {
-                FristInit = true;
-                PreparingComplete = false;
-            }
-            else
-            {
-                return;
-            }
+            //if (!FristInit)
+            //{
+            //    FristInit = true;
+            //    PreparingComplete = false;
+            //}
+            //else
+            //{
+            //    return;
+            //}
 
-            if (PreparingTrd != null)
-            {
-                try
-                {
-                    PreparingTrd.Abort();
-                }
-                catch { }
-                PreparingTrd = null;
-            }
+            //if (PreparingTrd != null)
+            //{
+            //    try
+            //    {
+            //        PreparingTrd.Abort();
+            //    }
+            //    catch { }
+            //    PreparingTrd = null;
+            //}
 
-            if (InitTrd != null)
-            {
-                try
-                {
-                    InitTrd.Abort();
-                }
-                catch { }
-                InitTrd = null;
-            }
+            //if (InitTrd != null)
+            //{
+            //    try
+            //    {
+            //        InitTrd.Abort();
+            //    }
+            //    catch { }
+            //    InitTrd = null;
+            //}
 
-            PreparingTrd = new Thread(() =>
-            {
-                try
-                {
-                    while (DeFine.WorkingWin.DataLoading == true)
-                    {
-                        Thread.Sleep(1000);
-                    }
+            //PreparingTrd = new Thread(() =>
+            //{
+            //    try
+            //    {
+            //        while (DeFine.WorkingWin.DataLoading == true)
+            //        {
+            //            Thread.Sleep(1000);
+            //        }
 
-                    SetTransBarTittle("Preparing Translation Units...");
+            //        SetTransBarTittle("Preparing Translation Units...");
 
-                    YDListView GetListView = DeFine.WorkingWin.TransViewList;
+            //        YDListView GetListView = DeFine.WorkingWin.TransViewList;
 
-                    List<BaseUnit> BaseUnits = GetCanTransUnits();
-                    InitTrd = new Thread(() =>
-                    {
-                        Instance.Init(BaseUnits, AggregationMode.Aggregation,RowStyleWin.DictionaryKeys.Count);
-                        InitTrd = null;
-                    });
+            //        List<BaseUnit> BaseUnits = GetCanTransUnits();
+            //        InitTrd = new Thread(() =>
+            //        {
+            //            Instance.Init(BaseUnits, AggregationMode.Aggregation,RowStyleWin.DictionaryKeys.Count);
+            //            InitTrd = null;
+            //        });
 
-                    if (!DeFine.GlobalLocalSetting.EnableAnalyzingWords)
-                    {
-                        InitTrd.Start();
+            //        if (!DeFine.GlobalLocalSetting.EnableAnalyzingWords)
+            //        {
+            //            InitTrd.Start();
 
-                        while (InitTrd != null)
-                        {
-                            Thread.Sleep(100);
-                        }
-                    }
-                    else
-                    {
-                        InitTrd.Start();
+            //            while (InitTrd != null)
+            //            {
+            //                Thread.Sleep(100);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            InitTrd.Start();
 
-                        var GetBatchCore = Instance.GetBatchCore();
+            //            var GetBatchCore = Instance.GetBatchCore();
 
-                        while (GetBatchCore.ProcStage < 2)
-                        {
-                            Thread.Sleep(100);
+            //            while (GetBatchCore.ProcStage < 2)
+            //            {
+            //                Thread.Sleep(100);
 
-                            SetTransBarTittle("Analyzing Words(" + GetBatchCore.MarkLeadersPercent + "%)...");
-                        }
+            //                SetTransBarTittle("Analyzing Words(" + GetBatchCore.MarkLeadersPercent + "%)...");
+            //            }
 
-                        Thread.Sleep(1000);
+            //            Thread.Sleep(1000);
 
-                        if (GetBatchCore.Content != null)
-                        GetListView.Parent.Dispatcher.Invoke(new Action(() =>
-                        {
-                            for (int i = 0; i < GetBatchCore.Content.UnionData.Leaders.Count; i++)
-                            {
-                                string GetKey = GetBatchCore.Content.UnionData.Leaders.ElementAt(i).Key;
+            //            if (GetBatchCore.Content != null)
+            //            GetListView.Parent.Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                for (int i = 0; i < GetBatchCore.Content.UnionData.Leaders.Count; i++)
+            //                {
+            //                    string GetKey = GetBatchCore.Content.UnionData.Leaders.ElementAt(i).Key;
 
-                                for (int ir = 0; ir < GetListView.VisibleRows.Count; ir++)
-                                {
-                                    if (RowStyleWin.GetKey(GetListView.VisibleRows[ir].View).Equals(GetKey))
-                                    {
-                                        RowStyleWin.MarkLeader(GetListView.VisibleRows[ir].View, true);
-                                        break;
-                                    }
-                                }
-                            }
-                        }));
-                    }
+            //                    for (int ir = 0; ir < GetListView.VisibleRows.Count; ir++)
+            //                    {
+            //                        if (RowStyleWin.GetKey(GetListView.VisibleRows[ir].View).Equals(GetKey))
+            //                        {
+            //                            RowStyleWin.MarkLeader(GetListView.VisibleRows[ir].View, true);
+            //                            break;
+            //                        }
+            //                    }
+            //                }
+            //            }));
+            //        }
 
-                    if (BaseUnits.Count == 0)
-                    {
-                        NeedNextPreparing = true;
-                    }
-                    else
-                    {
-                        NeedNextPreparing = false;
-                    }
+            //        if (BaseUnits.Count == 0)
+            //        {
+            //            NeedNextPreparing = true;
+            //        }
+            //        else
+            //        {
+            //            NeedNextPreparing = false;
+            //        }
 
-                    PreparingComplete = true;
+            //        PreparingComplete = true;
 
-                    PreparingTrd = null;
-                }
-                catch
-                {
-                    PreparingComplete = false;
-                }
-            });
+            //        PreparingTrd = null;
+            //    }
+            //    catch
+            //    {
+            //        PreparingComplete = false;
+            //    }
+            //});
 
-            PreparingTrd.Start();
+            //PreparingTrd.Start();
         }
 
         public static bool NeedNextPreparing = false;
@@ -642,228 +645,228 @@ namespace LexTranslator.TranslateManage
 
         public static void SyncTransState(Action EndAction, bool IsKeep = false)
         {
-            if (SyncTransStateFreeze)
-            {
-                EndAction.Invoke();
-                return;
-            }
+            //if (SyncTransStateFreeze)
+            //{
+            //    EndAction.Invoke();
+            //    return;
+            //}
 
-            if (DeFine.WorkingWin == null)
-            {
-                TranslationStatus = StateControl.Cancel;
-                EndAction.Invoke();
-                return;
-            }
+            //if (DeFine.WorkWin == null)
+            //{
+            //    TranslationStatus = StateControl.Cancel;
+            //    EndAction.Invoke();
+            //    return;
+            //}
 
-            new Thread(() =>
-            {
-                var GetBatchCore = Instance.GetBatchCore();
+            //new Thread(() =>
+            //{
+            //    var GetBatchCore = Instance.GetBatchCore();
 
-                if (TranslationStatus == StateControl.Run && !IsKeep)
-                {
-                    DeFine.WorkingWin?.UPDateUI();
+            //    if (TranslationStatus == StateControl.Run && !IsKeep)
+            //    {
+            //        DeFine.WorkWin?.UPDateUI();
 
-                    if (NeedNextPreparing)
-                    {
-                        FristInit = false;
+            //        if (NeedNextPreparing)
+            //        {
+            //            FristInit = false;
 
-                        PreparingTranslationUnits();
+            //            PreparingTranslationUnits();
 
-                        while (PreparingTrd != null)
-                        {
-                            Thread.Sleep(100);
-                        }
+            //            while (PreparingTrd != null)
+            //            {
+            //                Thread.Sleep(100);
+            //            }
 
-                        if ((GetBatchCore.GetCount()) == 0)
-                        {
-                            TranslationStatus = StateControl.Cancel;
-                            EndAction.Invoke();
-                            return;
-                        }
-                    }
+            //            if ((GetBatchCore.GetCount()) == 0)
+            //            {
+            //                TranslationStatus = StateControl.Cancel;
+            //                EndAction.Invoke();
+            //                return;
+            //            }
+            //        }
 
-                    var BaseUnits = GetCanTransUnits();
+            //        var BaseUnits = GetCanTransUnits();
 
-                    if (BaseUnits.Count == 0)
-                    {
-                        TranslationStatus = StateControl.Cancel;
-                        EndAction.Invoke();
-                        return;
-                    }
+            //        if (BaseUnits.Count == 0)
+            //        {
+            //            TranslationStatus = StateControl.Cancel;
+            //            EndAction.Invoke();
+            //            return;
+            //        }
 
-                    if (Phoenix.Config.AutoSetThreadLimit)
-                    {
-                        Phoenix.SyncTrdCount();
-                    }
+            //        if (Phoenix.Config.AutoSetThreadLimit)
+            //        {
+            //            Phoenix.SyncTrdCount();
+            //        }
 
-                    YDListView GetListView = DeFine.WorkingWin.TransViewList;
+            //        YDListView GetListView = DeFine.WorkingWin.TransViewList;
 
-                    if (GetListView != null)
-                    {
-                        SyncTransStateFreeze = true;
+            //        if (GetListView != null)
+            //        {
+            //            SyncTransStateFreeze = true;
 
-                        MakeReady();
+            //            MakeReady();
 
-                        SetTransBarTittle("Preparing Consistency...");
+            //            SetTransBarTittle("Preparing Consistency...");
 
-                        for (int i = 0; i < GetListView.Rows; i++)
-                        {
-                            var Row = GetListView.RealLines[i];
-                            bool IsCloud = false;
-                            Row.SyncData(ref IsCloud);
+            //            for (int i = 0; i < GetListView.Rows; i++)
+            //            {
+            //                var Row = GetListView.RealLines[i];
+            //                bool IsCloud = false;
+            //                Row.SyncData(ref IsCloud);
 
-                            if (!string.IsNullOrEmpty(Row.TransText))
-                            {
-                                TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), Row.TransText);
-                            }
-                        }
+            //                if (!string.IsNullOrEmpty(Row.TransText))
+            //                {
+            //                    TranslatorInterface.Instance.AddAIMemory(Row.GetSource(), Row.TransText);
+            //                }
+            //            }
 
-                        int ModifyCount = 0;
+            //            int ModifyCount = 0;
 
-                        if (GetBatchCore != null)
-                        {
-                            ModifyCount = GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount;
-                            GetBatchCore.Close();
+            //            if (GetBatchCore != null)
+            //            {
+            //                ModifyCount = GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount;
+            //                GetBatchCore.Close();
 
-                            GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation,RowStyleWin.DictionaryKeys.Count);
-                            GetBatchCore.Start();
-                        }
+            //                GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation,RowStyleWin.DictionaryKeys.Count);
+            //                GetBatchCore.Start();
+            //            }
 
-                        SyncTransStateFreeze = false;
+            //            SyncTransStateFreeze = false;
 
-                        EndAction.Invoke();
+            //            EndAction.Invoke();
 
-                        SetTransBarTittle(string.Format("STRINGS({0}/{1})", ModifyCount, GetListView.Rows));
+            //            SetTransBarTittle(string.Format("STRINGS({0}/{1})", ModifyCount, GetListView.Rows));
 
-                        Thread.Sleep(1000);
+            //            Thread.Sleep(1000);
 
-                        if (WaitStopSign())
-                        {
-                            EndAction.Invoke();
-                            return;
-                        }
+            //            if (WaitStopSign())
+            //            {
+            //                EndAction.Invoke();
+            //                return;
+            //            }
 
-                        bool IsEnd = false;
-                        int TotalCount = 0;
+            //            bool IsEnd = false;
+            //            int TotalCount = 0;
 
-                        DateTime StartTime = DateTime.Now;
+            //            DateTime StartTime = DateTime.Now;
 
-                        while (!IsEnd)
-                        {
-                            try
-                            {
-                                if (TranslationStatus == StateControl.Cancel)
-                                {
-                                    break;
-                                }
+            //            while (!IsEnd)
+            //            {
+            //                try
+            //                {
+            //                    if (TranslationStatus == StateControl.Cancel)
+            //                    {
+            //                        break;
+            //                    }
 
-                                if (!GetBatchCore.IsWorking && GetBatchCore.ProcStage != 10)
-                                {
-                                    if ((DateTime.Now - StartTime).TotalSeconds > 30)
-                                        break;
-                                }
-                                else
-                                {
-                                    StartTime = DateTime.Now;
-                                }
+            //                    if (!GetBatchCore.IsWorking && GetBatchCore.ProcStage != 10)
+            //                    {
+            //                        if ((DateTime.Now - StartTime).TotalSeconds > 30)
+            //                            break;
+            //                    }
+            //                    else
+            //                    {
+            //                        StartTime = DateTime.Now;
+            //                    }
 
-                                var GetUnit = GetBatchCore.DequeueTranslated(out IsEnd);
+            //                    var GetUnit = GetBatchCore.DequeueTranslated(out IsEnd);
 
-                                if (GetUnit != null)
-                                {
-                                    TotalCount++;
-                                    TranslatorInterface.Instance.SetLink(GetUnit.Key, GetUnit.Translated);
-                                    SetTransBarTittle(string.Format("STRINGS({0}/{1})",
-                                          GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount, GetListView.Rows));
-                                }
-                                else 
-                                if (!IsEnd)
-                                {
-                                    Thread.Sleep(10);
-                                }
+            //                    if (GetUnit != null)
+            //                    {
+            //                        TotalCount++;
+            //                        TranslatorInterface.Instance.SetLink(GetUnit.Key, GetUnit.Translated);
+            //                        SetTransBarTittle(string.Format("STRINGS({0}/{1})",
+            //                              GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount, GetListView.Rows));
+            //                    }
+            //                    else 
+            //                    if (!IsEnd)
+            //                    {
+            //                        Thread.Sleep(10);
+            //                    }
 
-                                if (WaitStopSign())
-                                {
-                                    return;
-                                }
-                            }
-                            catch
-                            {
-                                Thread.Sleep(10);
-                            }
-                        }
+            //                    if (WaitStopSign())
+            //                    {
+            //                        return;
+            //                    }
+            //                }
+            //                catch
+            //                {
+            //                    Thread.Sleep(10);
+            //                }
+            //            }
 
-                        while (!GetBatchCore.TranslatedQueue.IsEmpty)
-                        {
-                            if (GetBatchCore.TranslatedQueue.TryDequeue(out var TailUnit))
-                            {
-                                TranslatorInterface.Instance.SetLink(TailUnit.Key, TailUnit.Translated);
-                            }
-                        }
+            //            while (!GetBatchCore.TranslatedQueue.IsEmpty)
+            //            {
+            //                if (GetBatchCore.TranslatedQueue.TryDequeue(out var TailUnit))
+            //                {
+            //                    TranslatorInterface.Instance.SetLink(TailUnit.Key, TailUnit.Translated);
+            //                }
+            //            }
 
 
-                        DeFine.WorkingWin.TransViewList.QuickRefresh();
+            //            //DeFine.WorkWin.TransViewList.QuickRefresh();
 
-                        var BatchCore = TranslatorInterface.Instance.GetBatchCore();
+            //            var BatchCore = TranslatorInterface.Instance.GetBatchCore();
 
-                        if (BatchCore != null)
-                        {
-                            Thread.Sleep(500);
-                            BatchCore.Close();
-                        }
+            //            if (BatchCore != null)
+            //            {
+            //                Thread.Sleep(500);
+            //                BatchCore.Close();
+            //            }
 
-                        TranslationStatus = StateControl.Cancel;
-                        EndAction.Invoke();
-                    }
-                }
-                else if (TranslationStatus == StateControl.Stop)
-                {
-                    SyncTransStateFreeze = true;
+            //            TranslationStatus = StateControl.Cancel;
+            //            EndAction.Invoke();
+            //        }
+            //    }
+            //    else if (TranslationStatus == StateControl.Stop)
+            //    {
+            //        SyncTransStateFreeze = true;
 
-                    if (GetBatchCore != null)
-                    {
-                        GetBatchCore.Stop();
-                    }
+            //        if (GetBatchCore != null)
+            //        {
+            //            GetBatchCore.Stop();
+            //        }
 
-                    EndAction.Invoke();
+            //        EndAction.Invoke();
 
-                    SyncTransStateFreeze = false;
-                }
-                else if (TranslationStatus == StateControl.Cancel || TranslationStatus == StateControl.Null)
-                {
-                    SyncTransStateFreeze = true;
+            //        SyncTransStateFreeze = false;
+            //    }
+            //    else if (TranslationStatus == StateControl.Cancel || TranslationStatus == StateControl.Null)
+            //    {
+            //        SyncTransStateFreeze = true;
 
-                    if (GetBatchCore != null)
-                    {
-                        try
-                        {
-                            GetBatchCore.Close();
-                        }
-                        catch { }
-                    }
+            //        if (GetBatchCore != null)
+            //        {
+            //            try
+            //            {
+            //                GetBatchCore.Close();
+            //            }
+            //            catch { }
+            //        }
 
-                    EndAction.Invoke();
+            //        EndAction.Invoke();
 
-                    SyncTransStateFreeze = false;
+            //        SyncTransStateFreeze = false;
 
-                    InteractiveView.CloseAll();
-                }
-                else
-                {
-                    SyncTransStateFreeze = true;
+            //        InteractiveView.CloseAll();
+            //    }
+            //    else
+            //    {
+            //        SyncTransStateFreeze = true;
 
-                    if (GetBatchCore != null)
-                    {
-                        GetBatchCore.Keep();
-                    }
+            //        if (GetBatchCore != null)
+            //        {
+            //            GetBatchCore.Keep();
+            //        }
 
-                    EndAction.Invoke();
+            //        EndAction.Invoke();
 
-                    SyncTransStateFreeze = false;
+            //        SyncTransStateFreeze = false;
 
-                    InteractiveView.CloseAll();
-                }
-            }).Start();
+            //        InteractiveView.CloseAll();
+            //    }
+            //}).Start();
         }
       
         public static void Close()

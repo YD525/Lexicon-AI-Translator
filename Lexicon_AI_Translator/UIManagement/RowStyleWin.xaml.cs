@@ -162,9 +162,9 @@ namespace LexTranslator.UIManagement
         public static List<string> RecordModifyStates = new List<string>();
 
         public static HashSet<string> DictionaryKeys = new HashSet<string>();
-        public Grid CreateLine(ModFile File,bool IsModify,double Height, BaseUnit Item)
+        public Grid CreateLine(ModFile Mod,bool IsModify,double Height, BaseUnit Item)
         {
-            var FindDictionary = File.Lex_Dictionary.CheckDictionary(Item.Key);
+            var FindDictionary = Mod.Lex_Dictionary.CheckDictionary(Item.Key);
 
             if (FindDictionary != null)
             {
@@ -220,11 +220,11 @@ namespace LexTranslator.UIManagement
 
             EspReader EspInstance = null;
 
-            if (File != null)
+            if (Mod != null)
             {
-                if (File.Type == GameFileType.ESP)
+                if (Mod.Type == GameFileType.ESP)
                 {
-                    EspInstance = File.EspReader;
+                    EspInstance = Mod.EspReader;
                 }
             }
 
@@ -235,10 +235,10 @@ namespace LexTranslator.UIManagement
 
             Grid GetChildGrid = (Grid)MainBorder.Child;
 
-            GetChildGrid.ColumnDefinitions[0].Width = DeFine.WorkingWin.TransViewHeader.ColumnDefinitions[0].Width;
-            GetChildGrid.ColumnDefinitions[1].Width = DeFine.WorkingWin.TransViewHeader.ColumnDefinitions[1].Width;
-            GetChildGrid.ColumnDefinitions[2].Width = DeFine.WorkingWin.TransViewHeader.ColumnDefinitions[2].Width;
-            GetChildGrid.ColumnDefinitions[3].Width = DeFine.WorkingWin.TransViewHeader.ColumnDefinitions[3].Width;
+            GetChildGrid.ColumnDefinitions[0].Width = Mod.Win.TransViewHeader.ColumnDefinitions[0].Width;
+            GetChildGrid.ColumnDefinitions[1].Width = Mod.Win.TransViewHeader.ColumnDefinitions[1].Width;
+            GetChildGrid.ColumnDefinitions[2].Width = Mod.Win.TransViewHeader.ColumnDefinitions[2].Width;
+            GetChildGrid.ColumnDefinitions[3].Width = Mod.Win.TransViewHeader.ColumnDefinitions[3].Width;
 
             StackPanel GetStackPanel = (StackPanel)((Grid)GetChildGrid.Children[0]).Children[0];
 
@@ -318,9 +318,9 @@ namespace LexTranslator.UIManagement
 
             Grid GetColorGrid = (Grid)GetTranslatedGrid.Children[1];
 
-            ((Border)GetColorGrid.Children[0]).Tag = File;
-            ((Border)GetColorGrid.Children[1]).Tag = File;
-            ((Border)GetColorGrid.Children[2]).Tag = File;
+            ((Border)GetColorGrid.Children[0]).Tag = Mod;
+            ((Border)GetColorGrid.Children[1]).Tag = Mod;
+            ((Border)GetColorGrid.Children[2]).Tag = Mod;
 
             ((Border)GetColorGrid.Children[0]).PreviewMouseDown += ChangeColor;
             ((Border)GetColorGrid.Children[1]).PreviewMouseDown += ChangeColor;
@@ -427,108 +427,37 @@ namespace LexTranslator.UIManagement
 
         public void SaveText(TextEditor RTB)
         {
-            // Skip if In Normal View Mode Or Working Window / TransViewList Is Null
-            if (DeFine.GlobalLocalSetting.ViewMode == "Normal" ||
-                DeFine.WorkingWin == null ||
-                DeFine.WorkingWin.TransViewList == null) return;
-            try
-            {
-                string OriginalText = RTB.Text;
+            //// Skip if In Normal View Mode Or Working Window / TransViewList Is Null
+            //if (DeFine.GlobalLocalSetting.ViewMode == "Normal" ||
+            //    DeFine.WorkWin == null ||
+            //    DeFine.WorkWin.TransViewList == null) return;
+            //try
+            //{
+            //    string OriginalText = RTB.Text;
                
-                // Get Key And Target Grid
-                string Key = P_Convert.ObjToStr(RTB.Tag);
-                var Target = DeFine.WorkingWin.TransViewList.KeyToFakeGrid(Key);
+            //    // Get Key And Target Grid
+            //    string Key = P_Convert.ObjToStr(RTB.Tag);
+            //    var Target = DeFine.WorkWin.TransViewList.KeyToFakeGrid(Key);
 
-                // Update Translation Data And History Cache
-                if (Target != null)
-                {
-                    TranslatorInterface.Instance.AutoSetLink(Key, Target.SourceText, OriginalText);
-                    bool IsCloud = false;
-                    Target.SyncData(ref IsCloud);
-                    TranslatorInterface.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);
-                }
+            //    // Update Translation Data And History Cache
+            //    if (Target != null)
+            //    {
+            //        TranslatorInterface.Instance.AutoSetLink(Key, Target.SourceText, OriginalText);
+            //        bool IsCloud = false;
+            //        Target.SyncData(ref IsCloud);
+            //        TranslatorInterface.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);
+            //    }
 
-                // Apply LTR Or RTL Layout
-                ApplyLTROrRtl(RTB);
-            }
-            finally
-            {
+            //    // Apply LTR Or RTL Layout
+            //    ApplyLTROrRtl(RTB);
+            //}
+            //finally
+            //{
                 
-            }
+            //}
         }
 
-        public static Thread AutoSelectIDETrd = null;
-     
-        public static void SelectLineFromIDE(int LineID, string Value)
-        {
-            if (DeFine.ActiveIDE == null)
-            {
-                return;
-            }
-            if (DeFine.WorkingWin.CodeViewShowState!=1)
-            {
-                return;
-            }
-
-            if (AutoSelectIDETrd != null)
-            {
-                try 
-                {
-                    AutoSelectIDETrd.Abort();
-                }
-                catch { }
-                AutoSelectIDETrd = null;
-            }
-
-            Value = "\"" + Value + "\"";
-
-            if (LineID == 0)
-            {
-                LineID = 1;
-            }
-
-            AutoSelectIDETrd = new Thread(() =>
-            {
-                try
-                {
-                    DeFine.ActiveIDE.Dispatcher.Invoke(() =>
-                    {
-                        var Editor = DeFine.ActiveIDE;
-                        var Doc = Editor.Document;
-
-                        int TotalLines = Doc.LineCount;
-
-                        for (int i = LineID; i <= TotalLines; i++)
-                        {
-                            var Line = Doc.GetLineByNumber(i);
-                            string Text = Doc.GetText(Line);
-
-                            int Index = Text.IndexOf(Value, StringComparison.OrdinalIgnoreCase);
-
-                            if (Index >= 0)
-                            {
-                                int Offset = Line.Offset + Index;
-
-                                Editor.ScrollToLine(i);
-                                Editor.Select(Offset, Value.Length);
-                                Editor.CaretOffset = Offset + Value.Length;
-                                Editor.Focus();
-
-                                break;
-                            }
-                        }
-                    });
-                }
-                catch (OperationCanceledException)
-                {
-                }
-
-                AutoSelectIDETrd = null;
-            });
-
-
-            AutoSelectIDETrd.Start();
-        }
+    
 
         public void OnePreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -572,9 +501,9 @@ namespace LexTranslator.UIManagement
                 ModFile GetMod = ButtonHandle.Tag as ModFile;
                 Color GetColor = ((SolidColorBrush)ButtonHandle.Background).Color;
 
-                if (GetMod.TranslateView != null)
+                if (GetMod.ListView != null)
                 {
-                    GetMod.TranslateView.ChangeFontColor(GetMod.P_Translator.GetFileUniqueKey(), GetColor.R, GetColor.G, GetColor.B);
+                    GetMod.ListView.ChangeFontColor(GetMod.P_Translator.GetFileUniqueKey(), GetColor.R, GetColor.G, GetColor.B);
                 }
             }
         }

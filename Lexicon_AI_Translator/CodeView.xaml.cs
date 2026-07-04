@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using LexTranslator.UIManagement;
 using LexTranslator.SkyrimManagement;
+using System.Threading;
 
 namespace LexTranslator
 {
@@ -18,9 +19,9 @@ namespace LexTranslator
     /// </summary>
     public partial class CodeView : Window
     {
-        private Window _Owner;
+        private LexGui _Owner;
         public ModFile ModRef = null;
-        public CodeView(ModFile Mod,Window Owner)
+        public CodeView(ModFile Mod,LexGui Owner)
         {
             InitializeComponent();
 
@@ -164,46 +165,82 @@ namespace LexTranslator
             }
         }
 
-        private readonly Stopwatch SyncWatch = new Stopwatch();
-        private readonly object SyncLock = new object();
-
-        public void SyncZIndex()
-        {
-            lock (SyncLock)
-            {
-                if (SyncWatch.IsRunning && SyncWatch.ElapsedMilliseconds < 100)
-                    return;
-
-                SyncWatch.Restart();
-            }
-
-            this.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                var ChildHwnd = new WindowInteropHelper(this).Handle;
-
-                Win32.SetWindowPos(
-                    ChildHwnd,
-                    DeFine.WorkingWin.MainHwnd,
-                    0, 0, 0, 0,
-                    Win32.SWP_NOMOVE |
-                    Win32.SWP_NOSIZE |
-                    Win32.SWP_NOACTIVATE |
-                    Win32.SWP_SHOWWINDOW);
-            }));
-        }
-
-        private void Window_ContentRendered(object sender, EventArgs e)
-        {
-            SyncZIndex();
-        }
 
         private void SetText(string Text)
         {
-            MultiWindowController.CodeWin.Dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                MultiWindowController.CodeWin.TextEditor.WordWrap = false;
-                MultiWindowController.CodeWin.TextEditor.Document = new TextDocument(Text);
+               TextEditor.WordWrap = false;
+               TextEditor.Document = new TextDocument(Text);
             });
+        }
+
+        public Thread AutoSelectIDETrd = null;
+        public void SelectLineFromIDE(int LineID, string Value)
+        {
+            if (DeFine.ActiveIDE == null)
+            {
+                return;
+            }
+           
+            if (AutoSelectIDETrd != null)
+            {
+                try
+                {
+                    AutoSelectIDETrd.Abort();
+                }
+                catch { }
+                AutoSelectIDETrd = null;
+            }
+
+            Value = "\"" + Value + "\"";
+
+            if (LineID == 0)
+            {
+                LineID = 1;
+            }
+
+            AutoSelectIDETrd = new Thread(() =>
+            {
+                try
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        var Editor = TextEditor;
+                        var Doc = Editor.Document;
+
+                        int TotalLines = Doc.LineCount;
+
+                        for (int i = LineID; i <= TotalLines; i++)
+                        {
+                            var Line = Doc.GetLineByNumber(i);
+                            string Text = Doc.GetText(Line);
+
+                            int Index = Text.IndexOf(Value, StringComparison.OrdinalIgnoreCase);
+
+                            if (Index >= 0)
+                            {
+                                int Offset = Line.Offset + Index;
+
+                                Editor.ScrollToLine(i);
+                                Editor.Select(Offset, Value.Length);
+                                Editor.CaretOffset = Offset + Value.Length;
+                                Editor.Focus();
+
+                                break;
+                            }
+                        }
+                    });
+                }
+                catch (OperationCanceledException)
+                {
+                }
+
+                AutoSelectIDETrd = null;
+            });
+
+
+            AutoSelectIDETrd.Start();
         }
     }
 

@@ -42,7 +42,9 @@ namespace LexTranslator.SkyrimManagement
         public LexDictionary Lex_Dictionary = new LexDictionary();
 
         public Translator P_Translator = null;
-        public YDListView TranslateView = null;
+        public YDListView ListView = null;
+
+        public TranslateView Win = null;
 
         public GameFileState State = GameFileState.Null;
 
@@ -89,9 +91,9 @@ namespace LexTranslator.SkyrimManagement
             }
         }
 
-        public void SetTranslateView(YDListView TranslateView)
+        public void SetListView(YDListView ListView)
         { 
-           this.TranslateView = TranslateView;
+           this.ListView = ListView;
         }
         private void Backup()
         {
@@ -161,23 +163,23 @@ namespace LexTranslator.SkyrimManagement
 
         public void SyncListView(bool CanSetSource)
         {
-            if (TranslateView != null)
+            if (ListView != null)
             {
-                for (int i = 0; i < TranslateView.Rows; i++)
+                for (int i = 0; i < ListView.Rows; i++)
                 {
                     bool IsCloud = false;
 
-                    TranslateView.RealLines[i].SyncData(ref IsCloud);
+                    ListView.RealLines[i].SyncData(ref IsCloud);
 
-                    string GetKey = TranslateView.RealLines[i].Key;
+                    string GetKey = ListView.RealLines[i].Key;
 
-                    string GetTransText = TranslateView.RealLines[i].TransText;
+                    string GetTransText = ListView.RealLines[i].TransText;
 
                     if (CanSetSource)
                     {
                         if (string.IsNullOrEmpty(GetTransText))
                         {
-                            GetTransText = TranslateView.RealLines[i].SourceText;
+                            GetTransText = ListView.RealLines[i].SourceText;
                         }
                     }
 
@@ -281,7 +283,7 @@ namespace LexTranslator.SkyrimManagement
                         break;
                 }
 
-                Lex_Dictionary.WriteDictionary(this.TranslateView);
+                Lex_Dictionary.WriteDictionary(this.ListView);
                 Lex_Dictionary.CreatDictionary();
             }
         }

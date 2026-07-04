@@ -126,7 +126,7 @@ namespace LexTranslator.SkyrimManagement
             }
             catch 
             {
-                MessageBoxExtend.Show(DeFine.WorkingWin, "This XML file format is not supported.");
+                MessageBoxExtend.Show(DeFine.WorkWin, "This XML file format is not supported.");
             }
         }
 
