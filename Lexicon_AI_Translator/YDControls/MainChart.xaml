@@ -21,9 +21,9 @@
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
             <TextBlock Text="Current"
-                       Foreground="White" FontSize="22" FontWeight="Bold"/>
+                       Foreground="#FFFAE306" FontSize="22" FontWeight="Bold"/>
             <TextBlock Text="Real-time Token Usage"
-                       Foreground="White" FontSize="12" 
+                       Foreground="#FF979494" FontSize="12" 
                        Margin="0,4,0,0"/>
         </StackPanel>
 
@@ -50,9 +50,9 @@
 
         <StackPanel Grid.Row="2" Margin="0,0,0,20">
             <TextBlock Text="Total"
-                 Foreground="White" FontSize="22" FontWeight="Bold"/>
+                 Foreground="#FFFAE306" FontSize="22" FontWeight="Bold"/>
             <TextBlock Text="Total Token Usage"
-                 Foreground="White" FontSize="12"
+                 Foreground="#FF979494" FontSize="12"
                  Margin="0,4,0,0"/>
         </StackPanel>
 
@@ -94,15 +94,15 @@
             <Button x:Name="BtnPause" Content="⏸  PAUSE"
                     Click="BtnPause_Click"
                     Width="110" Height="34"
-                    Background="#1A1E2E" Foreground="#FF0B74D1"
-                    BorderBrush="#FF0B74D1" BorderThickness="1"
+                    Background="#FF373100" Foreground="#FFFAE306"
+                    BorderBrush="#FFFAE306" BorderThickness="1"
                     FontSize="12"
                     Cursor="Hand" Margin="0,0,12,0"/>
             <Button x:Name="BtnClear" Content="✕  CLEAR"
                     Click="BtnClear_Click"
                     Width="110" Height="34"
-                    Background="#FF282828" Foreground="#FFFF7380"
-                    BorderBrush="#FFFF7380" BorderThickness="1"
+                    Background="#FF373100" Foreground="#FFFAE306"
+                    BorderBrush="#FFFAE306" BorderThickness="1"
                     FontSize="12" 
                     Cursor="Hand"/>
             <Grid Width="25" Height="25" Background="#FFD58811" Visibility="Hidden">

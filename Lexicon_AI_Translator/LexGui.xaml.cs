@@ -45,8 +45,11 @@ namespace LexTranslator
         {
             DeFine.Init(this);
 
+            TranslatorInterface.Init();
+
             InfoPage = new PageSwitcher(this,InFoPages);
             MainPage = new PageSwitcher(this,Views);
+
             ShowView("InFo");
 
             UIHelper.SyncNodes(Nodes);
