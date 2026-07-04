@@ -26,6 +26,7 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
 using System.Threading;
+using System.Reflection;
 
 namespace LexTranslator
 {
@@ -82,6 +83,7 @@ namespace LexTranslator
             EngineEvents.SetBookTranslateCallback += BookTransCallBack;
 
             SelectFristSettingNav();
+            InfoPage.SwitchPageByHorizontal(0);
         }
 
         public void BookTransCallBack(string Key, string CurrentText)

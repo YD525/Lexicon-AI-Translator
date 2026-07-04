@@ -1688,4 +1688,16 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="ModButtonStyle" TargetType="Border">
+        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="BorderBrush" Value="#3D3D3D"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#303030"/>
+                <Setter Property="BorderBrush" Value="#505050"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
