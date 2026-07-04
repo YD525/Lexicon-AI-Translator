@@ -24,12 +24,12 @@ public class PageSwitcher
     private double GetViewH() => WorkingWin.ActualHeight + EdgeBuffer;
     private double GetViewW() => WorkingWin.ActualWidth + EdgeBuffer;
 
-    private void FadeInPage(Grid page)
+    private void FadeInPage(Grid Page)
     {
-        page.Opacity = 0;
-        page.Visibility = Visibility.Visible;
-        var anim = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(2));
-        page.BeginAnimation(UIElement.OpacityProperty, anim);
+        Page.Opacity = 0;
+        Page.Visibility = Visibility.Visible;
+        var Anim = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(2));
+        Page.BeginAnimation(UIElement.OpacityProperty, Anim);
     }
 
     public void SwitchPageByVertical(int Index)
@@ -138,10 +138,10 @@ public class PageSwitcher
         }
     }
 
-    private TranslateTransform GetOrCreateTransform(Grid page)
+    private TranslateTransform GetOrCreateTransform(Grid Page)
     {
-        if (!(page.RenderTransform is TranslateTransform))
-            page.RenderTransform = new TranslateTransform();
-        return (TranslateTransform)page.RenderTransform;
+        if (!(Page.RenderTransform is TranslateTransform))
+            Page.RenderTransform = new TranslateTransform();
+        return (TranslateTransform)Page.RenderTransform;
     }
 }
