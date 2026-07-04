@@ -339,10 +339,6 @@
         <Setter Property="Background" Value="#FF373737"/>
     </Style>
 
-    <Style x:Key="FrameStyle" TargetType="Grid">
-        <Setter Property="Background" Value="#FF2A2A2A"/>
-    </Style>
-
     <Style x:Key="ModelFont" TargetType="Label">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>

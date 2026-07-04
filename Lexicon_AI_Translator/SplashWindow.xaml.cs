@@ -58,7 +58,7 @@ namespace LexTranslator
         }
 
         public Thread LoadingTrd = null;
-        public static MainGui Main = null;
+        public static LexGui Main = null;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -150,7 +150,7 @@ namespace LexTranslator
                
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    SplashWindow.Main = new MainGui();
+                    SplashWindow.Main = new LexGui();
                     SplashWindow.Main.Show();
                     CanExit = false;
 

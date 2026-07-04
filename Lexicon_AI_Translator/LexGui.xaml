@@ -97,8 +97,6 @@ IsHitTestVisible="False"/>
                             </Border>
                         </Grid>
 
-
-
                         <Grid Grid.Row="2">
                             <Border Tag="Settings" ToolTip="Settings"  Background="Transparent"  Margin="0" CornerRadius="0" Style="{DynamicResource MenuBlockStyle}" PreviewMouseDown="ShowView">
                                 <Grid>
@@ -595,7 +593,527 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                             </Grid>
                         </Grid>
 
-                        <Grid>
+                        <Grid Tag ="Setting" Visibility="Visible">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="45"/>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="5"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="1" Margin="5">
+                                    <StackPanel Orientation="Horizontal" Margin="5 0 5 0" Name="SettingNavs">
+                                        <Border  Width="160" Style="{DynamicResource ModelSelected}" CornerRadius="5 0 0 5" Grid.Column="0" PreviewMouseDown="SelectSettingNav">
+                                            <Grid>
+                                                <Label Style="{DynamicResource ModelFont}">
+                                                    Request And ApiKey Configs
+                                                </Label>
+                                                <Grid Visibility="Visible" Style="{DynamicResource ModelSelectedBlock}">
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+
+                                        <Border Width="100" Style="{DynamicResource ModelUnSelected}" Grid.Column="1" PreviewMouseDown="SelectSettingNav">
+                                            <Grid>
+                                                <Label Style="{DynamicResource ModelFont}">
+                                                    AI Configs
+                                                </Label>
+                                                <Grid Visibility="Collapsed"  Style="{DynamicResource ModelSelectedBlock}">
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+
+                                        <Border Width="100" Style="{DynamicResource ModelUnSelected}" Grid.Column="1" PreviewMouseDown="SelectSettingNav">
+                                            <Grid>
+                                                <Label Style="{DynamicResource ModelFont}">
+                                                    Game Configs
+                                                </Label>
+                                                <Grid Visibility="Collapsed"  Style="{DynamicResource ModelSelectedBlock}">
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+
+                                        <Border Width="100" Style="{DynamicResource ModelUnSelected}" Grid.Column="1" PreviewMouseDown="SelectSettingNav">
+                                            <Grid>
+                                                <Label Style="{DynamicResource ModelFont}">
+                                                    UI Configs
+                                                </Label>
+                                                <Grid Visibility="Collapsed"  Style="{DynamicResource ModelSelectedBlock}">
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+
+                                        <Border Width="100" Style="{DynamicResource ModelUnSelected}"  CornerRadius="0 5 5 0" Grid.Column="1" PreviewMouseDown="SelectSettingNav">
+                                            <Grid>
+                                                <Label Style="{DynamicResource ModelFont}">
+                                                    Engine Configs
+                                                </Label>
+                                                <Grid Visibility="Collapsed"  Style="{DynamicResource ModelSelectedBlock}">
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Grid.Row="2" Name="SettingFrames">
+                                    <Border  Style="{DynamicResource SettingFrame}" Tag="Request And ApiKey Configs" Visibility="Visible">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
+
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center">
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    HttpProxy Configs
+                                                </Label>
+
+
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                    <Label Style="{DynamicResource NormalText}">
+                                                        Url:
+                                                    </Label>
+
+                                                    <Border  Style="{DynamicResource DefTextBoxBorder}" Width="230" >
+                                                        <TextBox Style="{DynamicResource DefTextBox}" Name="SProxyUrl" TextChanged="SProxyUrl_TextChanged">
+                                                        </TextBox>
+                                                    </Border>
+
+                                                    <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0">
+                                                        UserName:
+                                                    </Label>
+
+                                                    <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" >
+                                                        <TextBox Style="{DynamicResource DefTextBox}" Name="SProxyUserName" TextChanged="SProxyUserName_TextChanged">
+                                                        </TextBox>
+                                                    </Border>
+
+                                                    <Label Style="{DynamicResource NormalText}" Margin="5 0 0 0">
+                                                        Password:
+                                                    </Label>
+
+                                                    <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" >
+                                                        <TextBox Style="{DynamicResource DefTextBox}" Name="SProxyPassword" TextChanged="SProxyPassword_TextChanged">
+                                                        </TextBox>
+                                                    </Border>
+                                                </StackPanel>
+
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    APIKey Configs
+                                                </Label>
+
+                                                <StackPanel Name="KeyConfigBlocks">
+                                                </StackPanel>
+
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <Border  Style="{DynamicResource SettingFrame}" Tag="AI Configs" Visibility="Collapsed">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center" Width="500">
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Context Configs
+                                                </Label>
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                Context Generation Limit:
+                                                            </Label>
+                                                            <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" >
+                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SContextLimit" TextChanged="SContextLimit_TextChanged">
+                                                                </TextBox>
+                                                            </Border>
+                                                        </StackPanel>
+                                                        <TextBox Style="{DynamicResource InFoText}"  Margin="5">
+                                                            This setting controls the maximum length of context provided to the AI for each translation. It uses a character count limit, with a default maximum of 200 characters.
+      Providing context helps the AI maintain a consistent tone and accurately translate technical terms or industry-specific vocabulary, which can significantly improve translation quality. This is especially useful for ensuring consistent output for synonyms and related concepts.
+      Setting this limit too high will increase the cost of your cloud translation service. This setting applies only to batch translations.
+                                                        </TextBox>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                                Context Generation
+                                                            </Label>
+                                                            <CheckBox Style="{DynamicResource ToggleCircleCheckBox}" VerticalAlignment="Center" Name="SContextEnable" Click="SContextEnable_Click">
+                                                            </CheckBox>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    AI Keyword Configs
+                                                </Label>
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Label Style="{DynamicResource NormalText}" Margin="0 5 0 0">
+                                                            AI Keyword:
+                                                        </Label>
+                                                        <Border  Style="{DynamicResource DefTextBoxBorder}" Margin="5">
+                                                            <TextBox Margin="5" IsTabStop="True" TextWrapping="Wrap" AcceptsReturn="True" Height="200" VerticalContentAlignment="Top" Style="{DynamicResource DefTextBox}" Name="SAIKeyword" TextChanged="SAIKeyword_TextChanged">
+                                                            </TextBox>
+                                                        </Border>
+                                                        <TextBox Style="{DynamicResource InFoText}"  Margin="5 5 5 10">
+                                                            Append user-defined keywords at the end when requesting AI.
+                                                        </TextBox>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <Border  Style="{DynamicResource SettingFrame}" Tag="Game Configs" Visibility="Collapsed">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center" Width="500">
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    File Configs
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 10">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                Game:
+                                                            </Label>
+
+                                                            <ComboBox Style="{DynamicResource CustomComboBoxStyle}" Name="SGame" Width="100" SelectionChanged="SGame_SelectionChanged">
+                                                            </ComboBox>
+                                                        </StackPanel>
+
+
+                                                        <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 10">
+          <Label Style="{DynamicResource NormalText}">
+              Skyrim Install Path:
+          </Label>
+
+          <Border Style="{DynamicResource DefTextBoxBorder}" Width="300">
+              <TextBox Style="{DynamicResource DefTextBox}" Name="SkyrimPath">
+              </TextBox>
+          </Border>
+      </StackPanel>-->
+
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Pex Configs
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 10">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                CodeGenStyle:
+                                                            </Label>
+
+                                                            <ComboBox Style="{DynamicResource CustomComboBoxStyle}" Name="SCodeGenStyle" Width="100" SelectionChanged="SCodeGenStyle_SelectionChanged">
+                                                            </ComboBox>
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                                Assembly Code Comparison mode:
+                                                            </Label>
+                                                            <CheckBox Style="{DynamicResource ToggleCircleCheckBox}" VerticalAlignment="Center" Name="SShowAssembly" Click="SShowAssembly_Click">
+                                                            </CheckBox>
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                                String encoding: Force UTF8
+                                                            </Label>
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+                                                </Border>
+
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Esp Configs
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                                String encoding: Force UTF8
+                                                            </Label>
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    ESP Record Allowed Fields
+                                                </Label>
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <Border Height="150">
+                                                            <TextBox Name="EspFilterStr" Margin="5" CaretBrush="White" VerticalScrollBarVisibility="Visible"  FontSize="13.5" TextWrapping="Wrap" AcceptsReturn="True" Background="{x:Null}" BorderThickness="0" Foreground="White">
+                                                            </TextBox>
+                                                        </Border>
+                                                        <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
+                                                            <Border Style="{DynamicResource LiteButton}" PreviewMouseDown="SetFilter">
+                                                                <Label Style="{DynamicResource LiteButtonFont}" Foreground="White">
+                                                                    Set
+                                                                </Label>
+                                                            </Border>
+
+                                                            <Border Style="{DynamicResource LiteButton}" PreviewMouseDown="ReSetFilter">
+                                                                <Label Style="{DynamicResource LiteButtonFont}" Foreground="White">
+                                                                    Reset
+                                                                </Label>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <Border  Style="{DynamicResource SettingFrame}" Tag="UI Configs" Visibility="Collapsed">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center" Width="500">
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Interface Configs
+                                                </Label>
+
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                    <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                        ShowCodeView
+                                                    </Label>
+                                                    <CheckBox Style="{DynamicResource ToggleCircleCheckBox}" VerticalAlignment="Center" Name="ShowCodeView" Click="ShowCodeView_Click">
+                                                    </CheckBox>
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                    <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                        Interface language settings
+                                                    </Label>
+                                                    <ComboBox MinWidth="80" IsTabStop="True" Name="UILanguages" SelectionChanged="UILanguages_SelectionChanged" Width="150" VerticalAlignment="Center" Cursor="Hand" Height="30" Style="{StaticResource CustomComboBoxStyle}">
+                                                    </ComboBox>
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                    <CheckBox Name="RTLEnable" VerticalAlignment="Center" Click="RTLEnable_Click">
+                                                    </CheckBox>
+                                                    <Label Style="{DynamicResource NormalText}" VerticalAlignment="Center">
+                                                        Display text in RTL layout
+                                                    </Label>
+                                                </StackPanel>
+
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Theme Configs
+                                                </Label>
+                                                <StackPanel Orientation="Horizontal" Margin="5 10 5 10" Cursor="Hand">
+                                                    <Border Background="#FF0B74D1" Width="130" CornerRadius="5" Height="30" BorderThickness="1" PreviewMouseDown="ChangeTechDarkBlue">
+                                                        <Label Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                            Tech Dark Blue
+                                                        </Label>
+                                                    </Border>
+
+                                                    <!--<Border Background="#FF972DD2" Width="130" CornerRadius="5" Height="30" BorderThickness="1" Margin="10 0 0 0"  PreviewMouseDown="ChangePurpleStyle">
+      <Label Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+          Purple Style
+      </Label>
+  </Border>-->
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <Border  Style="{DynamicResource SettingFrame}" Tag="Engine Configs" Visibility="Collapsed">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0 0 0 0" VerticalAlignment="Center" Width="500">
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Punctuation Output Format
+                                                </Label>
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <Grid Margin="0 5 0 5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30"/>
+                                                            <ColumnDefinition Width="1*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <CheckBox Name="UseFullPunctuation" Style="{DynamicResource DefCheckBox}" VerticalAlignment="Center" Grid.Column="0" HorizontalAlignment="Center" Click="UseFullPunctuation_Click">
+
+                                                        </CheckBox>
+                                                        <TextBox  Grid.Column="1" Style="{DynamicResource InFoText}">
+                                                            Replace half-width punctuation with full-width when saving
+                                                        </TextBox>
+                                                    </Grid>
+                                                </Border>
+
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Localizable Areas
+                                                </Label>
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <Grid Margin="0 5 0 5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30"/>
+                                                            <ColumnDefinition Width="1*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <CheckBox Name="CanTranslateBook" Style="{DynamicResource DefCheckBox}" VerticalAlignment="Center" Grid.Column="0" HorizontalAlignment="Center" Click="CanTranslateBook_Click">
+
+                                                        </CheckBox>
+                                                        <TextBox  Grid.Column="1" Style="{DynamicResource InFoText}">
+                                                            Selecting this option for batch translation will translate book texts. Book texts are usually very long. If you are using a cloud platform for translation, please be aware of token consumption.
+                                                        </TextBox>
+                                                    </Grid>
+                                                </Border>
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Protected Placeholders
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <Grid Margin="0 5 0 5">
+                                                        <StackPanel Orientation="Vertical">
+                                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                                <Label Style="{DynamicResource NormalText}">
+                                                                    P-Placeholders:
+                                                                </Label>
+                                                                <Border  Style="{DynamicResource DefTextBoxBorder}" Width="300">
+                                                                    <TextBox Style="{DynamicResource DefTextBox}" Name="P_Placeholders" TextChanged="P_Placeholders_TextChanged">
+                                                                    </TextBox>
+                                                                </Border>
+                                                            </StackPanel>
+
+                                                            <TextBox Margin="10 0 10 0" Grid.Column="1" Style="{DynamicResource InFoText}">
+                                                                The preprocessor is used to protect keywords from translation by both AI and traditional platforms. It uses regular expressions to determine which words can be protected. Please separate multiple regular expressions with ",".(You need to ensure the preprocessor node is enabled for it to function.)
+                                                            </TextBox>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Automatic Training Database
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <Grid Margin="0 5 0 5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30"/>
+                                                            <ColumnDefinition Width="1*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <CheckBox Name="AutoUpdateStringsFileToDatabase" Style="{DynamicResource DefCheckBox}" VerticalAlignment="Center" Grid.Column="0" HorizontalAlignment="Center" Click="AutoUpdateStringsFileToDatabase_Click">
+
+                                                        </CheckBox>
+                                                        <TextBox  Grid.Column="1" Style="{DynamicResource InFoText}">
+                                                            When enabled, matched entries from strings files will be automatically imported into the Advanced Dictionary, allowing strings file records to be efficiently reused.
+      Entries from a single strings file can be shared across multiple mods, maximizing their usefulness.
+      This is an experimental feature designed to improve the efficiency of strings file utilization.
+                                                        </TextBox>
+                                                    </Grid>
+                                                </Border>
+
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    Word Analysis
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <Grid Margin="0 5 0 5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30"/>
+                                                            <ColumnDefinition Width="1*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <CheckBox Name="EnableAnalyzingWords" Style="{DynamicResource DefCheckBox}" VerticalAlignment="Center" Grid.Column="0" HorizontalAlignment="Center" Click="EnableAnalyzingWords_Click">
+
+                                                        </CheckBox>
+                                                        <TextBox  Grid.Column="1" Style="{DynamicResource InFoText}">
+                                                            Tokenize all entries and sort them, then prioritize translating the words with the highest hit rate. This helps build context. (It can only improve accuracy somewhat, as it's difficult to determine precisely due to multi-threading.)
+                                                        </TextBox>
+                                                    </Grid>
+                                                </Border>
+
+                                                <Label Style="{DynamicResource TittleFont}">
+                                                    DataBase Configs
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <Grid Margin="0 5 0 5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30"/>
+                                                            <ColumnDefinition Width="1*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <CheckBox Name="GlobalSearch" Style="{DynamicResource DefCheckBox}" VerticalAlignment="Center" Grid.Column="0" HorizontalAlignment="Center" Click="EnableGlobalSearch_Click">
+
+                                                        </CheckBox>
+                                                        <TextBox  Grid.Column="1" Style="{DynamicResource InFoText}">
+                                                            Allow retrieval of the entire database using source text. This option may speed up translation but could reduce accuracy, as the same text may have different meanings across mods.
+                                                        </TextBox>
+                                                    </Grid>
+                                                </Border>
+
+
+                                                <Label Style="{DynamicResource TittleFont}" Margin="0 10 0 0">
+                                                    Engine Configs
+                                                </Label>
+
+                                                <Border Style="{DynamicResource SectionStyleL}" HorizontalAlignment="Stretch" Margin="0 5 0 10">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 5">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                Throttling Ratio:
+                                                            </Label>
+                                                            <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" >
+                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SThrottlingRatio" TextChanged="SThrottlingRatio_TextChanged">
+                                                                </TextBox>
+                                                            </Border>
+                                                        </StackPanel>
+
+                                                        <TextBox Style="{DynamicResource InFoText}"  Margin="5 5 5 10">
+                                                            When the number of threads reaches the specified percentage of the maximum number of threads (default 0.7 = 70%), the current limiting policy is triggered.
+                                                        </TextBox>
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 5 5">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                Rotation Delay:
+                                                            </Label>
+                                                            <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" >
+                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SRotationDelay" TextChanged="SRotationDelay_TextChanged">
+                                                                </TextBox>
+                                                            </Border>
+                                                        </StackPanel>
+
+                                                        <TextBox Style="{DynamicResource InFoText}"  Margin="5 5 5 10">
+                                                            Sleep time after triggering the throttling policy.(default 200 milliseconds) (If you don't understand, don't mess around.)
+                                                        </TextBox>
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                Max Thread Limit:
+                                                            </Label>
+                                                            <Border  Style="{DynamicResource DefTextBoxBorder}" Width="100" >
+                                                                <TextBox Style="{DynamicResource DefTextBox}" Name="SMaxThread" TextChanged="SMaxThread_TextChanged">
+                                                                </TextBox>
+                                                            </Border>
+                                                        </StackPanel>
+
+                                                        <TextBox Style="{DynamicResource InFoText}"  Margin="5 5 5 10">
+                                                            Set the maximum number of threads allowed to be created during batch translation.
+                                                        </TextBox>
+
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 5 5 10">
+                                                            <Label Style="{DynamicResource NormalText}">
+                                                                LanguageDetect:
+                                                            </Label>
+                                                            <CheckBox VerticalAlignment="Center" Style="{DynamicResource DefCheckBox}" Margin="5 0 0 0" Name="SEnableLanguageDetect" Click="SEnableLanguageDetect_Click">
+                                                                Enable
+                                                            </CheckBox>
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>

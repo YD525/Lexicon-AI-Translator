@@ -97,6 +97,8 @@ namespace LexTranslator.UIManagement
 
                 Completer = new Completer(this);
                 UIHelper.SyncAvalonEditTextLayout(this);
+
+                AutoShowTraditional();
             }
         }
 
@@ -1861,5 +1863,411 @@ namespace LexTranslator.UIManagement
         {
             ClearCacheView.Visibility = Visibility.Collapsed;
         }
+
+        //public void SaveFile()
+        //{
+        //    new Thread(() =>
+        //    {
+        //        this.LoadFileButton.Dispatcher.Invoke(new Action(() =>
+        //        {
+        //            LoadFileButton.Content = UILanguageHelper.UICache["LoadFileButton2"];
+        //        }));
+
+        //        try
+        //        {
+        //            CancelBatchTranslation();
+
+        //            EmptyFromAndToText();
+
+        //            CalcStatistics();
+
+        //            Thread.Sleep(100);
+
+        //            if (CurrentTransType == 6)
+        //            {
+        //                //Set Trans Data
+        //                UPDateFile(false);
+        //            }
+        //            else
+        //            {
+        //                //Set Trans Data
+        //                UPDateFile(true);
+        //            }
+
+        //            LoadSaveState = 0;
+
+        //            this.CancelBtn.Dispatcher.Invoke(new Action(() =>
+        //            {
+        //                CancelBtn.Opacity = 0.3;
+        //                CancelBtn.IsEnabled = false;
+        //            }));
+
+        //            string GetFilePath = LastSetPath.Substring(0, LastSetPath.LastIndexOf(@"\")) + @"\";
+        //            string GetFileFullName = LastSetPath.Substring(LastSetPath.LastIndexOf(@"\") + @"\".Length);
+        //            string GetFileSuffix = GetFileFullName.Split('.')[1];
+        //            string GetFileName = GetFileFullName.Split('.')[0];
+
+        //            var Link = TranslatorInterface.Instance.GetLink();
+
+        //            if (DeFine.GlobalLocalSetting.UseFullPunctuation)
+        //            {
+        //                Link.CheckLinks(new Action<string, string, bool>((string Key, string Value, bool Unique) =>
+        //                {
+        //                    if (Value.Length > 0)
+        //                    {
+        //                        Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value);
+        //                    }
+        //                }));
+        //            }
+
+        //            if (CurrentTransType == 11)
+        //            {
+        //                if (Link.Count > 0)
+        //                {
+        //                    if (GlobalXmlReader.XmlItems.Count > 0)
+        //                    {
+        //                        GlobalXmlReader.Save(LastSetPath);
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            if (CurrentTransType == 6)
+        //            {
+        //                if (Link.Count > 0)
+        //                {
+        //                    if (GlobalRamCacheReader != null)
+        //                    {
+        //                        if (!GlobalRamCacheReader.Save(LastSetPath))
+        //                        {
+        //                            MessageBox.Show("Build RamCache Error!");
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            if (CurrentTransType == 3)
+        //            {
+        //                if (Link.Count > 0)
+        //                {
+        //                    if (GlobalPexReader != null)
+        //                    {
+        //                        GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings);
+
+        //                        int TranslateCount = 0;
+        //                        for (int i = 0; i < Strings.Count; i++)
+        //                        {
+        //                            var StringItem = Strings[i];
+        //                            StringItem.Translated = TranslatorInterface.Instance.GetLink(StringItem.UniqueKey);
+        //                            if (StringItem.Translated.Length > 0)
+        //                            {
+        //                                TranslateCount++;
+        //                            }
+        //                        }
+
+        //                        if (TranslateCount > 0)
+        //                        {
+        //                            string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
+
+        //                            if (!File.Exists(GetBackUPPath))
+        //                            {
+        //                                File.Copy(LastSetPath, GetBackUPPath);
+        //                            }
+
+        //                            GlobalPexReader.Core.SavePex(LastSetPath, out int SaveState).Close();
+
+        //                            if (SaveState > 0 == false)
+        //                            {
+        //                                MessageBox.Show("Build Script Error!");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            if (CurrentTransType == 2)
+        //            {
+        //                string TempFilePath = LastSetPath + ".Temp";
+
+        //                int ModifyCount = GlobalEspReader.SaveEsp(TempFilePath);
+
+        //                if (ModifyCount == 0)
+        //                {
+        //                    if (File.Exists(TempFilePath))
+        //                    {
+        //                        File.Delete(TempFilePath);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    string GetBackUPPath = LastSetPath + ".backup";
+
+        //                    if (!File.Exists(GetBackUPPath))
+        //                    {
+        //                        File.Copy(LastSetPath, GetBackUPPath);
+        //                    }
+
+        //                    if (File.Exists(LastSetPath))
+        //                    {
+        //                        File.Delete(LastSetPath);
+        //                    }
+
+        //                    if (File.Exists(TempFilePath))
+        //                    {
+        //                        File.Move(TempFilePath, LastSetPath);
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            if (CurrentTransType == 1)
+        //            {
+        //                if (Link.Count > 0)
+        //                    if (GlobalMCMReader != null)
+        //                    {
+        //                        string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
+
+        //                        if (!File.Exists(GetBackUPPath))
+        //                        {
+        //                            File.Copy(LastSetPath, GetBackUPPath);
+        //                        }
+
+        //                        if (File.Exists(LastSetPath))
+        //                        {
+        //                            File.Delete(LastSetPath);
+        //                        }
+
+        //                        GlobalMCMReader.SaveMCMConfig(LastSetPath);
+
+        //                        if (!File.Exists(LastSetPath))
+        //                        {
+        //                            MessageBox.Show("Save File Error!");
+        //                            File.Copy(GetBackUPPath, LastSetPath);
+        //                        }
+        //                    }
+        //            }
+
+        //            new LexDictionary().CreatDictionary();
+        //        }
+        //        catch (Exception Ex)
+        //        {
+        //            MessageBox.Show(Ex.Message);
+        //        }
+        //        CancelTransEsp(null, null);
+        //    }).Start();
+        //}
+
+        //public void GetStatisticsR()
+        //{
+        //    this.Dispatcher.Invoke(new Action(() =>
+        //    {
+        //        CalcStatistics();
+        //    }));
+        //}
+
+
+        public int GlobalTransCount = 0;
+        public void GetGlobalTransCount()
+        {
+            if (Mod.Type == GameFileType.ESP)
+            {
+                if (P_Convert.ObjToStr(TypeSelector.SelectedValue).Equals("ALL"))
+                {
+                    if (TransListView != null)
+                        GlobalTransCount = TransListView.RealLines.Count;
+                }
+            }
+            else
+            {
+                if (TransListView != null)
+                    GlobalTransCount = TransListView.RealLines.Count;
+            }
+        }
+
+        //public void CalcStatistics()
+        //{
+        //    try
+        //    {
+        //        int ModifyCount = 0;
+        //        var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
+        //        if (GetBatchCore != null)
+        //        {
+        //            ModifyCount = (GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount);
+        //        }
+
+        //        this.Dispatcher.Invoke(new Action(() =>
+        //        {
+        //            if (TranslatorInterface.Instance != null)
+        //                if (TranslatorInterface.Instance.GetBatchCore() != null)
+        //                {
+        //                    var BatchCore = TranslatorInterface.Instance.GetBatchCore();
+        //                    if (ScanAnimator != null)
+        //                    {
+        //                        if (ModifyCount > 0 && BatchCore.IsWorking && !BatchCore.IsStopped)
+        //                        {
+        //                            ScanAnimator.Start();
+        //                        }
+        //                        else
+        //                        {
+        //                            ScanAnimator.Stop();
+        //                        }
+        //                    }
+
+        //                    if ((BatchCore.IsWorking && !BatchCore.IsStopped) || SingleTrans)
+        //                    {
+        //                        int Current = BatchCore.GetWorkingThreadCount();
+
+        //                        if (SingleTrans)
+        //                        {
+        //                            ThreadInFoFont.Content = string.Format("Thread(Current:{0},Max:{1})", Current + 1, Phoenix.Config.MaxThreadCount + 1);
+        //                        }
+        //                        else
+        //                        {
+        //                            ThreadInFoFont.Content = string.Format("Thread(Current:{0},Max:{1})", Current, Phoenix.Config.MaxThreadCount);
+        //                        }
+        //                    }
+        //                    else
+        //                    if (BatchCore.IsWorking && BatchCore.IsStopped)
+        //                    {
+        //                        ThreadInFoFont.Content = string.Format("Thread(Current:0,Max:{0})", Phoenix.Config.MaxThreadCount);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (SingleTrans)
+        //                    {
+        //                        ThreadInFoFont.Content = string.Format("Thread(Current:{0},Max:{1})", 1, Phoenix.Config.MaxThreadCount + 1);
+        //                    }
+        //                }
+
+        //            if (TransViewList != null)
+        //            {
+        //                GetGlobalTransCount();
+
+        //                if (ReadTrdWorkState)
+        //                {
+        //                    if (TranslatorInterface.TranslationStatus == StateControl.Cancel || TranslatorInterface.TranslationStatus == StateControl.Null)
+        //                    {
+        //                        TransProcess.Content = string.Format("Loading({0}/{1})", ModifyCount, GlobalTransCount);
+        //                    }
+
+        //                    TypeSelector.Opacity = 0.5;
+        //                    TypeSelector.IsEnabled = false;
+
+        //                    ViewModel.Opacity = 0.5;
+        //                    ViewModel.IsHitTestVisible = false;
+        //                }
+        //                else
+        //                {
+        //                    if (TranslatorInterface.Instance != null)
+        //                    {
+        //                        var BatchCore = TranslatorInterface.Instance.GetBatchCore();
+        //                        if (BatchCore != null)
+        //                        {
+        //                            if (BatchCore.ProcStage < 2)
+        //                            {
+        //                                return;
+        //                            }
+        //                        }
+
+        //                    }
+
+        //                    if (TranslatorInterface.TranslationStatus == StateControl.Cancel || TranslatorInterface.TranslationStatus == StateControl.Null)
+        //                    {
+        //                        TransProcess.Content = string.Format("STRINGS({0}/{1})", ModifyCount, GlobalTransCount);
+        //                    }
+
+        //                    TypeSelector.Opacity = 1;
+        //                    TypeSelector.IsEnabled = true;
+
+        //                    ViewModel.Opacity = 1;
+        //                    ViewModel.IsHitTestVisible = true;
+        //                }
+
+        //                double GetRate = ((double)ModifyCount / (double)GlobalTransCount);
+        //                if (GetRate > 0)
+        //                {
+        //                    try
+        //                    {
+        //                        if (!Double.IsInfinity(GetRate))
+        //                            ProcessBar.Width = ProcessBarControl.ActualWidth * GetRate;
+        //                    }
+        //                    catch { }
+        //                }
+        //                else
+        //                {
+        //                    try
+        //                    {
+        //                        ProcessBar.Width = 0;
+        //                    }
+        //                    catch { }
+        //                }
+        //            }
+        //        }));
+        //    }
+        //    catch { }
+        //}
+
+
+        //public void CancelAny()
+        //{
+        //    GlobalTransCount = 0;
+
+        //    CancelBatchTranslation();
+
+        //    EmptyFromAndToText();
+
+        //    TranslatorInterface.Instance.Close();
+
+        //    CurrentSearchData = new SearchData();
+
+        //    //DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
+        //    //{
+        //    //    DeFine.CurrentCodeView.TextEditor.Text = string.Empty;
+        //    //}));
+
+        //    this.Dispatcher.Invoke(new Action(() =>
+        //    {
+        //        try
+        //        {
+        //            SearchBox.Text = string.Empty;
+
+        //            LoadFileButton.Content = UILanguageHelper.UICache["LoadFileButton"];
+
+        //            TransViewList?.Clear();
+
+        //            CloseAllPointer();
+
+        //            LoadSaveState = 0;
+
+        //            CancelBtn.Opacity = 0.3;
+        //            CancelBtn.IsEnabled = false;
+
+        //            TypeSelector.Items.Clear();
+        //            new LexDictionary().Close();
+
+        //            FromStringsFile.Visibility = Visibility.Collapsed;
+
+        //            ProcessBar.Width = 0;
+        //        }
+        //        catch { }
+        //    }));
+
+        //    SetTittle();
+
+        //    new Thread(() =>
+        //    {
+        //        Thread.Sleep(500);
+
+        //        this.Dispatcher.Invoke(new Action(() =>
+        //        {
+        //            TransViewList.Clear();
+        //        }));
+
+        //        GlobalTransCount = 0;
+        //    }).Start();
+
+        //    TranslatorInterface.Close();
+
+        //    TranslatorInterface.Instance.GetLink().Clear();
+        //}
     }
 }
