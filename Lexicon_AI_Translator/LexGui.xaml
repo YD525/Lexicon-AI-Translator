@@ -567,9 +567,32 @@ Chinese character processed by —
                             </Grid>
                         </Grid>
 
-                        <Grid Visibility="Hidden" Tag="Main">
+                        <Grid Visibility="Visible" Tag="Main">
 
-                            <Grid>
+                            <Grid Visibility="Hidden" Panel.ZIndex="2" Name="EmptyTabView">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Viewbox Width="70" Height="70" Margin="0,0,0,15">
+                                        <Path Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M17,13H13V17H11V13H7V11H11V7H13V11H17V13Z" 
+                  Fill="#3D3D3D" Stretch="Uniform"/>
+                                    </Viewbox>
+
+                                    <TextBlock Text="No Mod Files Loaded" Foreground="#E0E0E0" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Drag &amp; drop multiple files or click below to select" Foreground="#707070" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+                                    <Border Width="180" Height="42" Background="#252525" 
+                CornerRadius="6" BorderBrush="#3D3D3D" BorderThickness="1"
+                Tag="LexTabAdd" Cursor="Hand">
+                                        <TextBlock Text="Select Mod File" Foreground="#D0D0D0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </Border>
+
+                                    <StackPanel Margin="0,45,0,0">
+                                        <TextBlock Text="Recent Files" Foreground="#505050" FontSize="11" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                                        <Border Width="220" Height="1" Background="#252525"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Panel.ZIndex="1" Visibility="Hidden" Name="TabView">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="28"/>
                                     <RowDefinition Height="1*"/>

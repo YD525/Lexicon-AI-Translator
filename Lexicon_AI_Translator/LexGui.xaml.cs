@@ -364,6 +364,8 @@ namespace LexTranslator
                             YDChart.Stop();
                             PageIndex = 2;
                             StopLexGlowLoop();
+
+                            UpdateEmptyState();
                         }
                         break;
                     case "Settings":
@@ -472,6 +474,17 @@ namespace LexTranslator
 
 
         #region FileTabs
+        private void UpdateEmptyState()
+        {
+            bool IsEmpty = LexTabs.Items.Count == 0;
+
+            EmptyTabView.Visibility = IsEmpty ? Visibility.Visible : Visibility.Collapsed;
+
+            if (TabViews != null)
+            {
+                TabViews.Visibility = IsEmpty ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
         public class FileTabContext
         {
             public string Path { get; set; }
@@ -680,6 +693,8 @@ namespace LexTranslator
 
                 if (Select)
                     LexTabs.SelectedItem = Tab;
+
+                UpdateEmptyState();
             });
         }
         public void RemoveTab(string Path)
@@ -714,6 +729,8 @@ namespace LexTranslator
                 }
 
                 LexTabs.Items.Remove(Target);
+
+                UpdateEmptyState();
             });
         }
         #endregion
