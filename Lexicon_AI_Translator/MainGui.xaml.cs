@@ -2258,12 +2258,7 @@ namespace LexTranslator
 
                         Modules.Children.Clear();
 
-                        Modules.Children.Add(UIHelper.CreatModuleItem("LexTranslator", DeFine.CurrentVersion));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("Translation Engine", Phoenix.Version));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("Pex Analysis", PexHeuristicAnalysis.Version));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("Esp Reader", EspReader.Version));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("Pex Reader", PexInterop.Version));
-                        Modules.Children.Add(UIHelper.CreatModuleItem("DSD Convert", DSDConverter.Version));
+                      
                     }
                     break;
             }

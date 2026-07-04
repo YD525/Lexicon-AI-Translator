@@ -1,14 +1,7 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using LexTranslator.SkyrimManagement;
-using LexTranslator.UIManage;
-using System.Collections.Generic;
-using PhoenixEngine.ADO;
-using PhoenixEngine;
-using PhoenixEngine.Engine;
-using LexTranslator.TranslateManage;
 
 namespace LexTranslator
 {

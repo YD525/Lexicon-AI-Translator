@@ -21,7 +21,6 @@ using PhoenixEngine;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Unit;
 using LexTranslator.TranslateManage;
-using PhoenixEngine.Common;
 
 namespace LexTranslator.UIManage
 {
@@ -397,43 +396,6 @@ namespace LexTranslator.UIManage
             Application.Current.MainWindow?.UpdateLayout();
         }
 
-
-        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parent = VisualTreeHelper.GetParent(child);
-            while (parent != null)
-            {
-                if (parent is T parentT)
-                    return parentT;
-                parent = VisualTreeHelper.GetParent(parent);
-            }
-            return null;
-        }
-
-        public static StackPanel CreatModuleItem(string ModuleName, string Version)
-        {
-            StackPanel LinePanel = new StackPanel();
-            LinePanel.Orientation = Orientation.Horizontal;
-            LinePanel.HorizontalAlignment = HorizontalAlignment.Center;
-
-            TextBox Name = new TextBox();
-            Name.Foreground = new SolidColorBrush(Colors.White);
-            Name.Text = ModuleName + "-" + Version;
-            Name.BorderBrush = null;
-            Name.BorderThickness = new Thickness(0);
-            Name.Background = null;
-            Name.IsReadOnly = true;
-            Name.VerticalAlignment = VerticalAlignment.Center;
-
-            Name.FontSize = 13.5;
-            Name.FontWeight = FontWeights.DemiBold;
-
-            LinePanel.Children.Add(Name);
-
-            return LinePanel;
-        }
-
-
         public static T CloneElement<T>(T source) where T : UIElement
         {
             try
@@ -448,7 +410,6 @@ namespace LexTranslator.UIManage
             }
             catch { return null; }
         }
-
 
         public static void SyncNodes(StackPanel Nodes)
         {

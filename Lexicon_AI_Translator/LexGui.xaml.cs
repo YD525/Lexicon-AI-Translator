@@ -12,8 +12,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LexTranslator.FileManagement;
 using LexTranslator.SkyrimManagement;
+using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
 using LexTranslator.UIManagement;
+using LexTranslator.YDControls;
 using PexInterface;
 using PhoenixEngine;
 using PhoenixEngine.Common;
@@ -54,6 +56,18 @@ namespace LexTranslator
                 DeFine.CG.Show();
                 SyncCGLocation();
             }
+
+            YDChart.SetAction(
+              new Action<RealtimeLineChart>((Ref) =>
+              {
+                  Ref.PushValue(DeFine.ChartDataRef.GetCurrent());
+              }),
+              new Action<RealtimeLineChart>((Ref) =>
+              {
+                  Ref.PushValue(DeFine.ChartDataRef.Total);
+              }),
+              DeFine.ChartDataRef
+             );
         }
 
         public void SyncCGLocation()
@@ -288,10 +302,12 @@ namespace LexTranslator
                 int PageIndex = 0;
                 CurrentNav = Name;
 
+
                 switch (Name)
                 {
                     case "InFo":
                         {
+                            YDChart.Stop();
                             PageIndex = 0;
                             StartLexGlowLoop();
                             LexVer.Content = DeFine.CurrentVersion;
@@ -306,16 +322,27 @@ namespace LexTranslator
                         {
                             PageIndex = 1;
                             StopLexGlowLoop();
+
+                            if (TranslatorInterface.TranslationStatus == StateControl.Run)
+                            {
+                                YDChart.Start();
+                            }
+                            else
+                            {
+                                YDChart.Clear();
+                            }
                         }
                         break;
                     case "TransHub":
                         {
+                            YDChart.Stop();
                             PageIndex = 2;
                             StopLexGlowLoop();
                         }
                         break;
                     case "Settings":
                         {
+                            YDChart.Stop();
                             PageIndex = 3;
                             StopLexGlowLoop();
                         }

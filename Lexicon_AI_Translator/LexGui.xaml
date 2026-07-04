@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:LexTranslator"
         mc:Ignorable="d"
         xmlns:UI="clr-namespace:LexTranslator.UIManagement"
+        xmlns:YD="clr-namespace:LexTranslator.YDControls"
         Title="LexTranslator" Height="800" Width="1000" Loaded="Window_Loaded" Style="{DynamicResource DefWin}" PreviewKeyDown="Window_PreviewKeyDown" WindowStartupLocation="CenterScreen" AllowDrop="True" PreviewDragEnter="ModTransView_DragEnter" PreviewDrop="ModTransView_Drop"  PreviewDragLeave="ModTransView_DragLeave" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" Activated="Window_Activated">
 
     <Window.Resources>
@@ -286,7 +287,7 @@ IsHitTestVisible="False"/>
 
                     <!--Views-->
                     <Grid Name="Views">
-                        <Grid Visibility="Hidden">
+                        <Grid Visibility="Hidden" Tag="InFo">
                             <StackPanel Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
 
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
@@ -547,10 +548,30 @@ Chinese character processed by —
 
                         </Grid>
 
-                        <Grid>
+                        <Grid Tag="Chart" Visibility="Hidden">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35"/>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="5"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="35"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="5 0 0 0" FontSize="13">
+                                    DashBoard
+                                </Label>
+
+                                <YD:MainChart x:Name="YDChart" Grid.Row="1" Grid.Column="1">
+                                </YD:MainChart>
+                            </Grid>
                         </Grid>
 
-                        <Grid Visibility="Visible">
+                        <Grid Visibility="Visible" Tag="Main">
 
                             <Grid>
                                 <Grid.RowDefinitions>
