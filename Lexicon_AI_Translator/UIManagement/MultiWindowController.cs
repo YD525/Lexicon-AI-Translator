@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 using LexTranslator.SkyrimManagement;
 
 namespace LexTranslator.UIManagement
@@ -7,7 +11,52 @@ namespace LexTranslator.UIManagement
     public class MultiWindowController
     {
         public static RecordTracking TrackingWin = null;
+        public static CodeView CodeWin = null;
+        private static void CloseCodeWin()
+        {
+            if (CodeWin != null)
+            {
+                CodeWin.Close();
+                CodeWin = null;
+            }
+        }
 
+        private static void OpenCodeWin(LexGui Win)
+        {
+            if (CodeWin == null)
+            {
+                CodeWin = new CodeView(Win);
+                CodeWin.Show();
+            }
+            else
+            {
+                CodeWin.Owner = Win;
+            }
+        }
+
+        private static void CloseTrackingWin()
+        {
+            if (TrackingWin != null)
+            {
+                TrackingWin.Close();
+                TrackingWin = null;
+            }
+        }
+
+        private static void OpenTrackingWin(LexGui Win)
+        {
+            if (TrackingWin == null)
+            {
+                TrackingWin = new RecordTracking(Win);
+                TrackingWin.Show();
+            }
+            else
+            {
+                TrackingWin.Owner = Win;
+            }
+        }
+
+      
         public static void AttachMod(string SelectKey,LexGui CurrentWin,ModFile Mod)
         {
             CurrentWin.UI(() =>
@@ -16,15 +65,8 @@ namespace LexTranslator.UIManagement
                 {
                     case GameFileType.ESP:
                         {
-                            if (TrackingWin == null)
-                            {
-                                TrackingWin = new RecordTracking(CurrentWin);
-                                TrackingWin.Show();
-                            }
-                            else
-                            {
-                                TrackingWin.Owner = CurrentWin;
-                            }
+                            CloseCodeWin();
+                            OpenTrackingWin(CurrentWin);
 
                             RecordItem GetRecord = null;
 
@@ -99,11 +141,8 @@ namespace LexTranslator.UIManagement
                         break;
                     case GameFileType.PEX:
                         {
-                            if (TrackingWin != null)
-                            {
-                                TrackingWin.Close();
-                                TrackingWin = null;
-                            }
+                            CloseTrackingWin();
+                            OpenCodeWin(CurrentWin);
                         }
                         break;
                 }

@@ -171,7 +171,6 @@
     <Compile Include="UIManagement\LineRenderer.cs" />
     <Compile Include="UIManagement\LogHelper.cs" />
     <Compile Include="UIManagement\MultiWindowController.cs" />
-    <Compile Include="UIManagement\MutiWinHelper.cs" />
     <Compile Include="UIManagement\NodeStyleWin.xaml.cs">
       <DependentUpon>NodeStyleWin.xaml</DependentUpon>
     </Compile>

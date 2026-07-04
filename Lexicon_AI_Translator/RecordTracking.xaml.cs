@@ -60,6 +60,7 @@ namespace LexTranslator
 
         private void OwnerMainWindow_Closed(object Sender, EventArgs E)
         {
+            MultiWindowController.TrackingWin = null;
             this.Close();
         }
 

@@ -370,7 +370,6 @@ namespace LexTranslator
 
         private void Window_LocationChanged(object sender, EventArgs e)
         {
-            MutiWinHelper.SyncLocation();
             SyncCGLocation();
         }
 
@@ -1150,7 +1149,7 @@ namespace LexTranslator
                         }
                     }));
 
-                    DeFine.CurrentCodeView.SetText(SetPsc);
+                    //DeFine.CurrentCodeView.SetText(SetPsc);
 
                     double CalcLeft = this.Left + this.ActualWidth + 1;
                     double CalcTop = this.Top;
@@ -1270,10 +1269,10 @@ namespace LexTranslator
 
             CurrentSearchData = new SearchData();
 
-            DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
-            {
-                DeFine.CurrentCodeView.TextEditor.Text = string.Empty;
-            }));
+            //DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
+            //{
+            //    DeFine.CurrentCodeView.TextEditor.Text = string.Empty;
+            //}));
 
             this.Dispatcher.Invoke(new Action(() =>
             {
@@ -3926,12 +3925,11 @@ namespace LexTranslator
                                 CodeViewTag.Style = (Style)this.FindResource("ExWinShow");
                                 ExtendViewTag.Style = (Style)this.FindResource("ExWinHide");
 
-                                DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
-                                {
-                                    DeFine.CurrentCodeView.Show();
-                                }));
+                                //DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
+                                //{
+                                //    DeFine.CurrentCodeView.Show();
+                                //}));
                                 DeFine.ExtendWin.Hide();
-                                MutiWinHelper.SyncLocation();
 
                                 LastSelectExView = GetExViewName;
 
@@ -3939,17 +3937,17 @@ namespace LexTranslator
                             }
                             else
                             {
-                                DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
-                                {
-                                    DeFine.CurrentCodeView.Hide();
-                                }));
+                                //DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
+                                //{
+                                //    DeFine.CurrentCodeView.Hide();
+                                //}));
                                 CodeViewTag.Style = (Style)this.FindResource("ExWinHide");
                                 LastSelectExView = string.Empty;
 
                                 CodeViewShowState = 0;
                             }
 
-                            DeFine.CurrentCodeView.SyncZIndex();
+                            //DeFine.CurrentCodeView.SyncZIndex();
                         }
                         break;
                     case "Extend View":
@@ -3962,11 +3960,10 @@ namespace LexTranslator
                                 DeFine.ExtendWin.EspInstance = GlobalEspReader;
                                 DeFine.ExtendWin.ShowUI();
 
-                                DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
-                                {
-                                    DeFine.CurrentCodeView.Hide();
-                                }));
-                                MutiWinHelper.SyncLocation();
+                                //DeFine.CurrentCodeView.Dispatcher.Invoke(new Action(() =>
+                                //{
+                                //    DeFine.CurrentCodeView.Hide();
+                                //}));
 
                                 LastSelectExView = GetExViewName;
                             }
@@ -3984,7 +3981,7 @@ namespace LexTranslator
 
         private void Window_Activated(object sender, EventArgs e)
         {
-            DeFine.CurrentCodeView.SyncZIndex();
+           // DeFine.CurrentCodeView.SyncZIndex();
         }
 
         private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)

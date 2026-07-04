@@ -42,7 +42,6 @@ namespace LexTranslator
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
         public static MainGui WorkingWin = null;
-        public static CodeView CurrentCodeView = new CodeView();
         public static ReplaceWin CurrentReplaceView = new ReplaceWin();
         public static TextEditor ActiveIDE = null;
         public static LocalConfig LocalConfigView = null;
@@ -89,31 +88,14 @@ namespace LexTranslator
                 //WorkingWin.SaveApiKey(PlatformType.Gemini, WorkingWin.SGeminiKey.Text);
                 //WorkingWin.SaveApiKey(PlatformType.ChatGpt, WorkingWin.SChatGptKey.Text);
                 //WorkingWin.SaveApiKey(PlatformType.DeepSeek, WorkingWin.SDeepSeekKey.Text);
-
                 //WorkingWin.SaveApiKey(PlatformType.DeepL, WorkingWin.SDeepLKey.Text);
 
                 WorkingWin.Hide();
             }
 
-            if (CurrentCodeView != null)
-            {
-                CurrentCodeView.Dispatcher.Invoke(new Action(() =>
-                {
-                    CurrentCodeView.Hide();
-                }));
-            }
-
             Phoenix.SaveConfig();
             DeFine.GlobalLocalSetting.SaveConfig();
             Environment.Exit(0);
-        }
-
-        public static void HideCodeView()
-        {
-            CurrentCodeView.Dispatcher.Invoke(new Action(() =>
-            {
-                CurrentCodeView.Hide();
-            }));
         }
 
         public static string GetFullPath(string Path)
@@ -205,21 +187,6 @@ namespace LexTranslator
             RowStyleWin.Hide();
 
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            Thread NewWindowThread = new Thread(() =>
-            {
-                Dispatcher NewDispatcher = Dispatcher.CurrentDispatcher;
-
-                NewDispatcher.Invoke(() =>
-                {
-                    CurrentCodeView = new CodeView();
-                    CurrentCodeView.Hide();
-                });
-                Dispatcher.Run();
-            });
-
-            NewWindowThread.SetApartmentState(ApartmentState.STA);
-            NewWindowThread.Start();
 
             LocalConfigView = new LocalConfig();
             LocalConfigView.Hide();

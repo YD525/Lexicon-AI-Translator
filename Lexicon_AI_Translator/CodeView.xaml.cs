@@ -8,6 +8,7 @@ using System;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using LexTranslator.UIManagement;
 
 namespace LexTranslator
 {
@@ -16,10 +17,63 @@ namespace LexTranslator
     /// </summary>
     public partial class CodeView : Window
     {
-        public CodeView()
+        private Window _Owner;
+        public CodeView(Window Owner)
         {
             InitializeComponent();
+
+            _Owner = Owner;
+
+            this.Owner = _Owner;
+
+            _Owner.LocationChanged += OwnerMainWindow_LocationChanged;
+            _Owner.SizeChanged += OwnerMainWindow_SizeChanged;
+            _Owner.StateChanged += OwnerMainWindow_StateChanged;
+            _Owner.Closed += OwnerMainWindow_Closed;
         }
+
+        private void OwnerMainWindow_Closed(object Sender, EventArgs E)
+        {
+            MultiWindowController.CodeWin= null;
+            this.Close();
+        }
+        private void UpdateFollowPosition()
+        {
+            double Gap = 8;
+
+            this.Left = _Owner.Left + _Owner.ActualWidth + Gap;
+            this.Top = _Owner.Top;
+            this.Height = _Owner.ActualHeight;
+        }
+        private void RecordTracking_Loaded(object Sender, RoutedEventArgs E)
+        {
+            UpdateFollowPosition();
+        }
+
+        private void OwnerMainWindow_LocationChanged(object Sender, EventArgs E)
+        {
+            UpdateFollowPosition();
+        }
+
+        private void OwnerMainWindow_SizeChanged(object Sender, SizeChangedEventArgs E)
+        {
+            UpdateFollowPosition();
+        }
+
+        private void OwnerMainWindow_StateChanged(object Sender, EventArgs E)
+        {
+            if (_Owner.WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+                UpdateFollowPosition();
+            }
+        }
+
+
 
         private static class Win32
         {
@@ -103,11 +157,6 @@ namespace LexTranslator
             }
         }
 
-        private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            this.Hide();
-        }
-
         private readonly Stopwatch SyncWatch = new Stopwatch();
         private readonly object SyncLock = new object();
 
@@ -143,10 +192,10 @@ namespace LexTranslator
 
         public void SetText(string Text)
         {
-            DeFine.CurrentCodeView.Dispatcher.Invoke(() =>
+            MultiWindowController.CodeWin.Dispatcher.Invoke(() =>
             {
-                DeFine.CurrentCodeView.TextEditor.WordWrap = false;
-                DeFine.CurrentCodeView.TextEditor.Document = new TextDocument(Text);
+                MultiWindowController.CodeWin.TextEditor.WordWrap = false;
+                MultiWindowController.CodeWin.TextEditor.Document = new TextDocument(Text);
             });
         }
     }

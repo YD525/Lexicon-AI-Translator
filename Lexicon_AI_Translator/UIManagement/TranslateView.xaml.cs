@@ -80,29 +80,50 @@ namespace LexTranslator.UIManagement
                 {
                     ReloadData();
                 }
-                else
-                {
-                    ReSetEspTypes(Mod.EspReader.Types);
-                }
-               
+
+                ReSetTypes();
             }
         }
 
-        public void ReSetEspTypes(List<string> Types)
+        public void ReSetTypes()
         {
+            List<string> Types = new List<string>();
+
             TypeSelector.Items.Clear();
-            if (Types != null)
-                if (Types.Count > 0)
-                {
-                    TypeSelector.Items.Add("ALL");
-                    foreach (var Type in Types)
+
+            switch (Mod.Type)
+            {
+                case GameFileType.ESP:
                     {
-                        TypeSelector.Items.Add(Type);
+                        Types.Add("ALL");
+
+                        if (Mod.EspReader.Types != null)
+                        {
+                            Types.AddRange(Mod.EspReader.Types);
+                        }
                     }
-                    TypeSelector.SelectedValue = TypeSelector.Items[0];
-                }
+                    break;
+                case GameFileType.PEX:
+                    {
+                        Types.Add("ALL");
+                    }
+                    break;
+                default:
+                    {
+                        Types.Add("ALL");
+                    }
+                    break;
+            }
+
+            foreach (var GetType in Types)
+            {
+                TypeSelector.Items.Add(GetType);
+            }
+
+            TypeSelector.SelectedValue = TypeSelector.Items[0];
         }
 
+     
         public void Close()
         {
             Mod?.Close();
