@@ -614,7 +614,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                             </Grid>
                         </Grid>
 
-                        <Grid Tag ="Setting" Visibility="Hidden">
+                        <Grid Tag ="Setting" Visibility="Visible">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="5"/>

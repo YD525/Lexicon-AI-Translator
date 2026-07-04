@@ -477,13 +477,8 @@ namespace LexTranslator
         private void UpdateEmptyState()
         {
             bool IsEmpty = LexTabs.Items.Count == 0;
-
             EmptyTabView.Visibility = IsEmpty ? Visibility.Visible : Visibility.Collapsed;
-
-            if (TabViews != null)
-            {
-                TabViews.Visibility = IsEmpty ? Visibility.Collapsed : Visibility.Visible;
-            }
+            TabViews.Visibility = IsEmpty ? Visibility.Collapsed : Visibility.Visible;
         }
         public class FileTabContext
         {
