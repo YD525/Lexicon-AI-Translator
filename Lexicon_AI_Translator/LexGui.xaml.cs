@@ -375,6 +375,8 @@ namespace LexTranslator
                             PEXReaderVer.Content = PexInterop.Version;
                             ESPReaderVer.Content = EspReader.Version;
                             DSDConvertVer.Content = DSDConverter.Version;
+
+                            MultiWindowController.HideAll();
                         }
                         break;
                     case "DashBoard":
@@ -390,6 +392,8 @@ namespace LexTranslator
                             {
                                 YDChart.Clear();
                             }
+
+                            MultiWindowController.HideAll();
                         }
                         break;
                     case "TransHub":
@@ -399,6 +403,8 @@ namespace LexTranslator
                             StopLexGlowLoop();
 
                             UpdateTabShowState();
+
+                            MultiWindowController.ShowAll();
                         }
                         break;
                     case "Settings":
@@ -406,6 +412,8 @@ namespace LexTranslator
                             YDChart.Stop();
                             PageIndex = 3;
                             StopLexGlowLoop();
+
+                            MultiWindowController.HideAll();
                         }
                         break;
 
@@ -677,6 +685,8 @@ namespace LexTranslator
                 if (TabItem != null)
                 {
                     e.Handled = true;
+
+                    MultiWindowController.CloseMod((TabItem.Tag as FileTabContext).View.Mod);
 
                     RemoveTab((TabItem.Tag as FileTabContext).Path);
                 }

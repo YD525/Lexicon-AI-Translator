@@ -58,7 +58,7 @@ namespace LexTranslator.UIManagement
             {
                 switch (Mod.Type)
                 {
-                    case GameFileType.ESP:
+                        case GameFileType.ESP:
                         {
                             CloseCodeWin();
                             OpenTrackingWin(Mod, CurrentWin);
@@ -163,6 +163,54 @@ namespace LexTranslator.UIManagement
                         break;
                 }
             });
+        }
+
+        public static void CloseMod(ModFile Mod)
+        {
+            if (TrackingWin != null)
+            {
+                if (TrackingWin.ModRef == Mod)
+                {
+                    TrackingWin.ModRef = null;
+                    TrackingWin.Close();
+
+                    TrackingWin = null;
+                }
+            }
+            if (CodeWin != null)
+            {
+                if (CodeWin.ModRef == Mod)
+                {
+                    CodeWin.ModRef = null;
+                    CodeWin.Close();
+
+                    CodeWin = null;
+                }
+            }
+        }
+
+        public static void HideAll()
+        {
+            if (TrackingWin != null)
+            {
+                TrackingWin.Hide();
+            }
+            if (CodeWin != null)
+            {
+                CodeWin.Hide();
+            }
+        }
+
+        public static void ShowAll()
+        {
+            if (TrackingWin != null)
+            {
+                TrackingWin.Show();
+            }
+            if (CodeWin != null)
+            {
+                CodeWin.Show();
+            }
         }
     }
 }

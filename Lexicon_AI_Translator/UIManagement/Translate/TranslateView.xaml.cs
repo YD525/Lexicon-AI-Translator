@@ -1136,7 +1136,7 @@ namespace LexTranslator.UIManagement
                 int Complete = 0;
                 string GetKey = "";
 
-                StringComparison comparisonType = MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+                StringComparison ComparisonType = MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
                 Func<string, bool> IsTextMatch = (Text) =>
                 {
@@ -1144,17 +1144,17 @@ namespace LexTranslator.UIManagement
 
                     if (FuzzyMatch)
                     {
-                        return Text.IndexOf(SearchAny, comparisonType) >= 0;
+                        return Text.IndexOf(SearchAny, ComparisonType) >= 0;
                     }
                     else
                     {
-                        return Text.Equals(SearchAny, comparisonType);
+                        return Text.Equals(SearchAny, ComparisonType);
                     }
                 };
 
                 for (int i = 0; i < TransListView.RealLines.Count; i++)
                 {
-                    if ((TransListView.RealLines[i].Key != null && TransListView.RealLines[i].Key.Equals(SearchAny, comparisonType)) ||
+                    if ((TransListView.RealLines[i].Key != null && TransListView.RealLines[i].Key.Equals(SearchAny, ComparisonType)) ||
                         IsTextMatch(TransListView.RealLines[i].SourceText) ||
                         IsTextMatch(TransListView.RealLines[i].TransText))
                     {
