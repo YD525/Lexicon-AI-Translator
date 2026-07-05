@@ -823,7 +823,33 @@
         </Setter>
     </Style>
 
-    <Style x:Key="NoteIconStyle" TargetType="ContentControl">
+    <Style x:Key="AddDictionaryIconStyle" TargetType="ContentControl">
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="UseLayoutRounding" Value="true"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Viewbox Stretch="Uniform">
+                        <Canvas Width="20" Height="20">
+                            <Path Stroke="White" 
+                              StrokeThickness="1.2" 
+                              StrokeLineJoin="Round"
+                              Data="M4,17 L4,5 C4,3.5 5,3 6.5,3 L15.5,3 C17,3 18,3.5 18,5 L18,15 C18,16.5 17,17 15.5,17 L4,17 Z"/>
+
+                            <Path Stroke="White" 
+                              StrokeThickness="1.2" 
+                              StrokeLineJoin="Round"
+                              Data="M15,2 L15,6 M13,4 L17,4"/>
+                        </Canvas>
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NodeIconStyle" TargetType="ContentControl">
         <Setter Property="Width" Value="20"/>
         <Setter Property="Height" Value="20"/>
         <Setter Property="SnapsToDevicePixels" Value="true"/>

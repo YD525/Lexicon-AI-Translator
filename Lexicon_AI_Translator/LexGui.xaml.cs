@@ -454,6 +454,8 @@ namespace LexTranslator
             }
         }
 
+        #region FileTabs
+
         public void LoadFile()
         {
             var Dialog = new Microsoft.Win32.OpenFileDialog();
@@ -470,16 +472,20 @@ namespace LexTranslator
 
         public void LoadFile(string Path)
         {
-            AddTab(Path,true);
+            AddTab(Path, true);
+            UpdateTabShowState();
+        }
+        private void SelectFile(object sender, MouseButtonEventArgs e)
+        {
+            LoadFile();
         }
 
-        #region FileTabs
         private void UpdateTabShowState()
         {
             bool IsEmpty = LexTabs.Items.Count == 0;
 
             EmptyTabView.Visibility = IsEmpty ? Visibility.Visible : Visibility.Collapsed;
-            TabViews.Visibility = IsEmpty ? Visibility.Collapsed : Visibility.Visible;
+            Tab.Visibility = IsEmpty ? Visibility.Collapsed : Visibility.Visible;
         }
         public class FileTabContext
         {
@@ -1618,6 +1624,7 @@ namespace LexTranslator
         //}
 
         #endregion
+
 
     }
 }

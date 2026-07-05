@@ -54,32 +54,26 @@ namespace LexTranslator
 
         public void UpdateAllSectionHeights()
         {
-            var sections = new[]
-            {
-                new { Row = NpcRow, Panel = NpcListPanel, Rotate = NpcChevronRotate, Expanded = (bool?)null },
-                new { Row = RelatedTextRow, Panel = RelatedTextListPanel, Rotate = RelatedTextChevronRotate, Expanded = (bool?)null },
-                new { Row = DialogueRow, Panel = DialogueListPanel, Rotate = DialogueChevronRotate, Expanded = (bool?)null }
-            };
+            NpcRow.BeginAnimation(RowDefinition.HeightProperty, null);
+            NpcChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
+            bool hasNpc = NpcListPanel.Children.Count > 0;
+            NpcRow.Height = new GridLength(hasNpc ? 1 : 0, GridUnitType.Star);
+            NpcChevronRotate.Angle = hasNpc ? 0 : 180;
+            _NpcExpanded = hasNpc;
 
-            foreach (var sec in sections)
-            {
-                bool hasData = sec.Panel.Children.Count > 0;
+            RelatedTextRow.BeginAnimation(RowDefinition.HeightProperty, null);
+            RelatedTextChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
+            bool hasRelated = RelatedTextListPanel.Children.Count > 0;
+            RelatedTextRow.Height = new GridLength(hasRelated ? 1 : 0, GridUnitType.Star);
+            RelatedTextChevronRotate.Angle = hasRelated ? 0 : 180;
+            _RelatedTextExpanded = hasRelated;
 
-                if (hasData)
-                {
-                    sec.Row.Height = new GridLength(1, GridUnitType.Star);
-                    sec.Rotate.Angle = 0;
-                }
-                else
-                {
-                    sec.Row.Height = new GridLength(0, GridUnitType.Star);
-                    sec.Rotate.Angle = 180;
-                }
-            }
-
-            _NpcExpanded = NpcListPanel.Children.Count > 0;
-            _RelatedTextExpanded = RelatedTextListPanel.Children.Count > 0;
-            _DialogueExpanded = DialogueListPanel.Children.Count > 0;
+            DialogueRow.BeginAnimation(RowDefinition.HeightProperty, null);
+            DialogueChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
+            bool hasDialogue = DialogueListPanel.Children.Count > 0;
+            DialogueRow.Height = new GridLength(hasDialogue ? 1 : 0, GridUnitType.Star);
+            DialogueChevronRotate.Angle = hasDialogue ? 0 : 180;
+            _DialogueExpanded = hasDialogue;
         }
         private void OwnerMainWindow_StateChanged(object Sender, EventArgs E)
         {

@@ -151,6 +151,7 @@ IsHitTestVisible="False"/>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="25"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="25"/>
                         <ColumnDefinition Width="25"/>
@@ -158,20 +159,26 @@ IsHitTestVisible="False"/>
                         <ColumnDefinition Width="10"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="1" PreviewMouseDown="ShowLeftMenu">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="1">
                         <Grid>
-                            <ContentControl Style="{DynamicResource NoteIconStyle}" Name="NoteEffect" Panel.ZIndex="1"/>
+                            <ContentControl Style="{DynamicResource AddDictionaryIconStyle}" Panel.ZIndex="1" Cursor="Hand" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                  
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="2" PreviewMouseDown="ShowLeftMenu">
+                        <Grid>
+                            <ContentControl Style="{DynamicResource NodeIconStyle}" Name="NodeEffect" Panel.ZIndex="1"/>
                         </Grid>
                     </Border>
                     
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="3" PreviewMouseDown="Min_PreviewMouseDown">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="4" PreviewMouseDown="Min_PreviewMouseDown">
                         <ContentControl Style="{DynamicResource MinimizeIconStyle}"/>
                     </Border>
 
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="4" PreviewMouseDown="AutoMax_PreviewMouseDown">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="5" PreviewMouseDown="AutoMax_PreviewMouseDown">
                         <ContentControl Style="{DynamicResource MaximizeIconStyle}"/>
                     </Border>
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="5" PreviewMouseDown="Close_PreviewMouseDown">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="6" PreviewMouseDown="Close_PreviewMouseDown">
                         <ContentControl Style="{DynamicResource CloseIconStyle}" Grid.Column="3"/>
                     </Border>
                 </Grid>
@@ -573,15 +580,13 @@ Chinese character processed by —
                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                     
                                     <Viewbox Width="70" Height="70" Margin="0,0,0,15">
-                                        <Path Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M17,13H13V17H11V13H7V11H11V7H13V11H17V13Z" 
-                  Fill="#3D3D3D" Stretch="Uniform"/>
+                                        <Path Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M17,13H13V17H11V13H7V11H11V7H13V11H17V13Z"   Fill="#3D3D3D" Stretch="Uniform"/>
                                     </Viewbox>
 
                                     <TextBlock Text="No Mod Files Loaded" Foreground="#E0E0E0" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
                                     <TextBlock Text="Drag &amp; drop multiple files or click below to select" Foreground="#707070" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
-                                    <Border Width="180" Height="42" CornerRadius="6" BorderThickness="1" 
-                Style="{StaticResource ModButtonStyle}" Tag="LexTabAdd">
+                                    <Border Width="180" Height="42" CornerRadius="6" BorderThickness="1" Style="{StaticResource ModButtonStyle}" Tag="LexTabAdd" PreviewMouseDown="SelectFile">
                                         <TextBlock Text="Select Mod File" Foreground="#D0D0D0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </Border>
 
@@ -610,7 +615,7 @@ Chinese character processed by —
                                 </StackPanel>
                             </Grid>
 
-                            <Grid Panel.ZIndex="1" Visibility="Hidden" Name="TabView">
+                            <Grid Panel.ZIndex="1" Visibility="Hidden"  Name="Tab">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="28"/>
                                     <RowDefinition Height="1*"/>

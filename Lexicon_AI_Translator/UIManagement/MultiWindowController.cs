@@ -137,6 +137,8 @@ namespace LexTranslator.UIManagement
 
 
                                 TrackingWin.UpdateAllSectionHeights();
+
+                                CurrentWin.Focus();
                             }
 
                         }
