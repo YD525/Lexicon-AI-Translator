@@ -666,6 +666,7 @@ namespace LexTranslator
                 CTX.View.Visibility = Visibility.Visible;
                 ActiveTab = CTX.View;
                 ActiveTab.Active();
+                TranslateConfigView.ChangeTab();
             }
         }
 

@@ -1304,14 +1304,14 @@ namespace LexTranslator.UIManagement
                 HistoryLayer.Visibility = Visibility.Visible;
 
                 AutoSizeHistoryList();
-                HistoryButtonFont.Content = UILanguageHelper.UICache["HistoryButtonFont1"];
+                HistoryButtonFont.Content = "History ↑";
 
                 AutoLoadHistoryList();
             }
             else
             {
                 HistoryLayer.Visibility = Visibility.Collapsed;
-                HistoryButtonFont.Content = UILanguageHelper.UICache["HistoryButtonFont"];
+                HistoryButtonFont.Content = "History ↓";
             }
         }
         private void SpeakFromStr(object sender, MouseButtonEventArgs e)

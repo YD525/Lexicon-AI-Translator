@@ -184,6 +184,11 @@ namespace LexTranslator
             ExactMatch.IsChecked = true;
         }
 
+        public void ChangeTab()
+        {
+            FileName.Content = _Owner.ActiveTab?.Mod?.FileName;
+        }
+
         public void SetTypes()
         {
             TypeSelector.Items.Clear();
