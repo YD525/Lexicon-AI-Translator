@@ -87,6 +87,7 @@ namespace LexTranslator
             {
                 TranslateConfigView = new TranslateConfig(this);
                 TranslateConfigView.Hide();
+                TranslateConfigView.Init();
             }
         }
 

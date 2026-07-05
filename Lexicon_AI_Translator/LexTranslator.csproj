@@ -102,7 +102,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CGView.xaml.cs">
+    <Compile Include="UIManagement\Main\CGView.xaml.cs">
       <DependentUpon>CGView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\Translate\CodeView.xaml.cs">
@@ -111,11 +111,11 @@
     <Compile Include="UIManagement\Node\CustomWizard.xaml.cs">
       <DependentUpon>CustomWizard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataBaseView.xaml.cs">
+    <Compile Include="UIManagement\Main\DataBaseView.xaml.cs">
       <DependentUpon>DataBaseView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DeFine.cs" />
-    <Compile Include="ExtendWin.xaml.cs">
+    <Compile Include="UIManagement\Main\ExtendWin.xaml.cs">
       <DependentUpon>ExtendWin.xaml</DependentUpon>
     </Compile>
     <Compile Include="IDEManagement\CompleteHelper.cs" />
@@ -125,13 +125,13 @@
     <Compile Include="LexGui.xaml.cs">
       <DependentUpon>LexGui.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TranslateConfig.xaml.cs">
+    <Compile Include="UIManagement\Main\TranslateConfig.xaml.cs">
       <DependentUpon>TranslateConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="LogView.xaml.cs">
       <DependentUpon>LogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MessageBoxExtend.xaml.cs">
+    <Compile Include="UIManagement\Main\MessageBoxExtend.xaml.cs">
       <DependentUpon>MessageBoxExtend.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\Translate\NPCFinder.xaml.cs">
@@ -158,7 +158,7 @@
     <Compile Include="SplashWindow.xaml.cs">
       <DependentUpon>SplashWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TraditionalConvert.xaml.cs">
+    <Compile Include="UIManagement\Translate\TraditionalConvert.xaml.cs">
       <DependentUpon>TraditionalConvert.xaml</DependentUpon>
     </Compile>
     <Compile Include="TranslateManagement\Crc32Helper.cs" />
@@ -189,7 +189,7 @@
       <DependentUpon>MainChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="YDControls\RealtimeLineChart.cs" />
-    <Page Include="CGView.xaml">
+    <Page Include="UIManagement\Main\CGView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -201,11 +201,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DataBaseView.xaml">
+    <Page Include="UIManagement\Main\DataBaseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ExtendWin.xaml">
+    <Page Include="UIManagement\Main\ExtendWin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -217,7 +217,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TranslateConfig.xaml">
+    <Page Include="UIManagement\Main\TranslateConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -232,7 +232,7 @@
     <Compile Include="FileManagement\DataHelper.cs" />
     <Compile Include="FileManagement\ExplorerHelper.cs" />
     <Compile Include="IDEManagement\RichBorderWidthConverter.cs" />
-    <Page Include="MessageBoxExtend.xaml">
+    <Page Include="UIManagement\Main\MessageBoxExtend.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -264,7 +264,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TraditionalConvert.xaml">
+    <Page Include="UIManagement\Translate\TraditionalConvert.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
