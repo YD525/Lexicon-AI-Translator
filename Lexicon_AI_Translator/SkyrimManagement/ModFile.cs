@@ -52,7 +52,7 @@ namespace LexTranslator.SkyrimManagement
 
         public ModFile(string Path)
         {
-            this.P_Translator = new Translator(DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
+            this.P_Translator = new Translator(Path,DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
 
             if (System.IO.File.Exists(Path))
             {

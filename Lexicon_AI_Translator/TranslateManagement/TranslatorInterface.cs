@@ -132,29 +132,40 @@ namespace LexTranslator.TranslateManage
         /// </summary>
         /// <param name="Item"></param>
         /// <returns></returns>
-        public static UnitContext<BaseUnit> BaseUnitStateChanged(BaseUnit Item, UnitTranslationState State)
+        public static UnitContext<BaseUnit> BaseUnitStateChanged(string ID,BaseUnit Item, UnitTranslationState State)
         {
-            //if (State == UnitTranslationState.Queued)
-            //{
-            //    if (DeFine.WorkWin != null)
-            //    {
-            //        if (DeFine.WorkWin.TransListView != null)
-            //        {
-            //            FakeGrid QueryGrid = DeFine.WorkWin.TransViewList.KeyToFakeGrid(Item.Key);
+            if (State == UnitTranslationState.Queued)
+            {
+                if (DeFine.WorkWin != null)
+                {
+                    for (int i = 0; i < DeFine.WorkWin.TabViews.Children.Count; i++)
+                    {
+                        if (DeFine.WorkWin.TabViews.Children[i] is TranslateView)
+                        {
+                            var Mod = (DeFine.WorkWin.TabViews.Children[i] as TranslateView).Mod;
 
-            //            if (QueryGrid != null)
-            //            {
-            //                if (QueryGrid.TransText.Length == 0)
-            //                {
-            //                    bool IsCloud = false;
-            //                    QueryGrid.SyncData(ref IsCloud);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+                            if (Mod.Path.Equals(ID))//The reason for using the file path as the primary key ID is that a user cannot translate two pieces of content with the same path at the same time, and there are also limitations in the outer layer I implemented..
+                            {
+                                //This way, you can determine which Translator the BaseUnit belongs to by its ID, and then retrieve the ListView control itself based on the ModFile ~.
+                                var ListView = Mod.ListView;
 
-            //return new UnitContext<BaseUnit>();
+                                FakeGrid QueryGrid = ListView.KeyToFakeGrid(Item.Key);
+
+                                if (QueryGrid != null)
+                                {
+                                    if (QueryGrid.TransText.Length == 0)
+                                    {
+                                        bool IsCloud = false;
+                                        QueryGrid.SyncData(Mod, ref IsCloud);
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
             return new UnitContext<BaseUnit>();
         }
