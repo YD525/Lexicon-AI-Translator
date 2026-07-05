@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManagement;
+using PhoenixEngine.Common;
 
 namespace LexTranslator
 {
@@ -293,21 +294,37 @@ namespace LexTranslator
             return CardBorder;
         }
 
+        public class TrackingItem
+        {
+            public ModFile ModRef;
+            public string Key = "";
+            public TrackingItem(ModFile ModRef, string Key)
+            { 
+                this.ModRef = ModRef;
+                this.Key = Key;
+            }
+        }
+
         private Border BuildDialogueCard(ModFile ModRef, ManagedDialNode Item)
         {
             var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(0, Item.RecordOffset, Item.SubOffset);
             if (GetRecord != null)
-            {
+            { 
                 Border CardBorder = new Border();
                 CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
                 CardBorder.CornerRadius = new CornerRadius(6);
                 CardBorder.Margin = new Thickness(0, 0, 0, 6);
                 CardBorder.Padding = new Thickness(8, 6, 8, 6);
+                CardBorder.Tag = new TrackingItem(ModRef,GetRecord.UniqueKey);         
 
                 StackPanel ContentPanel = new StackPanel();
                 ContentPanel.Orientation = Orientation.Vertical;
 
-                TextBlock TextLine = new TextBlock();
+                TextBox TextLine = new TextBox();
+                TextLine.Background = null;
+                TextLine.BorderBrush = null;
+                TextLine.BorderThickness = new Thickness(0);
+                TextLine.IsReadOnly = true;
                 TextLine.Foreground = Brushes.White;
                 TextLine.FontSize = 13;
                 TextLine.TextWrapping = TextWrapping.Wrap;
@@ -323,12 +340,17 @@ namespace LexTranslator
                 if (Item.EmotionType != 999)
                 {
                     EmotionText.Text = EmotionTypeHelper.FromRaw(Item.EmotionType).ToString();
+                    CardBorder.Cursor = Cursors.Hand;
+                    TextLine.Cursor = Cursors.Hand;
+
+                    CardBorder.PreviewMouseDown += CardBorder_PreviewMouseDown;
                 }
                 else
                 {
                     //Double checking prevents display errors; I'm unsure if the emoji value in ESP will be exactly 999.
                     if (Item.SubOffset == 0)
                     {
+                        TextLine.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
                         TextLine.FontWeight = FontWeights.DemiBold;
                         EmotionText.Text = "Tittle";
                     }
@@ -353,6 +375,15 @@ namespace LexTranslator
             }
 
             return null;
+        }
+
+        private void CardBorder_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                TrackingItem GetTrack = (TrackingItem)((sender as Border).Tag);
+                GetTrack.ModRef.ListView.Goto(GetTrack.Key);
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)
