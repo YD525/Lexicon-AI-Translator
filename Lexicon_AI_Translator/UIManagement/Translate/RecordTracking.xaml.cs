@@ -320,7 +320,15 @@ namespace LexTranslator
                 InfoLine.Margin = new Thickness(0, 4, 0, 0);
 
                 TextBlock EmotionText = new TextBlock();
-                EmotionText.Text = EmotionTypeHelper.FromRaw(Item.EmotionType).ToString();
+                if (Item.EmotionType != 999)
+                {
+                    EmotionText.Text = EmotionTypeHelper.FromRaw(Item.EmotionType).ToString();
+                }
+                else
+                {
+                    EmotionText.Text = "Tittle";
+                }
+               
                 EmotionText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
                 EmotionText.FontSize = 12;
                 EmotionText.FontWeight = FontWeights.DemiBold;

@@ -1,10 +1,10 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using System.Windows.Media;
-using System.Windows;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 public class PageSwitcher
 {
@@ -14,6 +14,8 @@ public class PageSwitcher
     public Window WorkingWin { get; set; }
     public Grid Views { get; set; }
     private int _CurrentPage = -1;
+
+    public bool Playing { get; set; } = false;
 
     public PageSwitcher(Window WorkingWin, Grid Views)
     {
@@ -26,9 +28,11 @@ public class PageSwitcher
 
     private void FadeInPage(Grid Page)
     {
+        Playing = true;
         Page.Opacity = 0;
         Page.Visibility = Visibility.Visible;
         var Anim = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(2));
+        Anim.Completed += (s, e) => Playing = false;
         Page.BeginAnimation(UIElement.OpacityProperty, Anim);
     }
 
@@ -36,6 +40,12 @@ public class PageSwitcher
     {
         var Pages = Views.Children.OfType<Grid>().ToList();
         if (Index < 0 || Index >= Pages.Count) return;
+        if (_CurrentPage == Index) return;
+
+        if (Playing)
+        {
+            PrepareTransform(Pages);
+        }
 
         if (_CurrentPage == -1)
         {
@@ -44,45 +54,92 @@ public class PageSwitcher
             return;
         }
 
-        if (_CurrentPage == Index) return;
+        Playing = true;
 
-        double ViewH = GetViewH();
-        int OldPage = _CurrentPage;
-        _CurrentPage = Index;
+        int OldPageIndex = _CurrentPage;
+        _CurrentPage = Index; 
 
-        PrepareTransform(Pages);
+        int TargetIndex = Index;
 
         for (int I = 0; I < Pages.Count; I++)
         {
-            var Page = Pages[I];
-            var T = GetOrCreateTransform(Page);
-
-            if (I == Index || I == OldPage) Page.Visibility = Visibility.Visible;
-            else Page.Visibility = Visibility.Collapsed;
-
-            T.BeginAnimation(TranslateTransform.XProperty, null);
-            T.X = 0;
-
-            double TargetY = I == Index ? 0 : (I < Index ? -ViewH : ViewH);
-            var YAnimation = new DoubleAnimation(TargetY, TimeSpan.FromMilliseconds(AnimationDurationMs))
+            if (I != Index && I != OldPageIndex)
             {
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-            };
-
-            if (I == Index) YAnimation.From = Index > OldPage ? ViewH : -ViewH;
-
-            YAnimation.Completed += (s, e) => {
-                if (I == OldPage) Page.Visibility = Visibility.Collapsed;
-            };
-
-            T.BeginAnimation(TranslateTransform.YProperty, YAnimation);
+                Pages[I].Visibility = Visibility.Collapsed;
+            }
         }
+
+        var OldPage = Pages[OldPageIndex];
+        var NewPage = Pages[Index];
+
+        OldPage.Visibility = Visibility.Visible;
+        NewPage.Visibility = Visibility.Visible;
+
+        var TOld = GetOrCreateTransform(OldPage);
+        var TNew = GetOrCreateTransform(NewPage);
+
+        TOld.BeginAnimation(TranslateTransform.XProperty, null);
+        TOld.X = 0;
+        TNew.BeginAnimation(TranslateTransform.XProperty, null);
+        TNew.X = 0;
+
+        double ViewH = GetViewH();
+        bool MoveUp = Index > OldPageIndex;
+        double OldTargetY = MoveUp ? -ViewH : ViewH;
+        double NewStartY = MoveUp ? ViewH : -ViewH;
+
+        var Ease = new CubicEase { EasingMode = EasingMode.EaseInOut };
+
+        int CompletedCount = 0;
+        Action CheckUnlock = () =>
+        {
+            CompletedCount++;
+            if (CompletedCount >= 2)
+            {
+                if (_CurrentPage != TargetIndex)
+                {
+                    Playing = false;
+                    int LatestTarget = _CurrentPage;
+                    _CurrentPage = TargetIndex;
+                    SwitchPageByVertical(LatestTarget);
+                }
+                else
+                {
+                    Playing = false; 
+                }
+            }
+        };
+
+        var OldAnim = new DoubleAnimation(OldTargetY, TimeSpan.FromMilliseconds(AnimationDurationMs)) { EasingFunction = Ease };
+        OldAnim.Completed += (s, e) =>
+        {
+            OldPage.Visibility = Visibility.Collapsed;
+            TOld.BeginAnimation(TranslateTransform.YProperty, null);
+            TOld.Y = OldTargetY;
+            CheckUnlock();
+        };
+        TOld.BeginAnimation(TranslateTransform.YProperty, OldAnim);
+
+        var NewAnim = new DoubleAnimation(NewStartY, 0, TimeSpan.FromMilliseconds(AnimationDurationMs)) { EasingFunction = Ease };
+        NewAnim.Completed += (s, e) =>
+        {
+            TNew.BeginAnimation(TranslateTransform.YProperty, null);
+            TNew.Y = 0;
+            CheckUnlock();
+        };
+        TNew.BeginAnimation(TranslateTransform.YProperty, NewAnim);
     }
 
     public void SwitchPageByHorizontal(int Index)
     {
         var Pages = Views.Children.OfType<Grid>().ToList();
         if (Index < 0 || Index >= Pages.Count) return;
+        if (_CurrentPage == Index) return;
+
+        if (Playing)
+        {
+            PrepareTransform(Pages);
+        }
 
         if (_CurrentPage == -1)
         {
@@ -91,44 +148,85 @@ public class PageSwitcher
             return;
         }
 
-        if (_CurrentPage == Index) return;
+        Playing = true;
 
-        double ViewW = GetViewW();
-        int OldPage = _CurrentPage;
+        int OldPageIndex = _CurrentPage;
         _CurrentPage = Index;
 
-        PrepareTransform(Pages);
+        int TargetIndex = Index;
 
         for (int I = 0; I < Pages.Count; I++)
         {
-            var Page = Pages[I];
-            var T = GetOrCreateTransform(Page);
-
-            if (I == Index || I == OldPage) Page.Visibility = Visibility.Visible;
-            else Page.Visibility = Visibility.Collapsed;
-
-            T.BeginAnimation(TranslateTransform.YProperty, null);
-            T.Y = 0;
-
-            double TargetX = I == Index ? 0 : (I < Index ? -ViewW : ViewW);
-            var XAnimation = new DoubleAnimation(TargetX, TimeSpan.FromMilliseconds(AnimationDurationMs))
+            if (I != Index && I != OldPageIndex)
             {
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-            };
-
-            if (I == Index) XAnimation.From = Index > OldPage ? ViewW : -ViewW;
-
-            XAnimation.Completed += (s, e) => {
-                if (I == OldPage) Page.Visibility = Visibility.Collapsed;
-            };
-
-            T.BeginAnimation(TranslateTransform.XProperty, XAnimation);
+                Pages[I].Visibility = Visibility.Collapsed;
+            }
         }
+
+        var OldPage = Pages[OldPageIndex];
+        var NewPage = Pages[Index];
+
+        OldPage.Visibility = Visibility.Visible;
+        NewPage.Visibility = Visibility.Visible;
+
+        var TOld = GetOrCreateTransform(OldPage);
+        var TNew = GetOrCreateTransform(NewPage);
+
+        TOld.BeginAnimation(TranslateTransform.YProperty, null);
+        TOld.Y = 0;
+        TNew.BeginAnimation(TranslateTransform.YProperty, null);
+        TNew.Y = 0;
+
+        double ViewW = GetViewW();
+        bool MoveLeft = Index > OldPageIndex;
+        double OldTargetX = MoveLeft ? -ViewW : ViewW;
+        double NewStartX = MoveLeft ? ViewW : - ViewW;
+
+        var Ease = new CubicEase { EasingMode = EasingMode.EaseInOut };
+
+        int CompletedCount = 0;
+        Action CheckUnlock = () =>
+        {
+            CompletedCount++;
+            if (CompletedCount >= 2)
+            {
+                if (_CurrentPage != TargetIndex)
+                {
+                    Playing = false;
+                    int LatestTarget = _CurrentPage;
+                    _CurrentPage = TargetIndex;
+                    SwitchPageByHorizontal(LatestTarget);
+                }
+                else
+                {
+                    Playing = false;
+                }
+            }
+        };
+
+        var OldAnim = new DoubleAnimation(OldTargetX, TimeSpan.FromMilliseconds(AnimationDurationMs)) { EasingFunction = Ease };
+        OldAnim.Completed += (s, e) =>
+        {
+            OldPage.Visibility = Visibility.Collapsed;
+            TOld.BeginAnimation(TranslateTransform.XProperty, null);
+            TOld.X = OldTargetX;
+            CheckUnlock();
+        };
+        TOld.BeginAnimation(TranslateTransform.XProperty, OldAnim);
+
+        var NewAnim = new DoubleAnimation(NewStartX, 0, TimeSpan.FromMilliseconds(AnimationDurationMs)) { EasingFunction = Ease };
+        NewAnim.Completed += (s, e) =>
+        {
+            TNew.BeginAnimation(TranslateTransform.XProperty, null);
+            TNew.X = 0;
+            CheckUnlock();
+        };
+        TNew.BeginAnimation(TranslateTransform.XProperty, NewAnim);
     }
 
-    private void PrepareTransform(List<Grid> pages)
+    private void PrepareTransform(List<Grid> Pages)
     {
-        foreach (var Page in pages)
+        foreach (var Page in Pages)
         {
             if (Page.RenderTransform is TranslateTransform T)
             {

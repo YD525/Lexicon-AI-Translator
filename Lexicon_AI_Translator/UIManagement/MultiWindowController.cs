@@ -91,9 +91,23 @@ namespace LexTranslator.UIManagement
 
                                     if (DialogueLink != null)
                                     {
+                                        List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
+
+                                        //Recreate the array and put the title first.
+
+                                        if (DialogueLink.Head != null)
+                                        {
+                                            TempLinks.Add(DialogueLink.Head);
+                                        }
+
                                         if (DialogueLink.Links != null)
                                         {
-                                            TrackingWin.LoadDialogueRecords(Mod, DialogueLink.Links);
+                                            TempLinks.AddRange(DialogueLink.Links);
+                                        }
+
+                                        if (TempLinks.Count > 0)
+                                        {
+                                            TrackingWin.LoadDialogueRecords(Mod, TempLinks);
                                         }
                                         else
                                         {

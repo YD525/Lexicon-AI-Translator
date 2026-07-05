@@ -24,6 +24,7 @@ using PhoenixEngine.Language;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
+using System.Windows.Threading;
 
 namespace LexTranslator
 {
@@ -155,7 +156,7 @@ namespace LexTranslator
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-
+           
         }
 
         private void Window_LocationChanged(object sender, EventArgs e)
@@ -1662,5 +1663,6 @@ namespace LexTranslator
         //}
 
         #endregion
+
     }
 }
