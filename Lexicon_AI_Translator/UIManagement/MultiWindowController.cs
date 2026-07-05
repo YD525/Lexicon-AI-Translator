@@ -25,6 +25,7 @@ namespace LexTranslator.UIManagement
             }
             else
             {
+                CodeWin.ModRef = Mod;
                 CodeWin.Owner = Win;
             }
         }
@@ -47,6 +48,7 @@ namespace LexTranslator.UIManagement
             }
             else
             {
+                TrackingWin.ModRef = Mod;
                 TrackingWin.Owner = Win;
             }
         }
@@ -169,7 +171,7 @@ namespace LexTranslator.UIManagement
         {
             if (TrackingWin != null)
             {
-                if (TrackingWin.ModRef == Mod)
+                if (TrackingWin.ModRef.Path == Mod.Path)
                 {
                     TrackingWin.ModRef = null;
                     TrackingWin.Close();
@@ -179,7 +181,7 @@ namespace LexTranslator.UIManagement
             }
             if (CodeWin != null)
             {
-                if (CodeWin.ModRef == Mod)
+                if (CodeWin.ModRef.Path == Mod.Path)
                 {
                     CodeWin.ModRef = null;
                     CodeWin.Close();
