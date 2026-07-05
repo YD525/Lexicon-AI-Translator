@@ -46,8 +46,8 @@ namespace LexTranslator
 
             TranslatorInterface.Init();
 
-            InfoPage = new PageSwitcher(this,InFoPages);
-            MainPage = new PageSwitcher(this,Views);
+            InfoPage = new PageSwitcher(this, InFoPages);
+            MainPage = new PageSwitcher(this, Views);
 
             ShowView("InFo");
 
@@ -143,7 +143,7 @@ namespace LexTranslator
             {
                 if (ActiveTab != null)
                 {
-                    ActiveTab.Window_PreviewKeyDown(sender,e);
+                    ActiveTab.Window_PreviewKeyDown(sender, e);
                 }
             }
         }
@@ -225,7 +225,7 @@ namespace LexTranslator
                 }
             }
         }
-       
+
         #region Effect
 
         public Storyboard XTGlowLoopStoryboard = null;
@@ -706,7 +706,7 @@ namespace LexTranslator
                 }
 
                 var View = new TranslateView();
-                View.SetFile(this,Path);
+                View.SetFile(this, Path);
                 View.Visibility = Visibility.Collapsed;
 
                 var CTXNew = new FileTabContext
@@ -788,7 +788,7 @@ namespace LexTranslator
         }
 
 
-     
+
         private double CalcLeftMenuHeight()
         {
             double AutoHeight = 0;
@@ -1250,8 +1250,15 @@ namespace LexTranslator
                 Grid GetMainGrid = (Grid)Nav.Child;
                 if (GetMainGrid.Children.Count == 2)
                 {
-                    Nav.Style = (Style)this.FindResource("ModelSelected");
-                    ((Grid)GetMainGrid.Children[1]).Visibility = Visibility.Visible;
+                    if (GetMainGrid.Children[0] is TextBlock NavText)
+                    {
+                        NavText.Foreground = (Brush)this.FindResource("SettingAccentBrush");
+                        NavText.FontWeight = FontWeights.SemiBold;
+                    }
+                    if (GetMainGrid.Children[1] is Border Indicator)
+                    {
+                        Indicator.Visibility = Visibility.Visible;
+                    }
                 }
             }
 
@@ -1263,8 +1270,15 @@ namespace LexTranslator
                 Grid GetMainGrid = (Grid)Nav.Child;
                 if (GetMainGrid.Children.Count == 2)
                 {
-                    Nav.Style = (Style)this.FindResource("ModelUnSelected");
-                    ((Grid)GetMainGrid.Children[1]).Visibility = Visibility.Hidden;
+                    if (GetMainGrid.Children[0] is TextBlock NavText)
+                    {
+                        NavText.Foreground = (Brush)this.FindResource("SettingMutedBrush");
+                        NavText.FontWeight = FontWeights.Normal;
+                    }
+                    if (GetMainGrid.Children[1] is Border Indicator)
+                    {
+                        Indicator.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
 
@@ -1272,16 +1286,7 @@ namespace LexTranslator
 
         public string GetSettingNavName(Border Nav)
         {
-            if (Nav.Child is Grid)
-            {
-                Grid GetMainGrid = (Grid)Nav.Child;
-                if (GetMainGrid.Children.Count == 2)
-                {
-                    if (GetMainGrid.Children[0] is Label)
-                        return P_Convert.ObjToStr(((Label)GetMainGrid.Children[0]).Content);
-                }
-            }
-            return string.Empty;
+            return P_Convert.ObjToStr(Nav.Tag);
         }
 
         private void UILanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)

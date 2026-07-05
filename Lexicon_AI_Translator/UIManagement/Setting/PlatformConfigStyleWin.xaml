@@ -58,23 +58,20 @@
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
+                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="10 0 0 0">
                                     ApiKey:
                                 </Label>
                                 <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
                                     <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
                                     </TextBox>
                                 </Border>
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
-                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
-                                        Add
-                                    </Label>
+                                
+                                <Border Style="{StaticResource SettingActionButton}">
+                                    <TextBlock Text="Add" Style="{StaticResource SettingActionButtonText}"/>
                                 </Border>
 
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent" Margin="5 5 0 5" Cursor="Hand">
-                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
-                                        Remove
-                                    </Label>
+                                <Border Style="{StaticResource SettingActionButton}">
+                                    <TextBlock Text="Remove" Style="{StaticResource SettingActionButtonText}"/>
                                 </Border>
 
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="5 0 0 0">
@@ -104,11 +101,11 @@
                 </Grid>
             </Border>
 
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="80" Margin="0 5 0 5" Name="LocalAIConfig">
+            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="85" Margin="0 5 0 5" Name="LocalAIConfig">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
-                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
 
                     <Grid Margin="-1 -1 0 0">
@@ -148,16 +145,15 @@
                     <Grid Grid.Row="1">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="35"/>
-                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal">
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
                                     Port:
                                 </Label>
-                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
-                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
-                                    </TextBox>
+                                
+                                <Border Style="{StaticResource SettingInputBorder}" Width="230" Margin="0 0 5 0" VerticalAlignment="Center">
+                                    <TextBox  Style="{StaticResource SettingTextBox}"/>
                                 </Border>
 
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="5 0 0 0">
@@ -175,7 +171,7 @@
                 </Grid>
             </Border>
 
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="130" Margin="0 5 0 5" Name="TraditionalConfig">
+            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="TraditionalConfig">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
@@ -219,28 +215,24 @@
                     <Grid Grid.Row="1">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="50"/>
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
+                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="10 0 0 0">
                                     ApiKey:
                                 </Label>
-                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
-                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
-                                    </TextBox>
+
+                                <Border Style="{StaticResource SettingInputBorder}" Width="230" Margin="0 0 5 0" VerticalAlignment="Center">
+                                    <TextBox  Style="{StaticResource SettingTextBox}"/>
                                 </Border>
-                                
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent"  Margin="5 5 0 5" Cursor="Hand">
-                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
-                                        Add
-                                    </Label>
+                              
+                                <Border Style="{StaticResource SettingActionButton}" VerticalAlignment="Center">
+                                    <TextBlock Text="Add" Style="{StaticResource SettingActionButtonText}"/>
                                 </Border>
 
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="White" VerticalAlignment="Center" Background="Transparent" Margin="5 5 0 5" Cursor="Hand">
-                                    <Label Foreground="White" VerticalAlignment="Center" FontSize="10">
-                                        Remove
-                                    </Label>
+                                <Border Style="{StaticResource SettingActionButton}" VerticalAlignment="Center">
+                                    <TextBlock Text="Remove" Style="{StaticResource SettingActionButtonText}"/>
                                 </Border>
 
                                 <CheckBox Foreground="White" VerticalAlignment="Center" Margin="5 0 0 0" Visibility="Collapsed">
