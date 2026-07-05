@@ -105,10 +105,10 @@
     <Compile Include="CGView.xaml.cs">
       <DependentUpon>CGView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CodeView.xaml.cs">
+    <Compile Include="UIManagement\Translate\CodeView.xaml.cs">
       <DependentUpon>CodeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomWizard.xaml.cs">
+    <Compile Include="UIManagement\Node\CustomWizard.xaml.cs">
       <DependentUpon>CustomWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataBaseView.xaml.cs">
@@ -119,14 +119,14 @@
       <DependentUpon>ExtendWin.xaml</DependentUpon>
     </Compile>
     <Compile Include="IDEManagement\CompleteHelper.cs" />
-    <Compile Include="InteractiveView.xaml.cs">
+    <Compile Include="UIManagement\Translate\InteractiveView.xaml.cs">
       <DependentUpon>InteractiveView.xaml</DependentUpon>
     </Compile>
     <Compile Include="LexGui.xaml.cs">
       <DependentUpon>LexGui.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LocalConfig.xaml.cs">
-      <DependentUpon>LocalConfig.xaml</DependentUpon>
+    <Compile Include="TranslateConfig.xaml.cs">
+      <DependentUpon>TranslateConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="LogView.xaml.cs">
       <DependentUpon>LogView.xaml</DependentUpon>
@@ -134,16 +134,16 @@
     <Compile Include="MessageBoxExtend.xaml.cs">
       <DependentUpon>MessageBoxExtend.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NPCFinder.xaml.cs">
+    <Compile Include="UIManagement\Translate\NPCFinder.xaml.cs">
       <DependentUpon>NPCFinder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RecordTracking.xaml.cs">
+    <Compile Include="UIManagement\Translate\RecordTracking.xaml.cs">
       <DependentUpon>RecordTracking.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ReplaceWin.xaml.cs">
+    <Compile Include="UIManagement\Translate\ReplaceWin.xaml.cs">
       <DependentUpon>ReplaceWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SearchText.xaml.cs">
+    <Compile Include="UIManagement\Translate\SearchText.xaml.cs">
       <DependentUpon>SearchText.xaml</DependentUpon>
     </Compile>
     <Compile Include="SkyrimManagement\DSDConverter.cs" />
@@ -169,17 +169,17 @@
     <Compile Include="UIManagement\LineRenderer.cs" />
     <Compile Include="UIManagement\LogHelper.cs" />
     <Compile Include="UIManagement\MultiWindowController.cs" />
-    <Compile Include="UIManagement\NodeStyleWin.xaml.cs">
+    <Compile Include="UIManagement\Node\NodeStyleWin.xaml.cs">
       <DependentUpon>NodeStyleWin.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\PageSwitcher.cs" />
-    <Compile Include="UIManagement\PlatformConfigStyleWin.xaml.cs">
+    <Compile Include="UIManagement\Setting\PlatformConfigStyleWin.xaml.cs">
       <DependentUpon>PlatformConfigStyleWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIManagement\RowStyleWin.xaml.cs">
+    <Compile Include="UIManagement\Row\RowStyleWin.xaml.cs">
       <DependentUpon>RowStyleWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIManagement\TranslateView.xaml.cs">
+    <Compile Include="UIManagement\Translate\TranslateView.xaml.cs">
       <DependentUpon>TranslateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\UIHelper.cs" />
@@ -193,11 +193,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CodeView.xaml">
+    <Page Include="UIManagement\Translate\CodeView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomWizard.xaml">
+    <Page Include="UIManagement\Node\CustomWizard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -209,7 +209,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="InteractiveView.xaml">
+    <Page Include="UIManagement\Translate\InteractiveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -217,7 +217,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LocalConfig.xaml">
+    <Page Include="TranslateConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -236,19 +236,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NPCFinder.xaml">
+    <Page Include="UIManagement\Translate\NPCFinder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RecordTracking.xaml">
+    <Page Include="UIManagement\Translate\RecordTracking.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ReplaceWin.xaml">
+    <Page Include="UIManagement\Translate\ReplaceWin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SearchText.xaml">
+    <Page Include="UIManagement\Translate\SearchText.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -268,19 +268,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIManagement\NodeStyleWin.xaml">
+    <Page Include="UIManagement\Node\NodeStyleWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIManagement\PlatformConfigStyleWin.xaml">
+    <Page Include="UIManagement\Setting\PlatformConfigStyleWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIManagement\RowStyleWin.xaml">
+    <Page Include="UIManagement\Row\RowStyleWin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UIManagement\TranslateView.xaml">
+    <Page Include="UIManagement\Translate\TranslateView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

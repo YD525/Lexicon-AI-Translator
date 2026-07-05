@@ -81,7 +81,6 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120" Name="ModeCol"/>
                         <ColumnDefinition Width="1*" Name="BarCol"/>
-                        <ColumnDefinition Width="50" Name="SettingCol"/>
                         <ColumnDefinition Width="0.7*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
@@ -160,11 +159,7 @@
                         </Grid>
                     </Border>
 
-                    <Border  Style="{DynamicResource LiteButtonLight}" Margin="5" Grid.Column="2" PreviewMouseDown="ShowLocalEngineSettingView">
-                        <ContentControl Style="{DynamicResource SettingIconStyle}" Panel.ZIndex="1" Cursor="Hand" Height="20" Width="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 0"/>
-                    </Border>
-
-                    <TextBox Margin="5 0 0 0" x:Name="SearchBox"  Style="{StaticResource SearchTextBox}"  KeyDown="SearchBox_KeyDown" ToolTip="Press Enter to retrieve the next target." Grid.Column="3">
+                    <TextBox Margin="5 0 0 0" x:Name="SearchBox"  Style="{StaticResource SearchTextBox}"  KeyDown="SearchBox_KeyDown" ToolTip="Press Enter to retrieve the next target." Grid.Column="2">
                         <TextBox.InputBindings>
                             <KeyBinding Key="Escape" Command="{Binding ClearSearchCommand}" />
                         </TextBox.InputBindings>

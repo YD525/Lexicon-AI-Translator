@@ -222,7 +222,11 @@ namespace LexTranslator
             {
                 for (int i = 0; i < Records.Count; i++)
                 {
-                    DialogueListPanel.Children.Add(BuildDialogueCard(ModRef, Records[i]));
+                    var GetLine = BuildDialogueCard(ModRef, Records[i]);
+                    if (GetLine != null)
+                    {
+                        DialogueListPanel.Children.Add(GetLine);
+                    }
                 }
             }
         }
@@ -291,44 +295,51 @@ namespace LexTranslator
 
         private Border BuildDialogueCard(ModFile ModRef, ManagedDialNode Item)
         {
-            Border CardBorder = new Border();
-            CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
-            CardBorder.CornerRadius = new CornerRadius(6);
-            CardBorder.Margin = new Thickness(0, 0, 0, 6);
-            CardBorder.Padding = new Thickness(8, 6, 8, 6);
+            var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(0, Item.RecordOffset, Item.SubOffset);
+            if (GetRecord != null)
+            {
+                Border CardBorder = new Border();
+                CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+                CardBorder.CornerRadius = new CornerRadius(6);
+                CardBorder.Margin = new Thickness(0, 0, 0, 6);
+                CardBorder.Padding = new Thickness(8, 6, 8, 6);
 
-            StackPanel ContentPanel = new StackPanel();
-            ContentPanel.Orientation = Orientation.Vertical;
+                StackPanel ContentPanel = new StackPanel();
+                ContentPanel.Orientation = Orientation.Vertical;
 
-            TextBlock TextLine = new TextBlock();
-            TextLine.Foreground = Brushes.White;
-            TextLine.FontSize = 13;
-            TextLine.TextWrapping = TextWrapping.Wrap;
-            TextLine.Text = ModRef.EspReader.GetRecordItemByOffsets(0, Item.RecordOffset, Item.SubOffset).String;
-            ContentPanel.Children.Add(TextLine);
+                TextBlock TextLine = new TextBlock();
+                TextLine.Foreground = Brushes.White;
+                TextLine.FontSize = 13;
+                TextLine.TextWrapping = TextWrapping.Wrap;
 
-            StackPanel InfoLine = new StackPanel();
-            InfoLine.Orientation = Orientation.Horizontal;
-            InfoLine.Margin = new Thickness(0, 4, 0, 0);
+                TextLine.Text = GetRecord.String;
+                ContentPanel.Children.Add(TextLine);
 
-            TextBlock EmotionText = new TextBlock();
-            EmotionText.Text = EmotionTypeHelper.FromRaw(Item.EmotionType).ToString();
-            EmotionText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
-            EmotionText.FontSize = 12;
-            EmotionText.FontWeight = FontWeights.DemiBold;
-            InfoLine.Children.Add(EmotionText);
+                StackPanel InfoLine = new StackPanel();
+                InfoLine.Orientation = Orientation.Horizontal;
+                InfoLine.Margin = new Thickness(0, 4, 0, 0);
+
+                TextBlock EmotionText = new TextBlock();
+                EmotionText.Text = EmotionTypeHelper.FromRaw(Item.EmotionType).ToString();
+                EmotionText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
+                EmotionText.FontSize = 12;
+                EmotionText.FontWeight = FontWeights.DemiBold;
+                InfoLine.Children.Add(EmotionText);
 
 
-            TextBlock ResponseIdText = new TextBlock();
-            ResponseIdText.Text = "  #" + Item.ResponseID;
-            ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
-            ResponseIdText.FontSize = 12;
-            InfoLine.Children.Add(ResponseIdText);
+                TextBlock ResponseIdText = new TextBlock();
+                ResponseIdText.Text = "  #" + Item.ResponseID;
+                ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
+                ResponseIdText.FontSize = 12;
+                InfoLine.Children.Add(ResponseIdText);
 
-            ContentPanel.Children.Add(InfoLine);
-            CardBorder.Child = ContentPanel;
+                ContentPanel.Children.Add(InfoLine);
+                CardBorder.Child = ContentPanel;
 
-            return CardBorder;
+                return CardBorder;
+            }
+
+            return null;
         }
 
         private void Window_Closed(object sender, EventArgs e)

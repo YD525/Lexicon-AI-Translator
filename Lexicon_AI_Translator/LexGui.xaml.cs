@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -25,8 +24,6 @@ using PhoenixEngine.Language;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
-using System.Threading;
-using System.Reflection;
 
 namespace LexTranslator
 {
@@ -42,6 +39,7 @@ namespace LexTranslator
 
         private PageSwitcher InfoPage = null;
         private PageSwitcher MainPage = null;
+        public TranslateConfig TranslateConfigView = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DeFine.Init(this);
@@ -84,6 +82,37 @@ namespace LexTranslator
 
             SelectFristSettingNav();
             InfoPage.SwitchPageByHorizontal(0);
+
+            if (TranslateConfigView == null)
+            {
+                TranslateConfigView = new TranslateConfig(this);
+                TranslateConfigView.Hide();
+            }
+        }
+
+        private void ShowTranslateConfigView(object sender, MouseButtonEventArgs e)
+        {
+            TranslateConfigView.Owner = this;
+            TranslateConfigView.Show();
+            TranslateConfigView.SetTypes();
+
+            if (ActiveTab != null)
+            {
+                if (ActiveTab.TransListView.RealLines.Count > 0)
+                {
+                    TranslateConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
+                }
+                else
+                {
+                    TranslateConfigView.SFrom.SelectedValue = Languages.English.ToString();
+                }
+            }
+            else
+            {
+                TranslateConfigView.SFrom.SelectedValue = Languages.English.ToString();
+            }
+
+            TranslateConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
         }
 
         public void BookTransCallBack(string Key, string CurrentText)
@@ -111,9 +140,9 @@ namespace LexTranslator
         {
             if (CurrentNav == "TransHub")
             {
-                if (CurrentTranslateView != null)
+                if (ActiveTab != null)
                 {
-                    CurrentTranslateView.Window_PreviewKeyDown(sender,e);
+                    ActiveTab.Window_PreviewKeyDown(sender,e);
                 }
             }
         }
@@ -600,7 +629,8 @@ namespace LexTranslator
                 Current = VisualTreeHelper.GetParent(Current);
             return Current as T;
         }
-        public TranslateView CurrentTranslateView = null;
+
+        public TranslateView ActiveTab = null;
         private void LexTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var Tab = LexTabs.SelectedItem as TabItem;
@@ -624,7 +654,8 @@ namespace LexTranslator
                 }
 
                 CTX.View.Visibility = Visibility.Visible;
-                CurrentTranslateView = CTX.View;
+                ActiveTab = CTX.View;
+                ActiveTab.Active();
             }
         }
 
@@ -725,9 +756,9 @@ namespace LexTranslator
                     CTX.View.Visibility = Visibility.Collapsed;
                 }
 
-                if (CurrentTranslateView == CTX.View)
+                if (ActiveTab == CTX.View)
                 {
-                    CurrentTranslateView = null;
+                    ActiveTab = null;
                 }
 
                 LexTabs.Items.Remove(Target);
@@ -1537,6 +1568,7 @@ namespace LexTranslator
             //}
         }
 
+
         #endregion
 
         #region Drag
@@ -1624,7 +1656,5 @@ namespace LexTranslator
         //}
 
         #endregion
-
-
     }
 }

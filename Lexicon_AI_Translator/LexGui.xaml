@@ -159,7 +159,7 @@ IsHitTestVisible="False"/>
                         <ColumnDefinition Width="10"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="1">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="1" PreviewMouseDown="ShowTranslateConfigView">
                         <Grid>
                             <ContentControl Style="{DynamicResource AddDictionaryIconStyle}" Panel.ZIndex="1" Cursor="Hand" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>

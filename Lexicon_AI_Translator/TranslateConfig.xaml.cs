@@ -16,9 +16,7 @@ using PhoenixEngine.Unit;
 using PhoenixEngine.Language;
 using PhoenixEngine;
 using PhoenixEngine.P_Delegate;
-using LexTranslator.IDEManagement;
 using PhoenixEngine.Common;
-using LexTranslator.UIManagement;
 
 namespace LexTranslator
 {
@@ -37,10 +35,10 @@ namespace LexTranslator
     /// <summary>
     /// Interaction logic for LocalConfig.xaml
     /// </summary>
-    public partial class LocalConfig : Window
+    public partial class TranslateConfig : Window
     {
-        private TranslateView _Owner;
-        public LocalConfig(TranslateView Owner)
+        private LexGui _Owner;
+        public TranslateConfig(LexGui Owner)
         {
             InitializeComponent();
             this._Owner = Owner;
@@ -194,9 +192,9 @@ namespace LexTranslator
             EspReader EspInstance = null;
             if (_Owner != null)
             {
-                if (_Owner.Mod.Type == GameFileType.ESP)
+                if (_Owner.ActiveTab?.Mod.Type == GameFileType.ESP)
                 {
-                    EspInstance = _Owner.Mod.EspReader;
+                    EspInstance = _Owner.ActiveTab?.Mod.EspReader;
                 }
             }
 
@@ -348,13 +346,13 @@ namespace LexTranslator
             DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
             DeFine.GlobalLocalSetting.SaveConfig();
 
-            _Owner.ReloadStringsFile();
-            _Owner.UPDateUI();
+            _Owner.ActiveTab?.ReloadStringsFile();
+            _Owner.ActiveTab?.UPDateUI();
 
             if (CanReload > 0)
                 AutoReload();
 
-            _Owner.AutoShowTraditional();
+            _Owner.ActiveTab?.AutoShowTraditional();
         }
 
         private void STo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -369,15 +367,15 @@ namespace LexTranslator
             DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
             DeFine.GlobalLocalSetting.SaveConfig();
 
-            _Owner.ReloadStringsFile();
-            _Owner.UPDateUI();
+            _Owner.ActiveTab?.ReloadStringsFile();
+            _Owner.ActiveTab?.UPDateUI();
 
             if (CanReload > 0)
                 AutoReload();
 
-            _Owner.AutoShowTraditional();
+            _Owner.ActiveTab?.AutoShowTraditional();
 
-            _Owner.Completer?.CheckLang(FilterTo);
+            _Owner.ActiveTab?.Completer?.CheckLang(FilterTo);
         }
 
         public void SetOutput(string Str)

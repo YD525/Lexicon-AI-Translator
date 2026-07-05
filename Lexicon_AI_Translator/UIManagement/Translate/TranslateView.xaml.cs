@@ -43,7 +43,6 @@ namespace LexTranslator.UIManagement
         public YDListView TransListView = null;
         public string Path = "";
         public ModFile Mod = null;
-        public LocalConfig LocalConfigView = null;
         public Completer Completer = null;
 
         public TranslateView()
@@ -89,17 +88,16 @@ namespace LexTranslator.UIManagement
 
                 CompletionManager = new WordCompletionManager(ToStr);
 
-                if (LocalConfigView == null)
-                {
-                    LocalConfigView = new LocalConfig(this);
-                    LocalConfigView.Hide();
-                }
-
                 Completer = new Completer(this);
                 UIHelper.SyncAvalonEditTextLayout(this);
 
                 AutoShowTraditional();
             }
+        }
+
+        public void Active()
+        { 
+        
         }
 
         public void ReSetTypes()
@@ -676,13 +674,13 @@ namespace LexTranslator.UIManagement
 
             if (TranslatorInterface.TranslationStatus == StateControl.Run || TranslatorInterface.TranslationStatus == StateControl.Stop)
             {
-                LocalConfigView.SFrom.IsEnabled = false;
-                LocalConfigView.STo.IsEnabled = false;
+                this.Parent.TranslateConfigView.SFrom.IsEnabled = false;
+                this.Parent.TranslateConfigView.STo.IsEnabled = false;
             }
             else
             {
-                LocalConfigView.SFrom.IsEnabled = true;
-                LocalConfigView.STo.IsEnabled = true;
+                this.Parent.TranslateConfigView.SFrom.IsEnabled = true;
+                this.Parent.TranslateConfigView.STo.IsEnabled = true;
             }
         }
 
@@ -763,7 +761,7 @@ namespace LexTranslator.UIManagement
                                             MessageBoxExtend.Show(this.Parent, "The source language and target language cannot be the same!");
                                             CallSucess = false;
 
-                                            ShowLocalEngineSettingView(null, null);
+                                            ShowLocalEngineSettingView();
                                             return;
                                         }
 
@@ -1192,22 +1190,9 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        private void ShowLocalEngineSettingView(object sender, MouseButtonEventArgs e)
+        private void ShowLocalEngineSettingView()
         {
-            LocalConfigView.Owner = this.Parent;
-            LocalConfigView.Show();
-            LocalConfigView.SetTypes();
-
-            if (TransListView.RealLines.Count > 0)
-            {
-                LocalConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
-            }
-            else
-            {
-                LocalConfigView.SFrom.SelectedValue = Languages.English.ToString();
-            }
-
-            LocalConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
+            this.Parent.TranslateConfigView.Show();
         }
 
         private void SyncColumnWidth(object sender, MouseButtonEventArgs e)
