@@ -1117,15 +1117,6 @@ namespace LexTranslator
             else
             if (Name.Equals("UI Configs"))
             {
-                if (DeFine.GlobalLocalSetting.ShowCode)
-                {
-                    ShowCodeView.IsChecked = true;
-                }
-                else
-                {
-                    ShowCodeView.IsChecked = false;
-                }
-
                 if (DeFine.GlobalLocalSetting.TextDisplay == TextLayout.RTL)
                 {
                     RTLEnable.IsChecked = true;
@@ -1246,10 +1237,10 @@ namespace LexTranslator
         }
         public void SelectFristSettingNav()
         {
-            if (SettingNavs.Children.Count > 0)
+            if (SettingNavs.Children.Count > 2)
             {
-                if (SettingNavs.Children[0] is Border)
-                    SelectSettingNav((Border)SettingNavs.Children[0]);
+                if (SettingNavs.Children[2] is Border)
+                    SelectSettingNav((Border)SettingNavs.Children[2]);
             }
         }
 
@@ -1383,18 +1374,6 @@ namespace LexTranslator
         {
             DeFine.GlobalLocalSetting.P_Placeholders = P_Placeholders.Text;
             DeFine.GlobalLocalSetting.SaveConfig();
-        }
-
-        private void ShowCodeView_Click(object sender, RoutedEventArgs e)
-        {
-            if (ShowCodeView.IsChecked == true)
-            {
-                DeFine.GlobalLocalSetting.ShowCode = true;
-            }
-            else
-            {
-                DeFine.GlobalLocalSetting.ShowCode = false;
-            }
         }
         private void SCodeGenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

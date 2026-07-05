@@ -10,7 +10,7 @@
         <StackPanel Orientation="Vertical" Margin="5 0 5 0" VerticalAlignment="Center">
 
 
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="CloudAIConfig">
+            <Border BorderThickness="1" BorderBrush="#FF3F3E3E" CornerRadius="5" Height="170" Margin="0 5 0 5" Name="CloudAIConfig">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
@@ -25,7 +25,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left" >
                             <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
-                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="White">
+                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="#FFFAE306">
                                     ChatGpt
                                 </Label>
                                 <Ellipse Width="8" Height="8" Fill="#FF14C1DC" VerticalAlignment="Center">
@@ -35,7 +35,7 @@
 
                         <Grid Grid.Column="1" Background="#FF303030" Margin="0 1 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
+                                <Label Foreground="White" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
                                     Document: 
                                 </Label>
                                 <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
@@ -46,7 +46,7 @@
                             </StackPanel>
 
                         </Grid>
-                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="#FF3F3E3E" >
                         </Border>
                     </Grid>
 
@@ -54,36 +54,35 @@
                     <Grid Grid.Row="1">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="50"/>
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal">
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="10 0 0 0">
                                     ApiKey:
                                 </Label>
-                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="230">
-                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
-                                    </TextBox>
-                                </Border>
                                 
-                                <Border Style="{StaticResource SettingActionButton}">
+                                <Border Style="{StaticResource SettingInputBorder}" Width="180" Margin="0 0 5 0" VerticalAlignment="Center">
+                                    <TextBox  Style="{StaticResource SettingTextBox}"/>
+                                </Border>
+
+                                <Border Style="{StaticResource SettingActionButton}" VerticalAlignment="Center">
                                     <TextBlock Text="Add" Style="{StaticResource SettingActionButtonText}"/>
                                 </Border>
 
-                                <Border Style="{StaticResource SettingActionButton}">
+                                <Border Style="{StaticResource SettingActionButton}" VerticalAlignment="Center">
                                     <TextBlock Text="Remove" Style="{StaticResource SettingActionButtonText}"/>
                                 </Border>
 
                                 <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="5 0 0 0">
                                     Model:
                                 </Label>
-                                
-                                <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Margin="0 5 0 5" Width="100">
-                                    <TextBox CaretBrush="White" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Background="{x:Null}" Margin="5 0 5 0">
-                                    </TextBox>
+
+                                <Border Style="{StaticResource SettingInputBorder}" Width="100" Margin="0 0 5 0" VerticalAlignment="Center">
+                                    <TextBox  Style="{StaticResource SettingTextBox}"/>
                                 </Border>
-                                
-                                <ComboBox Style="{DynamicResource CustomComboBoxStyle}" VerticalAlignment="Stretch"  Width="100" Margin="5 5 0 5">
+
+                                <ComboBox Style="{DynamicResource SettingComboBox}" Width="100" Margin="5 5 0 5" VerticalAlignment="Center">
                                 </ComboBox>
                             </StackPanel>
 
@@ -101,7 +100,7 @@
                 </Grid>
             </Border>
 
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="85" Margin="0 5 0 5" Name="LocalAIConfig">
+            <Border BorderThickness="1" BorderBrush="#FF3F3E3E" CornerRadius="5" Height="85" Margin="0 5 0 5" Name="LocalAIConfig">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
@@ -116,7 +115,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
-                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="White">
+                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="#FFFAE306">
                                     LMStudio
                                 </Label>
                                 <Ellipse Width="8" Height="8" Fill="#FF14C1DC" VerticalAlignment="Center">
@@ -126,7 +125,7 @@
 
                         <Grid Grid.Column="1" Background="#FF303030" Margin="0 1 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
+                                <Label Foreground="White" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
                                     Document: 
                                 </Label>
                                 <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
@@ -137,7 +136,7 @@
                             </StackPanel>
 
                         </Grid>
-                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="#FF3F3E3E" >
                         </Border>
                     </Grid>
 
@@ -148,11 +147,11 @@
                                 <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center">
+                                <Label Foreground="White" Grid.Row="0" VerticalAlignment="Center" Margin="10 0 0 0">
                                     Port:
                                 </Label>
                                 
-                                <Border Style="{StaticResource SettingInputBorder}" Width="230" Margin="0 0 5 0" VerticalAlignment="Center">
+                                <Border Style="{StaticResource SettingInputBorder}" Width="80" Margin="0 0 5 0" VerticalAlignment="Center">
                                     <TextBox  Style="{StaticResource SettingTextBox}"/>
                                 </Border>
 
@@ -171,7 +170,7 @@
                 </Grid>
             </Border>
 
-            <Border BorderThickness="1" BorderBrush="White" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="TraditionalConfig">
+            <Border BorderThickness="1" BorderBrush="#FF3F3E3E" CornerRadius="5" Height="150" Margin="0 5 0 5" Name="TraditionalConfig">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
@@ -186,7 +185,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Grid.Column="0" CornerRadius="5 0 0 0" Grid.Row="0" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" Margin="15 0 15 0">
-                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="White">
+                                <Label VerticalAlignment="Center" FontWeight="Bold" Foreground="#FFFAE306">
                                     DeepL
                                 </Label>
                                 <Ellipse Width="8" Height="8" Fill="#FFF5668C" VerticalAlignment="Center">
@@ -196,7 +195,7 @@
 
                         <Grid Grid.Column="1" Background="#FF303030" Margin="0 1 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <Label Foreground="#FF6494F4" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
+                                <Label Foreground="White" VerticalAlignment="Center" Cursor="Hand" Margin="5 0 0 0">
                                     Document: 
                                 </Label>
                                 <Border Margin="5 0 0 0" CornerRadius="5" VerticalAlignment="Center" Background="#FF620A0A" Cursor="Hand">
@@ -207,7 +206,7 @@
                             </StackPanel>
 
                         </Grid>
-                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="White" >
+                        <Border Grid.Column="2" Background="#FF303030" CornerRadius="0 5 0 0" Margin="-1 0 0 0" BorderThickness="0 1 0 0" BorderBrush="#FF3F3E3E" >
                         </Border>
                     </Grid>
 
@@ -223,7 +222,7 @@
                                     ApiKey:
                                 </Label>
 
-                                <Border Style="{StaticResource SettingInputBorder}" Width="230" Margin="0 0 5 0" VerticalAlignment="Center">
+                                <Border Style="{StaticResource SettingInputBorder}" Width="180" Margin="0 0 5 0" VerticalAlignment="Center">
                                     <TextBox  Style="{StaticResource SettingTextBox}"/>
                                 </Border>
                               

@@ -654,8 +654,8 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="3"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Text="Request &amp; ApiKey" Style="{StaticResource SettingNavText}" Foreground="{StaticResource SettingAccentBrush}" FontWeight="SemiBold"/>
-                                            <Border Grid.Row="1" Background="{StaticResource SettingAccentBrush}" Visibility="Visible"/>
+                                            <TextBlock Grid.Row="0" Text="Request &amp; ApiKey" Style="{StaticResource SettingNavText}"/>
+                                            <Border Grid.Row="1" Background="{StaticResource SettingAccentBrush}" Visibility="Collapsed"/>
                                         </Grid>
                                     </Border>
 
@@ -676,8 +676,8 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="3"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Text="Game Configs" Style="{StaticResource SettingNavText}"/>
-                                            <Border Grid.Row="1" Background="{StaticResource SettingAccentBrush}" Visibility="Collapsed"/>
+                                            <TextBlock Grid.Row="0" Text="Game Configs" Style="{StaticResource SettingNavText}" Foreground="{StaticResource SettingAccentBrush}" FontWeight="SemiBold"/>
+                                            <Border Grid.Row="1" Background="{StaticResource SettingAccentBrush}" Visibility="Visible"/>
                                         </Grid>
                                     </Border>
 
@@ -882,11 +882,6 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                         <TextBlock Text="Interface Configs" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
 
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="ShowCodeView" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
-                                                        <CheckBox Name="ShowCodeView" Click="ShowCodeView_Click" Style="{StaticResource SettingToggle}"/>
-                                                    </StackPanel>
-
                                                     <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
                                                         <TextBlock Text="Interface language settings" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
                                                         <ComboBox Name="UILanguages" SelectionChanged="UILanguages_SelectionChanged" Width="150" Style="{StaticResource SettingComboBox}"/>
@@ -906,9 +901,9 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                         <TextBlock Text="Theme Configs" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Border Width="130" Height="34" CornerRadius="5" Background="{StaticResource SettingAccentBrush}" Cursor="Hand" PreviewMouseDown="ChangeTechDarkBlue">
+                                                        <!--<Border Width="130" Height="34" CornerRadius="5" Background="{StaticResource SettingAccentBrush}" Cursor="Hand" PreviewMouseDown="ChangeTechDarkBlue">
                                                             <TextBlock Text="Gold Style" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
+                                                        </Border>-->
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>

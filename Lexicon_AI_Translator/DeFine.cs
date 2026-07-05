@@ -183,7 +183,6 @@ namespace LexTranslator
         public Languages CurrentUILanguage { get; set; } = Languages.English;
         public string SkyrimPath { get; set; } = "";
 
-        public bool ShowCode { get; set; } = true;
         public GameNames GameType { get; set; } = GameNames.Skyrim;
         public double WritingAreaHeight { get; set; } = 0;
         public string ViewMode { get; set; } = "Normal";
@@ -240,7 +239,6 @@ namespace LexTranslator
                             this.FormWidth = GetSetting.FormWidth;
                             this.CurrentUILanguage = GetSetting.CurrentUILanguage;
                             this.SkyrimPath = GetSetting.SkyrimPath;
-                            this.ShowCode = GetSetting.ShowCode;
                             this.GameType = GetSetting.GameType;
                             this.WritingAreaHeight = GetSetting.WritingAreaHeight;
                             this.ViewMode = GetSetting.ViewMode;
