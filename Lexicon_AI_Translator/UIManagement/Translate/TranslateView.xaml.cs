@@ -113,6 +113,8 @@ namespace LexTranslator.UIManagement
                         }
                     }
                 });
+
+                SyncTrd.Start();
             }
         }
 
@@ -842,7 +844,7 @@ namespace LexTranslator.UIManagement
                         {
                             Mod.SyncTransState(new Action(() =>
                             {
-                                this.Dispatcher.Invoke(new Action(() =>
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
                                     SyncTransStateUI();
                                 }));
@@ -2240,8 +2242,11 @@ namespace LexTranslator.UIManagement
             {
                 Mod.TranslationStatus = StateControl.Cancel;
                 Mod.SyncTransState(
-                new Action(() => {
-                   this.SyncTransStateUI();
+                new Action(() =>
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() => {
+                        this.SyncTransStateUI();
+                    }));
                 })
                 , false);
             }
