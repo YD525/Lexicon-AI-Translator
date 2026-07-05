@@ -5,7 +5,7 @@
 	<Color name="Tag"     foreground="#FFA500" />
 	<Color name="XMLTag"  foreground="#569CD6" />
 
-	<Color name="StringDouble" foreground="#CE9178" />
+	<Color name="StringDouble" foreground="#DADADA" />
 	<Color name="StringSingle" foreground="#CE9178" />
 
 	<RuleSet>

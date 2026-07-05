@@ -27,6 +27,7 @@ using System.IO;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
+using System.Text.RegularExpressions;
 
 namespace LexTranslator.UIManagement
 {
@@ -1111,10 +1112,10 @@ namespace LexTranslator.UIManagement
             }).Start();
         }
 
- 
+      
 
         public SearchData CurrentSearchData = new SearchData();
-        public void QuickSearch()
+        public void QuickSearch(bool MatchCase, bool FuzzyMatch)
         {
             if (SearchBox.Text.Trim().Length > 0)
             {
@@ -1131,18 +1132,31 @@ namespace LexTranslator.UIManagement
                 string SearchAny = SearchBox.Text;
                 EmptyFromAndToText();
 
-                //If we simply highlight all the matched items, that works well for mods with few items. However, it's not ideal for mods with tens of thousands of lines of data. Therefore, we need to search item by item. When the user presses Enter, the system jumps to the first matched item, and pressing it again jumps to the second. The counter is reset when all items are finally matched.
-
                 int PreOffset = -1;
                 int Complete = 0;
                 string GetKey = "";
 
+                StringComparison comparisonType = MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+
+                Func<string, bool> IsTextMatch = (Text) =>
+                {
+                    if (string.IsNullOrEmpty(Text)) return false;
+
+                    if (FuzzyMatch)
+                    {
+                        return Text.IndexOf(SearchAny, comparisonType) >= 0;
+                    }
+                    else
+                    {
+                        return Text.Equals(SearchAny, comparisonType);
+                    }
+                };
+
                 for (int i = 0; i < TransListView.RealLines.Count; i++)
                 {
-                    if (TransListView.RealLines[i].Key.Contains(SearchAny) ||
-                        TransListView.RealLines[i].SourceText.Contains(SearchAny) ||
-                        TransListView.RealLines[i].TransText.Contains(SearchAny)
-                        )
+                    if ((TransListView.RealLines[i].Key != null && TransListView.RealLines[i].Key.Equals(SearchAny, comparisonType)) ||
+                        IsTextMatch(TransListView.RealLines[i].SourceText) ||
+                        IsTextMatch(TransListView.RealLines[i].TransText))
                     {
                         GetKey = TransListView.RealLines[i].Key;
 
@@ -1165,11 +1179,10 @@ namespace LexTranslator.UIManagement
                         }
                     }
                 }
+
                 if (PreOffset != -1 && Complete == 0 && CurrentSearchData.KeyWords.Count > 0)
                 {
-                    //Reset Counter
                     CurrentSearchData.KeyWords.Remove(SearchAny);
-                    //Jump back to the first matching target
                     goto NextSearch;
                 }
                 else
@@ -1186,7 +1199,16 @@ namespace LexTranslator.UIManagement
         {
             if (e.Key == Key.Enter)
             {
-                QuickSearch();
+                if (sender is TextBox TextBox)
+                {
+                    var MatchCaseBtn = TextBox.Template.FindName("IsMatchWholeWordBtn", TextBox) as System.Windows.Controls.Primitives.ToggleButton;
+                    var FuzzyMatchBtn = TextBox.Template.FindName("IsMatchWildcardBtn", TextBox) as System.Windows.Controls.Primitives.ToggleButton;
+
+                    bool MatchCase = MatchCaseBtn?.IsChecked ?? false;
+                    bool FuzzyMatch = FuzzyMatchBtn?.IsChecked ?? true;
+
+                    QuickSearch(MatchCase, FuzzyMatch);
+                }
             }
         }
 
