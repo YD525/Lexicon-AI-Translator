@@ -326,7 +326,12 @@ namespace LexTranslator
                 }
                 else
                 {
-                    EmotionText.Text = "Tittle";
+                    //Double checking prevents display errors; I'm unsure if the emoji value in ESP will be exactly 999.
+                    if (Item.SubOffset == 0)
+                    {
+                        TextLine.FontWeight = FontWeights.DemiBold;
+                        EmotionText.Text = "Tittle";
+                    }
                 }
                
                 EmotionText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
