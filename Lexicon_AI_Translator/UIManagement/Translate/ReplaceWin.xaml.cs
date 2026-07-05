@@ -62,7 +62,7 @@ namespace LexTranslator
                                 var GetRow = _Owner.TransListView.RealLines[i];
 
                                 bool IsCloud = false;
-                                GetRow.SyncData(ref IsCloud);
+                                GetRow.SyncData(_Owner.Mod, ref IsCloud);
 
                                 if (GetRow.SourceText.Contains(SourceStr.Text))
                                 {
@@ -70,7 +70,7 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
@@ -96,7 +96,7 @@ namespace LexTranslator
                                 var GetRow = _Owner.TransListView.RealLines[i];
 
                                 bool IsCloud = false;
-                                GetRow.SyncData(ref IsCloud);
+                                GetRow.SyncData(_Owner.Mod,ref IsCloud);
 
                                 if (GetRow.TransText.Contains(SourceStr.Text))
                                 {
@@ -104,7 +104,7 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 

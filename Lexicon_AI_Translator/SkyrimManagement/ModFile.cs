@@ -171,7 +171,7 @@ namespace LexTranslator.SkyrimManagement
                 {
                     bool IsCloud = false;
 
-                    ListView.RealLines[i].SyncData(ref IsCloud);
+                    ListView.RealLines[i].SyncData(this,ref IsCloud);
 
                     string GetKey = ListView.RealLines[i].Key;
 
@@ -230,7 +230,7 @@ namespace LexTranslator.SkyrimManagement
                         break;
                     case GameFileType.JSON:
                         {
-                            if (!RamCacheReader.Save(this.Path))
+                            if (!RamCacheReader.Save(this,this.Path))
                             {
                                 ClearBackup();
                                 MessageBox.Show("Build RamCache Error!");
@@ -355,7 +355,7 @@ namespace LexTranslator.SkyrimManagement
                         if (QueryGrid.TransText.Length == 0)
                         {
                             bool IsCloud = false;
-                            QueryGrid.SyncData(ref IsCloud);
+                            QueryGrid.SyncData(this,ref IsCloud);
                         }
                     }
                 }
@@ -536,7 +536,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 var Row = ListView.RealLines[i];
                 bool IsCloud = false;
-                Row.SyncData(ref IsCloud);
+                Row.SyncData(this,ref IsCloud);
 
                 bool HasAddAIMemory = false;
 
@@ -772,7 +772,7 @@ namespace LexTranslator.SkyrimManagement
                         {
                             var Row = ListView.RealLines[i];
                             bool IsCloud = false;
-                            Row.SyncData(ref IsCloud);
+                            Row.SyncData(this,ref IsCloud);
 
                             if (!string.IsNullOrEmpty(Row.TransText))
                             {

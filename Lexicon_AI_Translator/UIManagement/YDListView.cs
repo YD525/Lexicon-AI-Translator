@@ -78,7 +78,7 @@ public class FakeGrid
         }
     }
 
-    public void SyncData(ref bool IsCloud)
+    public void SyncData(ModFile Mod,ref bool IsCloud)
     {
         bool FromDictionary = false;
 
@@ -117,7 +117,7 @@ public class FakeGrid
         }
 
         IsCloud = false;
-        var QueryResult = DeFine.WorkWin.ActiveTab.Mod.P_Translator.QueryTransData(this.Key,this.Type,this.SourceText,CanQueryAdvancedDictionary);
+        var QueryResult = Mod.P_Translator.QueryTransData(this.Key,this.Type,this.SourceText,CanQueryAdvancedDictionary);
 
         if (QueryResult.FromDictionary)
         {
@@ -569,13 +569,13 @@ public class YDListView
     }
 
 
-    public void QuickRefresh()
+    public void QuickRefresh(ModFile Mod)
     {
         this.Parent.Dispatcher.BeginInvoke(new Action(() => {
             for (int i = 0; i < this.VisibleRows.Count; i++)
             {
                 bool RefCache = false;
-                this.VisibleRows[i].Data.SyncData(ref RefCache);
+                this.VisibleRows[i].Data.SyncData(Mod,ref RefCache);
 
                 Grid GetGrid = this.VisibleRows[i].View;
 

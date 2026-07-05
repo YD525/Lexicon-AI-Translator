@@ -344,7 +344,7 @@ namespace LexTranslator.UIManagement
                     }
 
                     bool IsCloud = false;
-                    GridHandle.SyncData(ref IsCloud);
+                    GridHandle.SyncData(Mod,ref IsCloud);
 
                     this.Dispatcher.Invoke(new Action(() =>
                     {
@@ -500,7 +500,7 @@ namespace LexTranslator.UIManagement
                 if (LastSetSig != CurrentSig)
                 {
                     LastSetSig = CurrentSig;
-                    DeFine.WorkWin.ActiveTab.Mod.CancelTranslateWork();
+                    Mod.CancelTranslateWork();
                 }
 
                 if (!UseHotReload)
@@ -892,7 +892,7 @@ namespace LexTranslator.UIManagement
                     {
                         var GetWritePath = DataHelper.ShowSaveFileDialog(Mod.FileName + ".json", "DSD (*.json)|*.json");
 
-                        var DSDFile = DSDConverter.RecordsToDSDFile(Mod.EspReader);
+                        var DSDFile = DSDConverter.RecordsToDSDFile(Mod,Mod.EspReader);
                         if (DSDFile != null)
                         {
                             if (DSDFile.DSDItems.Count > 0)
@@ -924,7 +924,7 @@ namespace LexTranslator.UIManagement
                 {
                     bool IsCloud = false;
 
-                    TransListView.RealLines[i].SyncData(ref IsCloud);
+                    TransListView.RealLines[i].SyncData(Mod,ref IsCloud);
 
                     string GetKey = TransListView.RealLines[i].Key;
 
@@ -1036,7 +1036,7 @@ namespace LexTranslator.UIManagement
                                 for (int i = 0; i < TransListView.Rows; i++)
                                 {
                                     bool IsCloud = false;
-                                    TransListView.RealLines[i].SyncData(ref IsCloud);
+                                    TransListView.RealLines[i].SyncData(Mod,ref IsCloud);
                                     TransListView.RealLines[i].SyncUI(TransListView);
                                 }
                             }
@@ -1099,7 +1099,7 @@ namespace LexTranslator.UIManagement
 
                     if (TransListView != null)
                     {
-                        TransListView.QuickRefresh();
+                        TransListView.QuickRefresh(Mod);
                     }
 
                     MessageBoxExtend.Show(this.Parent, "Original source text has been refreshed from the current file.");
@@ -1425,7 +1425,7 @@ namespace LexTranslator.UIManagement
                     if (GetGrid != null)
                     {
                         bool RefCloud = false;
-                        GetGrid.SyncData(ref RefCloud);
+                        GetGrid.SyncData(Mod,ref RefCloud);
 
                         if (GetGrid.TransText.Length > 0)
                         {
@@ -1455,7 +1455,7 @@ namespace LexTranslator.UIManagement
 
                         TranslatorInterface.SetTranslatorHistoryCache(GetGrid.Key, GetGrid.TransText, false);
 
-                        GetGrid.SyncData(ref RefCloud);
+                        GetGrid.SyncData(Mod,ref RefCloud);
                         GetGrid.SyncUI(TransListView);
                         //DeFine.ExtendWin.SetOriginal(GetGrid.SourceText, DeFine.WorkingWin.GlobalEspReader.StringsReader.QueryData(GetGrid.Key));
                     }
@@ -1498,7 +1498,7 @@ namespace LexTranslator.UIManagement
                         if (QueryGrid != null && TranslateTrd == null)
                         {
                             bool IsCloud = false;
-                            QueryGrid.SyncData(ref IsCloud);
+                            QueryGrid.SyncData(Mod,ref IsCloud);
 
                             if (QueryGrid.TransText.Length > 0)
                             {
@@ -1609,7 +1609,7 @@ namespace LexTranslator.UIManagement
 
                 bool IsCloud = false;
                 var GetLine = Lines[i];
-                Lines[i].SyncData(ref IsCloud);
+                Lines[i].SyncData(Mod,ref IsCloud);
 
                 if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
                 {
@@ -1734,7 +1734,7 @@ namespace LexTranslator.UIManagement
                 {
                     if (TransListView.Rows > 0)
                     {
-                        TransListView.QuickRefresh();
+                        TransListView.QuickRefresh(Mod);
                     }
                 }
             }));

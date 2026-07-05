@@ -23,7 +23,7 @@ namespace LexTranslator.SkyrimManagement
             public List<DSDItem> DSDItems = new List<DSDItem>();
         }
 
-        public static DSDFile RecordsToDSDFile(EspReader EspInstance)
+        public static DSDFile RecordsToDSDFile(ModFile Mod,EspReader EspInstance)
         {
             DSDFile NewDSDFile = new DSDFile();
             List <DSDItem> DSDItems = new List<DSDItem>();
@@ -33,11 +33,11 @@ namespace LexTranslator.SkyrimManagement
                 string GetKey = EspInstance.Records.ElementAt(i).Key;
                 var Record = EspInstance.Records[GetKey];
 
-                var Link = DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetLink();
+                var Link = Mod.P_Translator.GetLink();
 
                 string GetTransData = null;
 
-                GetTransData = DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetLink(Record.UniqueKey);
+                GetTransData = Mod.P_Translator.GetLink(Record.UniqueKey);
 
                 if (GetTransData != null)
                 {

@@ -42,7 +42,7 @@ namespace LexTranslator.SkyrimManagement
             RamLines?.Clear();
         }
 
-        public bool Save(string OutPutPath)
+        public bool Save(ModFile Mod,string OutPutPath)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace LexTranslator.SkyrimManagement
                     for (int i = 0; i < RamLines.Count; i++)
                     {
                         bool IsCloud = false;
-                        RamLines[i].SyncData(ref IsCloud);
+                        RamLines[i].SyncData(Mod, ref IsCloud);
                     }
 
                     string GetJson = JsonConvert.SerializeObject(RamLines, Formatting.Indented);

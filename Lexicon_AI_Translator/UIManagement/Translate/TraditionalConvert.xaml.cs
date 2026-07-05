@@ -2,9 +2,7 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using LexTranslator.TranslateManage;
 using LexTranslator.UIManagement;
-using PhoenixEngine;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Language;
 
@@ -68,13 +66,13 @@ namespace LexTranslator
 
                         var Key = _Owner.TransListView.RealLines[i].Key;
 
-                        var Link = DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetLink();
+                        var Link = _Owner.Mod.P_Translator.GetLink();
 
                         Link[Key] = Result;
 
                         _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
 
-                        CloudDBCache.AddCache(DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetFileUniqueKey(), Key, (int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.To, Source, Result);
+                        CloudDBCache.AddCache(_Owner.Mod.P_Translator.GetFileUniqueKey(), Key, (int)_Owner.Mod.P_Translator.To, Source, Result);
                     }
 
                     ConvertAllBtn.Dispatcher.Invoke(new Action(() => {

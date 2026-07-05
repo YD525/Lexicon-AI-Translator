@@ -192,7 +192,7 @@ namespace LexTranslator.UIManagement
                 CanQueryAdvancedDictionary = true;
             }
 
-            var QueryTranslated = DeFine.WorkWin.ActiveTab.Mod.P_Translator.QueryTransData(Item.Key,Item.Type,Item.Original,CanQueryAdvancedDictionary);
+            var QueryTranslated = Mod.P_Translator.QueryTransData(Item.Key,Item.Type,Item.Original,CanQueryAdvancedDictionary);
 
             if (QueryTranslated != null)
             {
@@ -204,7 +204,7 @@ namespace LexTranslator.UIManagement
 
             Color FontColor = Colors.White;
 
-            var QueryColor = FontColorFinder.FindColor(DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetFileUniqueKey(), Item.Key);
+            var QueryColor = FontColorFinder.FindColor(Mod.P_Translator.GetFileUniqueKey(), Item.Key);
 
             if (QueryColor != null)
             {
@@ -287,9 +287,9 @@ namespace LexTranslator.UIManagement
             GetKey.PreviewMouseWheel += OnePreviewMouseWheel;
 
 
-            if (DeFine.WorkWin.ActiveTab.Mod.P_Translator != null)
+            if (Mod.P_Translator != null)
             {
-                var BatchCore = DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetBatchCore();
+                var BatchCore = Mod.P_Translator.GetBatchCore();
                 if (BatchCore != null)
                 {
                     if (BatchCore.Content != null)
