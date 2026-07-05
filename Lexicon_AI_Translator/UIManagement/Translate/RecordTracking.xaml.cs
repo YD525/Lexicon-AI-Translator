@@ -11,6 +11,16 @@ using PhoenixEngine.Common;
 
 namespace LexTranslator
 {
+    public class TrackingItem
+    {
+        public ModFile ModRef;
+        public string Key = "";
+        public TrackingItem(ModFile ModRef, string Key)
+        {
+            this.ModRef = ModRef;
+            this.Key = Key;
+        }
+    }
     public partial class RecordTracking : Window
     {
         private Window _Owner;
@@ -282,27 +292,46 @@ namespace LexTranslator
             CardBorder.CornerRadius = new CornerRadius(6);
             CardBorder.Margin = new Thickness(0, 0, 0, 6);
             CardBorder.Padding = new Thickness(8, 6, 8, 6);
+            CardBorder.Tag = new TrackingItem(ModRef, Item.UniqueKey);
+            CardBorder.PreviewMouseDown += AnyCard_PreviewMouseDown;
 
-            TextBlock TextLine = new TextBlock();
-            TextLine.Text = Item.String;
+            StackPanel ContentPanel = new StackPanel();
+            ContentPanel.Orientation = Orientation.Vertical;
+
+            TextBox TextLine = new TextBox();
+            TextLine.Background = null;
+            TextLine.BorderBrush = null;
+            TextLine.BorderThickness = new Thickness(0);
+            TextLine.IsReadOnly = true;
             TextLine.Foreground = Brushes.White;
             TextLine.FontSize = 13;
             TextLine.TextWrapping = TextWrapping.Wrap;
+            TextLine.Cursor = Cursors.Hand;
 
-            CardBorder.Child = TextLine;
+            TextLine.Text = Item.String;
+            ContentPanel.Children.Add(TextLine);
+
+            StackPanel InfoLine = new StackPanel();
+            InfoLine.Orientation = Orientation.Horizontal;
+            InfoLine.Margin = new Thickness(0, 4, 0, 0);
+
+            TextBlock InFoText = new TextBlock();
+            InFoText.Text = Item.ParentSig + " " + Item.ChildSig;
+            InFoText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
+            InFoText.FontSize = 12;
+            InFoText.FontWeight = FontWeights.DemiBold;
+            InfoLine.Children.Add(InFoText);
+
+            TextBlock ResponseIdText = new TextBlock();
+            ResponseIdText.Text = "  #" + Item.FormID;
+            ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
+            ResponseIdText.FontSize = 12;
+            InfoLine.Children.Add(ResponseIdText);
+
+            ContentPanel.Children.Add(InfoLine);
+            CardBorder.Child = ContentPanel;
 
             return CardBorder;
-        }
-
-        public class TrackingItem
-        {
-            public ModFile ModRef;
-            public string Key = "";
-            public TrackingItem(ModFile ModRef, string Key)
-            { 
-                this.ModRef = ModRef;
-                this.Key = Key;
-            }
         }
 
         private Border BuildDialogueCard(ModFile ModRef, ManagedDialNode Item)
@@ -343,7 +372,7 @@ namespace LexTranslator
                     CardBorder.Cursor = Cursors.Hand;
                     TextLine.Cursor = Cursors.Hand;
 
-                    CardBorder.PreviewMouseDown += CardBorder_PreviewMouseDown;
+                    CardBorder.PreviewMouseDown += AnyCard_PreviewMouseDown;
                 }
                 else
                 {
@@ -351,7 +380,6 @@ namespace LexTranslator
                     if (Item.SubOffset == 0)
                     {
                         TextLine.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
-                        TextLine.FontWeight = FontWeights.DemiBold;
                         EmotionText.Text = "Tittle";
                     }
                 }
@@ -363,7 +391,7 @@ namespace LexTranslator
 
 
                 TextBlock ResponseIdText = new TextBlock();
-                ResponseIdText.Text = "  #" + Item.ResponseID;
+                ResponseIdText.Text = "  #" + GetRecord.FormID;
                 ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
                 ResponseIdText.FontSize = 12;
                 InfoLine.Children.Add(ResponseIdText);
@@ -377,7 +405,7 @@ namespace LexTranslator
             return null;
         }
 
-        private void CardBorder_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void AnyCard_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border)
             {
