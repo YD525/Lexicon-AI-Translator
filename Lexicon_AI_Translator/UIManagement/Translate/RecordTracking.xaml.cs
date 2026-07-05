@@ -323,7 +323,7 @@ namespace LexTranslator
             InfoLine.Children.Add(InFoText);
 
             TextBlock ResponseIdText = new TextBlock();
-            ResponseIdText.Text = "  #" + Item.FormID;
+            ResponseIdText.Text = "  #" + Item.UniqueKey;
             ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
             ResponseIdText.FontSize = 12;
             InfoLine.Children.Add(ResponseIdText);
@@ -391,7 +391,7 @@ namespace LexTranslator
 
 
                 TextBlock ResponseIdText = new TextBlock();
-                ResponseIdText.Text = "  #" + GetRecord.FormID;
+                ResponseIdText.Text = "  #" + GetRecord.UniqueKey;
                 ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
                 ResponseIdText.FontSize = 12;
                 InfoLine.Children.Add(ResponseIdText);
