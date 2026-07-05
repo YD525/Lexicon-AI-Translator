@@ -56,7 +56,7 @@
 
                         <Border Opacity="0.7" Margin="0 10 0 0" Name="ClearCacheR" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ClearCacheR_PreviewMouseDown">
                             <Label Style="{DynamicResource ButtonFont}" Name="ClearCacheRButton">
-                                ClearCache
+                                Clear Cache
                             </Label>
                         </Border>
 
@@ -274,7 +274,7 @@
                 <Grid Grid.Row="3" Name="ExtendBox">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
-                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="45"/>
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
@@ -458,7 +458,7 @@ Fill="White"/>
                                 </TextBox>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" Margin="0 0 5 0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" Margin="0 5 5 5">
 
                                 <Label Style="{DynamicResource CaptionTextA}" Margin="5 0 0 0" Name="UIAutoWordCompletion">
                                     Word Completion
@@ -480,13 +480,13 @@ Fill="White"/>
                                 </Border>
                                 <Border Name="TranslateOTButton" ToolTip="HotKey Press F1" Style="{DynamicResource LiteButton}" PreviewMouseDown="TranslateOTButton_PreviewMouseDown">
                                     <Label  Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="TranslateOTButtonFont">
-                                        Translate(F1)
+                                        Translate
                                     </Label>
                                 </Border>
 
                                 <Border Name="ApplyOTButton" ToolTip="HotKey Press F2" Style="{DynamicResource LiteButton}" PreviewMouseDown="ApplyTranslatedText">
                                     <Label   Style="{DynamicResource LiteButtonFont}" Foreground="White" Name="UIApply">
-                                        Apply(F2)
+                                        Apply
                                     </Label>
                                 </Border>
                             </StackPanel>

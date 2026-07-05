@@ -21,11 +21,11 @@ namespace LexTranslator
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            UIFindwhat.Content = UILanguageHelper.UICache["UIFindwhat"];
-            UIReplacewith.Content = UILanguageHelper.UICache["UIReplacewith"];
-            UIReplacein.Content = UILanguageHelper.UICache["UIReplacein"];
-            UIScope.Content = UILanguageHelper.UICache["UIScope"];
-            ReplaceButton.Content = UILanguageHelper.UICache["ReplaceButton"];
+            //UIFindwhat.Content = UILanguageHelper.UICache["UIFindwhat"];
+            //UIReplacewith.Content = UILanguageHelper.UICache["UIReplacewith"];
+            //UIReplacein.Content = UILanguageHelper.UICache["UIReplacein"];
+            //UIScope.Content = UILanguageHelper.UICache["UIScope"];
+            //ReplaceButton.Content = UILanguageHelper.UICache["ReplaceButton"];
 
             Mode.Items.Clear();
             Mode.Items.Add("Source text");

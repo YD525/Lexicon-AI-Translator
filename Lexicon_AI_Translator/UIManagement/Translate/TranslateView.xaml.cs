@@ -1069,7 +1069,7 @@ namespace LexTranslator.UIManagement
             {
                 return;
             }
-            if (P_Convert.ObjToStr(RefreshButton.Content).Equals(UILanguageHelper.UICache["RefreshButton1"]))
+            if (P_Convert.ObjToStr(RefreshButton.Content).Equals("Refreshing..."))
             {
                 return;
             }
@@ -1078,7 +1078,7 @@ namespace LexTranslator.UIManagement
             {
                 RefreshButton.Dispatcher.Invoke(new Action(() =>
                 {
-                    RefreshButton.Content = UILanguageHelper.UICache["RefreshButton1"];
+                    RefreshButton.Content = "Refreshing...";
                 }));
                 var FileUniqueKey = Mod.P_Translator.GetFileUniqueKey();
 
@@ -1107,7 +1107,7 @@ namespace LexTranslator.UIManagement
 
                 RefreshButton.Dispatcher.Invoke(new Action(() =>
                 {
-                    RefreshButton.Content = UILanguageHelper.UICache["RefreshButton"];
+                    RefreshButton.Content = "Refresh";
                 }));
             }).Start();
         }
@@ -1491,7 +1491,7 @@ namespace LexTranslator.UIManagement
             {
                 if (TransListView != null)
                 {
-                    if (P_Convert.ObjToStr(TranslateOTButtonFont.Content).Equals(UILanguageHelper.UICache["TranslateOTButtonFont"]))
+                    if (P_Convert.ObjToStr(TranslateOTButtonFont.Content).Equals("Translate"))
                     {
                         FakeGrid QueryGrid = TransListView.KeyToFakeGrid(LastSetKey);
 
@@ -1520,10 +1520,7 @@ namespace LexTranslator.UIManagement
 
                                     this.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        TranslateOTButtonFont.Content =
-                                            UILanguageHelper.UICache["TranslateOTButtonFont1"] +
-                                            "(Click to cancel)";
-
+                                        TranslateOTButtonFont.Content = "Translating..." + "(Click to cancel)";
                                         //ThreadInFo.Visibility = Visibility.Visible;
                                     }));
 
@@ -1540,8 +1537,7 @@ namespace LexTranslator.UIManagement
 
                                     this.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        TranslateOTButtonFont.Content =
-                                            UILanguageHelper.UICache["TranslateOTButtonFont"];
+                                        TranslateOTButtonFont.Content = "Translating...";
 
                                         if (TranslatorInterface.TranslationStatus == StateControl.Null ||
                                             TranslatorInterface.TranslationStatus == StateControl.Cancel)
@@ -1561,8 +1557,7 @@ namespace LexTranslator.UIManagement
 
                                     this.Dispatcher.Invoke(() =>
                                     {
-                                        TranslateOTButtonFont.Content =
-                                            UILanguageHelper.UICache["TranslateOTButtonFont"];
+                                        TranslateOTButtonFont.Content = "Translate";
 
                                         //ThreadInFo.Visibility = Visibility.Collapsed;
                                     });
@@ -1585,8 +1580,7 @@ namespace LexTranslator.UIManagement
 
                         InteractiveView.CloseAll();
 
-                        TranslateOTButtonFont.Content =
-                            UILanguageHelper.UICache["TranslateOTButtonFont"];
+                        TranslateOTButtonFont.Content = "Translate";
 
                         SingleTrans = false;
                         //ThreadInFo.Visibility = Visibility.Collapsed;
@@ -1761,7 +1755,7 @@ namespace LexTranslator.UIManagement
                 {
                     if (TransListView.Rows > 0)
                     {
-                        if (P_Convert.ObjToStr(ClearCacheRButton.Content).Equals(UILanguageHelper.UICache["ClearCacheButton"]))
+                        if (P_Convert.ObjToStr(ClearCacheRButton.Content).Equals("Clear Cache"))
                         {
                             if (ClearCacheTrd == null)
                             {
@@ -1774,7 +1768,7 @@ namespace LexTranslator.UIManagement
                                     {
                                         ClearCacheRButton.Dispatcher.Invoke(new Action(() =>
                                         {
-                                            ClearCacheRButton.Content = UILanguageHelper.UICache["ClearCacheButton1"];
+                                            ClearCacheRButton.Content = "Clearing Cache...";
                                         }));
 
                                         int CallFuncCount = 0;
@@ -1824,7 +1818,7 @@ namespace LexTranslator.UIManagement
 
                                     ClearCacheRButton.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        ClearCacheRButton.Content = UILanguageHelper.UICache["ClearCacheButton"];
+                                        ClearCacheRButton.Content = "Clear Cache";
                                     }));
 
                                     ClearCacheTrd = null;

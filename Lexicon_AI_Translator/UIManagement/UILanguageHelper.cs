@@ -158,33 +158,33 @@ namespace LexTranslator.UIManage
             //    break;
             //}
         }
-        public static Dictionary<string, string> UICache = new Dictionary<string, string>();
+        //public static Dictionary<string, string> UICache = new Dictionary<string, string>();
         public static void ChangeLanguage(Languages SetLanguage)
         {
-            UICache.Clear();
-            string SetPath = DeFine.GetFullPath(@"\Interface\Translations\Lex_" + SetLanguage.ToString().ToUpper() + ".txt");
-            MCMReader NewReader = new MCMReader(TranslatorInterface.Instance);
-            if (File.Exists(SetPath))
-            {
-                NewReader.LoadMCM(SetPath);
+            //UICache.Clear();
+            //string SetPath = DeFine.GetFullPath(@"\Interface\Translations\Lex_" + SetLanguage.ToString().ToUpper() + ".txt");
+            //MCMReader NewReader = new MCMReader(TranslatorInterface.Instance);
+            //if (File.Exists(SetPath))
+            //{
+            //    NewReader.LoadMCM(SetPath);
 
-                foreach (var GetMCMItem in NewReader.MCMItems)
-                {
-                    UPDateUI(GetMCMItem.EditorID, GetMCMItem.SourceText);
-                    if (!UICache.ContainsKey(GetMCMItem.EditorID))
-                    {
-                        UICache.Add(GetMCMItem.EditorID, GetMCMItem.SourceText);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("The interface translation file was not found.");
+            //    foreach (var GetMCMItem in NewReader.MCMItems)
+            //    {
+            //        UPDateUI(GetMCMItem.EditorID, GetMCMItem.SourceText);
+            //        if (!UICache.ContainsKey(GetMCMItem.EditorID))
+            //        {
+            //            UICache.Add(GetMCMItem.EditorID, GetMCMItem.SourceText);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("The interface translation file was not found.");
 
-                DeFine.GlobalLocalSetting.CurrentUILanguage = Languages.English;
+            //    DeFine.GlobalLocalSetting.CurrentUILanguage = Languages.English;
 
-                DeFine.CloseAny();
-            }
+            //    DeFine.CloseAny();
+            //}
         }
     }
 }
