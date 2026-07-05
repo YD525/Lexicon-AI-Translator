@@ -52,6 +52,7 @@ namespace LexTranslator.SkyrimManagement
 
         public ModFile(string Path)
         {
+            //Although each tag has its own independent translator, there's only one Node selection view on the interface. This means multiple instances use a single configuration file. Furthermore, the current thread count must be calculated by adding up the number of running instances, and so on. I suddenly realized, what about the thread limit in the settings interface? It limits the number of threads for a single instance. Therefore, to be on the safe side, this version will only allow one translation to run simultaneously for now.
             this.P_Translator = new Translator(Path,DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
 
             if (System.IO.File.Exists(Path))
