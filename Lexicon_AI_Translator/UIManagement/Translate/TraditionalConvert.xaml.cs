@@ -68,13 +68,13 @@ namespace LexTranslator
 
                         var Key = _Owner.TransListView.RealLines[i].Key;
 
-                        var Link = TranslatorInterface.Instance.GetLink();
+                        var Link = DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetLink();
 
                         Link[Key] = Result;
 
                         _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
 
-                        CloudDBCache.AddCache(TranslatorInterface.Instance.GetFileUniqueKey(), Key, (int)TranslatorInterface.Instance.To, Source, Result);
+                        CloudDBCache.AddCache(DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetFileUniqueKey(), Key, (int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.To, Source, Result);
                     }
 
                     ConvertAllBtn.Dispatcher.Invoke(new Action(() => {

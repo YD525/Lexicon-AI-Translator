@@ -70,7 +70,7 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
@@ -104,7 +104,7 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    TranslatorInterface.Instance.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 

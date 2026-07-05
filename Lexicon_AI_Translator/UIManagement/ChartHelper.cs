@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LexTranslator.TranslateManage;
 
 namespace LexTranslator.UIManagement
@@ -57,9 +53,9 @@ namespace LexTranslator.UIManagement
                 if (this.Total > this.SingleUseLimit)
                 {
                     //If the token limit is exceeded, the fuse will trip, forcibly terminating the translation process.
-                    TranslatorInterface.TranslationStatus = StateControl.Cancel;
+                    DeFine.WorkWin.ActiveTab.Mod.TranslationStatus = StateControl.Cancel;
 
-                    TranslatorInterface.SyncTransState(new Action(() =>
+                    DeFine.WorkWin.ActiveTab.Mod.SyncTransState(new Action(() =>
                     {
                         DeFine.WorkWin.Dispatcher.Invoke(new Action(() =>
                         {

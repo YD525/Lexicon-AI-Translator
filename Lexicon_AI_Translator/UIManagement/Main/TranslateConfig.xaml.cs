@@ -253,9 +253,9 @@ namespace LexTranslator
                 var DetectLang = P_Language.DetectLanguageByLine(SourceStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
-                    if (TranslatorInterface.Instance.From == Languages.SimplifiedChinese || TranslatorInterface.Instance.From == Languages.TraditionalChinese)
+                    if (DeFine.WorkWin.ActiveTab.Mod.P_Translator.From == Languages.SimplifiedChinese || DeFine.WorkWin.ActiveTab.Mod.P_Translator.From == Languages.TraditionalChinese)
                     {
-                        DetectLang = TranslatorInterface.Instance.From;
+                        DetectLang = DeFine.WorkWin.ActiveTab.Mod.P_Translator.From;
                     }
                 }
 
@@ -270,9 +270,9 @@ namespace LexTranslator
                 var DetectLang = P_Language.DetectLanguageByLine(TargetStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
-                    if (TranslatorInterface.Instance.To == Languages.SimplifiedChinese || TranslatorInterface.Instance.To == Languages.TraditionalChinese)
+                    if (DeFine.WorkWin.ActiveTab.Mod.P_Translator.To == Languages.SimplifiedChinese || DeFine.WorkWin.ActiveTab.Mod.P_Translator.To == Languages.TraditionalChinese)
                     {
-                        DetectLang = TranslatorInterface.Instance.To;
+                        DetectLang = DeFine.WorkWin.ActiveTab.Mod.P_Translator.To;
                     }
                 }
                 To.SelectedValue = DetectLang.ToString();
@@ -347,7 +347,7 @@ namespace LexTranslator
                 FilterFrom = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            TranslatorInterface.Instance.From = FilterFrom;
+            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From = FilterFrom;
             DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
             DeFine.GlobalLocalSetting.SaveConfig();
 
@@ -368,7 +368,7 @@ namespace LexTranslator
                 FilterTo = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            TranslatorInterface.Instance.To = FilterTo;
+            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To = FilterTo;
             DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
             DeFine.GlobalLocalSetting.SaveConfig();
 
@@ -507,7 +507,7 @@ namespace LexTranslator
             if (GetBtnContent.Equals("Execute"))
             {
                 AutoID++;
-                TranslatorInterface.MakeReady();
+                DeFine.WorkWin.ActiveTab.Mod.MakeReady();
 
                 if (FilterFrom != Languages.Null && FilterTo != Languages.Null)
                 {
@@ -527,7 +527,7 @@ namespace LexTranslator
                         }));
                         bool CanSleep = false;
 
-                        var GetResult = TranslatorInterface.Instance.Translate(NewUnit,default,false);
+                        var GetResult = DeFine.WorkWin.ActiveTab.Mod.P_Translator.Translate(NewUnit,default,false);
 
                         this.Dispatcher.Invoke(new Action(() =>
                         {
@@ -874,7 +874,7 @@ namespace LexTranslator
 
             //Results are capped at 100,000 rows via LIMIT to prevent memory exhaustion, as databases may scale to GB/TB levels. This tool is intended for SQL-proficient users to manually execute conditional queries for specific records or perform bulk modifications across multiple entries using custom SQL logic.
             //Select * From AdvancedDictionary Where Source Like '%[pagebreak]%' or  Source Like '%<font' (I just threw this together to match the content of all the books.) - > Compared to using regular expressions for pattern matching, utilizing the `LIKE` and `GLOB` commands in SQL operates directly at the database engine level, enabling millisecond-level query performance.
-            DeFine.OpenDataBaseView(this,$"Select * From AdvancedDictionary Where [From] = {(int)TranslatorInterface.Instance.From} And [To] = {(int)TranslatorInterface.Instance.To} Limit 100000");
+            DeFine.OpenDataBaseView(this,$"Select * From AdvancedDictionary Where [From] = {(int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.From} And [To] = {(int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.To} Limit 100000");
         }
     }
 }

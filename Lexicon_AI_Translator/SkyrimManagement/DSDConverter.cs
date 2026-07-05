@@ -33,11 +33,11 @@ namespace LexTranslator.SkyrimManagement
                 string GetKey = EspInstance.Records.ElementAt(i).Key;
                 var Record = EspInstance.Records[GetKey];
 
-                var Link = TranslatorInterface.Instance.GetLink();
+                var Link = DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetLink();
 
                 string GetTransData = null;
 
-                GetTransData = TranslatorInterface.Instance.GetLink(Record.UniqueKey);
+                GetTransData = DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetLink(Record.UniqueKey);
 
                 if (GetTransData != null)
                 {

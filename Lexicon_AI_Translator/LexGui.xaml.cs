@@ -102,7 +102,7 @@ namespace LexTranslator
             {
                 if (ActiveTab.TransListView.RealLines.Count > 0)
                 {
-                    TranslateConfigView.SFrom.SelectedValue = TranslatorInterface.Instance.From.ToString();
+                    TranslateConfigView.SFrom.SelectedValue = ActiveTab.Mod.P_Translator.From.ToString();
                 }
                 else
                 {
@@ -384,7 +384,7 @@ namespace LexTranslator
                             PageIndex = 1;
                             StopLexGlowLoop();
 
-                            if (TranslatorInterface.TranslationStatus == StateControl.Run)
+                            if (ActiveTab.Mod.TranslationStatus == StateControl.Run)
                             {
                                 YDChart.Start();
                             }
@@ -1487,11 +1487,11 @@ namespace LexTranslator
         {
             Phoenix.Config.MaxThreadCount = P_Convert.ObjToInt(SMaxThread.Text);
 
-            if (TranslatorInterface.Instance != null)
+            if (ActiveTab.Mod.P_Translator != null)
             {
-                if (TranslatorInterface.Instance.GetBatchCore() != null)
+                if (ActiveTab.Mod.P_Translator.GetBatchCore() != null)
                 {
-                    TranslatorInterface.Instance.GetBatchCore().AutoThreadLimit = Phoenix.Config.MaxThreadCount;
+                    ActiveTab.Mod.P_Translator.GetBatchCore().AutoThreadLimit = Phoenix.Config.MaxThreadCount;
                 }
             }
         }

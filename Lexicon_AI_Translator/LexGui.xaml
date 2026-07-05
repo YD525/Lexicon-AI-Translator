@@ -617,7 +617,7 @@ Chinese character processed by —
 
                             <Grid Panel.ZIndex="1" Visibility="Hidden"  Name="Tab">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="28"/>
+                                    <RowDefinition Height="35"/>
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
 

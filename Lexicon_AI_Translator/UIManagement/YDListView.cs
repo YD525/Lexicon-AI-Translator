@@ -117,7 +117,7 @@ public class FakeGrid
         }
 
         IsCloud = false;
-        var QueryResult = TranslatorInterface.Instance.QueryTransData(this.Key,this.Type,this.SourceText,CanQueryAdvancedDictionary);
+        var QueryResult = DeFine.WorkWin.ActiveTab.Mod.P_Translator.QueryTransData(this.Key,this.Type,this.SourceText,CanQueryAdvancedDictionary);
 
         if (QueryResult.FromDictionary)
         {

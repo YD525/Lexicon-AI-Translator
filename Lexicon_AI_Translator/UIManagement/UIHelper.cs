@@ -183,7 +183,7 @@ namespace LexTranslator.UIManage
 
         public static Grid CreateLine(ModFile File,bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreateLine(File, IsModify,Height, new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreateLine(File, IsModify,Height, new BaseUnit(DeFine.WorkWin.ActiveTab.Mod.P_Translator.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
             return MainGrid;
         }
 

@@ -500,7 +500,7 @@ namespace LexTranslator.UIManagement
                 if (LastSetSig != CurrentSig)
                 {
                     LastSetSig = CurrentSig;
-                    TranslatorInterface.Close();
+                    DeFine.WorkWin.ActiveTab.Mod.CancelTranslateWork();
                 }
 
                 if (!UseHotReload)
@@ -562,7 +562,7 @@ namespace LexTranslator.UIManagement
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine(GetItem.Type, GetItem.EditorID, GetItem.Key, GetItem.SourceText, GetItem.GetTextIfTransR(TranslatorInterface.Instance), 999));
+                                TransListView.AddRowR(LineRenderer.CreateLine(GetItem.Type, GetItem.EditorID, GetItem.Key, GetItem.SourceText, GetItem.GetTextIfTransR(Mod.P_Translator), 999));
                             }));
                         }
 
@@ -637,7 +637,7 @@ namespace LexTranslator.UIManagement
                     TransListView.UpdateVisibleRows(true);
                 }));
 
-                TranslatorInterface.PreparingTranslationUnits();
+                Mod.PreparingTranslationUnits();
             }
         }
 
@@ -645,7 +645,7 @@ namespace LexTranslator.UIManagement
         {
             TStop.Opacity = 0.5;
 
-            if (TranslatorInterface.TranslationStatus == StateControl.Run)
+            if (Mod.TranslationStatus == StateControl.Run)
             {
                 TRun.Visibility = Visibility.Collapsed;
                 TStop.Visibility = Visibility.Visible;
@@ -654,7 +654,7 @@ namespace LexTranslator.UIManagement
                 //ThreadInFo.Visibility = Visibility.Visible;
             }
             else
-            if (TranslatorInterface.TranslationStatus == StateControl.Stop)
+            if (Mod.TranslationStatus == StateControl.Stop)
             {
                 TStop.Opacity = 1;
                 TRun.Visibility = Visibility.Collapsed;
@@ -664,7 +664,7 @@ namespace LexTranslator.UIManagement
                 //ThreadInFo.Visibility = Visibility.Visible;
             }
             else
-            if (TranslatorInterface.TranslationStatus == StateControl.Cancel || TranslatorInterface.TranslationStatus == StateControl.Null)
+            if (Mod.TranslationStatus == StateControl.Cancel || Mod.TranslationStatus == StateControl.Null)
             {
                 TRun.Visibility = Visibility.Visible;
                 TStop.Visibility = Visibility.Collapsed;
@@ -673,7 +673,7 @@ namespace LexTranslator.UIManagement
                 //ThreadInFo.Visibility = Visibility.Collapsed;
             }
 
-            if (TranslatorInterface.TranslationStatus == StateControl.Run || TranslatorInterface.TranslationStatus == StateControl.Stop)
+            if (Mod.TranslationStatus == StateControl.Run || Mod.TranslationStatus == StateControl.Stop)
             {
                 this.Parent.TranslateConfigView.SFrom.IsEnabled = false;
                 this.Parent.TranslateConfigView.STo.IsEnabled = false;
@@ -757,7 +757,7 @@ namespace LexTranslator.UIManagement
                                 {
                                     if (P_Convert.ObjToStr(TransProcess.Content).StartsWith("STRINGS("))
                                     {
-                                        if (TranslatorInterface.Instance.From == TranslatorInterface.Instance.To)
+                                        if (Mod.P_Translator.From == Mod.P_Translator.To)
                                         {
                                             MessageBoxExtend.Show(this.Parent, "The source language and target language cannot be the same!");
                                             CallSucess = false;
@@ -785,7 +785,7 @@ namespace LexTranslator.UIManagement
 
                                         TRun.Visibility = Visibility.Collapsed;
 
-                                        TranslatorInterface.TranslationStatus = StateControl.Run;
+                                        Mod.TranslationStatus = StateControl.Run;
                                         CallSucess = true;
                                         IsKeep = false;
                                     }
@@ -795,24 +795,24 @@ namespace LexTranslator.UIManagement
                                 {
                                     if (TStop.Opacity == 0.5)
                                     {
-                                        TranslatorInterface.TranslationStatus = StateControl.Stop;
+                                        Mod.TranslationStatus = StateControl.Stop;
                                         CallSucess = true;
                                     }
                                     else
                                     {
-                                        if (TranslatorInterface.TranslationStatus == StateControl.Stop)
+                                        if (Mod.TranslationStatus == StateControl.Stop)
                                         {
                                             IsKeep = true;
                                         }
 
-                                        TranslatorInterface.TranslationStatus = StateControl.Run;
+                                        Mod.TranslationStatus = StateControl.Run;
                                         CallSucess = true;
                                     }
                                 }
                                 break;
                             case "TCancel":
                                 {
-                                    TranslatorInterface.TranslationStatus = StateControl.Cancel;
+                                    Mod.TranslationStatus = StateControl.Cancel;
                                     CallSucess = true;
                                 }
                                 break;
@@ -820,7 +820,7 @@ namespace LexTranslator.UIManagement
 
                         if (CallSucess)
                         {
-                            TranslatorInterface.SyncTransState(new Action(() =>
+                            Mod.SyncTransState(new Action(() =>
                             {
                                 this.Dispatcher.Invoke(new Action(() =>
                                 {
@@ -938,7 +938,7 @@ namespace LexTranslator.UIManagement
                         }
                     }
 
-                    var Link = TranslatorInterface.Instance.GetLink();
+                    var Link = Mod.P_Translator.GetLink();
                     Link[GetKey] = GetTransText;
                 }
             }
@@ -1029,7 +1029,7 @@ namespace LexTranslator.UIManagement
                                 {
                                     if (RealLines[i].SourceText != RealLines[i].TransText)
                                     {
-                                        TranslatorInterface.Instance.SetLink(RealLines[i].Key, RealLines[i].TransText);
+                                        Mod.P_Translator.SetLink(RealLines[i].Key, RealLines[i].TransText);
                                     }
                                 }
 
@@ -1236,7 +1236,7 @@ namespace LexTranslator.UIManagement
             {
                 TransListView.RealLines[i].TransText = TransListView.RealLines[i].SourceText + "(" + i.ToString() + ")";
 
-                var Link = TranslatorInterface.Instance.GetLink();
+                var Link = Mod.P_Translator.GetLink();
                 Link[TransListView.RealLines[i].Key] = TransListView.RealLines[i].TransText;
 
                 TransListView.RealLines[i].SyncUI(TransListView);
@@ -1485,7 +1485,7 @@ namespace LexTranslator.UIManagement
         public bool SingleTrans = false;
         public void TranslateCurrent()
         {
-            TranslatorInterface.MakeReady();
+            Mod.MakeReady();
 
             lock (TranslateLocker)
             {
@@ -1502,10 +1502,10 @@ namespace LexTranslator.UIManagement
 
                             if (QueryGrid.TransText.Length > 0)
                             {
-                                CloudDBCache.DeleteCache(TranslatorInterface.Instance.GetFileUniqueKey(), QueryGrid.Key, TranslatorInterface.Instance.To);
+                                CloudDBCache.DeleteCache(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, Mod.P_Translator.To);
                             }
 
-                            BaseUnit SetUnit = new BaseUnit(TranslatorInterface.Instance.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, 100);
+                            BaseUnit SetUnit = new BaseUnit(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, 100);
 
                             CanEditTransView(false);
 
@@ -1526,7 +1526,7 @@ namespace LexTranslator.UIManagement
 
                                     SetUnit.Translated = string.Empty;
                                     UnitGroup Result =
-                                        TranslatorInterface.Instance.Translate(SetUnit, Token, false);
+                                       Mod.P_Translator.Translate(SetUnit, Token, false);
 
                                     Token.ThrowIfCancellationRequested();
 
@@ -1539,8 +1539,8 @@ namespace LexTranslator.UIManagement
                                     {
                                         TranslateOTButtonFont.Content = "Translating...";
 
-                                        if (TranslatorInterface.TranslationStatus == StateControl.Null ||
-                                            TranslatorInterface.TranslationStatus == StateControl.Cancel)
+                                        if (Mod.TranslationStatus == StateControl.Null ||
+                                            Mod.TranslationStatus == StateControl.Cancel)
                                         {
                                             //ThreadInFo.Visibility = Visibility.Collapsed;
                                         }
@@ -1613,7 +1613,7 @@ namespace LexTranslator.UIManagement
 
                 if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
                 {
-                    if (P_Language.DetectLanguageByLine(GetLine.SourceText) != TranslatorInterface.Instance.To)
+                    if (P_Language.DetectLanguageByLine(GetLine.SourceText) != Mod.P_Translator.To)
                     {
                         if (GetLine.TransText.Length == 0 && (new TranslationPreprocessor().IsOnlySymbolsAndSpaces(GetLine.SourceText + GetLine.RealSource)) == false)
                         {
@@ -1707,19 +1707,19 @@ namespace LexTranslator.UIManagement
             bool? GetCloudTranslationCache = CloudTranslationCache.IsChecked;
             bool? GetUserTranslationCache = UserTranslationCache.IsChecked;
 
-            int Key = TranslatorInterface.Instance.GetFileUniqueKey();
+            int Key = Mod.P_Translator.GetFileUniqueKey();
             if (GetCloudTranslationCache == true)
             {
                 var CloudTrans = new DataBaseView();
                 CloudTrans.Show();
-                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 100000");
+                CloudTrans.QueryFirst($"Select * From CloudTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)Mod.P_Translator.To} Limit 100000");
             }
 
             if (GetUserTranslationCache == true)
             {
                 var UserTranslation = new DataBaseView();
                 UserTranslation.Show();
-                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)TranslatorInterface.Instance.To} Limit 100000");
+                UserTranslation.QueryFirst($"Select * From LocalTranslation Where [FileUniqueKey] = {Key} And [To] = {(int)Mod.P_Translator.To} Limit 100000");
             }
         }
 
@@ -1728,7 +1728,7 @@ namespace LexTranslator.UIManagement
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 EmptyFromAndToText();
-                TranslatorInterface.Instance.GetLink().Clear();
+                Mod.P_Translator.GetLink().Clear();
 
                 if (TransListView != null)
                 {
@@ -1774,11 +1774,11 @@ namespace LexTranslator.UIManagement
                                         int CallFuncCount = 0;
                                         if (GetCloudTranslationCache == true)
                                         {
-                                            TranslatorInterface.Instance.ClearAICache();
+                                            Mod.P_Translator.ClearAICache();
 
-                                            if (CloudDBCache.ClearCloudCache(TranslatorInterface.Instance.GetFileUniqueKey()))
+                                            if (CloudDBCache.ClearCloudCache(Mod.P_Translator.GetFileUniqueKey()))
                                             {
-                                                var GetBatchCore = TranslatorInterface.Instance.GetBatchCore();
+                                                var GetBatchCore = Mod.P_Translator.GetBatchCore();
                                                 if (GetBatchCore != null)
                                                 {
                                                     GetBatchCore.TranslatedCount = 0;
@@ -1789,7 +1789,7 @@ namespace LexTranslator.UIManagement
                                         }
                                         if (GetUserTranslationCache == true)
                                         {
-                                            LocalDBCache.ClearLocalCache(TranslatorInterface.Instance.GetFileUniqueKey());
+                                            LocalDBCache.ClearLocalCache(Mod.P_Translator.GetFileUniqueKey());
                                             {
                                                 Phoenix.Vacuum();
                                                 CallFuncCount++;
@@ -1808,10 +1808,10 @@ namespace LexTranslator.UIManagement
 
                                     }
 
-                                    TranslatorInterface.Close();
-                                    TranslatorInterface.PreparingTranslationUnits();
+                                    Mod.CancelTranslateWork();
+                                    Mod.PreparingTranslationUnits();
 
-                                    while (TranslatorInterface.PreparingTrd != null)
+                                    while (Mod.PreparingTrd != null)
                                     {
                                         Thread.Sleep(100);
                                     }

@@ -233,7 +233,7 @@
 
                     <Border Name="ManageCache" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ManageCache_PreviewMouseDown">
                         <Label Style="{DynamicResource ButtonFont}">
-                            ManageCache
+                            Cache
                         </Label>
                     </Border>
 
@@ -242,9 +242,7 @@
                             TestAll
                         </Label>
                     </Border>
-
                 </StackPanel>
-
 
                 <GridSplitter Style="{StaticResource ColSplitterStyle}" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeDirection="Columns" Grid.Column="0"/>
                 <GridSplitter Style="{StaticResource ColSplitterStyle}" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeDirection="Columns" Grid.Column="1"/>
@@ -288,10 +286,7 @@
                                 <RowDefinition Height="37"/>
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
-                                <Label Style="{DynamicResource CaptionTextA}" Name="UIOriginalCap">
-                                    Original:
-                                </Label>
+                            <StackPanel Orientation="Horizontal" Margin="5 5 0 5">
 
                                 <Border Style="{DynamicResource LiteButton}" PreviewMouseDown="SpeakFromStr">
                                     <Viewbox Width="19" Height="17" Stretch="Uniform">
@@ -372,10 +367,8 @@
                                 <RowDefinition Height="37"/>
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
-                                <Label Style="{DynamicResource CaptionTextA}" Margin="5 0 0 0" Name="UITranslatedCap">
-                                    Translated:
-                                </Label>
+                            <StackPanel Orientation="Horizontal" Margin="5 5 0 5">
+
                                 <Border  Style="{DynamicResource LiteButton}" PreviewMouseDown="SpeakToStr">
                                     <Viewbox Width="19" Height="17" Stretch="Uniform">
                                         <Canvas Width="1024" Height="1024">

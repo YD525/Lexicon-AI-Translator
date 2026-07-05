@@ -392,9 +392,9 @@ namespace LexTranslator
                         BaseUnit TestUnit = new BaseUnit(-525,"525","","Test Line","",100);
                         NCustomLocalAIApi.QuickTrans(
                             new List<ReplaceTag>(),
-                            TranslatorInterface.Instance.ToUnitGroup(TestUnit),
-                            TranslatorInterface.Instance.From,
-                            TranslatorInterface.Instance.To,
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From,
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To,
                             false,
                             0,
                             string.Empty,
@@ -415,9 +415,9 @@ namespace LexTranslator
                         NCustomAIApi.QuickTrans(
                             ApiKey,
                             new List<ReplaceTag>(),
-                            TranslatorInterface.Instance.ToUnitGroup(TestUnit),
-                            TranslatorInterface.Instance.From,
-                            TranslatorInterface.Instance.To,
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From,
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To,
                             false,
                             0,
                             string.Empty,
@@ -437,9 +437,9 @@ namespace LexTranslator
                         BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "", 100);
                         NCustomApi.QuickTrans(
                             ApiKey,
-                            TranslatorInterface.Instance.ToUnitGroup(TestUnit),
-                            TranslatorInterface.Instance.From,
-                            TranslatorInterface.Instance.To,
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From,
+                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To,
                             ref GenPlatformCall
                         );
 

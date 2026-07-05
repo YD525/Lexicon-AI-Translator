@@ -1666,7 +1666,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
-                    <Grid Name="Root" Margin="0 0 2 0">
+                    <Grid Name="Root" Margin="0 0 2 0" Height="30">
                         <Border Name="TabBg" CornerRadius="8 8 0 0" Background="#FF2A2A2A">
                             <Grid Margin="{TemplateBinding Padding}">
                                 <Grid.ColumnDefinitions>
@@ -1677,7 +1677,7 @@
 
                                 <Ellipse Name="Dot" Grid.Column="0" Width="6" Height="6" Fill="#FF9A9A9A" VerticalAlignment="Center" Margin="0 0 8 0"/>
 
-                                <TextBlock Name="Label" Grid.Column="1" Text="{TemplateBinding Header}" Foreground="#FFCFCFCF" FontSize="12" FontWeight="Medium" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Name="Label" Grid.Column="1" Text="{TemplateBinding Header}" Foreground="#FFCFCFCF" FontSize="13.2" FontWeight="Medium" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
 
                                 <Border Name="CloseBtn" Cursor="Hand" Tag="LexTabClose" Grid.Column="2" Width="16" Height="16" CornerRadius="4" Margin="8 0 0 0" Background="Transparent" Visibility="Collapsed">
                                     <Viewbox Width="9" Height="9" Stretch="Uniform">
