@@ -53,15 +53,15 @@ namespace LexTranslator.UIManagement
                 if (this.Total > this.SingleUseLimit)
                 {
                     //If the token limit is exceeded, the fuse will trip, forcibly terminating the translation process.
-                    DeFine.WorkWin.ActiveTab.Mod.TranslationStatus = StateControl.Cancel;
+                    //DeFine.WorkWin.ActiveTab.Mod.TranslationStatus = StateControl.Cancel;
 
-                    DeFine.WorkWin.ActiveTab.Mod.SyncTransState(new Action(() =>
-                    {
-                        DeFine.WorkWin.Dispatcher.Invoke(new Action(() =>
-                        {
-                            //DeFine.WorkWin.SyncTransStateUI();
-                        }));
-                    }), false);
+                    //DeFine.WorkWin.ActiveTab.Mod.SyncTransState(new Action(() =>
+                    //{
+                    //    DeFine.WorkWin.Dispatcher.Invoke(new Action(() =>
+                    //    {
+                    //        //DeFine.WorkWin.SyncTransStateUI();
+                    //    }));
+                    //}), false);
                 }
         }
 

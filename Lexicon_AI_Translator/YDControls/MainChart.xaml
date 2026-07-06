@@ -8,6 +8,40 @@
              d:DesignHeight="850" d:DesignWidth="800"
              Background="#FF282828">
 
+    <UserControl.Resources>
+        <Style x:Key="CustomButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF373100"/>
+            <Setter Property="Foreground" Value="#FFFAE306"/>
+            <Setter Property="BorderBrush" Value="#FFFAE306"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFFAE306"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -91,18 +125,16 @@
 
         <!-- Controls -->
         <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,8,0,0">
-            <Button x:Name="BtnPause" Content="⏸  PAUSE"
+            <Button x:Name="BtnPause" Content="⏸  PAUSE"  Style="{StaticResource CustomButtonStyle}"
                     Click="BtnPause_Click"
                     Width="110" Height="34"
-                    Background="#FF373100" Foreground="#FFFAE306"
-                    BorderBrush="#FFFAE306" BorderThickness="1"
+                    BorderThickness="1"
                     FontSize="12"
                     Cursor="Hand" Margin="0,0,12,0"/>
-            <Button x:Name="BtnClear" Content="✕  CLEAR"
+            <Button x:Name="BtnClear" Content="✕  CLEAR"  Style="{StaticResource CustomButtonStyle}"
                     Click="BtnClear_Click"
                     Width="110" Height="34"
-                    Background="#FF373100" Foreground="#FFFAE306"
-                    BorderBrush="#FFFAE306" BorderThickness="1"
+                    BorderThickness="1"
                     FontSize="12" 
                     Cursor="Hand"/>
             <Grid Width="25" Height="25" Background="#FFD58811" Visibility="Hidden">

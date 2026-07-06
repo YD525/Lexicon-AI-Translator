@@ -384,7 +384,7 @@ namespace LexTranslator
                             PageIndex = 1;
                             StopLexGlowLoop();
 
-                            if (ActiveTab.Mod.TranslationStatus == StateControl.Run)
+                            if (ActiveTab?.Mod?.TranslationStatus == StateControl.Run)
                             {
                                 YDChart.Start();
                             }
@@ -1487,7 +1487,7 @@ namespace LexTranslator
         {
             Phoenix.Config.MaxThreadCount = P_Convert.ObjToInt(SMaxThread.Text);
 
-            if (ActiveTab.Mod.P_Translator != null)
+            if (ActiveTab?.Mod?.P_Translator != null)
             {
                 if (ActiveTab.Mod.P_Translator.GetBatchCore() != null)
                 {

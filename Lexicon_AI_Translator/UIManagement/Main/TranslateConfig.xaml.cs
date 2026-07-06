@@ -347,7 +347,11 @@ namespace LexTranslator
                 FilterFrom = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From = FilterFrom;
+            if (DeFine.WorkWin.ActiveTab != null)
+            {
+                DeFine.WorkWin.ActiveTab.Mod.P_Translator.From = FilterFrom;
+            }
+            
             DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
             DeFine.GlobalLocalSetting.SaveConfig();
 
@@ -368,7 +372,11 @@ namespace LexTranslator
                 FilterTo = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To = FilterTo;
+            if (DeFine.WorkWin.ActiveTab != null)
+            {
+                DeFine.WorkWin.ActiveTab.Mod.P_Translator.To = FilterTo;
+            }
+            
             DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
             DeFine.GlobalLocalSetting.SaveConfig();
 
