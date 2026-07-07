@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Media.Media3D;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;
@@ -942,12 +943,20 @@ namespace LexTranslator.SkyrimManagement
             };
         }
 
+        private long MakeOffsetKey(int ParentIndex, int SubIndex)
+        {
+            return ((long)ParentIndex << 32) | (uint)SubIndex;
+        }
+
         private bool IsFristSelect = true;
+
+        private Dictionary<long, RecordItem> OffsetRecordMap = new Dictionary<long, RecordItem>();
 
         public void SelectSig(string Sig)
         {
             EnsureNotDisposed();
 
+            OffsetRecordMap.Clear();
             Records.Clear();
 
             Dictionary<uint, Character> InfoToCharacter = null;
@@ -1024,6 +1033,10 @@ namespace LexTranslator.SkyrimManagement
                         if (!Records.ContainsKey(NRecordItem.UniqueKey))
                         {
                             Records.Add(NRecordItem.UniqueKey, NRecordItem);
+
+                            long OffsetKey = MakeOffsetKey(NRecordItem.ParentIndex,NRecordItem.SubIndex);
+
+                            OffsetRecordMap[OffsetKey] = NRecordItem;
                         }
                         else
                         {
@@ -1048,9 +1061,18 @@ namespace LexTranslator.SkyrimManagement
 
         public RecordItem GetRecordItemByOffsets(int IsCell, int ParentIndex, int SubIndex)
         {
-            return Records.Values.FirstOrDefault(Record =>
-                Record.ParentIndex == ParentIndex && Record.SubIndex == SubIndex &&
-                (IsCell == 1 ? Record.ParentSig == "CELL" : Record.ParentSig != "CELL"));
+            if (IsCell == 0)
+            {
+                long OffsetKey = MakeOffsetKey(ParentIndex, SubIndex);
+
+                try 
+                {
+                    return OffsetRecordMap[OffsetKey];
+                } 
+                catch { }
+            }
+
+            return null;
         }
 
         public StringsFileReader FromStringsFile = new StringsFileReader();
@@ -1068,6 +1090,7 @@ namespace LexTranslator.SkyrimManagement
 
         public void Close()
         {
+            OffsetRecordMap.Clear();
             Clear();
         }
     }
