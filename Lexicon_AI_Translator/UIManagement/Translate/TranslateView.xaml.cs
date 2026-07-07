@@ -119,8 +119,34 @@ namespace LexTranslator.UIManagement
         }
 
         public void Active()
-        { 
-        
+        {
+            SyncListView();
+        }
+
+        private DispatcherTimer _SyncTimer;
+        private double DefWindowWidth = 0;
+        public void SyncListView()
+        {
+            if (_SyncTimer == null)
+            {
+                _SyncTimer = new DispatcherTimer();
+                _SyncTimer.Interval = TimeSpan.FromMilliseconds(100);
+
+                _SyncTimer.Tick += (s, e) =>
+                {
+                    _SyncTimer.Stop();
+
+                    if(DeFine.WorkWin != null)
+                    if (DefWindowWidth != DeFine.WorkWin.ActualWidth)
+                    {
+                        TransListView.HotReload();
+                        DefWindowWidth = DeFine.WorkWin.ActualWidth;
+                    }
+                };
+            }
+
+            _SyncTimer.Stop();
+            _SyncTimer.Start();
         }
 
         public void ReSetTypes()
@@ -405,7 +431,7 @@ namespace LexTranslator.UIManagement
                         AutoLoadHistoryList();
                     }));
 
-                    DeFine.ExtendWin.SetOriginal(GridHandle.SourceText, Mod.EspReader.ToStringsFile.QueryData(GridHandle.Key));
+                    //DeFine.ExtendWin.SetOriginal(GridHandle.SourceText, Mod.EspReader.ToStringsFile.QueryData(GridHandle.Key));
                 }
             }
         }
@@ -1240,6 +1266,11 @@ namespace LexTranslator.UIManagement
         }
 
         private void SyncColumnWidth(object sender, MouseButtonEventArgs e)
+        {
+            SyncColumnWidth();
+        }
+
+        public void SyncColumnWidth()
         {
             for (int i = 0; i < this.TransListView.VisibleRows.Count; i++)
             {

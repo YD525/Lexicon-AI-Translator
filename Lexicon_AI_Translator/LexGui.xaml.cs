@@ -156,7 +156,10 @@ namespace LexTranslator
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-           
+            if (this.ActiveTab != null)
+            {
+                this.ActiveTab.SyncListView();
+            }  
         }
 
         private void Window_LocationChanged(object sender, EventArgs e)

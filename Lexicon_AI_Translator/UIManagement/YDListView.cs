@@ -425,11 +425,19 @@ public class YDListView
 
     public void HotReload()
     {
-        this.CanSet = false;
-        this.MainCanvas.Children.Clear();
-        this.VisibleRows.Clear();
-        UpdateVisibleRows();
-        this.CanSet = true;
+        CanSet = false;
+
+        MainCanvas.Children.Clear();
+        VisibleRows.Clear();
+
+        MainCanvas.Dispatcher.BeginInvoke(
+            DispatcherPriority.Render,
+            new Action(() =>
+            {
+                UpdateVisibleRows(true);
+                CanSet = true;
+            })
+        );
     }
 
     public void Clear()
