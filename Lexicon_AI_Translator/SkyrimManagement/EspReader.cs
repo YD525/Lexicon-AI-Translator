@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Media.Media3D;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;
@@ -849,6 +848,7 @@ namespace LexTranslator.SkyrimManagement
         {
             IsFristSelect = true;
             Types.Clear();
+            OffsetRecordMap.Clear();
             Records.Clear();
             GameCharacters.Clear();
             EnsureNotDisposed();
@@ -1090,7 +1090,6 @@ namespace LexTranslator.SkyrimManagement
 
         public void Close()
         {
-            OffsetRecordMap.Clear();
             Clear();
         }
     }
