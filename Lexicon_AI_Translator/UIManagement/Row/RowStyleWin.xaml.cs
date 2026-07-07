@@ -1,21 +1,15 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using LexTranslator.SkyrimManage;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using LexTranslator.TranslateManage;
-using System;
-using System.Threading;
 using System.Collections.Generic;
 using ICSharpCode.AvalonEdit;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManage;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
-using PhoenixEngine;
 using PhoenixEngine.Unit;
-using PhoenixEngine.Common;
 
 namespace LexTranslator.UIManagement
 {

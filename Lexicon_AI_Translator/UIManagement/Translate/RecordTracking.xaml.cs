@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -463,5 +464,96 @@ namespace LexTranslator
         {
             MultiWindowController.TrackingWin = null;
         }
+
+        public void MatchTransItem(string Original, uint StringKey, CancellationToken CancellationToken)
+        {
+            //MatchView.Dispatcher.Invoke(new Action(() =>
+            //{
+            //    MatchView.Children.Clear();
+            //}));
+
+            //List<string> UniqueResult = new List<string>();
+            //List<string> UniqueKeys = new List<string>();
+
+            //var MatchCloudItems = LocalDBCache.MatchLocalItem((int)TranslatorInterface.Instance.To, Original);
+
+            //foreach (var GetMatch in MatchCloudItems)
+            //{
+            //    if (!UniqueResult.Contains(GetMatch.Result))
+            //    {
+            //        UniqueResult.Add(GetMatch.Result);
+            //        if (!UniqueKeys.Contains(GetMatch.Key))
+            //        {
+            //            UniqueKeys.Add(GetMatch.Key);
+            //            MatchView.Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                MatchView.Children.Add(UIHelper.CreatMatchLine(
+            //                  UniqueKeyHelper.RowidToOriginalKey(GetMatch.FileUniqueKey),//Get Original File Name
+            //                  GetMatch.Key,
+            //                  GetMatch.Result
+            //                  ));
+            //            }));
+            //        }
+            //    }
+            //}
+
+            //foreach (var GetMatch in CloudDBCache.MatchCloudItem((int)TranslatorInterface.Instance.To, Original))
+            //{
+            //    if (!UniqueResult.Contains(GetMatch.Result))
+            //    {
+            //        UniqueResult.Add(GetMatch.Result);
+            //        if (!UniqueKeys.Contains(GetMatch.Key))
+            //        {
+            //            UniqueKeys.Add(GetMatch.Key);
+            //            MatchView.Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                MatchView.Children.Add(UIHelper.CreatMatchLine(
+            //                  UniqueKeyHelper.RowidToOriginalKey(GetMatch.FileUniqueKey),//Get Original File Name
+            //                  GetMatch.Key,
+            //                  GetMatch.Result
+            //                  ));
+            //            }));
+            //        }
+            //    }
+            //}
+
+
+            //Find DL IL Strings
+            //if (StringKey != 0)
+            //    if (DeFine.WorkingWin.CurrentTransType == 2)
+            //    {
+            //        if (EspInstance.ToStringsFile != null)
+            //        {
+            //            if (EspInstance.ToStringsFile.Strings.ContainsKey(StringKey) == true)
+            //            {
+            //                string AutoFileName = "Strings";
+            //                var FindItem = EspInstance.ToStringsFile.Strings[StringKey];
+
+            //                if (FindItem.Type == StringsFileType.DL)
+            //                {
+            //                    AutoFileName += ".dlstrings";
+            //                }
+            //                else
+            //                if (FindItem.Type == StringsFileType.IL)
+            //                {
+            //                    AutoFileName += ".ilstrings";
+            //                }
+            //                else
+            //                {
+            //                    AutoFileName += ".strings";
+            //                }
+            //                MatchView.Dispatcher.Invoke(new Action(() =>
+            //                {
+            //                    MatchView.Children.Add(UIHelper.CreatMatchLine(
+            //                    FindItem.Type.ToString(),
+            //                    FindItem.ID.ToString(),
+            //                    FindItem.Value
+            //                    ));
+            //                }));
+            //            }
+            //        }
+            //    }
+        }
+
     }
 }

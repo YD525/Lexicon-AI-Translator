@@ -362,6 +362,7 @@ namespace LexTranslator.UIManage
         {
             BlueStyle = 0, RetroStyle = 1
         }
+        
         public static void SetGlobalStyle(StyleType Style)
         {
             switch (Style)
@@ -378,6 +379,7 @@ namespace LexTranslator.UIManage
                     break;
             }
         }
+
         public static void LoadResourceDictionary(string resourceName)
         {
             var Dict = new ResourceDictionary();

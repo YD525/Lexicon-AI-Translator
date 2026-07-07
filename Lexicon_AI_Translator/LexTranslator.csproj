@@ -115,9 +115,6 @@
       <DependentUpon>DataBaseView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DeFine.cs" />
-    <Compile Include="UIManagement\Main\ExtendWin.xaml.cs">
-      <DependentUpon>ExtendWin.xaml</DependentUpon>
-    </Compile>
     <Compile Include="IDEManagement\CompleteHelper.cs" />
     <Compile Include="UIManagement\Translate\InteractiveView.xaml.cs">
       <DependentUpon>InteractiveView.xaml</DependentUpon>
@@ -127,9 +124,6 @@
     </Compile>
     <Compile Include="UIManagement\Main\TranslateConfig.xaml.cs">
       <DependentUpon>TranslateConfig.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LogView.xaml.cs">
-      <DependentUpon>LogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\Main\MessageBoxExtend.xaml.cs">
       <DependentUpon>MessageBoxExtend.xaml</DependentUpon>
@@ -205,10 +199,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIManagement\Main\ExtendWin.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UIManagement\Translate\InteractiveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -218,10 +208,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIManagement\Main\TranslateConfig.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="LogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

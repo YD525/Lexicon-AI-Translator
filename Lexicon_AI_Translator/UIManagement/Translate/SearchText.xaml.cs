@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ICSharpCode.AvalonEdit;
 
 namespace LexTranslator
 {
@@ -10,8 +11,10 @@ namespace LexTranslator
     /// </summary>
     public partial class SearchText : Window
     {
-        public SearchText()
+        public TextEditor CodeTextBox;
+        public SearchText(TextEditor SetEditor)
         {
+            this.CodeTextBox = SetEditor;
             InitializeComponent();
         }
 
@@ -21,14 +24,14 @@ namespace LexTranslator
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             bool IsFind = false;
-            for (int i = Line; i < DeFine.ActiveIDE.LineCount; i++)
+            for (int i = Line; i < this.CodeTextBox.LineCount; i++)
             {
-                var GetLineStr = DeFine.ActiveIDE.Text.Substring(DeFine.ActiveIDE.Document.Lines[i].Offset,DeFine.ActiveIDE.Document.Lines[i].Length);
+                var GetLineStr = this.CodeTextBox.Text.Substring(this.CodeTextBox.Document.Lines[i].Offset, this.CodeTextBox.Document.Lines[i].Length);
                 if (GetLineStr.Contains(Search.Text))
                 {
-                    DeFine.ActiveIDE.ScrollToLine(i);
+                    this.CodeTextBox.ScrollToLine(i);
                     int GetOffset = GetLineStr.IndexOf(Search.Text);
-                    DeFine.ActiveIDE.Select(DeFine.ActiveIDE.Document.Lines[i].Offset + GetOffset, Search.Text.Length);
+                    this.CodeTextBox.Select(this.CodeTextBox.Document.Lines[i].Offset + GetOffset, Search.Text.Length);
 
                     Line = i + 1;
                     IsFind = true;

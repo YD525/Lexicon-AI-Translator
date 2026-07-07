@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 using System.Linq;
-using System.Windows.Documents;
 using LexTranslator.UIManagement;
 
 namespace LexTranslator.IDEManagement

@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Security.RightsManagement;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
-using LexTranslator.IDEManagement;
 using PhoenixEngine;
-using PhoenixEngine.Engine.ADO;
-using PhoenixEngine.Language;
 
 namespace LexTranslator
 {

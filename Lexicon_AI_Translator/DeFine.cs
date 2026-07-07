@@ -1,20 +1,16 @@
-﻿using ICSharpCode.AvalonEdit;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Windows.Media;
 using LexTranslator.SkyrimModManager;
-using System.Windows.Threading;
 using System.Windows;
 using LexTranslator.UIManagement;
 using System;
 using Newtonsoft.Json;
-using System.Threading;
 using LexTranslator.UIManage;
 using PhoenixEngine;
 using PhoenixEngine.Language;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine.ADO;
-using System.Runtime.CompilerServices;
 
 namespace LexTranslator
 {
@@ -42,17 +38,15 @@ namespace LexTranslator
         public static string CurrentVersion = "3.8.2.8";
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
-        public static TextEditor ActiveIDE = null;
-
         public static RowStyleWin RowStyleWin = new RowStyleWin();
         public static NodeStyleWin NodeStyleWin = new NodeStyleWin();
+
         public static PlatformConfigStyleWin PlatformConfigStyleWin = new PlatformConfigStyleWin(null);
 
         public static DataBaseView DataBaseView = null;
 
         public static LexGui WorkWin = null;
 
-        public static ExtendWin ExtendWin = null;
         public static CGView CG = null;
 
         public static ChartData ChartDataRef = null;
@@ -110,13 +104,6 @@ namespace LexTranslator
 
         public static void PrepareFileDirectory()
         {
-            var HasWriteAccess = new DirectoryInfo(DeFine.GetFullPath(@"\")).GetAccessControl().AreAccessRulesProtected == false;
-            if (!HasWriteAccess)
-            {
-                MessageBox.Show("The current path does not have write permission. Please move to another path Or right-click to run as administrator.");
-                DeFine.CloseAny();
-            }
-
             if (!Directory.Exists(DeFine.GetFullPath(@"\Librarys")))
             {
                 Directory.CreateDirectory(DeFine.GetFullPath(@"\Librarys"));
@@ -161,14 +148,10 @@ namespace LexTranslator
             if (Win != null)
             {
                 DeFine.WorkWin = Win;
+
                 ChartDataRef = new ChartData();
 
                 RowStyleWin.Hide();
-
-                //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-                ExtendWin = new ExtendWin();
-
                 SetSQLErrorReport();
             }
         }
@@ -199,7 +182,6 @@ namespace LexTranslator
         public int GeminiTokenUsage { get; set; } = 0;
         public int CohereTokenUsage { get; set; } = 0;
         public int DeepSeekTokenUsage { get; set; } = 0;
-        public int BaichuanTokenUsage { get; set; } = 0;
         public int LocalAITokenUsage { get; set; } = 0;
 
         public bool EnableAnalyzingWords { get; set; } = true;
@@ -252,7 +234,6 @@ namespace LexTranslator
                             this.GeminiTokenUsage = GetSetting.GeminiTokenUsage;
                             this.CohereTokenUsage = GetSetting.CohereTokenUsage;
                             this.DeepSeekTokenUsage = GetSetting.DeepSeekTokenUsage;
-                            this.BaichuanTokenUsage = GetSetting.BaichuanTokenUsage;
                             this.LocalAITokenUsage = GetSetting.LocalAITokenUsage;
 
                             this.EnableAnalyzingWords = GetSetting.EnableAnalyzingWords;

@@ -5,9 +5,7 @@ using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit;
 using System;
-using System.Windows.Interop;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 using LexTranslator.UIManagement;
 using LexTranslator.SkyrimManagement;
 using System.Threading;
@@ -109,8 +107,6 @@ namespace LexTranslator
                 }
             }
 
-            DeFine.ActiveIDE = TextEditor;
-
             UpdateFollowPosition();
 
             SetText(ModRef.PSCCode);
@@ -159,7 +155,7 @@ namespace LexTranslator
         {
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.F)
             {
-                SearchText NSearchText = new SearchText();
+                SearchText NSearchText = new SearchText(TextEditor);
                 NSearchText.Owner = this;
                 NSearchText.Show();
             }
@@ -178,11 +174,6 @@ namespace LexTranslator
         public Thread AutoSelectIDETrd = null;
         public void SelectLineFromIDE(int LineID, string Value)
         {
-            if (DeFine.ActiveIDE == null)
-            {
-                return;
-            }
-           
             if (AutoSelectIDETrd != null)
             {
                 try
