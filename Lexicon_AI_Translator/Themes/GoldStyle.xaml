@@ -19,18 +19,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="TriangleArrowStyle" TargetType="Polygon">
-        <Setter Property="Points" Value="50,10 10,80 90,80"/>
-        <Setter Property="Fill" Value="White"/>
-        <Setter Property="Stroke" Value="Black"/>
-        <Setter Property="StrokeThickness" Value="2"/>
-        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <RotateTransform Angle="90"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  
 
     <Style x:Key="BorderWinBackground" TargetType="Border">
         <Setter Property="BorderThickness" Value="1"/>
@@ -43,32 +32,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="BorderWinBackgroundR" TargetType="Border">
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Border.Effect">
-            <Setter.Value>
-                <DropShadowEffect BlurRadius="5" Direction="1" ShadowDepth="0.7" Color="#FF22A5EF" Opacity="0"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="ExWinShow" TargetType="Border">
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="Background" Value="#FF3D3D3D"/>
-        <Setter Property="Height"  Value="90"/>
-        <Setter Property="CornerRadius" Value="0 9 9 0"/>
-        <Setter Property="BorderThickness" Value="0"/>
-    </Style>
-
-
-    <Style x:Key="ExWinHide" TargetType="Border">
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="Background" Value="#FF252525"/>
-        <Setter Property="Height"  Value="90"/>
-        <Setter Property="CornerRadius" Value="0 9 9 0"/>
-        <Setter Property="BorderThickness" Value="0"/>
-    </Style>
 
     <Style x:Key="ToggleCircleCheckBox" TargetType="CheckBox">
         <Setter Property="Cursor" Value="Hand"/>
@@ -142,13 +105,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="MenuStyle" TargetType="Border">
-        <Setter Property="Background" Value="#FF0B74D1"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Height" Value="150"/>
-    </Style>
+
 
     <Style x:Key="MenuBlockStyle" TargetType="Border">
         <Setter Property="Background" Value="#FF0B74D1"/>
@@ -157,53 +114,6 @@
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalAlignment"  Value="Stretch"/>
-    </Style>
-
-    <Style x:Key="MenuBlockSelected" TargetType="Border">
-        <Setter Property="Background" Value="#FF2298FF"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Margin" Value="3"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="HorizontalAlignment"  Value="Stretch"/>
-    </Style>
-
-    <Style x:Key="PanelHeader" TargetType="Border">
-        <Setter Property="Background" Value="#FF282828"/>
-    </Style>
-
-    <Style x:Key="ThreadInFo" TargetType="Grid">
-        <Setter Property="Background" Value="#FF323232"/>
-        <Setter Property="IsHitTestVisible" Value="False"/>
-        <Setter Property="HorizontalAlignment" Value="Right"/>
-    </Style>
-
-    <Style x:Key="ThreadInFoFont" TargetType="Label">
-        <Setter Property="Foreground"  Value="White"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="FontWeight" Value="DemiBold"/>
-        <Setter Property="IsHitTestVisible" Value="False"/>
-        <Setter Property="Padding" Value="5 0 5 0"/>
-    </Style>
-
-    <Style x:Key="CaptionFont" TargetType="Label">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="IsHitTestVisible" Value="False"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin"  Value="5,0,0,0"/>
-    </Style>
-
-    <Style x:Key="Panel" TargetType="Border">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="0 0 8 8"/>
-        <Setter Property="Panel.ZIndex" Value="0"/>
-    </Style>
-
-    <Style x:Key="Frame" TargetType="Grid">
-        <Setter Property="Panel.ZIndex" Value="1"/>
     </Style>
 
     <Style x:Key="ChildBlockButton" TargetType="Border">
@@ -221,14 +131,6 @@
         <Setter Property="Cursor"  Value="Hand"/>
         <Setter Property="CornerRadius" Value="2"/>
     </Style>
-
-    <Style x:Key="LiteButtonLight" TargetType="Border">
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Background"  Value="#FF3D3D3D"/>
-        <Setter Property="Padding" Value="5 0 5 0"/>
-        <Setter Property="Cursor" Value="Hand"/>
-    </Style>
-
 
     <Style x:Key="LiteButton" TargetType="Border">
         <Setter Property="Margin" Value="5 0 0 0"/>
@@ -278,22 +180,6 @@
 
     <Style x:Key="ExtendBoxStyle" TargetType="Grid">
         <Setter Property="Background" Value="#FF2A2A2A"/>
-    </Style>
-
-    <Style x:Key="ButtonStyleC" TargetType="Border">
-        <Setter Property="Height"  Value="35"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Background"  Value="#FF0A61AF"/>
-        <Setter Property="Margin"  Value="5 0 0 0"/>
-        <Setter Property="Cursor"  Value="Hand"/>
-    </Style>
-
-    <Style x:Key="ButtonStyleB" TargetType="Border">
-        <Setter Property="Height"  Value="35"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Background"  Value="#FF0B74D1"/>
-        <Setter Property="Margin"  Value="5 0 0 0"/>
-        <Setter Property="Cursor"  Value="Hand"/>
     </Style>
 
     <Style x:Key="ButtonStyle" TargetType="Border">
@@ -360,19 +246,6 @@
         <Setter Property="Foreground"  Value="White"/>
     </Style>
 
-    <Style x:Key="SectionStyle" TargetType="Border">
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="BorderThickness"  Value="1"/>
-        <Setter Property="BorderBrush"  Value="#FF535353"/>
-        <Setter Property="Margin" Value="5 0 0 0"/>
-    </Style>
-
-    <Style x:Key="SectionStyleL" TargetType="Border">
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="BorderThickness"  Value="1"/>
-        <Setter Property="BorderBrush"  Value="#FF535353"/>
-    </Style>
-
     <Style x:Key="ProcessBarBackgroundStyle" TargetType="Border">
         <Setter Property="Background" Value="#FF3D3D3D"/>
         <Setter Property="CornerRadius" Value="5"/>
@@ -390,67 +263,10 @@
         <Setter Property="Panel.ZIndex" Value="1"/>
     </Style>
 
-    <Style x:Key="SearchBox" TargetType="Border">
-        <Setter Property="Background" Value="#FF7B7B7B"/>
-        <Setter Property="Height" Value="35"/>
-        <Setter Property="CornerRadius" Value="5"/>
-    </Style>
-    <Style x:Key="SearchBoxPic" TargetType="Border">
-        <Setter Property="CornerRadius" Value="0 5 5 0"/>
-        <Setter Property="Background" Value="#FF3A3A3A"/>
-    </Style>
-
-    <Style x:Key="SearchBoxText" TargetType="TextBox">
-        <Setter Property="Margin" Value="5 0 5 0"/>
-        <Setter Property="TabIndex" Value="0"/>
-        <Setter Property="Background" Value="{x:Null}"/>
-        <Setter Property="BorderBrush" Value="{x:Null}"/>
-        <Setter Property="SelectionBrush" Value="#FF135FB8"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="CaretBrush" Value="White"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="IsTabStop" Value="True"/>
-    </Style>
-
-    <Style x:Key="NavStyle" TargetType="Border">
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="Panel.ZIndex" Value="200"/>
-        <Setter Property="Height" Value="50"/>
-        <Setter Property="Width" Value="20"/>
-        <Setter Property="Width" Value="20"/>
-        <Setter Property="CornerRadius" Value="0 9 9 0"/>
-        <Setter Property="Cursor"  Value="Hand"/>
-        <Setter Property="Background" Value="#FF0B74D1"/>
-    </Style>
 
     <Style x:Key="ListViewHeader" TargetType="Grid">
         <Setter Property="Background" Value="#FF252525"/>
         <Setter Property="Margin" Value="10 0 10 0"/>
-    </Style>
-
-    <RotateTransform x:Key="RotateTextTransform" Angle="-90"/>
-
-    <Style x:Key="ContextStyle" TargetType="TextBlock">
-        <Setter Property="Margin" Value="0 10 0 10"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="LayoutTransform" Value="{DynamicResource RotateTextTransform}"/>
-    </Style>
-
-    <Style x:Key="TabStyle" TargetType="TextBlock">
-        <Setter Property="Margin" Value="0 10 0 10"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize" Value="11"/>
-        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="LayoutTransform" Value="{DynamicResource RotateTextTransform}"/>
     </Style>
 
     <Style x:Key="MaskStyle" TargetType="Border">
@@ -537,46 +353,10 @@
         <Setter Property="Panel.ZIndex"  Value="9"/>
     </Style>
 
-    <Style x:Key="ClassFont" TargetType="Label">
-        <Setter Property="FontWeight"  Value="Heavy"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize"  Value="10"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
-
-    <Style x:Key="CheckBoxFont" TargetType="Label">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize"  Value="10"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
-
-    <Style x:Key="DragDropViewStyle" TargetType="Border">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Background" Value="#FF2B94FF"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Width" Value="370"/>
-        <Setter Property="Height" Value="80"/>
-    </Style>
-
-
-    <Style x:Key="DragDropViewFontStyle" TargetType="Label">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize" Value="20"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
-
     <Style x:Key="SettingFrame" TargetType="Border">
         <Setter Property="Margin" Value="10"/>
         <Setter Property="Background" Value="#FF262626"/>
         <Setter Property="CornerRadius" Value="5"/>
-    </Style>
-
-    <Style x:Key="TittleFont" TargetType="Label">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="FontSize" Value="18"/>
     </Style>
 
     <Style x:Key="LinkFont" TargetType="Label">
@@ -1310,28 +1090,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="MagnifyingGlassIconStyle" TargetType="ContentControl">
-        <Setter Property="Width" Value="20"/>
-        <Setter Property="Height" Value="20"/>
-        <Setter Property="SnapsToDevicePixels" Value="true"/>
-        <Setter Property="UseLayoutRounding" Value="true"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ContentControl">
-                    <Viewbox Stretch="Uniform">
-                        <Canvas Width="20" Height="20">
-                            <Path Stroke="White" StrokeThickness="2" Fill="Transparent"
-                            StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                            Data="M10,2 A8,8 0 1 1 2,10 A8,8 0 0 1 10,2"/>
-                            <Path Stroke="White" StrokeThickness="2"
-                            Data="M15.5,15.5 L20,20"/>
-                        </Canvas>
-                    </Viewbox>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="SettingIconStyle" TargetType="ContentControl">
         <Setter Property="Width" Value="20"/>
         <Setter Property="Height" Value="20"/>
@@ -1362,13 +1120,11 @@
         <Setter Property="Foreground"  Value="White"/>
     </Style>
 
+
+    <!--ListView Selected-->
     <Color x:Key="LineANormal">Black</Color>
     <Color x:Key="LineASelected">#FF0A61AF</Color>
-
     <Color x:Key="DefFontColor">White</Color>
-
-
-
 
     <Style x:Key="SplitterStyle" TargetType="{x:Type GridSplitter}">
         <Setter Property="Background" Value="Transparent"/>
@@ -1408,7 +1164,6 @@
         </Setter>
     </Style>
 
-
     <Style x:Key="ColSplitterStyle" TargetType="{x:Type GridSplitter}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Width"      Value="8"/>
@@ -1435,7 +1190,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <Style x:Key="SplitToggleButton" TargetType="Border">
         <Setter Property="Margin" Value="5 0 0 0"/>
