@@ -373,7 +373,23 @@ namespace LexTranslator.SkyrimManagement
                     Win.TransProcess.Content = Log;
                 }));
             }
-        } 
+        }
+
+        public int GetTranslateCount()
+        {
+            int TranslateCount = 0;
+            for (int i = 0; i < ListView.Rows; i++)
+            {
+                var Row = ListView.RealLines[i];
+
+                if (Row.TransText.Length > 0)
+                {
+                    TranslateCount++;
+                }
+            }
+
+            return TranslateCount;
+        }
        
         public void PreparingTranslationUnits()
         {
@@ -430,7 +446,7 @@ namespace LexTranslator.SkyrimManagement
                     List<BaseUnit> BaseUnits = GetCanTransUnits();
                     InitTrd = new Thread(() =>
                     {
-                        P_Translator.Init(BaseUnits, AggregationMode.Aggregation, RowStyleWin.DictionaryKeys.Count);
+                        P_Translator.Init(BaseUnits, AggregationMode.Aggregation, GetTranslateCount());
                         InitTrd = null;
                     });
 
@@ -788,7 +804,7 @@ namespace LexTranslator.SkyrimManagement
                             ModifyCount = GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount;
                             GetBatchCore.Close();
 
-                            GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation, RowStyleWin.DictionaryKeys.Count);
+                            GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation,GetTranslateCount());
                             GetBatchCore.Start();
                         }
 
@@ -932,7 +948,6 @@ namespace LexTranslator.SkyrimManagement
         {
             RowStyleWin.RecordModifyStates.Clear();
             TranslatorInterface.TranslatorHistoryCaches.Clear();
-            RowStyleWin.DictionaryKeys.Clear();
 
             FristInit = false;
             NeedNextPreparing = false;

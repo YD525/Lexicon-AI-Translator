@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using ICSharpCode.AvalonEdit;
-using LexTranslator.TranslateManage;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
 using PhoenixEngine.Common;
@@ -109,23 +108,8 @@ public class FakeGrid
             }
         }
 
-        bool CanQueryAdvancedDictionary = false;
-
-        if (this.RealSource != this.SourceText && this.RealSource.Length > 0 && this.SourceText.Length > 0)
-        {
-            CanQueryAdvancedDictionary = true;
-        }
-
         IsCloud = false;
-        var QueryResult = Mod.P_Translator.QueryTransData(this.Key,this.Type,this.SourceText,CanQueryAdvancedDictionary);
-
-        if (QueryResult.FromDictionary)
-        {
-            if (!RowStyleWin.DictionaryKeys.Contains(this.Key))
-            {
-                RowStyleWin.DictionaryKeys.Add(this.Key);
-            }
-        }
+        var QueryResult = Mod.P_Translator.QueryTransData(this.Key,this.Type,this.SourceText,false);
 
         if (QueryResult != null)
         {

@@ -161,7 +161,6 @@ namespace LexTranslator.UIManagement
 
         public static List<string> RecordModifyStates = new List<string>();
 
-        public static HashSet<string> DictionaryKeys = new HashSet<string>();
         public Grid CreateLine(ModFile Mod,bool IsModify,double Height, BaseUnit Item)
         {
             var FindDictionary = Mod.Lex_Dictionary.CheckDictionary(Item.Key);

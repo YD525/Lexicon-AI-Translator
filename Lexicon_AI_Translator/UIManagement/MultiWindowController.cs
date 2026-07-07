@@ -126,16 +126,23 @@ namespace LexTranslator.UIManagement
 
                                     Records.Add(GetRecord);
 
+                                    string Keyword = GetRecord.String;
+
                                     for (int i = 0; i < Mod.ListView.RealLines.Count; i++)
                                     {
-                                        if (Mod.ListView.RealLines[i].Key != SelectKey)
+                                        var Line = Mod.ListView.RealLines[i];
+
+                                        if (Line.Key == SelectKey)
+                                            continue;
+
+                                        if (Line.RealSource.Length < Keyword.Length &&
+                                            Line.SourceText.Length < Keyword.Length)
+                                            continue;
+
+                                        if (Line.RealSource.Contains(Keyword) ||
+                                            Line.SourceText.Contains(Keyword))
                                         {
-                                            if (Mod.ListView.RealLines[i].RealSource.Contains(GetRecord.String) ||
-                                                Mod.ListView.RealLines[i].SourceText.Contains(GetRecord.String)
-                                            )
-                                            {
-                                                Records.Add(Mod.EspReader.Records[Mod.ListView.RealLines[i].Key]);
-                                            }
+                                            Records.Add(Mod.EspReader.Records[Line.Key]);
                                         }
                                     }
 

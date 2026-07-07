@@ -5,9 +5,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using LexTranslator.SkyrimManage;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManagement;
-using PhoenixEngine.Common;
+using PhoenixEngine.Translate;
 
 namespace LexTranslator
 {
@@ -285,8 +286,33 @@ namespace LexTranslator
             return CardBorder;
         }
 
+        public string FindTranslated(string Key,string Type,string SourceText,ModFile Mod)
+        {
+            var FindDictionary = new LexDictionary().CheckDictionary(Key);
+
+            if (FindDictionary != null)
+            {
+                if (!string.IsNullOrEmpty(FindDictionary.OriginalText))
+                {
+                    SourceText = FindDictionary.OriginalText;
+                }
+            }
+
+            var QueryResult = Mod.P_Translator.QueryTransData(Key,Type,SourceText, true);
+
+            if (QueryResult != null)
+            {
+                return QueryResult.TransText;
+            }
+
+            return string.Empty;
+        }
+
+
         private Border BuildRelatedTextCard(RecordItem Item)
         {
+            var GetTranslated = FindTranslated(Item.UniqueKey,Item.ParentSig,Item.String,ModRef);
+
             Border CardBorder = new Border();
             CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
             CardBorder.CornerRadius = new CornerRadius(6);
@@ -308,7 +334,15 @@ namespace LexTranslator
             TextLine.TextWrapping = TextWrapping.Wrap;
             TextLine.Cursor = Cursors.Hand;
 
-            TextLine.Text = Item.String;
+            if (GetTranslated.Length == 0)
+            {
+                TextLine.Text = Item.String;
+            }
+            else
+            {
+                TextLine.Text = Item.String + " -> " + GetTranslated;
+            }
+
             ContentPanel.Children.Add(TextLine);
 
             StackPanel InfoLine = new StackPanel();
@@ -338,7 +372,9 @@ namespace LexTranslator
         {
             var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(0, Item.RecordOffset, Item.SubOffset);
             if (GetRecord != null)
-            { 
+            {
+                var GetTranslated = FindTranslated(GetRecord.UniqueKey, GetRecord.ParentSig, GetRecord.String, ModRef);
+
                 Border CardBorder = new Border();
                 CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
                 CardBorder.CornerRadius = new CornerRadius(6);
@@ -358,7 +394,16 @@ namespace LexTranslator
                 TextLine.FontSize = 13;
                 TextLine.TextWrapping = TextWrapping.Wrap;
 
-                TextLine.Text = GetRecord.String;
+
+                if (GetTranslated.Length == 0)
+                {
+                    TextLine.Text = GetRecord.String;
+                }
+                else
+                {
+                    TextLine.Text = GetRecord.String + " -> " + GetTranslated;
+                }
+
                 ContentPanel.Children.Add(TextLine);
 
                 StackPanel InfoLine = new StackPanel();

@@ -1513,8 +1513,6 @@ namespace LexTranslator.UIManagement
                         //DeFine.ExtendWin.SetOriginal(GetGrid.SourceText, DeFine.WorkingWin.GlobalEspReader.StringsReader.QueryData(GetGrid.Key));
                     }
 
-                    Mod.P_Translator.SyncTranslatedCount(RowStyleWin.DictionaryKeys.Count);
-
                     UIHelper.ShowButton(ApplyOTButton, false);
                 }
             }
