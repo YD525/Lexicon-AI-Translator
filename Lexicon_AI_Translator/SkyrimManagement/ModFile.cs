@@ -473,7 +473,7 @@ namespace LexTranslator.SkyrimManagement
                         {
                             Thread.Sleep(100);
 
-                            SetTransBarTittle("Analyzing Words(" + GetBatchCore.MarkLeadersPercent + "%)...");
+                            SetTransBarTittle("Analyzing Words(" + GetBatchCore.Container.MarkHeadsPercent + "%)...");
                         }
 
                         Thread.Sleep(1000);
