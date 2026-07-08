@@ -797,7 +797,7 @@ namespace LexTranslator.SkyrimManagement
                         }
                     }
 
-                    IsFristSelect = true;
+                    InitOnce = false;
 
                     string Report = GetFieldReport();
                     Report = "Start Heuristic Analysis : " + Path + "\n\n" + Report;
@@ -855,7 +855,7 @@ namespace LexTranslator.SkyrimManagement
         /// </summary>
         public void Clear()
         {
-            IsFristSelect = true;
+            InitOnce = false;
             Types.Clear();
             OffsetRecordMap.Clear();
             Records.Clear();
@@ -1033,77 +1033,71 @@ namespace LexTranslator.SkyrimManagement
             return ((long)ParentIndex << 32) | (uint)SubIndex;
         }
 
-        private bool IsFristSelect = true;
+        private bool InitOnce = false;
 
         private Dictionary<long, RecordItem> OffsetRecordMap = new Dictionary<long, RecordItem>();
 
-        public void SelectSig(string Sig)
+        public void Query()
         {
-            EnsureNotDisposed();
-
-            OffsetRecordMap.Clear();
-            Records.Clear();
-
-            Dictionary<uint, Character> InfoToCharacter = null;
-            List<CharacterRecordInfo> Characters = new List<CharacterRecordInfo>();
-
-            if (IsFristSelect)
+            if (!InitOnce)
             {
-                if (Sig.Equals("ALL"))
+                EnsureNotDisposed();
+
+                OffsetRecordMap.Clear();
+                Records.Clear();
+
+                Dictionary<uint, Character> InfoToCharacter = null;
+                List<CharacterRecordInfo> Characters = new List<CharacterRecordInfo>();
+
+                Characters.AddRange(EspNative.GetAllCharacters(_Instance));
+
+                InfoToCharacter = new Dictionary<uint, Character>(Characters.Sum(c => c.LinkedInfos.Count));
+
+                foreach (var Character in Characters)
                 {
-                    Characters.AddRange(EspNative.GetAllCharacters(_Instance));
-
-                    InfoToCharacter = new Dictionary<uint, Character>(Characters.Sum(c => c.LinkedInfos.Count));
-
-                    foreach (var Character in Characters)
+                    var NCH = new Character
                     {
-                        var NCH = new Character
-                        {
-                            Name = Character.Name,
-                            Gender = (CharacterGender)Character.Gender,
-                            VoiceType = Character.VoiceType
-                        };
-                        foreach (var InfoFID in Character.LinkedInfos)
-                        {
-                            if (!InfoToCharacter.ContainsKey(InfoFID))
-                                InfoToCharacter[InfoFID] = NCH;
-                        }
-                    }
-
-                    Characters.Clear();
-                }
-            }
-
-            foreach (var GetRecord in EspNative.SearchBySig(_Instance, Sig))
-            {
-                uint RealFormID = GetRecord.FormID;
-                string ParentFormID = GetRecord.GetFormIDHex();
-                string ParentSig = GetRecord.Sig;
-
-                string ParentEditorID = GetRecord.EditorID;
-
-                foreach (var Sub in GetRecord.SubRecords)
-                {
-                    var MergeSig = TranslatorRef.GetFileUniqueKey() + ":" + ParentFormID + ":" + ParentSig + ":" + Sub.Sig + ":" + Sub.Index + ":" + ParentEditorID;
-                    string UniqueKey = Crc32Helper.ComputeCrc32(MergeSig);
-
-                    RecordItem NRecordItem = new RecordItem
-                    {
-                        RealFormID = RealFormID,
-                        StringID = Sub.StringID,
-                        FormID = ParentFormID,
-                        EditorID = ParentEditorID,
-                        ParentSig = ParentSig,
-                        ChildSig = Sub.Sig,
-                        UniqueKey = UniqueKey,
-                        String = Sub.Content,
-                        ParentIndex = GetRecord.Index,
-                        SubIndex = Sub.Index,
-                        OccurrenceIndex = Sub.OccurrenceIndex
+                        Name = Character.Name,
+                        Gender = (CharacterGender)Character.Gender,
+                        VoiceType = Character.VoiceType
                     };
-
-                    if (IsFristSelect)
+                    foreach (var InfoFID in Character.LinkedInfos)
                     {
+                        if (!InfoToCharacter.ContainsKey(InfoFID))
+                            InfoToCharacter[InfoFID] = NCH;
+                    }
+                }
+
+                Characters.Clear();
+
+                foreach (var GetRecord in EspNative.SearchBySig(_Instance, "ALL"))
+                {
+                    uint RealFormID = GetRecord.FormID;
+                    string ParentFormID = GetRecord.GetFormIDHex();
+                    string ParentSig = GetRecord.Sig;
+
+                    string ParentEditorID = GetRecord.EditorID;
+
+                    foreach (var Sub in GetRecord.SubRecords)
+                    {
+                        var MergeSig = TranslatorRef.GetFileUniqueKey() + ":" + ParentFormID + ":" + ParentSig + ":" + Sub.Sig + ":" + Sub.Index + ":" + ParentEditorID;
+                        string UniqueKey = Crc32Helper.ComputeCrc32(MergeSig);
+
+                        RecordItem NRecordItem = new RecordItem
+                        {
+                            RealFormID = RealFormID,
+                            StringID = Sub.StringID,
+                            FormID = ParentFormID,
+                            EditorID = ParentEditorID,
+                            ParentSig = ParentSig,
+                            ChildSig = Sub.Sig,
+                            UniqueKey = UniqueKey,
+                            String = Sub.Content,
+                            ParentIndex = GetRecord.Index,
+                            SubIndex = Sub.Index,
+                            OccurrenceIndex = Sub.OccurrenceIndex
+                        };
+
                         if (InfoToCharacter != null && InfoToCharacter.TryGetValue(RealFormID, out var MatchedChar))
                         {
                             if (GameCharacters.TryGetValue(UniqueKey, out var List))
@@ -1111,37 +1105,39 @@ namespace LexTranslator.SkyrimManagement
                             else
                                 GameCharacters[UniqueKey] = new List<Character> { MatchedChar };
                         }
-                    }
 
-                    if (NRecordItem.String.Length > 0)
-                    {
-                        if (!Records.ContainsKey(NRecordItem.UniqueKey))
+                        if (NRecordItem.String.Length > 0)
                         {
-                            Records.Add(NRecordItem.UniqueKey, NRecordItem);
+                            if (!Records.ContainsKey(NRecordItem.UniqueKey))
+                            {
+                                Records.Add(NRecordItem.UniqueKey, NRecordItem);
 
-                            long OffsetKey = MakeOffsetKey(NRecordItem.ParentIndex,NRecordItem.SubIndex);
+                                long OffsetKey = MakeOffsetKey(NRecordItem.ParentIndex, NRecordItem.SubIndex);
 
-                            OffsetRecordMap[OffsetKey] = NRecordItem;
+                                OffsetRecordMap[OffsetKey] = NRecordItem;
+                            }
+                            else
+                            {
+                                throw new Exception("Warning: Duplicate key detected: {NRecordItem.UniqueKey}");
+                            }
                         }
                         else
                         {
-                            throw new Exception("Warning: Duplicate key detected: {NRecordItem.UniqueKey}");
+
                         }
                     }
-                    else
-                    {
-
-                    }
                 }
-            }
 
-            if (Sig.Equals("ALL"))
-            {
-                if (IsFristSelect)
-                {
-                    IsFristSelect = false;
-                }
+                InitOnce = true;
             }
+        }
+
+        public Dictionary<string, RecordItem> SelectSig(string ParentSig)
+        {
+            if (ParentSig == "ALL") return this.Records;
+
+            return Records.Where(Item => Item.Value.ParentSig == ParentSig)
+                          .ToDictionary(Item => Item.Key, Item => Item.Value);
         }
 
         public RecordItem GetRecordItemByOffsets(int ParentIndex, int SubIndex)

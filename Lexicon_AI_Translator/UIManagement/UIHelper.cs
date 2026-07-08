@@ -217,7 +217,7 @@ namespace LexTranslator.UIManage
             }));
         }
 
-        public static void TransViewSyncEspRecord(EspReader Instance,YDListView View)
+        public static void TransViewSyncEspRecord(EspReader Instance,string ParentSig, YDListView View)
         {
             var CanVasHandle = View.GetMainCanvas();
             CanVasHandle.Dispatcher.Invoke(new Action(() =>
@@ -225,7 +225,7 @@ namespace LexTranslator.UIManage
                 CanVasHandle.IsEnabled = false;
             }));
 
-            var AllRecords = Instance.Records.Values.ToList();
+            var AllRecords = Instance.SelectSig(ParentSig);
 
             const int BatchSize = 10000;
             int Total = AllRecords.Count;
@@ -239,10 +239,10 @@ namespace LexTranslator.UIManage
                     foreach (var Record in Batch)
                     {
                         View.AddRowR(LineRenderer.CreateLine(
-                            Record.ParentSig,
-                            Record.FormID,
-                            Record.UniqueKey,
-                            Record.String,
+                            Record.Value.ParentSig,
+                            Record.Value.FormID,
+                            Record.Value.UniqueKey,
+                            Record.Value.String,
                             "",
                             999));
                     }

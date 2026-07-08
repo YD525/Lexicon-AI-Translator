@@ -570,7 +570,7 @@ namespace LexTranslator.UIManagement
                 {
                     if (Mod.Type == GameFileType.ESP)
                     {
-                        Mod.EspReader.SelectSig(CurrentSig);
+                        Mod.EspReader.Query();
 
                         if (DataLoadingTrd != null)
                         {
@@ -590,7 +590,7 @@ namespace LexTranslator.UIManagement
 
                         DataLoadingTrd = new Thread(() =>
                         {
-                            UIHelper.TransViewSyncEspRecord(Mod.EspReader, TransListView);
+                            UIHelper.TransViewSyncEspRecord(Mod.EspReader, CurrentSig, TransListView);
 
                             ReloadStringsFile();
 
