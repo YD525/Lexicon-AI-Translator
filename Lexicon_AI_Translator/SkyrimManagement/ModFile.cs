@@ -807,19 +807,9 @@ namespace LexTranslator.SkyrimManagement
 
                         int ModifyCount = 0;
 
-                        if (GetBatchCore != null)
-                        {
-                            ModifyCount = GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount;
-                            GetBatchCore.Close();
+                        ModifyCount = GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount;
 
-                            GetBatchCore.Init(BaseUnits,GetTranslateCount(),
-                                new P_BucketContainer.CheckLinks((TempUnits, Unit) =>
-                                {
-                                    return MultiWindowController.CheckLinks(this, TempUnits, Unit);
-                            }));
-
-                            GetBatchCore.Start();
-                        }
+                        GetBatchCore.Start();
 
                         SyncTransStateFreeze = false;
 
