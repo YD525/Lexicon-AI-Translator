@@ -688,8 +688,6 @@ namespace LexTranslator.UIManagement
                     TransListView.UpdateVisibleRows(true);
                 }));
 
-                Mod.PreparingTranslationUnits();
-
                 this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
                 {
                     OnDataReloadCompleted?.Invoke();
@@ -1899,7 +1897,6 @@ namespace LexTranslator.UIManagement
                                     }
 
                                     Mod.CancelTranslateWork();
-                                    Mod.PreparingTranslationUnits();
 
                                     while (Mod.PreparingTrd != null)
                                     {

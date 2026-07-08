@@ -328,7 +328,6 @@ namespace LexTranslator.SkyrimManagement
 
 
         #region Translate Control
-        public bool NeedNextPreparing = false;
         public Thread PreparingTrd = null;
         public Thread InitTrd = null;
         public StateControl TranslationStatus = StateControl.Null;
@@ -391,7 +390,7 @@ namespace LexTranslator.SkyrimManagement
             return TranslateCount;
         }
        
-        public void PreparingTranslationUnits()
+        public void Prepare()
         {
             if (P_Translator != null)
             {
@@ -495,15 +494,6 @@ namespace LexTranslator.SkyrimManagement
                                     }
                                 }
                             }));
-                    }
-
-                    if (BaseUnits.Count == 0)
-                    {
-                        NeedNextPreparing = true;
-                    }
-                    else
-                    {
-                        NeedNextPreparing = false;
                     }
 
                     PreparingComplete = true;
@@ -748,23 +738,37 @@ namespace LexTranslator.SkyrimManagement
                 {
                     Win?.UPDateUI();
 
-                    if (NeedNextPreparing)
-                    {
-                        FristInit = false;
+                    FristInit = false;
 
-                        PreparingTranslationUnits();
+                    bool NeedPrepare = false;
+
+                    if (GetBatchCore.Container == null)
+                    {
+                        NeedPrepare = true;
+                    }
+                    else
+                    {
+                        if (GetBatchCore.Container.GetCount() == 0)
+                        {
+                            NeedPrepare = true;
+                        }
+                    }
+
+                    if (NeedPrepare)
+                    {
+                        Prepare();
 
                         while (PreparingTrd != null)
                         {
                             Thread.Sleep(100);
                         }
+                    }
 
-                        if ((GetBatchCore.GetCount()) == 0)
-                        {
-                            TranslationStatus = StateControl.Cancel;
-                            EndAction.Invoke();
-                            return;
-                        }
+                    if ((GetBatchCore.GetCount()) == 0)
+                    {
+                        TranslationStatus = StateControl.Cancel;
+                        EndAction.Invoke();
+                        return;
                     }
 
                     var BaseUnits = GetCanTransUnits();
@@ -959,7 +963,6 @@ namespace LexTranslator.SkyrimManagement
             TranslatorInterface.TranslatorHistoryCaches.Clear();
 
             FristInit = false;
-            NeedNextPreparing = false;
 
             var GetBatchCore = P_Translator.GetBatchCore();
             if (GetBatchCore != null)

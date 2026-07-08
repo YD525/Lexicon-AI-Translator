@@ -60,83 +60,86 @@ namespace LexTranslator.UIManagement
         //If null is returned, grouping is performed based on default similarity.
         public static List<BaseUnit> CheckLinks(ModFile Mod,List<BaseUnit> TempUnit,BaseUnit Unit)
         {
-            var Key = Unit.Key;
-
-            if (Mod.Type != GameFileType.ESP) return null;
-
-            RecordItem GetRecord = null;
-
-            if (Mod.EspReader.Records.ContainsKey(Key))
+            if (Unit.Type == "INFO" || Unit.Type == "DIAL" || Unit.Type == "BOOK")
             {
-                GetRecord = Mod.EspReader.Records[Key];
-            }
+                var Key = Unit.Key;
 
-            List<string> FindKeys = new List<string>();
+                if (Mod.Type != GameFileType.ESP) return null;
 
-            if (GetRecord != null)
-            {
-                List<BaseUnit> Links = new List<BaseUnit>();
+                RecordItem GetRecord = null;
 
-                if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
+                if (Mod.EspReader.Records.ContainsKey(Key))
                 {
-                    var DialogueLink = Mod.EspReader.GetDialContext(GetRecord);
-                    List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
+                    GetRecord = Mod.EspReader.Records[Key];
+                }
 
-                    if (DialogueLink != null)
-                    {
-                        if (DialogueLink.Head != null) TempLinks.Add(DialogueLink.Head);
-                        if (DialogueLink.Links != null) TempLinks.AddRange(DialogueLink.Links);
-                    }
+                List<string> FindKeys = new List<string>();
 
-                    if (TempLinks.Count > 0)
+                if (GetRecord != null)
+                {
+                    List<BaseUnit> Links = new List<BaseUnit>();
+
+                    if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
                     {
-                        foreach (var GetLink in TempLinks)
+                        var DialogueLink = Mod.EspReader.GetDialContext(GetRecord);
+                        List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
+
+                        if (DialogueLink != null)
                         {
-                            var GetLinkRecord = Mod.EspReader.GetRecordItemByOffsets(false,GetLink.RecordOffset,GetLink.SubOffset);
-                            if(GetLinkRecord!=null)
-                            FindKeys.Add(GetLinkRecord.UniqueKey);
+                            if (DialogueLink.Head != null) TempLinks.Add(DialogueLink.Head);
+                            if (DialogueLink.Links != null) TempLinks.AddRange(DialogueLink.Links);
+                        }
+
+                        if (TempLinks.Count > 0)
+                        {
+                            foreach (var GetLink in TempLinks)
+                            {
+                                var GetLinkRecord = Mod.EspReader.GetRecordItemByOffsets(false, GetLink.RecordOffset, GetLink.SubOffset);
+                                if (GetLinkRecord != null)
+                                    FindKeys.Add(GetLinkRecord.UniqueKey);
+                            }
+                        }
+                    }
+                    else
+                    if (GetRecord.ParentSig == "BOOK")
+                    {
+                        var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
+                        RecordItem Tittle = null;
+                        RecordItem Content = null;
+
+                        if (GetBookInFo.TittleSubOffset != -1)
+                            Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+
+                        if (GetBookInFo.ContentSubOffset != -1)
+                            Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+
+                        List<RecordItem> BookLinks = new List<RecordItem>();
+
+                        if (Tittle != null) BookLinks.Add(Tittle);
+                        if (Content != null) BookLinks.Add(Content);
+
+                        foreach (var GetLink in BookLinks)
+                        {
+                            FindKeys.Add(GetLink.UniqueKey);
                         }
                     }
                 }
-                else
-                if (GetRecord.ParentSig == "BOOK")
+
+
+                var UnitDict = TempUnit.ToDictionary(U => U.Key);
+                List<BaseUnit> Units = new List<BaseUnit>();
+
+                foreach (var GetKey in FindKeys)
                 {
-                    var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
-                    RecordItem Tittle = null;
-                    RecordItem Content = null;
-
-                    if (GetBookInFo.TittleSubOffset != -1)
-                        Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
-
-                    if (GetBookInFo.ContentSubOffset != -1)
-                        Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
-
-                    List<RecordItem> BookLinks = new List<RecordItem>();
-
-                    if (Tittle != null) BookLinks.Add(Tittle);
-                    if (Content != null) BookLinks.Add(Content);
-
-                    foreach (var GetLink in BookLinks)
+                    if (UnitDict.TryGetValue(GetKey, out var FoundUnit))
                     {
-                        FindKeys.Add(GetLink.UniqueKey);
+                        Units.Add(FoundUnit);
                     }
                 }
+
+                if (Units.Count > 0)
+                    return Units;
             }
-
-
-            var UnitDict = TempUnit.ToDictionary(U => U.Key);
-            List<BaseUnit> Units = new List<BaseUnit>();
-
-            foreach (var GetKey in FindKeys)
-            {
-                if (UnitDict.TryGetValue(GetKey, out var FoundUnit))
-                {
-                    Units.Add(FoundUnit);
-                }
-            }
-
-            if (Units.Count > 0)
-                return Units;
 
             return null;
         }
