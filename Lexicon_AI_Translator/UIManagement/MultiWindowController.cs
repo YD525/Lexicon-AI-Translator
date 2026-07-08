@@ -140,10 +140,10 @@ namespace LexTranslator.UIManagement
                                             RecordItem Content = null;
 
                                             if (GetBookInFo.TittleSubOffset != -1)
-                                                Tittle = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+                                                Tittle = Mod.EspReader.GetRecordItemByOffsets(false,GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
 
                                             if (GetBookInFo.ContentSubOffset != -1)
-                                                Content = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+                                                Content = Mod.EspReader.GetRecordItemByOffsets(false,GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
 
                                             List<RecordItem> BookLinks = new List<RecordItem>();
                                             if (Tittle != null) BookLinks.Add(Tittle);

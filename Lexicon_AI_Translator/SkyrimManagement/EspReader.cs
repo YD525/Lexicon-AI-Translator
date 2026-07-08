@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Media.Media3D;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;
@@ -1028,9 +1029,10 @@ namespace LexTranslator.SkyrimManagement
             };
         }
 
-        private long MakeOffsetKey(int ParentIndex, int SubIndex)
+        private long MakeOffsetKey(bool IsCell,int ParentIndex, int SubIndex)
         {
-            return ((long)ParentIndex << 32) | (uint)SubIndex;
+            long CellFlag = IsCell ? 1L : 0L;
+            return (CellFlag << 62) | ((long)ParentIndex << 32) | (uint)SubIndex;
         }
 
         private bool InitOnce = false;
@@ -1112,7 +1114,14 @@ namespace LexTranslator.SkyrimManagement
                             {
                                 Records.Add(NRecordItem.UniqueKey, NRecordItem);
 
-                                long OffsetKey = MakeOffsetKey(NRecordItem.ParentIndex, NRecordItem.SubIndex);
+                                bool IsCell = false;
+
+                                if (NRecordItem.ParentSig == "CELL")
+                                {
+                                    IsCell = true;
+                                }
+
+                                long OffsetKey = MakeOffsetKey(IsCell, NRecordItem.ParentIndex, NRecordItem.SubIndex);
 
                                 OffsetRecordMap[OffsetKey] = NRecordItem;
                             }
@@ -1140,9 +1149,9 @@ namespace LexTranslator.SkyrimManagement
                           .ToDictionary(Item => Item.Key, Item => Item.Value);
         }
 
-        public RecordItem GetRecordItemByOffsets(int ParentIndex, int SubIndex)
+        public RecordItem GetRecordItemByOffsets(bool IsCell, int ParentIndex, int SubIndex)
         {
-            long OffsetKey = MakeOffsetKey(ParentIndex, SubIndex);
+            long OffsetKey = MakeOffsetKey(IsCell, ParentIndex, SubIndex);
 
             try
             {
