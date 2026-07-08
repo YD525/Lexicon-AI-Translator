@@ -806,10 +806,10 @@ public class YDListView
             .ToList();
     }
 
-    public void Goto(string Key)
+    public bool Goto(string Key)
     {
         if (string.IsNullOrEmpty(Key))
-            return;
+            return false;
 
         int TargetIndex = -1;
         for (int i = 0; i < RealLines.Count; i++)
@@ -822,7 +822,7 @@ public class YDListView
         }
 
         if (TargetIndex == -1)
-            return;
+            return false;
 
         double Offset = 0;
         for (int i = 0; i < TargetIndex; i++)
@@ -847,6 +847,8 @@ public class YDListView
 
             SelectLineID = TargetIndex;
         }));
+
+        return true;
     }
 }
 

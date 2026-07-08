@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using LexTranslator.SkyrimManagement;
 
 namespace LexTranslator.UIManagement
@@ -53,163 +55,150 @@ namespace LexTranslator.UIManagement
             }
         }
 
+        public static object AttachLock = new object();
 
+        private static CancellationTokenSource _DebounceTokenSource;
         public static void AttachMod(string SelectKey, LexGui CurrentWin, ModFile Mod)
         {
+            CancellationToken Token;
+            lock (AttachLock)
+            {
+                _DebounceTokenSource?.Cancel();
+                _DebounceTokenSource = new CancellationTokenSource();
+                Token = _DebounceTokenSource.Token;
+            }
+
             CurrentWin.UI(() =>
             {
-                switch (Mod.Type)
-                {
-                        case GameFileType.ESP:
-                        {
-                            CloseCodeWin();
-                            OpenTrackingWin(Mod, CurrentWin);
-
-                            try
-                            {
-                                RecordItem GetRecord = null;
-
-                                if (Mod.EspReader.Records.ContainsKey(SelectKey))
-                                {
-                                    GetRecord = Mod.EspReader.Records[SelectKey];
-                                }
-
-                                if (GetRecord != null)
-                                {
-                                    //Find NPC
-                                    if (Mod.EspReader.GameCharacters.ContainsKey(SelectKey))
-                                    {
-                                        if (Mod.EspReader.GameCharacters[SelectKey].Count > 0)
-                                            TrackingWin.LoadNpcRecord(GetRecord,
-                                                Mod.EspReader.GameCharacters[SelectKey][0].Name,
-                                                   Mod.EspReader.GameCharacters[SelectKey][0].Gender.ToString());
-                                    }
-                                    else
-                                    {
-                                        TrackingWin.NpcListPanel.Children.Clear();
-                                    }
-
-                                    if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
-                                    {
-                                        var DialogueLink = Mod.EspReader.GetDialContext(GetRecord);
-
-                                        List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
-
-                                        if (DialogueLink != null)
-                                        {
-                                            //Recreate the array and put the title first.
-
-                                            if (DialogueLink.Head != null)
-                                            {
-                                                TempLinks.Add(DialogueLink.Head);
-                                            }
-
-                                            if (DialogueLink.Links != null)
-                                            {
-                                                TempLinks.AddRange(DialogueLink.Links);
-                                            }
-                                        }
-
-                                        if (TempLinks.Count > 0)
-                                        {
-                                            TrackingWin.LoadDialogueRecords(Mod, TempLinks);
-                                        }
-                                        else
-                                        {
-                                            TrackingWin.DialogueListPanel.Children.Clear();
-                                        }
-                                    }
-                                    else
-                                    if (GetRecord.ParentSig == "BOOK")
-                                    {
-                                        var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
-
-                                        RecordItem Tittle = null;
-                                        RecordItem Content = null;
-
-
-                                        if (GetBookInFo.TittleSubOffset != -1)
-                                        {
-                                            Tittle = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset,GetBookInFo.TittleSubOffset);
-                                        }
-
-                                        if (GetBookInFo.ContentSubOffset != -1)
-                                        {
-                                            Content = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
-                                        }
-
-                                        List<RecordItem> BookLinks = new List<RecordItem>();
-                                        if (Tittle != null)
-                                        {
-                                            BookLinks.Add(Tittle);
-                                        }
-                                        if (Content != null)
-                                        {
-                                            BookLinks.Add(Content);
-                                        }
-
-
-                                        if (BookLinks.Count > 0)
-                                        {
-                                            TrackingWin.LoadBookRecords(Mod,BookLinks);
-                                        }
-                                        else
-                                        {
-                                            TrackingWin.DialogueListPanel.Children.Clear();
-                                        }
-                                    }
-
-                                    //MatchRelated
-                                    List<RecordItem> Records = new List<RecordItem>();
-
-                                    Records.Add(GetRecord);
-
-                                    string Keyword = GetRecord.String;
-
-                                    for (int i = 0; i < Mod.ListView.RealLines.Count; i++)
-                                    {
-                                        var Line = Mod.ListView.RealLines[i];
-
-                                        if (Line.Key == SelectKey)
-                                            continue;
-
-                                        if (Line.RealSource.Length < Keyword.Length &&
-                                            Line.SourceText.Length < Keyword.Length)
-                                            continue;
-
-                                        if (Line.RealSource.Contains(Keyword) ||
-                                            Line.SourceText.Contains(Keyword))
-                                        {
-                                            Records.Add(Mod.EspReader.Records[Line.Key]);
-                                        }
-                                    }
-
-                                    if (Records.Count > 1)
-                                    {
-                                        TrackingWin.LoadRelatedTextRecords(Records);
-                                    }
-                                    else
-                                    {
-                                        TrackingWin.RelatedTextListPanel.Children.Clear();
-                                    }
-
-
-                                    TrackingWin.UpdateAllSectionHeights();
-
-                                    CurrentWin.Focus();
-                                }
-                            }
-                            catch { }
-                        }
-                        break;
-                    case GameFileType.PEX:
-                        {
-                            CloseTrackingWin();
-                            OpenCodeWin(Mod, CurrentWin);
-                        }
-                        break;
-                }
+                TrackingWin?.NpcListPanel.Children.Clear();
+                TrackingWin?.RelatedTextListPanel.Children.Clear();
+                TrackingWin?.DialogueListPanel.Children.Clear();
             });
+
+            Task.Delay(200, Token).ContinueWith(T =>
+            {
+                if (T.IsCanceled) return;
+
+                CurrentWin.UI(() =>
+                {
+                    if (Token.IsCancellationRequested) return;
+
+                    switch (Mod.Type)
+                    {
+                        case GameFileType.ESP:
+                            {
+                                CloseCodeWin();
+                                OpenTrackingWin(Mod, CurrentWin);
+
+                                try
+                                {
+                                    RecordItem GetRecord = null;
+
+                                    if (Mod.EspReader.Records.ContainsKey(SelectKey))
+                                    {
+                                        GetRecord = Mod.EspReader.Records[SelectKey];
+                                    }
+
+                                    if (GetRecord != null)
+                                    {
+                                        if (Mod.EspReader.GameCharacters.ContainsKey(SelectKey))
+                                        {
+                                            if (Mod.EspReader.GameCharacters[SelectKey].Count > 0)
+                                                TrackingWin.LoadNpcRecord(GetRecord,
+                                                    Mod.EspReader.GameCharacters[SelectKey][0].Name,
+                                                    Mod.EspReader.GameCharacters[SelectKey][0].Gender.ToString());
+                                        }
+                                        else
+                                        {
+                                            TrackingWin.NpcListPanel.Children.Clear();
+                                        }
+
+                                        if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
+                                        {
+                                            var DialogueLink = Mod.EspReader.GetDialContext(GetRecord);
+                                            List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
+
+                                            if (DialogueLink != null)
+                                            {
+                                                if (DialogueLink.Head != null) TempLinks.Add(DialogueLink.Head);
+                                                if (DialogueLink.Links != null) TempLinks.AddRange(DialogueLink.Links);
+                                            }
+
+                                            if (TempLinks.Count > 0)
+                                            {
+                                                TrackingWin.LoadDialogueRecords(Mod, TempLinks);
+                                            }
+                                            else
+                                            {
+                                                TrackingWin.DialogueListPanel.Children.Clear();
+                                            }
+                                        }
+                                        else if (GetRecord.ParentSig == "BOOK")
+                                        {
+                                            var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
+                                            RecordItem Tittle = null;
+                                            RecordItem Content = null;
+
+                                            if (GetBookInFo.TittleSubOffset != -1)
+                                                Tittle = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+
+                                            if (GetBookInFo.ContentSubOffset != -1)
+                                                Content = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+
+                                            List<RecordItem> BookLinks = new List<RecordItem>();
+                                            if (Tittle != null) BookLinks.Add(Tittle);
+                                            if (Content != null) BookLinks.Add(Content);
+
+                                            if (BookLinks.Count > 0)
+                                            {
+                                                TrackingWin.LoadBookRecords(Mod, BookLinks);
+                                            }
+                                            else
+                                            {
+                                                TrackingWin.DialogueListPanel.Children.Clear();
+                                            }
+                                        }
+
+                                        List<RecordItem> Records = new List<RecordItem> { GetRecord };
+                                        string Keyword = GetRecord.String;
+
+                                        for (int i = 0; i < Mod.ListView.RealLines.Count; i++)
+                                        {
+                                            var Line = Mod.ListView.RealLines[i];
+                                            if (Line.Key == SelectKey) continue;
+                                            if (Line.RealSource.Length < Keyword.Length && Line.SourceText.Length < Keyword.Length) continue;
+
+                                            if (Line.RealSource.Contains(Keyword) || Line.SourceText.Contains(Keyword))
+                                            {
+                                                Records.Add(Mod.EspReader.Records[Line.Key]);
+                                            }
+                                        }
+
+                                        if (Records.Count > 1)
+                                        {
+                                            TrackingWin.LoadRelatedTextRecords(Records);
+                                        }
+                                        else
+                                        {
+                                            TrackingWin.RelatedTextListPanel.Children.Clear();
+                                        }
+
+                                        TrackingWin.UpdateAllSectionHeights();
+                                        CurrentWin.Focus();
+                                    }
+                                }
+                                catch { }
+                                break;
+                            }
+                        case GameFileType.PEX:
+                            {
+                                CloseTrackingWin();
+                                OpenCodeWin(Mod, CurrentWin);
+                                break;
+                            }
+                    }
+                });
+            }, TaskScheduler.Default);
         }
 
         public static void CloseMod(ModFile Mod)

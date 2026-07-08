@@ -226,6 +226,8 @@ namespace LexTranslator
         }
         public void LoadBookRecords(ModFile ModRef, List<RecordItem> Records)
         {
+            AutoLabName.Content = "Related Book Entries";
+
             DialogueListPanel.Children.Clear();
 
             int Count = Records != null ? Records.Count : 0;
@@ -241,6 +243,8 @@ namespace LexTranslator
         }
         public void LoadDialogueRecords(ModFile ModRef, List<ManagedDialNode> Records)
         {
+            AutoLabName.Content = "Related Dialogue Scenes";
+
             DialogueListPanel.Children.Clear();
 
             int Count = Records != null ? Records.Count : 0;
@@ -396,7 +400,9 @@ namespace LexTranslator
                 CardBorder.CornerRadius = new CornerRadius(6);
                 CardBorder.Margin = new Thickness(0, 0, 0, 6);
                 CardBorder.Padding = new Thickness(8, 6, 8, 6);
-                CardBorder.Tag = new TrackingItem(ModRef,GetRecord.UniqueKey);         
+                CardBorder.Tag = new TrackingItem(ModRef,GetRecord.UniqueKey);
+                CardBorder.PreviewMouseDown += AnyCard_PreviewMouseDown;
+                CardBorder.Cursor = Cursors.Hand;
 
                 StackPanel ContentPanel = new StackPanel();
                 ContentPanel.Orientation = Orientation.Vertical;
@@ -409,7 +415,7 @@ namespace LexTranslator
                 TextLine.Foreground = Brushes.White;
                 TextLine.FontSize = 13;
                 TextLine.TextWrapping = TextWrapping.Wrap;
-
+                TextLine.Cursor = Cursors.Hand;
 
                 if (GetTranslated.Length == 0)
                 {
@@ -430,17 +436,12 @@ namespace LexTranslator
                 if (Item.EmotionType != 999)
                 {
                     EmotionText.Text = EmotionTypeHelper.FromRaw(Item.EmotionType).ToString();
-                    CardBorder.Cursor = Cursors.Hand;
-                    TextLine.Cursor = Cursors.Hand;
-
-                    CardBorder.PreviewMouseDown += AnyCard_PreviewMouseDown;
                 }
                 else
                 {
                     //Double checking prevents display errors; I'm unsure if the emoji value in ESP will be exactly 999.
                     if (Item.SubOffset == 0)
                     {
-                        TextLine.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
                         EmotionText.Text = "Tittle";
                     }
                 }
@@ -471,7 +472,12 @@ namespace LexTranslator
             if (sender is Border)
             {
                 TrackingItem GetTrack = (TrackingItem)((sender as Border).Tag);
-                GetTrack.ModRef.ListView.Goto(GetTrack.Key);
+                if (!GetTrack.ModRef.ListView.Goto(GetTrack.Key))
+                {
+                    GetTrack.ModRef?.Win.SelectSig("ALL",new Action(() => {
+                        GetTrack.ModRef.ListView.Goto(GetTrack.Key);
+                    }));
+                }
             }
         }
 

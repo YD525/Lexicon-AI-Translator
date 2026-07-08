@@ -535,6 +535,9 @@ namespace LexTranslator.UIManagement
         public string LastSetSig = "";
         public Thread DataLoadingTrd = null;
 
+
+        public event Action OnDataReloadCompleted;
+
         public bool DataLoading = false;
 
         public string CurrentSig = "";
@@ -686,6 +689,11 @@ namespace LexTranslator.UIManagement
                 }));
 
                 Mod.PreparingTranslationUnits();
+
+                this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
+                {
+                    OnDataReloadCompleted?.Invoke();
+                }));
             }
         }
 
@@ -1683,14 +1691,45 @@ namespace LexTranslator.UIManagement
         }
 
 
+        private bool _IsUpdating = false;
         private void TransTargetType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (_IsUpdating) return;
+
             string GetSelectValue = P_Convert.ObjToStr((sender as ComboBox).SelectedValue);
+
             if (GetSelectValue.Trim().Length > 0)
             {
-                CurrentSig = GetSelectValue;
-                ReloadData();
+               SelectSig(GetSelectValue);
             }
+        }
+
+        public void SelectSig(string Sig,Action Callback = null)
+        {
+            this.Dispatcher.Invoke(new Action(() => 
+            {
+                _IsUpdating = true;
+
+                TypeSelector.SelectedValue = Sig;
+
+                this.CurrentSig = Sig;
+
+                if (Callback != null)
+                {
+                    OnDataReloadCompleted = new Action(() =>
+                    {
+                        this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, Callback);
+                    });
+                }
+                else
+                {
+                    OnDataReloadCompleted = null;
+                }
+
+                ReloadData();
+
+                _IsUpdating = false;
+            }));
         }
 
         public void EnableNormalModel()
