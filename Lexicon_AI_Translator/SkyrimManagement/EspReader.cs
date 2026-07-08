@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Media.Media3D;
 using LexTranslator.TranslateManage;
 using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;

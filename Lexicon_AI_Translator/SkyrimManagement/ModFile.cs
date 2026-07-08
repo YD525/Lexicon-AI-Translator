@@ -446,7 +446,11 @@ namespace LexTranslator.SkyrimManagement
                     List<BaseUnit> BaseUnits = GetCanTransUnits();
                     InitTrd = new Thread(() =>
                     {
-                        P_Translator.Init(BaseUnits, AggregationMode.Aggregation, GetTranslateCount());
+                        P_Translator.Init(BaseUnits,GetTranslateCount(),
+                        new P_BucketContainer.CheckLinks((TempUnits,Unit) =>
+                        {
+                            return MultiWindowController.CheckLinks(this,TempUnits,Unit);
+                        }));
                         InitTrd = null;
                     });
 
@@ -474,12 +478,12 @@ namespace LexTranslator.SkyrimManagement
 
                         Thread.Sleep(1000);
 
-                        if (GetBatchCore.Content != null)
+                        if (GetBatchCore.Container != null)
                             ListView.Parent.Dispatcher.Invoke(new Action(() =>
                             {
-                                for (int i = 0; i < GetBatchCore.Content.UnionData.Leaders.Count; i++)
+                                for (int i = 0; i < GetBatchCore.Container.Heads.Count; i++)
                                 {
-                                    string GetKey = GetBatchCore.Content.UnionData.Leaders.ElementAt(i).Key;
+                                    string GetKey = GetBatchCore.Container.Heads.ElementAt(i).Key;
 
                                     for (int ir = 0; ir < ListView.VisibleRows.Count; ir++)
                                     {
@@ -804,7 +808,12 @@ namespace LexTranslator.SkyrimManagement
                             ModifyCount = GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount;
                             GetBatchCore.Close();
 
-                            GetBatchCore.Init(BaseUnits, AggregationMode.Aggregation,GetTranslateCount());
+                            GetBatchCore.Init(BaseUnits,GetTranslateCount(),
+                                new P_BucketContainer.CheckLinks((TempUnits, Unit) =>
+                                {
+                                    return MultiWindowController.CheckLinks(this, TempUnits, Unit);
+                            }));
+
                             GetBatchCore.Start();
                         }
 

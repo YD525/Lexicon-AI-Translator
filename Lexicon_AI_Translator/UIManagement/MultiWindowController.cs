@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LexTranslator.SkyrimManagement;
+using PhoenixEngine.Unit;
 
 namespace LexTranslator.UIManagement
 {
@@ -53,6 +55,90 @@ namespace LexTranslator.UIManagement
                 TrackingWin.ModRef = Mod;
                 TrackingWin.Owner = Win;
             }
+        }
+
+        //If null is returned, grouping is performed based on default similarity.
+        public static List<BaseUnit> CheckLinks(ModFile Mod,List<BaseUnit> TempUnit,BaseUnit Unit)
+        {
+            var Key = Unit.Key;
+
+            if (Mod.Type != GameFileType.ESP) return null;
+
+            RecordItem GetRecord = null;
+
+            if (Mod.EspReader.Records.ContainsKey(Key))
+            {
+                GetRecord = Mod.EspReader.Records[Key];
+            }
+
+            List<string> FindKeys = new List<string>();
+
+            if (GetRecord != null)
+            {
+                List<BaseUnit> Links = new List<BaseUnit>();
+
+                if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
+                {
+                    var DialogueLink = Mod.EspReader.GetDialContext(GetRecord);
+                    List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
+
+                    if (DialogueLink != null)
+                    {
+                        if (DialogueLink.Head != null) TempLinks.Add(DialogueLink.Head);
+                        if (DialogueLink.Links != null) TempLinks.AddRange(DialogueLink.Links);
+                    }
+
+                    if (TempLinks.Count > 0)
+                    {
+                        foreach (var GetLink in TempLinks)
+                        {
+                            var GetLinkRecord = Mod.EspReader.GetRecordItemByOffsets(false,GetLink.RecordOffset,GetLink.SubOffset);
+                            if(GetLinkRecord!=null)
+                            FindKeys.Add(GetLinkRecord.UniqueKey);
+                        }
+                    }
+                }
+                else
+                if (GetRecord.ParentSig == "BOOK")
+                {
+                    var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
+                    RecordItem Tittle = null;
+                    RecordItem Content = null;
+
+                    if (GetBookInFo.TittleSubOffset != -1)
+                        Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+
+                    if (GetBookInFo.ContentSubOffset != -1)
+                        Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+
+                    List<RecordItem> BookLinks = new List<RecordItem>();
+
+                    if (Tittle != null) BookLinks.Add(Tittle);
+                    if (Content != null) BookLinks.Add(Content);
+
+                    foreach (var GetLink in BookLinks)
+                    {
+                        FindKeys.Add(GetLink.UniqueKey);
+                    }
+                }
+            }
+
+
+            var UnitDict = TempUnit.ToDictionary(U => U.Key);
+            List<BaseUnit> Units = new List<BaseUnit>();
+
+            foreach (var GetKey in FindKeys)
+            {
+                if (UnitDict.TryGetValue(GetKey, out var FoundUnit))
+                {
+                    Units.Add(FoundUnit);
+                }
+            }
+
+            if (Units.Count > 0)
+                return Units;
+
+            return null;
         }
 
         public static object AttachLock = new object();

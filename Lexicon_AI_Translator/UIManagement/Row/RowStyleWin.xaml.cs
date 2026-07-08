@@ -285,9 +285,9 @@ namespace LexTranslator.UIManagement
                 var BatchCore = Mod.P_Translator.GetBatchCore();
                 if (BatchCore != null)
                 {
-                    if (BatchCore.Content != null)
+                    if (BatchCore.Container != null)
                     {
-                        if (BatchCore.Content.UnionData.Leaders.ContainsKey(Item.Key))
+                        if (BatchCore.Container.Heads.ContainsKey(Item.Key))
                         {
                             Grid GetLeader = (Grid)(GetTypePanel).Children[1];
                             GetLeader.Visibility = Visibility.Visible;
