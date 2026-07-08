@@ -89,7 +89,7 @@ namespace LexTranslator.UIManagement
                                         TrackingWin.NpcListPanel.Children.Clear();
                                     }
 
-                                    var DialogueLink = Mod.EspReader.GetDialContext(0, Mod.EspReader.Records[SelectKey].ParentIndex, Mod.EspReader.Records[SelectKey].SubIndex);
+                                    var DialogueLink = Mod.EspReader.GetDialContext(Mod.EspReader.GetRecordItemByOffsets(Mod.EspReader.Records[SelectKey].ParentIndex, Mod.EspReader.Records[SelectKey].SubIndex));
 
                                     if (DialogueLink != null)
                                     {

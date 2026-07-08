@@ -256,7 +256,10 @@ namespace LexTranslator.SkyrimManagement
         }
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
-        public static extern C_LinkDIAL C_GetDialContext(IntPtr handle, int IsCell, int RecordOffset, int SubOffset);
+        public static extern C_LinkDIAL C_GetDialContext(IntPtr handle, int RecordOffset, int SubOffset);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        public static extern C_LinkDIAL C_GetDialContextByDial(IntPtr handle,int RecordOffset);
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
         public static extern void C_FreeDialContext(ref C_LinkDIAL context);
@@ -877,12 +880,48 @@ namespace LexTranslator.SkyrimManagement
         /// <param name="RecordOffset">Index of the record in the records array</param>
         /// <param name="SubOffset">Index of the sub-record (NAM1) within the record</param>
         /// <returns>ManagedDialContext or null if not found</returns>
-        public ManagedDialContext GetDialContext(int IsCell, int RecordOffset, int SubOffset)
+        private ManagedDialContext GetDialContext(int RecordOffset, int SubOffset)
         {
             EnsureNotDisposed();
             if (_Instance == IntPtr.Zero) return null;
 
-            EspNative.C_LinkDIAL rawContext = EspNative.C_GetDialContext(_Instance, IsCell, RecordOffset, SubOffset);
+            EspNative.C_LinkDIAL rawContext = EspNative.C_GetDialContext(_Instance,RecordOffset, SubOffset);
+
+            if (rawContext.HasData == 0) return null;
+
+            try
+            {
+                var managedContext = new ManagedDialContext();
+
+                managedContext.Head = ConvertNode(rawContext.Head);
+
+                if (rawContext.LinkCount > 0 && rawContext.Links != IntPtr.Zero)
+                {
+                    int structSize = Marshal.SizeOf(typeof(EspNative.C_DialResponseNode));
+                    for (int i = 0; i < rawContext.LinkCount; i++)
+                    {
+                        IntPtr elementPtr = new IntPtr(rawContext.Links.ToInt64() + (i * structSize));
+
+                        var rawNode = (EspNative.C_DialResponseNode)Marshal.PtrToStructure(elementPtr, typeof(EspNative.C_DialResponseNode));
+
+                        managedContext.Links.Add(ConvertNode(rawNode));
+                    }
+                }
+
+                return managedContext;
+            }
+            finally
+            {
+                EspNative.C_FreeDialContext(ref rawContext);
+            }
+        }
+
+        private ManagedDialContext GetDialContextByDial(int RecordOffset)
+        {
+            EnsureNotDisposed();
+            if (_Instance == IntPtr.Zero) return null;
+
+            EspNative.C_LinkDIAL rawContext = EspNative.C_GetDialContextByDial(_Instance, RecordOffset);
 
             if (rawContext.HasData == 0) return null;
 
@@ -916,20 +955,21 @@ namespace LexTranslator.SkyrimManagement
         /// <summary>
         /// Get dialogue context for a specific RecordItem.
         /// </summary>
-        public ManagedDialContext GetDialContext(RecordItem recordItem)
+        public ManagedDialContext GetDialContext(RecordItem RecordItem)
         {
-            if (recordItem == null) return null;
-            bool IsCell = (recordItem.ParentSig == "CELL");
-            return GetDialContext(IsCell ? 1 : 0, recordItem.ParentIndex, recordItem.SubIndex);
-        }
+            if (RecordItem == null) return null;
 
-        /// <summary>
-        /// Get dialogue context for a specific record and sub-record index.
-        /// </summary>
-        public ManagedDialContext GetDialContext(string ParentSig, int RecordOffset, int SubOffset)
-        {
-            bool IsCell = (ParentSig == "CELL");
-            return GetDialContext(IsCell ? 1 : 0, RecordOffset, SubOffset);
+            if ((RecordItem.ParentSig == "INFO"))
+            {
+                return GetDialContext(RecordItem.ParentIndex, RecordItem.SubIndex);
+            }
+            else
+            if ((RecordItem.ParentSig == "DIAL"))
+            {
+                return GetDialContextByDial(RecordItem.ParentIndex);
+            }
+
+            return null;
         }
 
         private ManagedDialNode ConvertNode(EspNative.C_DialResponseNode rawNode)
@@ -1059,18 +1099,15 @@ namespace LexTranslator.SkyrimManagement
             }
         }
 
-        public RecordItem GetRecordItemByOffsets(int IsCell, int ParentIndex, int SubIndex)
+        public RecordItem GetRecordItemByOffsets(int ParentIndex, int SubIndex)
         {
-            if (IsCell == 0)
-            {
-                long OffsetKey = MakeOffsetKey(ParentIndex, SubIndex);
+            long OffsetKey = MakeOffsetKey(ParentIndex, SubIndex);
 
-                try 
-                {
-                    return OffsetRecordMap[OffsetKey];
-                } 
-                catch { }
+            try
+            {
+                return OffsetRecordMap[OffsetKey];
             }
+            catch { }
 
             return null;
         }

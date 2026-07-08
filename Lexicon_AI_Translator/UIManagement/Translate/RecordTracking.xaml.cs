@@ -371,7 +371,7 @@ namespace LexTranslator
 
         private Border BuildDialogueCard(ModFile ModRef, ManagedDialNode Item)
         {
-            var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(0, Item.RecordOffset, Item.SubOffset);
+            var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(Item.RecordOffset, Item.SubOffset);
             if (GetRecord != null)
             {
                 var GetTranslated = FindTranslated(GetRecord.UniqueKey, GetRecord.ParentSig, GetRecord.String, ModRef);
