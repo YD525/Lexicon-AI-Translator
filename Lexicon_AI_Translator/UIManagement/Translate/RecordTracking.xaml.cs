@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.TextFormatting;
 using LexTranslator.SkyrimManage;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManagement;
@@ -223,7 +224,21 @@ namespace LexTranslator
                 }
             }
         }
+        public void LoadBookRecords(ModFile ModRef, List<RecordItem> Records)
+        {
+            DialogueListPanel.Children.Clear();
 
+            int Count = Records != null ? Records.Count : 0;
+            bool HasData = Count > 0;
+
+            if (HasData)
+            {
+                foreach (var GetRecord in Records)
+                {
+                    DialogueListPanel.Children.Add(BuildRelatedTextCard(GetRecord));
+                }
+            }
+        }
         public void LoadDialogueRecords(ModFile ModRef, List<ManagedDialNode> Records)
         {
             DialogueListPanel.Children.Clear();

@@ -89,22 +89,25 @@ namespace LexTranslator.UIManagement
                                         TrackingWin.NpcListPanel.Children.Clear();
                                     }
 
-                                    var DialogueLink = Mod.EspReader.GetDialContext(Mod.EspReader.GetRecordItemByOffsets(Mod.EspReader.Records[SelectKey].ParentIndex, Mod.EspReader.Records[SelectKey].SubIndex));
-
-                                    if (DialogueLink != null)
+                                    if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
                                     {
+                                        var DialogueLink = Mod.EspReader.GetDialContext(GetRecord);
+
                                         List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
 
-                                        //Recreate the array and put the title first.
-
-                                        if (DialogueLink.Head != null)
+                                        if (DialogueLink != null)
                                         {
-                                            TempLinks.Add(DialogueLink.Head);
-                                        }
+                                            //Recreate the array and put the title first.
 
-                                        if (DialogueLink.Links != null)
-                                        {
-                                            TempLinks.AddRange(DialogueLink.Links);
+                                            if (DialogueLink.Head != null)
+                                            {
+                                                TempLinks.Add(DialogueLink.Head);
+                                            }
+
+                                            if (DialogueLink.Links != null)
+                                            {
+                                                TempLinks.AddRange(DialogueLink.Links);
+                                            }
                                         }
 
                                         if (TempLinks.Count > 0)
@@ -117,8 +120,43 @@ namespace LexTranslator.UIManagement
                                         }
                                     }
                                     else
+                                    if (GetRecord.ParentSig == "BOOK")
                                     {
-                                        TrackingWin.DialogueListPanel.Children.Clear();
+                                        var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
+
+                                        RecordItem Tittle = null;
+                                        RecordItem Content = null;
+
+
+                                        if (GetBookInFo.TittleSubOffset != -1)
+                                        {
+                                            Tittle = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset,GetBookInFo.TittleSubOffset);
+                                        }
+
+                                        if (GetBookInFo.ContentSubOffset != -1)
+                                        {
+                                            Content = Mod.EspReader.GetRecordItemByOffsets(GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+                                        }
+
+                                        List<RecordItem> BookLinks = new List<RecordItem>();
+                                        if (Tittle != null)
+                                        {
+                                            BookLinks.Add(Tittle);
+                                        }
+                                        if (Content != null)
+                                        {
+                                            BookLinks.Add(Content);
+                                        }
+
+
+                                        if (BookLinks.Count > 0)
+                                        {
+                                            TrackingWin.LoadBookRecords(Mod,BookLinks);
+                                        }
+                                        else
+                                        {
+                                            TrackingWin.DialogueListPanel.Children.Clear();
+                                        }
                                     }
 
                                     //MatchRelated

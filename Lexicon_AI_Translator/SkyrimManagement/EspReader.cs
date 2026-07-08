@@ -264,6 +264,12 @@ namespace LexTranslator.SkyrimManagement
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
         public static extern void C_FreeDialContext(ref C_LinkDIAL context);
 
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int C_GetTitleIndexByBookDesc(IntPtr Handle, int RecordOffset, int DescSubOffset);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int C_GetDescIndexByBookTitle(IntPtr Handle, int RecordOffset, int DescSubOffset);
+
         // ---- Helper methods for character records ----
 
         private static string GetCharacterUtf8(IntPtr Instance, int Index, Func<IntPtr, int, byte[], int, int> Getter)
@@ -870,6 +876,45 @@ namespace LexTranslator.SkyrimManagement
             byte[] Buffer = new byte[Len];
             Marshal.Copy(Ptr, Buffer, 0, Len);
             return Encoding.UTF8.GetString(Buffer);
+        }
+
+        public class BookInFoItem
+        {
+            public int RecordOffset = 0;
+
+            public int TittleSubOffset = 0;
+            public int ContentSubOffset = 0;
+
+            public BookInFoItem(int RecordOffset, int TittleSubOffset, int ContentSubOffset)
+            {
+                this.RecordOffset = RecordOffset;
+                this.TittleSubOffset = TittleSubOffset;
+                this.ContentSubOffset = ContentSubOffset;
+            }
+        }
+        public BookInFoItem GetBookInFo(RecordItem Item)
+        {
+            if (Item.ParentSig == "BOOK")
+            {
+                if (Item.ParentSig == "BOOK" && Item.ChildSig == "DESC")//Content
+                {
+                    return new BookInFoItem(
+                        Item.ParentIndex,
+                        EspNative.C_GetTitleIndexByBookDesc(_Instance, Item.ParentIndex, Item.SubIndex),
+                        Item.SubIndex
+                        );
+                }
+                else
+               if (Item.ParentSig == "BOOK" && Item.ChildSig == "FULL")//Tittle
+                {
+                    return new BookInFoItem(
+                       Item.ParentIndex,
+                       Item.SubIndex,
+                       EspNative.C_GetDescIndexByBookTitle(_Instance, Item.ParentIndex, Item.SubIndex)
+                       );
+                }
+            }
+            return null;
         }
 
         // ── Dialogue Context ──────────────────────────────────
