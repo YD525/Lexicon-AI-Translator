@@ -85,14 +85,14 @@ namespace LexTranslator.UIManagement
             switch (Type)
             {
                 case CustomPlatformType.CloudAI:
-                    return Color.FromRgb(11, 116, 209);
+                    return Color.FromRgb(239, 234, 190);
                 case CustomPlatformType.LocalAI:
-                    return Color.FromRgb(5, 190, 218);
+                    return Color.FromRgb(250, 227, 6);
                 case CustomPlatformType.Traditional:
-                    return Color.FromRgb(210, 2, 120);
+                    return Color.FromRgb(255, 255, 255);
             }
 
-            return Color.FromRgb(5, 190, 218);
+            return Color.FromRgb(250, 227, 6);
         }
 
         public void SetNodeEnable(Grid NodeGrid,bool Enable)

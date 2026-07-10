@@ -94,7 +94,7 @@
 
                             <Border Name="NormalModel" Style="{DynamicResource ModelUnSelected}" CornerRadius="5 0 0 5" Grid.Column="0" PreviewMouseDown="NormalModel_PreviewMouseDown" >
                                 <Grid>
-                                    <Label Style="{DynamicResource ModelFont}" Name="UINormal">
+                                    <Label Style="{DynamicResource ModelFont}" Name="UINormal" Foreground="AliceBlue">
                                         Normal
                                     </Label>
                                     <Grid Name="NormalModelBlock" Visibility="Collapsed" Style="{DynamicResource ModelSelectedBlock}">

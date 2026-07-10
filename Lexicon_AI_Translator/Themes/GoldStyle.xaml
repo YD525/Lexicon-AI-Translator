@@ -56,13 +56,13 @@
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="SwitchBackground"
-                                                Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                To="#FF0B74D1"
-                                                Duration="0:0:0.15" />
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#FFFAE306"
+                                            Duration="0:0:0.15" />
                                         <DoubleAnimation Storyboard.TargetName="KnobTranslateTransform"
-                                                 Storyboard.TargetProperty="X"
-                                                 To="16"
-                                                 Duration="0:0:0.15" />
+                                            Storyboard.TargetProperty="X"
+                                            To="16"
+                                            Duration="0:0:0.15" />
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -1119,7 +1119,7 @@
 
     <!--ListView Selected-->
     <Color x:Key="LineANormal">Black</Color>
-    <Color x:Key="LineASelected">#FF0A61AF</Color>
+    <Color x:Key="LineASelected">#FF7A7979</Color>
     <Color x:Key="DefFontColor">White</Color>
 
     <Style x:Key="SplitterStyle" TargetType="{x:Type GridSplitter}">

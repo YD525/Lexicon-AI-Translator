@@ -27,7 +27,6 @@ using System.IO;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
-using System.Windows.Media.Effects;
 
 namespace LexTranslator.UIManagement
 {
@@ -746,58 +745,6 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        private double CalcLeftMenuHeight()
-        {
-            //double AutoHeight = 0;
-            //foreach (FrameworkElement GetRow in Nodes.Children)
-            //{
-            //    AutoHeight += GetRow.ActualHeight + 1;
-            //}
-            //return AutoHeight;
-
-            return 0;
-        }
-
-        //Control the speed to a fixed 2000 px/s
-        private const double ExpandAnimationSpeed = 2000;
-        public void SyncAnimation()
-        {
-            //double AutoHeight = CalcLeftMenuHeight();
-
-            //var ExpandMenu = (Storyboard)FindResource("ExpandMenu");
-            //var ExpandAnimation = (DoubleAnimation)ExpandMenu.Children[0];
-            //ExpandAnimation.To = AutoHeight;
-            //ExpandAnimation.Duration = TimeSpan.FromSeconds(Math.Abs(0 - AutoHeight) / ExpandAnimationSpeed);
-
-            //var CollapseMenu = (Storyboard)FindResource("CollapseMenu");
-            //var CollapseAnimation = (DoubleAnimation)CollapseMenu.Children[0];
-            //CollapseAnimation.From = AutoHeight;
-            //CollapseAnimation.Duration = TimeSpan.FromSeconds(Math.Abs(AutoHeight - 0) / ExpandAnimationSpeed);
-
-            //CollapseAnimation.Completed += (_, __) =>
-            //{
-            //    LeftMenu.Visibility = Visibility.Collapsed;
-            //    LeftMenu.BeginAnimation(HeightProperty, null);
-            //};
-        }
-
-        public bool IsExpanded = false;
-        private void ShowLeftMenu(object sender, MouseButtonEventArgs e)
-        {
-            //if (IsExpanded)
-            //{
-            //    SyncAnimation();
-            //    ShowLeftMenu(false);
-            //    LogView.Visibility = Visibility.Collapsed;
-            //}
-            //else
-            //{
-            //    SyncAnimation();
-            //    ShowLeftMenu(true);
-            //    LogView.Visibility = Visibility.Visible;
-            //}
-        }
-
         private void ChangeTransState(object sender, MouseButtonEventArgs e)
         {
             bool IsKeep = false;
@@ -832,9 +779,11 @@ namespace LexTranslator.UIManagement
                                             MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
                                             CallSuccess = false;
 
-                                            if (!IsExpanded)
+                                            if (!_Parent.IsExpanded)
                                             {
-                                                ShowLeftMenu(TRun, null);
+                                                _Parent.SyncAnimation();
+                                                _Parent.ShowLeftMenu(true);
+                                                _Parent.LogView.Visibility = Visibility.Visible;
                                             }
                                             return;
                                         }
