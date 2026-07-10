@@ -334,6 +334,10 @@
                                     </StackPanel>
                                 </Border>
 
+                                <Label Foreground="#FFB8B4B4" Name="ThreadInFo" VerticalAlignment="Center" Margin="5 0 0 0">
+                                    
+                                </Label>
+
                             </StackPanel>
 
                             <Border Style="{DynamicResource IDEBorder}" Grid.Row="1">

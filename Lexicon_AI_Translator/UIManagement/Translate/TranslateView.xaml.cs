@@ -743,7 +743,7 @@ namespace LexTranslator.UIManagement
                 TStop.Visibility = Visibility.Visible;
                 TCancel.Visibility = Visibility.Visible;
 
-                //ThreadInFo.Visibility = Visibility.Visible;
+                ThreadInFo.Visibility = Visibility.Visible;
             }
             else
             if (Mod.TranslationStatus == StateControl.Stop)
@@ -753,7 +753,7 @@ namespace LexTranslator.UIManagement
                 TStop.Visibility = Visibility.Visible;
                 TCancel.Visibility = Visibility.Visible;
 
-                //ThreadInFo.Visibility = Visibility.Visible;
+                ThreadInFo.Visibility = Visibility.Visible;
             }
             else
             if (Mod.TranslationStatus == StateControl.Cancel || Mod.TranslationStatus == StateControl.Null)
@@ -762,7 +762,7 @@ namespace LexTranslator.UIManagement
                 TStop.Visibility = Visibility.Collapsed;
                 TCancel.Visibility = Visibility.Collapsed;
 
-                //ThreadInFo.Visibility = Visibility.Collapsed;
+                ThreadInFo.Visibility = Visibility.Collapsed;
             }
 
             if (Mod.TranslationStatus == StateControl.Run || Mod.TranslationStatus == StateControl.Stop)
@@ -1579,7 +1579,7 @@ namespace LexTranslator.UIManagement
                                     this.Dispatcher.Invoke(new Action(() =>
                                     {
                                         TranslateOTButtonFont.Content = "Translating..." + "(Click to cancel)";
-                                        //ThreadInFo.Visibility = Visibility.Visible;
+                                        ThreadInFo.Visibility = Visibility.Visible;
                                     }));
 
                                     SetUnit.Translated = string.Empty;
@@ -1600,7 +1600,7 @@ namespace LexTranslator.UIManagement
                                         if (Mod.TranslationStatus == StateControl.Null ||
                                             Mod.TranslationStatus == StateControl.Cancel)
                                         {
-                                            //ThreadInFo.Visibility = Visibility.Collapsed;
+                                            ThreadInFo.Visibility = Visibility.Collapsed;
                                         }
 
                                         ToStr.Text = GetTranslated;
@@ -1617,7 +1617,7 @@ namespace LexTranslator.UIManagement
                                     {
                                         TranslateOTButtonFont.Content = "Translate";
 
-                                        //ThreadInFo.Visibility = Visibility.Collapsed;
+                                        ThreadInFo.Visibility = Visibility.Collapsed;
                                     });
 
                                     SingleTrans = false;
@@ -1641,7 +1641,7 @@ namespace LexTranslator.UIManagement
                         TranslateOTButtonFont.Content = "Translate";
 
                         SingleTrans = false;
-                        //ThreadInFo.Visibility = Visibility.Collapsed;
+                        ThreadInFo.Visibility = Visibility.Collapsed;
                     }
                 }
             }
@@ -2242,24 +2242,24 @@ namespace LexTranslator.UIManagement
 
                                 if (SingleTrans)
                                 {
-                                    //ThreadInFoFont.Content = string.Format("Thread(Current:{0},Max:{1})", Current + 1, Phoenix.Config.MaxThreadCount + 1);
+                                    ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", Current + 1, Phoenix.Config.MaxThreadCount + 1);
                                 }
                                 else
                                 {
-                                    //ThreadInFoFont.Content = string.Format("Thread(Current:{0},Max:{1})", Current, Phoenix.Config.MaxThreadCount);
+                                    ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", Current, Phoenix.Config.MaxThreadCount);
                                 }
                             }
                             else
                             if (BatchCore.IsWorking && BatchCore.IsStopped)
                             {
-                                //ThreadInFoFont.Content = string.Format("Thread(Current:0,Max:{0})", Phoenix.Config.MaxThreadCount);
+                                ThreadInFo.Content = string.Format("Thread(Current:0,Max:{0})", Phoenix.Config.MaxThreadCount);
                             }
                         }
                         else
                         {
                             if (SingleTrans)
                             {
-                                //ThreadInFoFont.Content = string.Format("Thread(Current:{0},Max:{1})", 1, Phoenix.Config.MaxThreadCount + 1);
+                                ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", 1, Phoenix.Config.MaxThreadCount + 1);
                             }
                         }
 
