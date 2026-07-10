@@ -96,13 +96,14 @@ namespace LexTranslator.UIManagement
                 this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
                 this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
 
+                this.ReloadStringsFile();
+
                 Mod.Load();
 
                 CompletionManager = new WordCompletionManager(ToStr);
 
                 Completer = new Completer(this);
 
-                this.ReloadStringsFile();
                 this.Completer?.CheckLang(this.Mod.P_Translator.To);
 
                 SyncConfig();
