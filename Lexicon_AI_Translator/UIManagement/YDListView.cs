@@ -538,7 +538,7 @@ public class YDListView
                     Grid Grid = UIHelper.CreateLine(FileRef, Row);
                     Grid.Tag = I;
                     Grid.Width = this.Parent.ActualWidth - 15;
-                    Grid.PreviewMouseDown += MainGrid_PreviewMouseDown;
+                    Grid.PreviewMouseLeftButtonDown += MainGrid_PreviewMouseLeftButtonDown;
                     Canvas.SetTop(Grid, CurrentTop);
                     Canvas.SetLeft(Grid, 0);
                     MainCanvas.Children.Add(Grid);
@@ -625,7 +625,7 @@ public class YDListView
                 deletedTop = Canvas.GetTop(deletedElement);
 
                 // Unsubscribe Events And Clear Child Elements
-                try { deletedElement.PreviewMouseDown -= MainGrid_PreviewMouseDown; } catch { }
+                try { deletedElement.PreviewMouseDown -= MainGrid_PreviewMouseLeftButtonDown; } catch { }
                 if (deletedElement is Panel p) p.Children.Clear();
 
                 // Remove The Element From Canvas
@@ -673,7 +673,7 @@ public class YDListView
         }
     }
 
-    private void MainGrid_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void MainGrid_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         SetSelectLine((Grid)sender, true);
     }
