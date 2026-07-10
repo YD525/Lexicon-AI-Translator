@@ -27,7 +27,6 @@ using System.IO;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
-using System.Threading.Tasks;
 
 namespace LexTranslator.UIManagement
 {
@@ -51,16 +50,17 @@ namespace LexTranslator.UIManagement
             InitializeComponent();
         }
 
-        public LexGui Parent = null;
+        public LexGui _Parent = null;
         public void SetFile(LexGui Parent,string Path)
         {
             if (Mod == null)
             {
-                this.Parent = Parent;
+                this._Parent = Parent;
 
                 this.Path = Path;
 
                 Mod = new ModFile(Path);
+
                 TransListView = new YDListView(Mod, TransView);
                 TransListView.Clear();
 
@@ -71,7 +71,7 @@ namespace LexTranslator.UIManagement
                     {
                         SetSelectFromAndToText(Key);
                         //Auto Show View
-                        MultiWindowController.AttachMod(Key, Parent, Mod);
+                        MultiWindowController.AttachMod(Key, _Parent, Mod);
                     }));
                 });
 
@@ -116,6 +116,9 @@ namespace LexTranslator.UIManagement
                 });
 
                 SyncTrd.Start();
+
+                this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
+                this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
             }
         }
 
@@ -730,13 +733,13 @@ namespace LexTranslator.UIManagement
 
             if (Mod.TranslationStatus == StateControl.Run || Mod.TranslationStatus == StateControl.Stop)
             {
-                this.Parent.TranslateConfigView.SFrom.IsEnabled = false;
-                this.Parent.TranslateConfigView.STo.IsEnabled = false;
+                this._Parent.TranslateConfigView.SFrom.IsEnabled = false;
+                this._Parent.TranslateConfigView.STo.IsEnabled = false;
             }
             else
             {
-                this.Parent.TranslateConfigView.SFrom.IsEnabled = true;
-                this.Parent.TranslateConfigView.STo.IsEnabled = true;
+                this._Parent.TranslateConfigView.SFrom.IsEnabled = true;
+                this._Parent.TranslateConfigView.STo.IsEnabled = true;
             }
         }
 
@@ -814,7 +817,7 @@ namespace LexTranslator.UIManagement
                                     {
                                         if (Mod.P_Translator.From == Mod.P_Translator.To)
                                         {
-                                            MessageBoxExtend.Show(this.Parent, "The source language and target language cannot be the same!");
+                                            MessageBoxExtend.Show(this._Parent, "The source language and target language cannot be the same!");
                                             CallSuccess = false;
 
                                             ShowLocalEngineSettingView();
@@ -823,7 +826,7 @@ namespace LexTranslator.UIManagement
 
                                         if (!Phoenix.CheckAvailableNodes())
                                         {
-                                            MessageBoxExtend.Show(this.Parent, "Please enable at least one translation platform node.");
+                                            MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
                                             CallSuccess = false;
 
                                             if (!IsExpanded)
@@ -888,7 +891,7 @@ namespace LexTranslator.UIManagement
             }
             if (!CallSuccess)
             {
-                MessageBoxExtend.Show(this.Parent, "Batch translation is not possible at the current state.\nPlease wait until the file loading is finished.");
+                MessageBoxExtend.Show(this._Parent, "Batch translation is not possible at the current state.\nPlease wait until the file loading is finished.");
             }
         }
 
@@ -967,7 +970,7 @@ namespace LexTranslator.UIManagement
                 }
                 else
                 {
-                    MessageBoxExtend.Show(this.Parent, "The current file does not support exporting to DSD format.");
+                    MessageBoxExtend.Show(this._Parent, "The current file does not support exporting to DSD format.");
                 }
             }
         }
@@ -1120,7 +1123,7 @@ namespace LexTranslator.UIManagement
 
         private void RefreshDictionary_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (MessageBoxExtend.Show(this.Parent, "Msg", "Are you sure you want to refresh the original text record? Doing so will lose the mod's original text information.", MsgAction.YesNo, MsgType.Info) <= 0)
+            if (MessageBoxExtend.Show(this._Parent, "Msg", "Are you sure you want to refresh the original text record? Doing so will lose the mod's original text information.", MsgAction.YesNo, MsgType.Info) <= 0)
             {
                 return;
             }
@@ -1157,7 +1160,7 @@ namespace LexTranslator.UIManagement
                         TransListView.QuickRefresh(Mod);
                     }
 
-                    MessageBoxExtend.Show(this.Parent, "Original source text has been refreshed from the current file.");
+                    MessageBoxExtend.Show(this._Parent, "Original source text has been refreshed from the current file.");
                 }
 
                 RefreshButton.Dispatcher.Invoke(new Action(() =>
@@ -1269,7 +1272,7 @@ namespace LexTranslator.UIManagement
 
         private void ShowLocalEngineSettingView()
         {
-            this.Parent.TranslateConfigView.Show();
+            this._Parent.TranslateConfigView.Show();
         }
 
         private void SyncColumnWidth(object sender, MouseButtonEventArgs e)
@@ -1333,7 +1336,7 @@ namespace LexTranslator.UIManagement
         {
             if (Mod.State != GameFileState.Load)
             {
-                MessageBoxExtend.Show(this.Parent, "Only currently open files can have their cache cleared.");
+                MessageBoxExtend.Show(this._Parent, "Only currently open files can have their cache cleared.");
                 return;
             }
 
@@ -1348,7 +1351,7 @@ namespace LexTranslator.UIManagement
         private void FindNpc_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             NPCFinder NNPCFinder = new NPCFinder(Mod);
-            NNPCFinder.Owner = Parent;
+            NNPCFinder.Owner = _Parent;
             NNPCFinder.Show();
         }
         public void AutoSizeHistoryList()
@@ -1846,7 +1849,7 @@ namespace LexTranslator.UIManagement
             CheckCanClearCache(out bool Check);
             if (Check)
             {
-                if (MessageBoxExtend.Show(this.Parent, "Waring", "Are you sure you want to clear the database records? Doing so will lose all translated content. (Note: Under no circumstances should you click this button arbitrarily.)", MsgAction.YesNo, MsgType.Waring) <= 0)
+                if (MessageBoxExtend.Show(this._Parent, "Waring", "Are you sure you want to clear the database records? Doing so will lose all translated content. (Note: Under no circumstances should you click this button arbitrarily.)", MsgAction.YesNo, MsgType.Waring) <= 0)
                 {
                     return;
                 }

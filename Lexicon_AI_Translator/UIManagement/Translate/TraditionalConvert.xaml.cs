@@ -22,7 +22,7 @@ namespace LexTranslator
      
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Owner = _Owner.Parent;
+            this.Owner = _Owner._Parent;
         }
 
         public Thread ConvertTrd = null;

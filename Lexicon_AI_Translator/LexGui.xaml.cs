@@ -45,6 +45,8 @@ namespace LexTranslator
         {
             DeFine.Init(this);
 
+            DeFine.GlobalLocalSetting.ReadConfig();
+
             TranslatorInterface.Init();
 
             InfoPage = new PageSwitcher(this, InFoPages);
@@ -88,15 +90,14 @@ namespace LexTranslator
             {
                 TranslateConfigView = new TranslateConfig(this);
                 TranslateConfigView.Hide();
-                TranslateConfigView.Init();
             }
         }
 
         private void ShowTranslateConfigView(object sender, MouseButtonEventArgs e)
         {
             TranslateConfigView.Owner = this;
+            TranslateConfigView.Init();
             TranslateConfigView.Show();
-            TranslateConfigView.SetTypes();
 
             if (ActiveTab != null)
             {

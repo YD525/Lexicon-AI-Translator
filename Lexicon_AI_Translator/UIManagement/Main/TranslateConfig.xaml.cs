@@ -214,6 +214,12 @@ namespace LexTranslator
 
         public void Init()
         {
+            TypeSelector.Items.Clear();
+            From.Items.Clear();
+            SFrom.Items.Clear();
+            To.Items.Clear();
+            STo.Items.Clear();
+
             SetTypes();
 
             foreach (var Get in UILanguageHelper.GetSupportedLanguages())
@@ -233,6 +239,16 @@ namespace LexTranslator
             STo.Items.Remove(Languages.Auto.ToString());
 
             AutoDetect.IsChecked = true;
+
+            if (_Owner != null)
+            {
+                if (_Owner.ActiveTab != null)
+                {
+                    SFrom.SelectedValue = _Owner.ActiveTab.Mod.P_Translator.From.ToString();
+                    STo.SelectedValue = _Owner.ActiveTab.Mod.P_Translator.To.ToString();
+                }
+            }
+           
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -351,9 +367,15 @@ namespace LexTranslator
             {
                 DeFine.WorkWin.ActiveTab.Mod.P_Translator.From = FilterFrom;
             }
-            
-            DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
-            DeFine.GlobalLocalSetting.SaveConfig();
+
+            if (_Owner != null)
+            {
+                if (_Owner.ActiveTab != null)
+                {
+                    DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
+                    DeFine.GlobalLocalSetting.SaveConfig();
+                }
+            }    
 
             _Owner.ActiveTab?.ReloadStringsFile();
             _Owner.ActiveTab?.UPDateUI();
@@ -376,9 +398,15 @@ namespace LexTranslator
             {
                 DeFine.WorkWin.ActiveTab.Mod.P_Translator.To = FilterTo;
             }
-            
-            DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
-            DeFine.GlobalLocalSetting.SaveConfig();
+
+            if (_Owner != null)
+            {
+                if (_Owner.ActiveTab != null)
+                {
+                    DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
+                    DeFine.GlobalLocalSetting.SaveConfig();
+                }
+            }
 
             _Owner.ActiveTab?.ReloadStringsFile();
             _Owner.ActiveTab?.UPDateUI();
