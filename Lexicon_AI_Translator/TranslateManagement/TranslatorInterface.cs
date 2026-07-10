@@ -129,36 +129,56 @@ namespace LexTranslator.TranslateManage
         {
             if (State == UnitTranslationState.Queued)
             {
-                if (DeFine.WorkWin != null)
-                {
-                    for (int i = 0; i < DeFine.WorkWin.TabViews.Children.Count; i++)
+                UnitContext<BaseUnit> Sign = new UnitContext<BaseUnit>();
+                Sign.Data = null;
+
+                DeFine.WorkWin.Dispatcher.Invoke(new Action(() => {
+                    if (DeFine.WorkWin != null)
                     {
-                        if (DeFine.WorkWin.TabViews.Children[i] is TranslateView)
+                        for (int i = 0; i < DeFine.WorkWin.TabViews.Children.Count; i++)
                         {
-                            var Mod = (DeFine.WorkWin.TabViews.Children[i] as TranslateView).Mod;
-
-                            if (Mod.Path.Equals(ID))//The reason for using the file path as the primary key ID is that a user cannot translate two pieces of content with the same path at the same time, and there are also limitations in the outer layer I implemented..
+                            if (DeFine.WorkWin.TabViews.Children[i] is TranslateView)
                             {
-                                //This way, you can determine which Translator the BaseUnit belongs to by its ID, and then retrieve the ListView control itself based on the ModFile ~.
-                                var ListView = Mod.ListView;
+                                var Mod = (DeFine.WorkWin.TabViews.Children[i] as TranslateView).Mod;
 
-                                FakeGrid QueryGrid = ListView.KeyToFakeGrid(Item.Key);
-
-                                if (QueryGrid != null)
+                                if (Mod.Path.Equals(ID))//The reason for using the file path as the primary key ID is that a user cannot translate two pieces of content with the same path at the same time, and there are also limitations in the outer layer I implemented..
                                 {
-                                    if (QueryGrid.TransText.Length == 0)
-                                    {
-                                        bool IsCloud = false;
-                                        QueryGrid.SyncData(Mod, ref IsCloud);
-                                    }
-                                }
+                                    //This way, you can determine which Translator the BaseUnit belongs to by its ID, and then retrieve the ListView control itself based on the ModFile ~.
+                                    var ListView = Mod.ListView;
 
-                                break;
+                                    FakeGrid QueryGrid = ListView.KeyToFakeGrid(Item.Key);
+
+                                    if (QueryGrid != null)
+                                    {
+                                        if (QueryGrid.TransText.Length == 0)
+                                        {
+                                            Sign.ControlSignal.Sign = 1;
+                                            Sign.Data = Item;
+                                        }
+                                        else
+                                        {
+                                            Sign.ControlSignal.Sign = -1;
+                                        }
+                                    }
+
+                                    break;
+                                }
                             }
                         }
                     }
+                }));
+
+                if (Sign.Data != null)
+                {
+                    return Sign;
+                }
+                else
+                {
+                    return null;
                 }
             }
+
+           
 
             return new UnitContext<BaseUnit>();
         }

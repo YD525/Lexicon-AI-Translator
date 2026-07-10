@@ -149,11 +149,7 @@ namespace LexTranslator
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
-        }
-
+      
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (this.ActiveTab != null)
@@ -321,6 +317,12 @@ namespace LexTranslator
                 SizeChangeState = 0;
             }
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            DeFine.CloseAny();
+        }
+
         private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             DeFine.CloseAny();
@@ -1657,5 +1659,9 @@ namespace LexTranslator
 
         #endregion
 
+        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }

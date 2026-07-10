@@ -185,7 +185,7 @@ namespace LexTranslator.SkyrimManage
             foreach (var GetMCMItem in this.MCMItems)
             {
                 string NewStr = GetMCMItem.GetTextIfTrans(TranslatorRef);
-                TranslationPreprocessor.Instance.NormalizePunctuation(ref NewStr);
+                new TranslationPreprocessor().NormalizePunctuation(ref NewStr);
                 RichText += string.Format("${0}\t{1}\n", GetMCMItem.EditorID, NewStr);
             }
             DataHelper.WriteFile(OutPutPath,Encoding.UTF8.GetBytes(RichText));

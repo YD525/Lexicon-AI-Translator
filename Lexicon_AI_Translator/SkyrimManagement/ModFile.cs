@@ -13,7 +13,6 @@ using PhoenixEngine.ADO;
 using PhoenixEngine.Engine;
 using PhoenixEngine.Events;
 using PhoenixEngine.Request;
-using PhoenixEngine.Sequence;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
 using static PexInterface.PexHeuristicAnalysis;
@@ -857,6 +856,13 @@ namespace LexTranslator.SkyrimManagement
                                     P_Translator.SetLink(GetUnit.Key, GetUnit.Translated);
                                     SetTransBarTittle(string.Format("STRINGS({0}/{1})",
                                           GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount, ListView.Rows));
+
+                                    ListView.MainCanvas.Dispatcher.Invoke(new Action(() => 
+                                    {
+                                        bool IsCloud = false;
+                                        ListView.KeyToFakeGrid(GetUnit.Key).SyncData(this,ref IsCloud);
+                                    }));
+                                   
                                 }
                                 else
                                 if (!IsEnd)

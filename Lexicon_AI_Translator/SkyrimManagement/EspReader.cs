@@ -1161,6 +1161,24 @@ namespace LexTranslator.SkyrimManagement
             return null;
         }
 
+        public List<RecordItem> GetRecordsByParentIndex(int ParentIndex)
+        {
+            EnsureNotDisposed();
+            Query();
+
+            var Results = new List<RecordItem>();
+
+            foreach (var Record in Records.Values)
+            {
+                if (Record.ParentIndex == ParentIndex)
+                {
+                    Results.Add(Record);
+                }
+            }
+
+            return Results;
+        }
+
         public StringsFileReader FromStringsFile = new StringsFileReader();
         public StringsFileReader ToStringsFile = new StringsFileReader();
         public void LoadStringsFile()
