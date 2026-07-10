@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Web.UI.WebControls;
 using System.Windows;
 using LexTranslator.SkyrimManage;
 using LexTranslator.TranslateManage;
