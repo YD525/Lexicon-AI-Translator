@@ -1250,6 +1250,7 @@ namespace LexTranslator.UIManagement
 
         private void ShowLocalEngineSettingView()
         {
+            this._Parent.TranslateConfigView.Init();
             this._Parent.TranslateConfigView.Show();
         }
 
