@@ -2,11 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Input;
 using LexTranslator.SkyrimManagement;
 using PhoenixEngine.Unit;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LexTranslator.UIManagement
 {

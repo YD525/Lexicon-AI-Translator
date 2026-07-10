@@ -197,6 +197,8 @@ namespace LexTranslator
         public bool GenCSharp { get; set; } = true;
         public bool UseFullPunctuation { get; set; } = false;
 
+        public bool UseFullPunctuationJa { get; set; } = false;
+
 
         public bool TableAuto { get; set; } = false;
 
@@ -249,6 +251,7 @@ namespace LexTranslator
                             this.GenCSharp = GetSetting.GenCSharp;
 
                             this.UseFullPunctuation = GetSetting.UseFullPunctuation;
+                            this.UseFullPunctuationJa = GetSetting.UseFullPunctuationJa;
 
                             this.TableAuto = GetSetting.TableAuto;
                             this.WordCompletion = GetSetting.WordCompletion;

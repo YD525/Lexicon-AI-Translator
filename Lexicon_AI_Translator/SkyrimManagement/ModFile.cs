@@ -247,13 +247,24 @@ namespace LexTranslator.SkyrimManagement
             {
                 var Link = this.P_Translator.GetLink();
 
+                if (DeFine.GlobalLocalSetting.UseFullPunctuationJa)
+                {
+                    Link.CheckLinks(new Action<string, string, bool>((string Key, string Value, bool Unique) =>
+                    {
+                        if (Value.Length > 0)
+                        {
+                            Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value,true);
+                        }
+                    }));
+                }
+                else
                 if (DeFine.GlobalLocalSetting.UseFullPunctuation)
                 {
                     Link.CheckLinks(new Action<string, string, bool>((string Key, string Value, bool Unique) =>
                     {
                         if (Value.Length > 0)
                         {
-                            Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value);
+                            Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value, false);
                         }
                     }));
                 }

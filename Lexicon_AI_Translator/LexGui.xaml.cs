@@ -24,8 +24,6 @@ using PhoenixEngine.Language;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
-using System.Threading;
-using System.Security.Cryptography.X509Certificates;
 
 namespace LexTranslator
 {
@@ -1203,6 +1201,15 @@ namespace LexTranslator
                 {
                     UseFullPunctuation.IsChecked = false;
                 }
+
+                if (DeFine.GlobalLocalSetting.UseFullPunctuationJa)
+                {
+                    UseFullPunctuationJa.IsChecked = true;
+                }
+                else
+                {
+                    UseFullPunctuationJa.IsChecked = false;
+                }
             }
         }
         public void ShowFrame(string Name)
@@ -1544,6 +1551,18 @@ namespace LexTranslator
             }
         }
 
+        private void UseFullPunctuationJa_Click(object sender, RoutedEventArgs e)
+        {
+            if (UseFullPunctuationJa.IsChecked == true)
+            {
+                DeFine.GlobalLocalSetting.UseFullPunctuationJa = true;
+            }
+            else
+            {
+                DeFine.GlobalLocalSetting.UseFullPunctuationJa = false;
+            }
+        }
+
         private void ReSetFilter(object sender, MouseButtonEventArgs e)
         {
             DeFine.GlobalLocalSetting.CustomFilterStr = string.Empty;
@@ -1612,8 +1631,9 @@ namespace LexTranslator
                 }
             }
         }
+
         #endregion
 
-
+     
     }
 }
