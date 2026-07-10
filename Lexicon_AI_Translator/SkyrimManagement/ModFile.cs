@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Web.UI.WebControls;
 using System.Windows;
 using LexTranslator.SkyrimManage;
 using LexTranslator.TranslateManage;
@@ -689,8 +690,15 @@ namespace LexTranslator.SkyrimManagement
 
                         if (CanSet)
                         {
+                            string Emotion = "";
+
+                            if (this.Type == GameFileType.ESP)
+                            {
+                                Emotion = this.EspReader.QueryEmotion(this.EspReader.Records[Row.Key]);
+                            }
+
                             BaseUnits.Add(new BaseUnit(P_Translator.GetFileUniqueKey(),
-                           Row.Key, Row.Type, Row.SourceText, Row.TransText, Row.Score));
+                            Row.Key, Row.Type, Row.SourceText, Row.TransText, Emotion, Row.Score));
                         }
                     }
                 }
@@ -699,6 +707,7 @@ namespace LexTranslator.SkyrimManagement
             return BaseUnits;
         }
 
+       
         public void MakeReady()
         {
             Phoenix.Config.ProtectedPatterns.Clear();

@@ -525,7 +525,7 @@ namespace LexTranslator
 
                     string GetFromStr = FromStr.Text;
 
-                    BaseUnit NewUnit = new BaseUnit(-525, "YD525Test_"+ AutoID, GetType, GetFromStr, "",100);
+                    BaseUnit NewUnit = new BaseUnit(-525, "YD525Test_"+ AutoID, GetType, GetFromStr, "","",100);
 
                     new Thread(() =>
                     {

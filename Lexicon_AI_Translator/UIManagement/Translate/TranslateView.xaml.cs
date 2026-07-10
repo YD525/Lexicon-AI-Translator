@@ -1562,7 +1562,14 @@ namespace LexTranslator.UIManagement
                                 CloudDBCache.DeleteCache(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, Mod.P_Translator.To);
                             }
 
-                            BaseUnit SetUnit = new BaseUnit(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, 100);
+                            string Emotion = "";
+
+                            if (this.Mod.Type == GameFileType.ESP)
+                            {
+                                Emotion = this.Mod.EspReader.QueryEmotion(this.Mod.EspReader.Records[QueryGrid.Key]);
+                            }
+
+                            BaseUnit SetUnit = new BaseUnit(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, Emotion, 100);
 
                             CanEditTransView(false);
 

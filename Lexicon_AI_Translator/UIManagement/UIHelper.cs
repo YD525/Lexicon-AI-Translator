@@ -178,12 +178,12 @@ namespace LexTranslator.UIManage
                     IsModify = true;
                 }
             }
-            return CreateLine(File,IsModify, Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText, Item.Score);
+            return CreateLine(File,IsModify, Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText,"",Item.Score);
         }
 
-        public static Grid CreateLine(ModFile Mod,bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, double Score)
+        public static Grid CreateLine(ModFile Mod,bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, string Emotion, double Score)
         {
-            Grid MainGrid = DeFine.RowStyleWin.CreateLine(Mod, IsModify,Height, new BaseUnit(Mod.P_Translator.GetFileUniqueKey(), Key, Type, SourceText, TransText, Score));
+            Grid MainGrid = DeFine.RowStyleWin.CreateLine(Mod, IsModify,Height, new BaseUnit(Mod.P_Translator.GetFileUniqueKey(), Key, Type, SourceText, TransText, Emotion, Score));
             return MainGrid;
         }
 

@@ -1017,6 +1017,26 @@ namespace LexTranslator.SkyrimManagement
             return null;
         }
 
+        public string QueryEmotion(RecordItem Item)
+        {
+            if (Item.ParentSig == "INFO" || Item.ParentSig == "DIAL")
+            {
+                var GetInFo = this.GetDialContext(Item);
+                if (GetInFo != null)
+                {
+                    foreach (var Get in GetInFo.Links)
+                    {
+                        if (Get.RecordOffset == Item.ParentIndex && Get.SubOffset == Item.SubIndex)
+                        {
+                            return EmotionTypeHelper.FromRaw(Get.EmotionType).ToString();
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
         private ManagedDialNode ConvertNode(EspNative.C_DialResponseNode rawNode)
         {
             return new ManagedDialNode

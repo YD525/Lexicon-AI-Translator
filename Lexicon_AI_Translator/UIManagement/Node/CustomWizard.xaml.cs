@@ -389,7 +389,7 @@ namespace LexTranslator
                         CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
                         NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config);
 
-                        BaseUnit TestUnit = new BaseUnit(-525,"525","","Test Line","",100);
+                        BaseUnit TestUnit = new BaseUnit(-525,"525","","Test Line","","",100);
                         NCustomLocalAIApi.QuickTrans(
                             new List<ReplaceTag>(),
                             DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
@@ -411,7 +411,7 @@ namespace LexTranslator
                         CustomAIApi NCustomAIApi = new CustomAIApi();
                         NCustomAIApi.Init(TestID, new AITranslationMemory(),Phoenix.Config,ProxyCenter.CurrentProxy);
 
-                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "", 100);
+                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "","", 100);
                         NCustomAIApi.QuickTrans(
                             ApiKey,
                             new List<ReplaceTag>(),
@@ -434,7 +434,7 @@ namespace LexTranslator
                         CustomApi NCustomApi = new CustomApi();
                         NCustomApi.Init(TestID,Phoenix.Config,ProxyCenter.CurrentProxy);
 
-                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "", 100);
+                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "","", 100);
                         NCustomApi.QuickTrans(
                             ApiKey,
                             DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
