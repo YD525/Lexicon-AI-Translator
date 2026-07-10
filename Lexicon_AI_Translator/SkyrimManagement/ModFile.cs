@@ -496,6 +496,8 @@ namespace LexTranslator.SkyrimManagement
                                     }
                                 }
                             }));
+
+                        this.DialNodeCache.Clear();
                     }
 
                     PreparingComplete = true;
@@ -767,6 +769,8 @@ namespace LexTranslator.SkyrimManagement
 
                 if (TranslationStatus == StateControl.Run && !IsKeep)
                 {
+                    CancelTranslateWork();
+
                     Win?.UPDateUI();
 
                     FristInit = false;

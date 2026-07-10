@@ -17,9 +17,9 @@
     </UserControl.Resources>
 
     <Grid>
+        <Grid Name="Mask" Background="Black" Opacity="0.7" Panel.ZIndex="98" Visibility="Collapsed" MouseDown="Mask_MouseDown">
+        </Grid>
         <Grid Name="ClearCacheView" Panel.ZIndex="99" Visibility="Collapsed">
-            <Grid Background="Black" Opacity="0.7" Panel.ZIndex="1">
-            </Grid>
             <Border BorderThickness="1" BorderBrush="Black" Width="200" Height="150" VerticalAlignment="Center" Panel.ZIndex="2">
                 <Grid Style="{DynamicResource ChildFrameStyle}">
                     <Grid.RowDefinitions>

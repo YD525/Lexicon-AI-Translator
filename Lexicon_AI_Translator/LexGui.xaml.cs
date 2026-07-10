@@ -838,9 +838,11 @@ namespace LexTranslator
                 LeftMenu.BeginAnimation(HeightProperty, null);
             };
         }
-
+        public bool LeftMenuIsShow = false;
         public void ShowLeftMenu(bool Show)
         {
+            LeftMenuIsShow = Show;
+
             this.Dispatcher.Invoke(new Action(() =>
             {
                 if (Show)
@@ -869,7 +871,12 @@ namespace LexTranslator
 
         private void Mask_MouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            if (LeftMenuIsShow)
+            {
+                SyncAnimation();
+                ShowLeftMenu(false);
+                LogView.Visibility = Visibility.Collapsed;
+            }
         }
 
 

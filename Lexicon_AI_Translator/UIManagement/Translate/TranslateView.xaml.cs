@@ -27,6 +27,7 @@ using System.IO;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
+using System.Threading.Tasks;
 
 namespace LexTranslator.UIManagement
 {
@@ -1326,6 +1327,8 @@ namespace LexTranslator.UIManagement
                 ShowDataBaseR.Cursor = Cursors.Hand;
             }
         }
+
+        public bool CacheViewIsShow = false;
         private void ManageCache_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (Mod.State != GameFileState.Load)
@@ -1337,6 +1340,8 @@ namespace LexTranslator.UIManagement
             CheckCanClearCache(out bool Check);
 
             ClearCacheView.Visibility = Visibility.Visible;
+            Mask.Visibility = Visibility.Visible;
+            CacheViewIsShow = true;
         }
 
 
@@ -1957,6 +1962,8 @@ namespace LexTranslator.UIManagement
         private void ClearCacheViewClose_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             ClearCacheView.Visibility = Visibility.Collapsed;
+            Mask.Visibility = Visibility.Collapsed;
+            CacheViewIsShow = false;
         }
 
         //public void SaveFile()
@@ -2380,6 +2387,16 @@ namespace LexTranslator.UIManagement
             Mod.CancelTranslateWork();
 
             Mod.P_Translator.GetLink().Clear();
+        }
+
+        private void Mask_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (CacheViewIsShow)
+            {
+                ClearCacheView.Visibility = Visibility.Collapsed;
+                Mask.Visibility = Visibility.Collapsed;
+                CacheViewIsShow = false;
+            }
         }
     }
 }
