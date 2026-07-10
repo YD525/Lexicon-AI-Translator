@@ -2199,10 +2199,22 @@ namespace LexTranslator.UIManagement
             try
             {
                 int ModifyCount = 0;
+
+                bool FromCore = false;
                 var GetBatchCore = Mod?.P_Translator?.GetBatchCore();
                 if (GetBatchCore != null)
                 {
-                    ModifyCount = (GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount);
+                    if (GetBatchCore.Container != null)
+                    {
+                        ModifyCount = (GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount);
+                        FromCore = true;
+                    }
+                    
+                }
+                
+                if(!FromCore)
+                {
+                    ModifyCount = Mod.P_Translator.CalcTranslatedCount(0);
                 }
 
                 this.Dispatcher.Invoke(new Action(() =>
@@ -2269,19 +2281,6 @@ namespace LexTranslator.UIManagement
                         }
                         else
                         {
-                            if (Mod.P_Translator != null)
-                            {
-                                var BatchCore = Mod.P_Translator.GetBatchCore();
-                                if (BatchCore != null)
-                                {
-                                    if (BatchCore.ProcStage < 2)
-                                    {
-                                        return;
-                                    }
-                                }
-
-                            }
-
                             if (Mod.TranslationStatus == StateControl.Cancel || Mod.TranslationStatus == StateControl.Null)
                             {
                                 TransProcess.Content = string.Format("STRINGS({0}/{1})", ModifyCount, GlobalTransCount);
@@ -2295,6 +2294,7 @@ namespace LexTranslator.UIManagement
                         }
 
                         double GetRate = ((double)ModifyCount / (double)GlobalTransCount);
+
                         if (GetRate > 0)
                         {
                             try
