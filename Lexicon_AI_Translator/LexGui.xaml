@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         xmlns:UI="clr-namespace:LexTranslator.UIManagement"
         xmlns:YD="clr-namespace:LexTranslator.YDControls"
-        Title="LexTranslator" Height="800" Width="1000" Loaded="Window_Loaded" Style="{DynamicResource DefWin}" PreviewKeyDown="Window_PreviewKeyDown" WindowStartupLocation="CenterScreen" AllowDrop="True" PreviewDragEnter="ModTransView_DragEnter" PreviewDrop="ModTransView_Drop"  PreviewDragLeave="ModTransView_DragLeave" Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" Activated="Window_Activated">
+        Title="LexTranslator" Height="800" Width="1000" Loaded="Window_Loaded" Style="{DynamicResource DefWin}" PreviewKeyDown="Window_PreviewKeyDown" WindowStartupLocation="CenterScreen" AllowDrop="True"    
+        Closing="Window_Closing" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged" Activated="Window_Activated">
 
     <Window.Resources>
 
@@ -36,8 +37,7 @@
         </Storyboard>
 
     </Window.Resources>
-    <Border Background="Transparent" CornerRadius="9" Margin="3">
-        
+    <Border Background="Transparent" CornerRadius="9">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
@@ -550,14 +550,9 @@ Chinese character processed by —
                                 </Border>
 
                             </StackPanel>
-
-
-
-
-
                         </Grid>
 
-                        <Grid Visibility="Hidden" Tag="Chart" >
+                        <Grid Visibility="Hidden" Tag="Chart">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="5"/>
@@ -578,7 +573,9 @@ Chinese character processed by —
 
                         <Grid Visibility="Visible" Tag="Main">
 
-                            <Grid Visibility="Hidden" Panel.ZIndex="2" Name="EmptyTabView">
+                            <Grid Visibility="Visible" Panel.ZIndex="2" Name="EmptyTabView" Background="Transparent"     
+                            PreviewDragEnter="Window_DragEnter"
+                            PreviewDrop="Window_Drop">
                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 
                                     <Viewbox Width="70" Height="70" Margin="0,0,0,15">

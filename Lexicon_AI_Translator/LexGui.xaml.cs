@@ -24,7 +24,8 @@ using PhoenixEngine.Language;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
-using System.Windows.Threading;
+using System.Threading;
+using System.Security.Cryptography.X509Certificates;
 
 namespace LexTranslator
 {
@@ -169,20 +170,6 @@ namespace LexTranslator
 
         }
 
-        private void ModTransView_DragEnter(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void ModTransView_Drop(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void ModTransView_DragLeave(object sender, DragEventArgs e)
-        {
-
-        }
 
         private void OpenUrl_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -1134,7 +1121,11 @@ namespace LexTranslator
                     SCodeGenStyle.SelectedValue = SCodeGenStyle.Items[1];
                 }
 
-                // EspFilterStr.Text = GlobalEspReader.GetFilterByStr(); //！
+                EspReader TempEspReader = new EspReader(new Translator("", Languages.English, Languages.English, true));
+
+                EspFilterStr.Text = TempEspReader.GetFilterByStr(); //！
+
+                TempEspReader.Clear();
             }
             else
             if (Name.Equals("UI Configs"))
@@ -1555,129 +1546,74 @@ namespace LexTranslator
 
         private void ReSetFilter(object sender, MouseButtonEventArgs e)
         {
-            //GlobalEspReader.ResetToSkyrimFilter();
-            //EspFilterStr.Text = GlobalEspReader.GetFilterByStr();
+            DeFine.GlobalLocalSetting.CustomFilterStr = string.Empty;
+            DeFine.GlobalLocalSetting.SaveConfig();
 
-            //DeFine.GlobalLocalSetting.CustomFilterStr = string.Empty;
-            //DeFine.GlobalLocalSetting.SaveConfig();
+            EspReader TempEspReader = new EspReader(new Translator("", Languages.English, Languages.English, true));
+
+            EspFilterStr.Text = TempEspReader.GetFilterByStr();
+
+            TempEspReader.Close();
         }
 
         private void SetFilter(object sender, MouseButtonEventArgs e)
         {
-            //try
-            //{
-            //    var FilterDict = GlobalEspReader.ParseFilterString(EspFilterStr.Text);
+            try
+            {
+                EspReader TempEspReader = new EspReader(new Translator("",Languages.English,Languages.English,true));
 
-            //    var SourceFilterStr = GlobalEspReader.GetFilterByStr();
+                var FilterDict = TempEspReader.ParseFilterString(EspFilterStr.Text);
 
-            //    if (SourceFilterStr.ToUpper() != EspFilterStr.Text.ToUpper())
-            //    {
-            //        if (FilterDict.Count > 0)
-            //        {
-            //            GlobalEspReader.SetFilter(FilterDict);
-            //            DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
-            //            DeFine.GlobalLocalSetting.SaveConfig();
-            //        }
-            //    }
-            //}
-            //catch
-            //{
-            //    MessageBoxExtend.Show(this, "The string used to set the filter is incorrect.");
-            //}
+                var SourceFilterStr = TempEspReader.GetFilterByStr();
+
+                if (SourceFilterStr.ToUpper() != EspFilterStr.Text.ToUpper())
+                {
+                    if (FilterDict.Count > 0)
+                    {
+                        DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
+                        DeFine.GlobalLocalSetting.SaveConfig();
+                    }
+                }
+
+                TempEspReader.Close();
+            }
+            catch
+            {
+                MessageBoxExtend.Show(this, "The string used to set the filter is incorrect.");
+            }
         }
 
 
         #endregion
 
         #region Drag
-        //public bool IsDragEnter = false;
+        private void Window_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effects = DragDropEffects.Copy;
+        }
 
-        //private void ModTransView_DragEnter(object sender, DragEventArgs e)
-        //{
-        //    if (e.Data != null)
-        //    {
-        //        string[] OneFile = (string[])e.Data.GetData(DataFormats.FileDrop);
-        //        if (OneFile == null)
-        //        {
-        //            return;
-        //        }
-        //        if (OneFile.Length == 0)
-        //        {
-        //            return;
-        //        }
-        //    }
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] Files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (var FileItem in Files)
+                {
+                    string GetFilePath = System.IO.Path.GetFullPath(FileItem);
+                    if (GetFilePath.Length >= 260)
+                        GetFilePath = @"\\?\" + GetFilePath;
 
-        //    ModTransView.Visibility = Visibility.Collapsed;
-        //    DragDropView.Visibility = Visibility.Visible;
-        //    IsDragEnter = true;
-        //}
-
-        //private void ModTransView_DragLeave(object sender, DragEventArgs e)
-        //{
-        //    if (e != null)
-        //        if (e.Data != null)
-        //        {
-        //            string[] OneFile = (string[])e.Data.GetData(DataFormats.FileDrop);
-        //            if (OneFile == null)
-        //            {
-        //                return;
-        //            }
-        //            if (OneFile.Length == 0)
-        //            {
-        //                return;
-        //            }
-        //        }
-
-        //    ModTransView.Visibility = Visibility.Visible;
-        //    DragDropView.Visibility = Visibility.Collapsed;
-        //    if (IsDragEnter)
-        //    {
-        //        IsDragEnter = false;
-        //    }
-        //}
-
-        //private void ModTransView_Drop(object sender, DragEventArgs e)
-        //{
-        //    if (e != null)
-        //        if (e.Data.GetDataPresent(DataFormats.FileDrop))
-        //        {
-        //            string[] OneFile = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-        //            if (OneFile.Length > 0)
-        //            {
-        //                //Fix Long Path
-        //                string GetFilePath = Path.GetFullPath(OneFile[0]);
-        //                if (GetFilePath.Length >= 260)
-        //                {
-        //                    GetFilePath = @"\\?\" + GetFilePath;
-        //                }
-
-        //                if (File.Exists(GetFilePath))
-        //                {
-        //                    new Thread(() =>
-        //                    {
-        //                        this.Dispatcher.BeginInvoke(new Action(() =>
-        //                        {
-        //                            LoadAny(GetFilePath);
-        //                        }), System.Windows.Threading.DispatcherPriority.Background);
-        //                    }).Start();
-
-        //                    ModTransView_DragLeave(null, null);
-        //                }
-        //            }
-        //        }
-        //}
-
-        //private void Traditional_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    new TraditionalConvert(new TranslateView()).Show();
-        //}
-
+                    if (File.Exists(GetFilePath))
+                    {
+                        Dispatcher.BeginInvoke(new Action(() => LoadFile(GetFilePath)),
+                            System.Windows.Threading.DispatcherPriority.Background);
+                    }
+                }
+            }
+        }
         #endregion
 
-        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
-        {
 
-        }
     }
 }

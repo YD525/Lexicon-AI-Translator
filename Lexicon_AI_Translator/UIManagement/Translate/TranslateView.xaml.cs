@@ -63,6 +63,20 @@ namespace LexTranslator.UIManagement
 
                 Mod = new ModFile(Path);
 
+                if (Mod.Type == GameFileType.ESP)
+                {
+                    var SourceFilterStr = Mod.EspReader.GetFilterByStr();
+
+                    if (DeFine.GlobalLocalSetting.CustomFilterStr.Trim().Length > 0)
+                    {
+                        if (SourceFilterStr.ToUpper() != DeFine.GlobalLocalSetting.CustomFilterStr.ToUpper())
+                        {
+                            var FilterDict = Mod.EspReader.ParseFilterString(DeFine.GlobalLocalSetting.CustomFilterStr);
+                            Mod.EspReader.SetFilter(FilterDict);
+                        }
+                    }
+                }
+
                 TransListView = new YDListView(Mod, TransView);
                 TransListView.Clear();
 
