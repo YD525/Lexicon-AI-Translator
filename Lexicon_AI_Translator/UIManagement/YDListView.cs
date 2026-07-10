@@ -81,7 +81,7 @@ public class FakeGrid
     {
         bool FromDictionary = false;
 
-        var FindDictionary = new LexDictionary().CheckDictionary(this.Key);
+        var FindDictionary = Mod.Lex_Dictionary.CheckDictionary(this.Key);
 
         if (FindDictionary != null)
         {

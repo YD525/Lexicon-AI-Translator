@@ -104,9 +104,9 @@ namespace LexTranslator
 
         public static void PrepareFileDirectory()
         {
-            if (!Directory.Exists(DeFine.GetFullPath(@"\Librarys")))
+            if (!Directory.Exists(DeFine.GetFullPath(@"\Library")))
             {
-                Directory.CreateDirectory(DeFine.GetFullPath(@"\Librarys"));
+                Directory.CreateDirectory(DeFine.GetFullPath(@"\Library"));
             }
             if (!Directory.Exists(DeFine.GetFullPath(@"\Cache")))
             {

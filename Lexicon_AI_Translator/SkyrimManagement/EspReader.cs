@@ -845,7 +845,7 @@ namespace LexTranslator.SkyrimManagement
                 }
             }
 
-            EspNative.SaveEsp(_Instance, OutPutPath);
+            var State = EspNative.SaveEsp(_Instance, OutPutPath);
 
             return ModifyCount;
         }

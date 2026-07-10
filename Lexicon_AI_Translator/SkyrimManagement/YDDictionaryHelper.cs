@@ -79,8 +79,7 @@ namespace LexTranslator.SkyrimManage
 
             return ReplaceCount;
         }
-
-        public void CreatDictionary()
+        public void CreateDictionary()
         {
             string ModName = CurrentModName;
             string SetPath = DeFine.GetFullPath(@"\Library\" + ModName) + ".Json";

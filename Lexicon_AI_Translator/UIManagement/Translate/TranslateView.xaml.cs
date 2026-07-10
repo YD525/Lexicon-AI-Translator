@@ -135,6 +135,15 @@ namespace LexTranslator.UIManagement
 
                 this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
                 this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
+
+                if (!this.CheckDictionary())
+                {
+                    this.RefreshDictionary.Opacity = 0.5;
+                }
+                else
+                {
+                    this.RefreshDictionary.Opacity = 1.0;
+                }
             }
         }
 
@@ -2380,6 +2389,18 @@ namespace LexTranslator.UIManagement
                 ClearCacheView.Visibility = Visibility.Collapsed;
                 Mask.Visibility = Visibility.Collapsed;
                 CacheViewIsShow = false;
+            }
+        }
+
+        private void SaveFile_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                this.Mod.Save();
+            }
+            catch(Exception Ex)
+            {
+                MessageBoxExtend.Show(this._Parent, "Error Saving File", Ex.Message, MsgAction.Yes,MsgType.Waring);
             }
         }
     }

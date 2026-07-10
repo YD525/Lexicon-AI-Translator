@@ -52,6 +52,8 @@ namespace LexTranslator.SkyrimManagement
 
         public ModFile(string Path)
         {
+            this.CanRestored = false;
+
             //Although each tag has its own independent translator, there's only one Node selection view on the interface. This means multiple instances use a single configuration file. Furthermore, the current thread count must be calculated by adding up the number of running instances, and so on. I suddenly realized, what about the thread limit in the settings interface? It limits the number of threads for a single instance. Therefore, to be on the safe side, this version will only allow one translation to run simultaneously for now.
             this.P_Translator = new Translator(Path,DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
 
@@ -98,17 +100,61 @@ namespace LexTranslator.SkyrimManagement
         { 
            this.ListView = ListView;
         }
+
+        public bool CanRestored = false;
         private void Backup()
         {
             if (File.Exists(this.Path))
-            { 
-            
+            {
+                string BackupPath = this.Path + ".backup";
+
+                if (File.Exists(BackupPath))
+                {
+                    return;
+                }
+
+                CanRestored = true;
+                File.Copy(this.Path, BackupPath);
             }
         }
 
-        private void ClearBackup()
-        { 
-        
+        //private void ClearBackup()
+        //{
+        //    if (File.Exists(this.Path))
+        //    {
+        //        string BackupPath = this.Path + ".backup";
+
+        //        if (File.Exists(BackupPath))
+        //        {
+        //            File.Delete(BackupPath);
+        //        }
+        //    }
+        //}
+
+        private void RestoreBackup()
+        {
+            try
+            {
+                if (File.Exists(this.Path))
+                {
+                    string BackupPath = this.Path + ".backup";
+
+                    if (File.Exists(BackupPath) && CanRestored)
+                    {
+                        if (File.Exists(this.Path))
+                        {
+                            File.Delete(this.Path);
+                        }
+
+                        File.Move(BackupPath, this.Path);
+
+                        CanRestored = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
         public void Load()
@@ -221,6 +267,8 @@ namespace LexTranslator.SkyrimManagement
                     SyncListView(true);
                 }
 
+                bool EspIsCreate = false; 
+
                 switch (this.Type)
                 {
                     case GameFileType.XML:
@@ -233,7 +281,7 @@ namespace LexTranslator.SkyrimManagement
                         {
                             if (!RamCacheReader.Save(this,this.Path))
                             {
-                                ClearBackup();
+                                RestoreBackup();
                                 MessageBox.Show("Build RamCache Error!");
                             }
                             State = GameFileState.Save;
@@ -241,11 +289,24 @@ namespace LexTranslator.SkyrimManagement
                         break;
                     case GameFileType.ESP:
                         {
-                            int ModifyCount = EspReader.SaveEsp(this.Path);
-                            if (ModifyCount == 0)
+                            int ModifyCount = EspReader.SaveEsp(this.Path + ".Temp");
+
+                            if (!File.Exists(this.Path + ".Temp"))
                             {
-                                ClearBackup();
+                                RestoreBackup();
                             }
+                            else
+                            {
+                                if (new FileInfo(this.Path + ".Temp").Length == 0)
+                                {
+                                    RestoreBackup();
+                                }
+                                else
+                                {
+                                    EspIsCreate = true;
+                                }
+                            }
+
                             State = GameFileState.Save;
                         }
                         break;
@@ -271,7 +332,7 @@ namespace LexTranslator.SkyrimManagement
 
                                 if (SaveState > 0 == false)
                                 {
-                                    ClearBackup();
+                                    RestoreBackup();
                                     MessageBox.Show("Build Script Error!");
                                 }
                             }
@@ -286,8 +347,24 @@ namespace LexTranslator.SkyrimManagement
                         break;
                 }
 
+                if (this.Type == GameFileType.ESP)
+                {
+                    if (EspIsCreate)
+                    {
+                        if (File.Exists(this.Path + ".Temp") && File.Exists(this.Path))
+                        {
+                            File.Delete(this.Path);
+                            File.Move(this.Path + ".Temp", this.Path);
+                        }
+                    }
+                }
+
                 Lex_Dictionary.WriteDictionary(this.ListView);
-                Lex_Dictionary.CreatDictionary();
+                Lex_Dictionary.CreateDictionary();
+
+                this.Win._Parent?.RemoveTab(this.Path);
+                MessageBoxExtend.Show(this.Win._Parent, "Done!");
+                this.Win._Parent?.LoadFile(this.Path);
             }
         }
 

@@ -170,7 +170,7 @@
                     <Grid Grid.Column="5">
                         <StackPanel Orientation="Horizontal">
 
-                            <Button Style="{StaticResource ActionButtonBase}" Margin="5" ToolTip="Save File">
+                            <Button Style="{StaticResource ActionButtonBase}" Margin="5" ToolTip="Save File" PreviewMouseDown="SaveFile_PreviewMouseDown">
                                 <Viewbox Width="25" Height="25" Stretch="Uniform">
                                     <Canvas Width="1024" Height="1024">
                                         <Path Data="M180,140 L180,884 L844,884 L844,300 L680,140 Z" Fill="White" IsHitTestVisible="False"/>
