@@ -81,7 +81,13 @@ namespace LexTranslator.UIManagement
 
                     if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
                     {
-                        var DialogueLink = Mod.EspReader.GetDialContext(GetRecord);
+                        ManagedDialContext DialogueLink = null;
+
+                        if (Mod.DialNodeCache.ContainsKey(GetRecord.UniqueKey))
+                        {
+                            DialogueLink = Mod.DialNodeCache[GetRecord.UniqueKey];
+                        }
+                       
                         List<ManagedDialNode> TempLinks = new List<ManagedDialNode>();
 
                         if (DialogueLink != null)

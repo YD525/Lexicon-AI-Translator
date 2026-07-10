@@ -39,6 +39,7 @@ namespace LexTranslator.SkyrimManagement
         public PexHeuristicAnalysis PexReader = null;
         public R_XmlReader XmlReader = null;
         public Dictionary<string, int> PexLinks = new Dictionary<string, int>();
+        public Dictionary<string, ManagedDialContext> DialNodeCache = new Dictionary<string, ManagedDialContext>();
 
         public LexDictionary Lex_Dictionary = new LexDictionary();
 
@@ -292,6 +293,8 @@ namespace LexTranslator.SkyrimManagement
 
         public void Close()
         {
+            PexLinks.Clear();
+            DialNodeCache.Clear();
             Lex_Dictionary.Close();
 
             switch (this.Type)
@@ -542,6 +545,8 @@ namespace LexTranslator.SkyrimManagement
         {
             List<BaseUnit> BaseUnits = new List<BaseUnit>();
 
+            this.DialNodeCache.Clear();
+
             for (int i = 0; i < ListView.Rows; i++)
             {
                 var Row = ListView.RealLines[i];
@@ -693,7 +698,26 @@ namespace LexTranslator.SkyrimManagement
 
                             if (this.Type == GameFileType.ESP)
                             {
-                                Emotion = this.EspReader.QueryEmotion(this.EspReader.Records[Row.Key]);
+                                var GetRecord = this.EspReader.Records[Row.Key];
+
+                                if (GetRecord.ParentSig == "INFO" || GetRecord.ParentSig == "DIAL")
+                                {
+                                    var LinkData = this.EspReader.GetDialContext(GetRecord);
+
+                                    if (LinkData != null)
+                                    {
+                                        this.DialNodeCache[GetRecord.UniqueKey] = LinkData;
+
+                                        foreach (var Get in LinkData.Links)
+                                        {
+                                            if (Get.RecordOffset == GetRecord.ParentIndex && Get.SubOffset == GetRecord.SubIndex)
+                                            {
+                                                Emotion = EmotionTypeHelper.FromRaw(Get.EmotionType).ToString();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
                             BaseUnits.Add(new BaseUnit(P_Translator.GetFileUniqueKey(),
