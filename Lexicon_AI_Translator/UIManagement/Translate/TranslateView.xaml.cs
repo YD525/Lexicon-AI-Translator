@@ -27,6 +27,7 @@ using System.IO;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
+using System.Windows.Media.Effects;
 
 namespace LexTranslator.UIManagement
 {
@@ -55,6 +56,8 @@ namespace LexTranslator.UIManagement
         {
             if (Mod == null)
             {
+                ScanAnimator = new ScanAnimator(this.ScanTransform, this.ProcessBar, 60.0);
+
                 this._Parent = Parent;
 
                 this.Path = Path;
@@ -116,8 +119,6 @@ namespace LexTranslator.UIManagement
                 });
 
                 SyncTrd.Start();
-
-                ScanAnimator = new ScanAnimator(this.ScanTransform, this.ProcessBar, 60.0);
 
                 this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
                 this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
@@ -2196,6 +2197,7 @@ namespace LexTranslator.UIManagement
                 this.CalcStatistics();
             });
         }
+        public bool BarInit = false;
         public void CalcStatistics()
         {
             try
@@ -2235,6 +2237,14 @@ namespace LexTranslator.UIManagement
                             {
                                 if (ModifyCount > 0 && BatchCore.IsWorking && !BatchCore.IsStopped)
                                 {
+                                    if (!BarInit)
+                                    {
+                                        BarEffect.Dispatcher.Invoke(new Action(() => {
+                                            BarEffect.Width = 30;
+                                        }));
+
+                                        BarInit = true;
+                                    }
                                     ScanAnimator.Start();
                                 }
                                 else

@@ -142,7 +142,7 @@
                             <Border Name="ProcessBar" Style="{DynamicResource ProcessBarStyle}" SizeChanged="ProcessBar_SizeChanged">
                                 <Grid ClipToBounds="True">
                                     <!-- ScanLine -->
-                                    <Rectangle Width="30" HorizontalAlignment="Left" RadiusX="5" RadiusY="5" Opacity="0.75">
+                                    <Rectangle Width="0" HorizontalAlignment="Left" RadiusX="5" RadiusY="5" Opacity="0.75" Name="BarEffect">
                                         <Rectangle.Fill>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                                 <GradientStop Color="#00E8E8EC" Offset="0"/>
