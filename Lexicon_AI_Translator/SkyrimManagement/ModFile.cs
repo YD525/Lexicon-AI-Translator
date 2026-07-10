@@ -1014,6 +1014,11 @@ namespace LexTranslator.SkyrimManagement
 
                         TranslationStatus = StateControl.Cancel;
                         EndAction.Invoke();
+
+                        this.Win.Dispatcher.Invoke(new Action(() =>
+                        {
+                            this.ListView?.HotReload();
+                        }));
                     }
                 }
                 else if (TranslationStatus == StateControl.Stop)
