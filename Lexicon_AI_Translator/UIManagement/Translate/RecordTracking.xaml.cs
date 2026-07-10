@@ -278,6 +278,9 @@ namespace LexTranslator
             }
             else
             {
+                bool IsCloud = false;
+                GetFakeGrid.SyncData(ModRef, ref IsCloud);
+
                 Source = GetFakeGrid.GetSource();
             }
 
@@ -333,11 +336,11 @@ namespace LexTranslator
             }
             else
             {
+                bool IsCloud = false;
+                GetFakeGrid.SyncData(ModRef, ref IsCloud);
+
                 Source = GetFakeGrid.GetSource();
             }
-
-            bool IsCloud = false;
-            GetFakeGrid.SyncData(ModRef, ref IsCloud);
 
             Border CardBorder = new Border();
             CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
@@ -411,11 +414,11 @@ namespace LexTranslator
                 }
                 else
                 {
+                    bool IsCloud = false;
+                    GetFakeGrid.SyncData(ModRef, ref IsCloud);
+
                     Source = GetFakeGrid.GetSource();
                 }
-
-                bool IsCloud = false;
-                GetFakeGrid.SyncData(ModRef,ref IsCloud);
 
                 Border CardBorder = new Border();
                 CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
