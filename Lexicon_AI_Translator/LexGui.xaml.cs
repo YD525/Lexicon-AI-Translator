@@ -52,7 +52,7 @@ namespace LexTranslator
             InfoPage = new PageSwitcher(this, InFoPages);
             MainPage = new PageSwitcher(this, Views);
 
-            ShowView("InFo");
+            ShowView("TransHub");
 
             UIHelper.SyncNodes(Nodes);
 
@@ -382,6 +382,8 @@ namespace LexTranslator
                             ESPReaderVer.Content = EspReader.Version;
                             DSDConvertVer.Content = DSDConverter.Version;
 
+                            NodeManage.Visibility = Visibility.Hidden;
+
                             MultiWindowController.HideAll();
                         }
                         break;
@@ -399,6 +401,8 @@ namespace LexTranslator
                                 YDChart.Clear();
                             }
 
+                            NodeManage.Visibility = Visibility.Hidden;
+
                             MultiWindowController.HideAll();
                         }
                         break;
@@ -410,6 +414,8 @@ namespace LexTranslator
 
                             UpdateTabShowState();
 
+                            NodeManage.Visibility = Visibility.Visible;
+
                             MultiWindowController.ShowAll();
                         }
                         break;
@@ -418,6 +424,8 @@ namespace LexTranslator
                             YDChart.Stop();
                             PageIndex = 3;
                             StopLexGlowLoop();
+
+                            NodeManage.Visibility = Visibility.Hidden;
 
                             MultiWindowController.HideAll();
                         }

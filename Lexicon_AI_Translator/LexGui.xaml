@@ -36,7 +36,8 @@
         </Storyboard>
 
     </Window.Resources>
-    <Border Background="Transparent" CornerRadius="9">
+    <Border Background="Transparent" CornerRadius="9" Margin="3">
+        
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
@@ -151,6 +152,7 @@ IsHitTestVisible="False"/>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="25"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="25"/>
@@ -165,20 +167,20 @@ IsHitTestVisible="False"/>
                         </Grid>
                     </Border>
 
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="2" PreviewMouseDown="ShowLeftMenu">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="3" PreviewMouseDown="ShowLeftMenu" Name="NodeManage">
                         <Grid>
                             <ContentControl Style="{DynamicResource NodeIconStyle}" Name="NodeEffect" Panel.ZIndex="1"/>
                         </Grid>
                     </Border>
 
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="4" PreviewMouseDown="Min_PreviewMouseDown">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="5" PreviewMouseDown="Min_PreviewMouseDown">
                         <ContentControl Style="{DynamicResource MinimizeIconStyle}"/>
                     </Border>
 
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="5" PreviewMouseDown="AutoMax_PreviewMouseDown">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="6" PreviewMouseDown="AutoMax_PreviewMouseDown">
                         <ContentControl Style="{DynamicResource MaximizeIconStyle}"/>
                     </Border>
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="6" PreviewMouseDown="Close_PreviewMouseDown">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="7" PreviewMouseDown="Close_PreviewMouseDown">
                         <ContentControl Style="{DynamicResource CloseIconStyle}" Grid.Column="3"/>
                     </Border>
                 </Grid>
@@ -1044,9 +1046,6 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                         </Grid>
                     </Grid>
                 </Grid>
-
-
-
             </Border>
         </Grid>
     </Border>
