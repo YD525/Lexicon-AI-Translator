@@ -267,6 +267,20 @@ namespace LexTranslator
 
         private Border BuildNpcCard(RecordItem Item, string NpcName, string Gender)
         {
+            string Source = "";
+
+            var GetFakeGrid = ModRef?.ListView?.KeyToFakeGrid(Item.UniqueKey);
+
+            if (GetFakeGrid == null)
+            {
+                GetFakeGrid = new FakeGrid(0, Item.ParentSig, Item.UniqueKey, Item.String, "", 0);
+                Source = Item.String;
+            }
+            else
+            {
+                Source = GetFakeGrid.GetSource();
+            }
+
             Border CardBorder = new Border();
             CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
             CardBorder.CornerRadius = new CornerRadius(6);
@@ -277,7 +291,7 @@ namespace LexTranslator
             ContentPanel.Orientation = Orientation.Vertical;
 
             TextBlock TextLine = new TextBlock();
-            TextLine.Text = Item.String;
+            TextLine.Text = Source;
             TextLine.Foreground = Brushes.White;
             TextLine.FontSize = 13;
             TextLine.TextWrapping = TextWrapping.Wrap;
@@ -306,32 +320,24 @@ namespace LexTranslator
             return CardBorder;
         }
 
-        public string FindTranslated(string Key,string Type,string SourceText,ModFile Mod)
-        {
-            var FindDictionary = new LexDictionary().CheckDictionary(Key);
-
-            if (FindDictionary != null)
-            {
-                if (!string.IsNullOrEmpty(FindDictionary.OriginalText))
-                {
-                    SourceText = FindDictionary.OriginalText;
-                }
-            }
-
-            var QueryResult = Mod.P_Translator.QueryTransData(Key,Type,SourceText, true);
-
-            if (QueryResult != null)
-            {
-                return QueryResult.TransText;
-            }
-
-            return string.Empty;
-        }
-
-
         private Border BuildRelatedTextCard(RecordItem Item)
         {
-            var GetTranslated = FindTranslated(Item.UniqueKey,Item.ParentSig,Item.String,ModRef);
+            string Source = "";
+
+            var GetFakeGrid = ModRef?.ListView?.KeyToFakeGrid(Item.UniqueKey);
+
+            if (GetFakeGrid == null)
+            {
+                GetFakeGrid = new FakeGrid(0, Item.ParentSig, Item.UniqueKey, Item.String, "", 0);
+                Source = Item.String;
+            }
+            else
+            {
+                Source = GetFakeGrid.GetSource();
+            }
+
+            bool IsCloud = false;
+            GetFakeGrid.SyncData(ModRef, ref IsCloud);
 
             Border CardBorder = new Border();
             CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
@@ -354,13 +360,13 @@ namespace LexTranslator
             TextLine.TextWrapping = TextWrapping.Wrap;
             TextLine.Cursor = Cursors.Hand;
 
-            if (GetTranslated.Length == 0)
+            if (GetFakeGrid.TransText.Length == 0)
             {
-                TextLine.Text = Item.String;
+                TextLine.Text = Source;
             }
             else
             {
-                TextLine.Text = Item.String + " -> " + GetTranslated;
+                TextLine.Text = Source + " -> " + GetFakeGrid.TransText;
             }
 
             ContentPanel.Children.Add(TextLine);
@@ -390,10 +396,26 @@ namespace LexTranslator
 
         private Border BuildDialogueCard(ModFile ModRef, ManagedDialNode Item)
         {
+            if (Item.RecordOffset == -1) return null;
             var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(false,Item.RecordOffset, Item.SubOffset);
             if (GetRecord != null)
             {
-                var GetTranslated = FindTranslated(GetRecord.UniqueKey, GetRecord.ParentSig, GetRecord.String, ModRef);
+                string Source = "";
+
+                var GetFakeGrid = ModRef?.ListView?.KeyToFakeGrid(GetRecord.UniqueKey);
+
+                if (GetFakeGrid == null)
+                {
+                    GetFakeGrid = new FakeGrid(0,GetRecord.ParentSig,GetRecord.UniqueKey,GetRecord.String,"",0);
+                    Source = GetRecord.String;
+                }
+                else
+                {
+                    Source = GetFakeGrid.GetSource();
+                }
+
+                bool IsCloud = false;
+                GetFakeGrid.SyncData(ModRef,ref IsCloud);
 
                 Border CardBorder = new Border();
                 CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
@@ -417,13 +439,13 @@ namespace LexTranslator
                 TextLine.TextWrapping = TextWrapping.Wrap;
                 TextLine.Cursor = Cursors.Hand;
 
-                if (GetTranslated.Length == 0)
+                if (GetFakeGrid.TransText.Length == 0)
                 {
-                    TextLine.Text = GetRecord.String;
+                    TextLine.Text = Source;
                 }
                 else
                 {
-                    TextLine.Text = GetRecord.String + " -> " + GetTranslated;
+                    TextLine.Text = Source + " -> " + GetFakeGrid.TransText;
                 }
 
                 ContentPanel.Children.Add(TextLine);

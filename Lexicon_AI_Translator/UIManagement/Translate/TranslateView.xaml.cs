@@ -92,7 +92,18 @@ namespace LexTranslator.UIManagement
                 });
 
                 Mod.SetListView(TransListView);
+
+                this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
+                this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
+
                 Mod.Load();
+
+                CompletionManager = new WordCompletionManager(ToStr);
+
+                Completer = new Completer(this);
+
+                this.ReloadStringsFile();
+                this.Completer?.CheckLang(this.Mod.P_Translator.To);
 
                 SyncConfig();
 
@@ -103,9 +114,6 @@ namespace LexTranslator.UIManagement
 
                 ReSetTypes();
 
-                CompletionManager = new WordCompletionManager(ToStr);
-
-                Completer = new Completer(this);
                 UIHelper.SyncAvalonEditTextLayout(this);
 
                 AutoShowTraditional();
@@ -132,9 +140,6 @@ namespace LexTranslator.UIManagement
                 });
 
                 SyncTrd.Start();
-
-                this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
-                this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
 
                 if (!this.CheckDictionary())
                 {
@@ -1250,6 +1255,7 @@ namespace LexTranslator.UIManagement
 
         private void ShowLocalEngineSettingView()
         {
+            this._Parent.TranslateConfigView.Owner = this._Parent;
             this._Parent.TranslateConfigView.Init();
             this._Parent.TranslateConfigView.Show();
         }

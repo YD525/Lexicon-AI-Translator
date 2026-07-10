@@ -50,6 +50,8 @@ namespace LexTranslator.SkyrimManagement
 
         public GameFileState State = GameFileState.Null;
 
+
+
         public ModFile(string Path)
         {
             this.CanRestored = false;

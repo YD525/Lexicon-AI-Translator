@@ -58,7 +58,7 @@ namespace LexTranslator.UIManagement
         }
 
         //If null is returned, grouping is performed based on default similarity.
-        public static List<BaseUnit> CheckLinks(ModFile Mod,List<BaseUnit> TempUnit,BaseUnit Unit)
+        public static List<BaseUnit> CheckLinks(ModFile Mod,List<BaseUnit> TempUnits,BaseUnit Unit)
         {
             if (Unit.Type == "INFO" || Unit.Type == "DIAL" || Unit.Type == "BOOK")
             {
@@ -100,9 +100,12 @@ namespace LexTranslator.UIManagement
                         {
                             foreach (var GetLink in TempLinks)
                             {
-                                var GetLinkRecord = Mod.EspReader.GetRecordItemByOffsets(false, GetLink.RecordOffset, GetLink.SubOffset);
-                                if (GetLinkRecord != null)
-                                    FindKeys.Add(GetLinkRecord.UniqueKey);
+                                if (GetLink.RecordOffset >= 0)
+                                {
+                                    var GetLinkRecord = Mod.EspReader.GetRecordItemByOffsets(false, GetLink.RecordOffset, GetLink.SubOffset);
+                                    if (GetLinkRecord != null)
+                                        FindKeys.Add(GetLinkRecord.UniqueKey);
+                                }
                             }
                         }
                     }
@@ -132,7 +135,7 @@ namespace LexTranslator.UIManagement
                 }
 
 
-                var UnitDict = TempUnit.ToDictionary(U => U.Key);
+                var UnitDict = TempUnits.ToDictionary(U => U.Key);
                 List<BaseUnit> Units = new List<BaseUnit>();
 
                 foreach (var GetKey in FindKeys)
@@ -235,10 +238,14 @@ namespace LexTranslator.UIManagement
                                             RecordItem Content = null;
 
                                             if (GetBookInFo.TittleSubOffset != -1)
-                                                Tittle = Mod.EspReader.GetRecordItemByOffsets(false,GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+                                            {
+                                                Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+                                            }
 
                                             if (GetBookInFo.ContentSubOffset != -1)
-                                                Content = Mod.EspReader.GetRecordItemByOffsets(false,GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+                                            {
+                                                Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+                                            }  
 
                                             List<RecordItem> BookLinks = new List<RecordItem>();
                                             if (Tittle != null) BookLinks.Add(Tittle);
