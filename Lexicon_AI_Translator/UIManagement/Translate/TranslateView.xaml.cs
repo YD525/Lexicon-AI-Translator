@@ -117,6 +117,8 @@ namespace LexTranslator.UIManagement
 
                 SyncTrd.Start();
 
+                ScanAnimator = new ScanAnimator(this.ScanTransform, this.ProcessBar, 60.0);
+
                 this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
                 this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
             }
@@ -2204,9 +2206,15 @@ namespace LexTranslator.UIManagement
                 var GetBatchCore = Mod?.P_Translator?.GetBatchCore();
                 if (GetBatchCore != null)
                 {
-                    if (GetBatchCore.Container != null)
+                    if (GetBatchCore.Container != null && GetBatchCore.IsWorking && !SingleTrans)
                     {
                         ModifyCount = (GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount);
+
+                        if (ModifyCount > this.TransListView.RealLines.Count)
+                        {
+                            ModifyCount = this.TransListView.RealLines.Count;
+                        }
+
                         FromCore = true;
                     }
                     

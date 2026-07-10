@@ -139,15 +139,17 @@
                                 </StackPanel>
 
                             </Grid>
-                            <Border Name="ProcessBar" Style="{DynamicResource ProcessBarStyle}" SizeChanged="ProcessBar_SizeChanged" Width="0">
+                            <Border Name="ProcessBar" Style="{DynamicResource ProcessBarStyle}" SizeChanged="ProcessBar_SizeChanged">
                                 <Grid ClipToBounds="True">
                                     <!-- ScanLine -->
-                                    <Rectangle Width="30" HorizontalAlignment="Left" RadiusX="5" RadiusY="5" Opacity="0.67">
+                                    <Rectangle Width="30" HorizontalAlignment="Left" RadiusX="5" RadiusY="5" Opacity="0.75">
                                         <Rectangle.Fill>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                <GradientStop Color="#00FFFFFF" Offset="0"/>
-                                                <GradientStop Color="#B3FFFFFF" Offset="0.5"/>
-                                                <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                                <GradientStop Color="#00E8E8EC" Offset="0"/>
+                                                <GradientStop Color="#66D4D6DC" Offset="0.25"/>
+                                                <GradientStop Color="#F0F5F5F8" Offset="0.5"/>
+                                                <GradientStop Color="#66D4D6DC" Offset="0.75"/>
+                                                <GradientStop Color="#00E8E8EC" Offset="1"/>
                                             </LinearGradientBrush>
                                         </Rectangle.Fill>
                                         <Rectangle.RenderTransform>

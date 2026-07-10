@@ -253,7 +253,7 @@
         <Setter Property="BorderThickness" Value="0 0 3 0"/>
         <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Background" Value="#FF74C2FF"/>
+        <Setter Property="Background" Value="#FF555151"/>
         <Setter Property="Opacity" Value="0.35"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Panel.ZIndex" Value="1"/>
