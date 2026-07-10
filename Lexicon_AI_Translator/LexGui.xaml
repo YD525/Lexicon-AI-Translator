@@ -928,7 +928,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                                                         <CheckBox Name="UseFullPunctuationJa" Click="UseFullPunctuationJa_Click" Style="{StaticResource SettingToggle}" Margin="0,0,10,0"/>
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Replace ',' with '、' (handling output for Japanese-style punctuation)."/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="handling output for Japanese-style punctuation."/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
