@@ -541,22 +541,25 @@ namespace LexTranslator.UIManagement
         }
         public void ReloadStringsFile()
         {
-           Mod.EspReader.LoadStringsFile();
+            if (Mod.Type == GameFileType.ESP)
+            {
+                Mod.EspReader.LoadStringsFile();
 
-            if (Mod.EspReader.FromStringsFile.Strings.Count > 0)
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                if (Mod.EspReader.FromStringsFile.Strings.Count > 0)
                 {
-                    FromStringsFile.Visibility = Visibility.Visible;
-                    UIHelper.SyncFromStringsFile(Mod.EspReader, TransListView);
-                }));
-            }
-            else
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        FromStringsFile.Visibility = Visibility.Visible;
+                        UIHelper.SyncFromStringsFile(Mod.EspReader, TransListView);
+                    }));
+                }
+                else
                 {
-                    FromStringsFile.Visibility = Visibility.Collapsed;
-                }));
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        FromStringsFile.Visibility = Visibility.Collapsed;
+                    }));
+                }
             }
         }
 

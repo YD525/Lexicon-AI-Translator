@@ -370,6 +370,8 @@ namespace LexTranslator.SkyrimManagement
 
         public void Close()
         {
+            this.PSCCode = string.Empty;
+
             PexLinks.Clear();
             DialNodeCache.Clear();
             Lex_Dictionary.Close();
