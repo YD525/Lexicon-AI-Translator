@@ -736,8 +736,6 @@ namespace LexTranslator.SkyrimManagement
                             if (GetFakeGrid != null)
                             {
                                 Row.TransText = GetTrans.Value;
-
-                                Row.SyncUI(ListView);
                             }
 
                             if (EngineEvents.SetDataCall != null)

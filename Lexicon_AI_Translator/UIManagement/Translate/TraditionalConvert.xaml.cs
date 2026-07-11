@@ -70,9 +70,16 @@ namespace LexTranslator
 
                         Link[Key] = Result;
 
-                        _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
+                        bool IsCloud = false;
+                        ConvertAllBtn.Dispatcher.Invoke(new Action(() => {
+                            _Owner.TransListView.RealLines[i].SyncData(_Owner.Mod,ref IsCloud);
+                        }));
 
                         CloudDBCache.AddCache(_Owner.Mod.P_Translator.GetFileUniqueKey(), Key, (int)_Owner.Mod.P_Translator.To, Source, Result);
+
+                        ConvertAllBtn.Dispatcher.Invoke(new Action(() => {
+                            _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
+                        }));
                     }
 
                     ConvertAllBtn.Dispatcher.Invoke(new Action(() => {
