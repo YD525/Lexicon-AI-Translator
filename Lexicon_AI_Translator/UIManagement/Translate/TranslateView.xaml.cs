@@ -454,7 +454,7 @@ namespace LexTranslator.UIManagement
 
                         if (DeFine.GlobalLocalSetting.AutoSpeak)
                         {
-                            SpeechHelper.TryPlaySound(FromStr.Text, true);
+                            SpeechHelper.TryPlaySound(this.Mod.P_Translator.From,FromStr.Text, true);
                         }
 
                         Point MousePos = Mouse.GetPosition(ToStr);
@@ -1370,12 +1370,12 @@ namespace LexTranslator.UIManagement
         }
         private void SpeakFromStr(object sender, MouseButtonEventArgs e)
         {
-            SpeechHelper.TryPlaySound(FromStr.Text);
+            SpeechHelper.TryPlaySound(this.Mod.P_Translator.From,FromStr.Text);
         }
 
         private void SpeakToStr(object sender, MouseButtonEventArgs e)
         {
-            SpeechHelper.TryPlaySound(ToStr.Text);
+            SpeechHelper.TryPlaySound(this.Mod.P_Translator.To, ToStr.Text);
         }
         private void UPSelecter_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
