@@ -31,7 +31,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 InFos = ZipHelper.GetFileList(GetManagePath);
 
-                if (InFos.Count > 10)
+                if (InFos.Count >= 10)
                 {
                     ZipFileInfo Oldest = InFos.OrderBy(x => x.Time).FirstOrDefault();
 
