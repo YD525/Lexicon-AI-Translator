@@ -223,7 +223,6 @@ namespace LexTranslator.SkyrimManagement
             if (File.Exists(this.Path))
             {
                 Backup();
-                RestoreBackup();//Test
 
                 var Link = this.P_Translator.GetLink();
 
@@ -361,7 +360,7 @@ namespace LexTranslator.SkyrimManagement
                     "File saved successfully:\r\n" +
                     this.Path +
                     "\r\n\r\nRollback backup file created:\r\n" +
-                    this.Path + ".backup"
+                    BackupManagePath
                     );
                     this.Win._Parent?.LoadFile(this.Path);
                 }));

@@ -90,7 +90,7 @@ namespace LexTranslator.SkyrimManagement
 
             string[] Names = Latest.Name.Split('_');
 
-            if (Names.Length < 3)
+            if ((Names.Length > 3) == false)
                 throw new InvalidDataException(
                     "Invalid backup name"
                 );
@@ -98,7 +98,7 @@ namespace LexTranslator.SkyrimManagement
 
             string FileName = string.Join(
                 "_",
-                Names.Skip(2)
+                Names.Skip(3)
             );
 
 
