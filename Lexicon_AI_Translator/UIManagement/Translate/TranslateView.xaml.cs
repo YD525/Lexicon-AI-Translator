@@ -51,7 +51,7 @@ namespace LexTranslator.UIManagement
         }
 
         public LexGui _Parent = null;
-        public void SetFile(LexGui Parent,string Path)
+        public void SetFile(LexGui Parent, string Path)
         {
             if (Mod == null)
             {
@@ -82,7 +82,8 @@ namespace LexTranslator.UIManagement
 
                 Mod.Win = this;
 
-                TransListView.LineSelectedEvent += new YDListView.LineSelected((Key) => {
+                TransListView.LineSelectedEvent += new YDListView.LineSelected((Key) =>
+                {
                     this.Dispatcher.Invoke(new Action(() =>
                     {
                         SetSelectFromAndToText(Key);
@@ -130,12 +131,12 @@ namespace LexTranslator.UIManagement
 
                         Thread.Sleep(1000);
 
-                        try 
+                        try
                         {
                             this.SyncTranslationStatus();
                         }
-                        catch 
-                        { 
+                        catch
+                        {
                         }
                     }
                 });
@@ -171,12 +172,12 @@ namespace LexTranslator.UIManagement
                 {
                     _SyncTimer.Stop();
 
-                    if(DeFine.WorkWin != null)
-                    if (DefWindowWidth != DeFine.WorkWin.ActualWidth)
-                    {
-                        TransListView.HotReload();
-                        DefWindowWidth = DeFine.WorkWin.ActualWidth;
-                    }
+                    if (DeFine.WorkWin != null)
+                        if (DefWindowWidth != DeFine.WorkWin.ActualWidth)
+                        {
+                            TransListView.HotReload();
+                            DefWindowWidth = DeFine.WorkWin.ActualWidth;
+                        }
                 };
             }
 
@@ -407,7 +408,7 @@ namespace LexTranslator.UIManagement
                     NpcView.Visibility = Visibility.Collapsed;
                 }
             }
-           
+
 
             if (Key.Length > 0)
             {
@@ -427,7 +428,7 @@ namespace LexTranslator.UIManagement
                     }
 
                     bool IsCloud = false;
-                    GridHandle.SyncData(Mod,ref IsCloud);
+                    GridHandle.SyncData(Mod, ref IsCloud);
 
                     this.Dispatcher.Invoke(new Action(() =>
                     {
@@ -893,7 +894,7 @@ namespace LexTranslator.UIManagement
 
         private void ReplaceStr(object sender, MouseButtonEventArgs e)
         {
-             new ReplaceWin(this).Show();
+            new ReplaceWin(this).Show();
         }
 
 
@@ -934,7 +935,7 @@ namespace LexTranslator.UIManagement
                     {
                         var GetWritePath = DataHelper.ShowSaveFileDialog(Mod.FileName + ".json", "DSD (*.json)|*.json");
 
-                        var DSDFile = DSDConverter.RecordsToDSDFile(Mod,Mod.EspReader);
+                        var DSDFile = DSDConverter.RecordsToDSDFile(Mod, Mod.EspReader);
                         if (DSDFile != null)
                         {
                             if (DSDFile.DSDItems.Count > 0)
@@ -966,7 +967,7 @@ namespace LexTranslator.UIManagement
                 {
                     bool IsCloud = false;
 
-                    TransListView.RealLines[i].SyncData(Mod,ref IsCloud);
+                    TransListView.RealLines[i].SyncData(Mod, ref IsCloud);
 
                     string GetKey = TransListView.RealLines[i].Key;
 
@@ -1078,7 +1079,7 @@ namespace LexTranslator.UIManagement
                                 for (int i = 0; i < TransListView.Rows; i++)
                                 {
                                     bool IsCloud = false;
-                                    TransListView.RealLines[i].SyncData(Mod,ref IsCloud);
+                                    TransListView.RealLines[i].SyncData(Mod, ref IsCloud);
                                     TransListView.RealLines[i].SyncUI(TransListView);
                                 }
                             }
@@ -1154,14 +1155,14 @@ namespace LexTranslator.UIManagement
             }).Start();
         }
 
-      
+
 
         public SearchData CurrentSearchData = new SearchData();
         public void QuickSearch(bool MatchCase, bool FuzzyMatch)
         {
             if (SearchBox.Text.Trim().Length > 0)
             {
-                NextSearch:
+            NextSearch:
                 string FristChar = SearchBox.Text.Substring(0, 1);
 
                 if (!CurrentSearchData.FristChar.Equals(FristChar))
@@ -1478,7 +1479,7 @@ namespace LexTranslator.UIManagement
                     if (GetGrid != null)
                     {
                         bool RefCloud = false;
-                        GetGrid.SyncData(Mod,ref RefCloud);
+                        GetGrid.SyncData(Mod, ref RefCloud);
 
                         if (GetGrid.TransText.Length > 0)
                         {
@@ -1508,7 +1509,7 @@ namespace LexTranslator.UIManagement
 
                         TranslatorInterface.SetTranslatorHistoryCache(GetGrid.Key, GetGrid.TransText, false);
 
-                        GetGrid.SyncData(Mod,ref RefCloud);
+                        GetGrid.SyncData(Mod, ref RefCloud);
                         GetGrid.SyncUI(TransListView);
                         //DeFine.ExtendWin.SetOriginal(GetGrid.SourceText, DeFine.WorkingWin.GlobalEspReader.StringsReader.QueryData(GetGrid.Key));
                     }
@@ -1549,7 +1550,7 @@ namespace LexTranslator.UIManagement
                         if (QueryGrid != null && TranslateTrd == null)
                         {
                             bool IsCloud = false;
-                            QueryGrid.SyncData(Mod,ref IsCloud);
+                            QueryGrid.SyncData(Mod, ref IsCloud);
 
                             if (QueryGrid.TransText.Length > 0)
                             {
@@ -1667,7 +1668,7 @@ namespace LexTranslator.UIManagement
 
                 bool IsCloud = false;
                 var GetLine = Lines[i];
-                Lines[i].SyncData(Mod,ref IsCloud);
+                Lines[i].SyncData(Mod, ref IsCloud);
 
                 if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
                 {
@@ -1699,13 +1700,13 @@ namespace LexTranslator.UIManagement
 
             if (GetSelectValue.Trim().Length > 0)
             {
-               SelectSig(GetSelectValue);
+                SelectSig(GetSelectValue);
             }
         }
 
-        public void SelectSig(string Sig,Action Callback = null)
+        public void SelectSig(string Sig, Action Callback = null)
         {
-            this.Dispatcher.Invoke(new Action(() => 
+            this.Dispatcher.Invoke(new Action(() =>
             {
                 _IsUpdating = true;
 
@@ -2202,10 +2203,10 @@ namespace LexTranslator.UIManagement
 
                         FromCore = true;
                     }
-                    
+
                 }
-                
-                if(!FromCore)
+
+                if (!FromCore)
                 {
                     ModifyCount = Mod.P_Translator.CalcTranslatedCount(0);
                 }
@@ -2222,7 +2223,8 @@ namespace LexTranslator.UIManagement
                                 {
                                     if (!BarInit)
                                     {
-                                        BarEffect.Dispatcher.Invoke(new Action(() => {
+                                        BarEffect.Dispatcher.Invoke(new Action(() =>
+                                        {
                                             BarEffect.Width = 30;
                                         }));
 
@@ -2327,7 +2329,8 @@ namespace LexTranslator.UIManagement
                 Mod.SyncTransState(
                 new Action(() =>
                 {
-                    Application.Current.Dispatcher.Invoke(new Action(() => {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
                         this.SyncTransStateUI();
                     }));
                 })
@@ -2403,16 +2406,38 @@ namespace LexTranslator.UIManagement
             }
         }
 
+        public bool Saving = false;
+        private static object GlobalSaveLock = new object();
         private void SaveFile_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            try
+            if (Saving) return;
+
+            SaveFileBtn.Opacity = 0.2;
+            SaveFileBtn.IsHitTestVisible = false;
+
+            new Thread(() =>
             {
-                this.Mod.Save();
-            }
-            catch(Exception Ex)
-            {
-                MessageBoxExtend.Show(this._Parent, "Error Saving File", Ex.Message, MsgAction.Yes,MsgType.Waring);
-            }
+                Saving = true;
+                lock (GlobalSaveLock)
+                {
+                    try
+                    {
+                        this.Mod.Save();
+                    }
+                    catch (Exception Ex)
+                    {
+                        MessageBoxExtend.Show(this._Parent, "Error Saving File", Ex.Message, MsgAction.Yes, MsgType.Waring);
+                    }
+                }
+
+                SaveFileBtn.Dispatcher.Invoke(new Action(() =>
+                {
+                    SaveFileBtn.IsHitTestVisible = true;
+                    SaveFileBtn.Opacity = 1;
+                }));
+
+                Saving = false;
+            }).Start();
         }
     }
 }

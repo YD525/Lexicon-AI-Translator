@@ -209,7 +209,7 @@ namespace LexTranslator
             }
         }
 
-        public void LoadRelatedTextRecords(List<RecordItem> Records)
+        public void LoadRelatedTextRecords(string CurrentKey,List<RecordItem> Records)
         {
             RelatedTextListPanel.Children.Clear();
 
@@ -220,11 +220,11 @@ namespace LexTranslator
             {
                 for (int i = 0; i < Records.Count; i++)
                 {
-                    RelatedTextListPanel.Children.Add(BuildRelatedTextCard(Records[i]));
+                    RelatedTextListPanel.Children.Add(BuildRelatedTextCard(CurrentKey,Records[i]));
                 }
             }
         }
-        public void LoadBookRecords(ModFile ModRef, List<RecordItem> Records)
+        public void LoadBookRecords(string CurrentKey,ModFile ModRef, List<RecordItem> Records)
         {
             AutoLabName.Content = "Related Book Entries";
 
@@ -237,11 +237,11 @@ namespace LexTranslator
             {
                 foreach (var GetRecord in Records)
                 {
-                    DialogueListPanel.Children.Add(BuildRelatedTextCard(GetRecord));
+                    DialogueListPanel.Children.Add(BuildRelatedTextCard(CurrentKey, GetRecord));
                 }
             }
         }
-        public void LoadDialogueRecords(ModFile ModRef, List<ManagedDialNode> Records)
+        public void LoadDialogueRecords(string CurrentKey,ModFile ModRef, List<ManagedDialNode> Records)
         {
             AutoLabName.Content = "Related Dialogue Scenes";
 
@@ -254,7 +254,7 @@ namespace LexTranslator
             {
                 for (int i = 0; i < Records.Count; i++)
                 {
-                    var GetLine = BuildDialogueCard(ModRef, Records[i]);
+                    var GetLine = BuildDialogueCard(CurrentKey,ModRef, Records[i]);
                     if (GetLine != null)
                     {
                         DialogueListPanel.Children.Add(GetLine);
@@ -323,7 +323,7 @@ namespace LexTranslator
             return CardBorder;
         }
 
-        private Border BuildRelatedTextCard(RecordItem Item)
+        private Border BuildRelatedTextCard(string CurrentKey,RecordItem Item)
         {
             string Source = "";
 
@@ -363,6 +363,11 @@ namespace LexTranslator
             TextLine.TextWrapping = TextWrapping.Wrap;
             TextLine.Cursor = Cursors.Hand;
 
+            if (CurrentKey == Item.UniqueKey)
+            {
+                TextLine.Opacity = 0.65;
+            }
+
             if (GetFakeGrid.TransText.Length == 0)
             {
                 TextLine.Text = Source;
@@ -397,7 +402,7 @@ namespace LexTranslator
             return CardBorder;
         }
 
-        private Border BuildDialogueCard(ModFile ModRef, ManagedDialNode Item)
+        private Border BuildDialogueCard(string CurrentKey,ModFile ModRef, ManagedDialNode Item)
         {
             if (Item.RecordOffset == -1) return null;
             var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(false,Item.RecordOffset, Item.SubOffset);
@@ -441,6 +446,11 @@ namespace LexTranslator
                 TextLine.FontSize = 13;
                 TextLine.TextWrapping = TextWrapping.Wrap;
                 TextLine.Cursor = Cursors.Hand;
+
+                if (CurrentKey == GetRecord.UniqueKey)
+                {
+                    TextLine.Opacity = 0.65;
+                }
 
                 if (GetFakeGrid.TransText.Length == 0)
                 {

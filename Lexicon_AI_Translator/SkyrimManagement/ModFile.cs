@@ -104,7 +104,7 @@ namespace LexTranslator.SkyrimManagement
         }
 
         public bool CanRestored = false;
-        private void Backup()
+        private bool Backup()
         {
             if (File.Exists(this.Path))
             {
@@ -112,12 +112,16 @@ namespace LexTranslator.SkyrimManagement
 
                 if (File.Exists(BackupPath))
                 {
-                    return;
+                    return false;
                 }
 
                 CanRestored = true;
                 File.Copy(this.Path, BackupPath);
+
+                return true;
             }
+
+            return false;
         }
 
         //private void ClearBackup()
@@ -243,7 +247,7 @@ namespace LexTranslator.SkyrimManagement
 
         public void Save()
         {
-            Backup();
+            var BackupState = Backup();
 
             if (File.Exists(this.Path))
             {
@@ -375,9 +379,18 @@ namespace LexTranslator.SkyrimManagement
                 Lex_Dictionary.WriteDictionary(this.ListView);
                 Lex_Dictionary.CreateDictionary();
 
-                this.Win._Parent?.RemoveTab(this.Path);
-                MessageBoxExtend.Show(this.Win._Parent, "Done!");
-                this.Win._Parent?.LoadFile(this.Path);
+                this.Win.Dispatcher.Invoke(new Action(() => 
+                {
+                    this.Win._Parent?.RemoveTab(this.Path);
+                    MessageBoxExtend.Show(
+                    this.Win._Parent,
+                    "File saved successfully:\r\n" +
+                    this.Path +
+                    "\r\n\r\nRollback backup file created:\r\n" +
+                    this.Path + ".backup"
+                    );
+                    this.Win._Parent?.LoadFile(this.Path);
+                }));
             }
         }
 
