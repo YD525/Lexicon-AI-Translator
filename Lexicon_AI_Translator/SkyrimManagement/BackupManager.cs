@@ -25,7 +25,7 @@ namespace LexTranslator.SkyrimManagement
 
             string FileName = new FileInfo(Path).Name;
            
-            string GetManagePath = FileName + BackupSuffix;
+            string GetManagePath = new FileInfo(Path).Directory + @"\" + FileName + BackupSuffix;
 
             if (File.Exists(GetManagePath))
             {
@@ -58,6 +58,61 @@ namespace LexTranslator.SkyrimManagement
             }
 
             return GetManagePath;
+        }
+
+        public static void RestoreLatest(string ManagePath)
+        {
+            if (!File.Exists(ManagePath))
+                throw new FileNotFoundException(
+                    "Backup file not found",
+                    ManagePath
+                );
+
+
+            List<ZipFileInfo> Infos = ZipHelper.GetFileList(ManagePath);
+
+            if (Infos.Count == 0)
+                throw new InvalidDataException(
+                    "Backup file is empty"
+                );
+
+
+            ZipFileInfo Latest = Infos
+                .OrderByDescending(x => x.Time)
+                .FirstOrDefault();
+
+
+            if (Latest == null)
+                throw new InvalidDataException(
+                    "No backup entry found"
+                );
+
+
+            string[] Names = Latest.Name.Split('_');
+
+            if (Names.Length < 3)
+                throw new InvalidDataException(
+                    "Invalid backup name"
+                );
+
+
+            string FileName = string.Join(
+                "_",
+                Names.Skip(2)
+            );
+
+
+            string OutputPath = Path.Combine(
+                Path.GetDirectoryName(ManagePath),
+                FileName
+            );
+
+
+            ZipHelper.DecompressFile(
+                ManagePath,
+                OutputPath,
+                Latest.Name
+            );
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Web.Caching;
 using System.Windows;
+using LexTranslator.FileManagement;
 using LexTranslator.SkyrimManage;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManagement;
@@ -105,25 +106,7 @@ namespace LexTranslator.SkyrimManagement
         }
 
         public bool CanRestored = false;
-        private bool Backup()
-        {
-            if (File.Exists(this.Path))
-            {
-                string BackupPath = this.Path + ".backup";
 
-                if (File.Exists(BackupPath))
-                {
-                    return false;
-                }
-
-                CanRestored = true;
-                File.Copy(this.Path, BackupPath);
-
-                return true;
-            }
-
-            return false;
-        }
 
         //private void ClearBackup()
         //{
@@ -138,29 +121,18 @@ namespace LexTranslator.SkyrimManagement
         //    }
         //}
 
+        private string BackupManagePath = "";
+        private void Backup()
+        {
+            List<ZipFileInfo> FileLists = new List<ZipFileInfo>();
+            BackupManagePath = BackupManager.AddFile(this.Path, ref FileLists);
+        }
+
         private void RestoreBackup()
         {
-            try
+            if (File.Exists(BackupManagePath))
             {
-                if (File.Exists(this.Path))
-                {
-                    string BackupPath = this.Path + ".backup";
-
-                    if (File.Exists(BackupPath) && CanRestored)
-                    {
-                        if (File.Exists(this.Path))
-                        {
-                            File.Delete(this.Path);
-                        }
-
-                        File.Move(BackupPath, this.Path);
-
-                        CanRestored = false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
+                BackupManager.RestoreLatest(BackupManagePath);
             }
         }
 
@@ -248,13 +220,10 @@ namespace LexTranslator.SkyrimManagement
 
         public void Save()
         {
-            var BackupState = Backup();
-
-           
-
             if (File.Exists(this.Path))
             {
-                //
+                Backup();
+                RestoreBackup();//Test
 
                 var Link = this.P_Translator.GetLink();
 
