@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Web.Caching;
 using System.Windows;
 using LexTranslator.SkyrimManage;
 using LexTranslator.TranslateManage;
@@ -249,8 +250,12 @@ namespace LexTranslator.SkyrimManagement
         {
             var BackupState = Backup();
 
+           
+
             if (File.Exists(this.Path))
             {
+                //
+
                 var Link = this.P_Translator.GetLink();
 
                 if (DeFine.GlobalLocalSetting.UseFullPunctuationJa)
