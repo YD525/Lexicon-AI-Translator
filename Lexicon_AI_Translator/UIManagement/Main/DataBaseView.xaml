@@ -29,7 +29,7 @@
                         <Grid>
                             <DataGridColumnHeader x:Name="PART_FillerColumnHeader"
                                                   IsHitTestVisible="False"
-                                                  Background="#FF1E2A3A"
+                                                  Background="#FF282828"
                                                   BorderThickness="0"
                                                   Width="0"
                                                   MinWidth="0"/>
@@ -238,6 +238,35 @@
 
         <Style TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}"/>
 
+        <!-- Gold-themed button, matches LexGui's SettingActionButton look -->
+        <Style x:Key="GoldButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF282828"/>
+            <Setter Property="Foreground" Value="#FFFAE306"/>
+            <Setter Property="BorderBrush" Value="#FFFAE306"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#FF3A3620"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource GoldButton}">
+            <Setter Property="Foreground" Value="#FFD05353"/>
+            <Setter Property="BorderBrush" Value="#FFD05353"/>
+        </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -248,7 +277,7 @@
         </Grid.RowDefinitions>
 
         <!-- Toolbar -->
-        <Border Grid.Row="0" Background="#FF282828" BorderBrush="#FF333333" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="#FF282828" BorderBrush="#FF3A3A3A" BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="12"/>
@@ -264,24 +293,21 @@
                 <Label Content="Table:" Foreground="#FF888888" VerticalAlignment="Center" Margin="5,0" Grid.Column="1"/>
                 <TextBlock x:Name="TableNameBlock" Foreground="White" Margin="5,0" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Text="—" Grid.Column="2"/>
                 <Label Content="SQL:" Foreground="#FF888888" VerticalAlignment="Center" Margin="5,0" Grid.Column="3"/>
-                
+
                 <TextBox Name="SqlOrder" TextWrapping="Wrap" AcceptsReturn="True"  Visibility="Collapsed">
                 </TextBox>
 
-                <Border BorderThickness="1" CornerRadius="3" Grid.Column="4" BorderBrush="#FF9D9D9D" Background="Transparent" Margin="0 10 0 10" Cursor="Hand" PreviewMouseDown="ShowSqlOrder">
+                <Border BorderThickness="1" CornerRadius="5" Grid.Column="4" BorderBrush="#FF4D4D4D" Background="Transparent" Margin="0 10 0 10" Cursor="Hand" PreviewMouseDown="ShowSqlOrder">
                     <Label Foreground="#FFBFBFBF" Cursor="Hand" Name="SqlOrderCopy">
                         (Click to Edit SQL Command)
                     </Label>
                 </Border>
 
-
                 <Button Content="▶  Query" Margin="5,0" x:Name="QueryBtn" Width="90" Height="28"
-                        Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
-                        FontSize="12" Cursor="Hand" Click="QueryDataBase" Grid.Column="5"/>
+                        Style="{StaticResource GoldButton}" Click="QueryDataBase" Grid.Column="5"/>
                 <Button Content="Delete" Margin="5,0" x:Name="DeleteBtn" Width="90" Height="28"
-                        Background="#FF3B2626" Foreground="#FFD05353" BorderBrush="#FFD05353" BorderThickness="1"
-                        FontSize="12" Cursor="Hand" Click="DeleteSelect" Grid.Column="6"/>
-                <TextBlock x:Name="StatusMsg" Margin="5,0" Foreground="#FF555555" FontSize="11"
+                        Style="{StaticResource DangerButton}" Click="DeleteSelect" Grid.Column="6"/>
+                <TextBlock x:Name="StatusMsg" Margin="5,0" Foreground="#FF707070" FontSize="11"
                            VerticalAlignment="Center" Grid.Column="7"/>
             </Grid>
         </Border>
@@ -297,45 +323,38 @@
             <Grid Grid.Row="0" Cursor="Hand" Background="Black" Opacity="0.6" MouseLeftButtonDown="LayerGrid_MouseLeftButtonDown">
             </Grid>
 
-            <Grid Grid.Row="1" Background="#FF2F2F2F">
+            <Grid Grid.Row="1" Background="#FF282828">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <avalonEdit:TextEditor Name="SqlIDE" Grid.Row="0"  Margin="5" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontSize="16" ShowLineNumbers="True" Background="#FF282828" Foreground="White" WordWrap="True" TextOptions.TextFormattingMode="Display">
+                    <avalonEdit:TextEditor Name="SqlIDE" Grid.Row="0"  Margin="5" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontSize="16" ShowLineNumbers="True" Background="#FF232323" Foreground="White" WordWrap="True" TextOptions.TextFormattingMode="Display">
 
                     </avalonEdit:TextEditor>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 5 0" Grid.Row="1">
 
-
                         <Button Content="Clear" Width="90" Height="28" Margin="10 0 0 0"
-Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
-FontSize="12" Cursor="Hand" Click="Clear"/>
-                        
+                                Style="{StaticResource GoldButton}" Click="Clear"/>
+
                         <Button Content="Cancel" Width="90" Height="28" Margin="10 0 0 0"
- Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
-FontSize="12" Cursor="Hand" Click="Cancel"/>
-                        
+                                Style="{StaticResource GoldButton}" Click="Cancel"/>
+
                         <Button Content="Apply" Width="90" Height="28" Margin="10 0 0 0"
-Background="#FF1A1E2E" Foreground="#FF0B74D1" BorderBrush="#FF0B74D1" BorderThickness="1"
-FontSize="12" Cursor="Hand" Click="Apply"/>
-
-                      
-
+                                Style="{StaticResource GoldButton}" Click="Apply"/>
 
                     </StackPanel>
-             
+
                 </Grid>
-               
+
             </Grid>
 
             <Grid Grid.Row="2" Cursor="Hand" Background="Black" Opacity="0.6" MouseLeftButtonDown="LayerGrid_MouseLeftButtonDown">
             </Grid>
 
         </Grid>
-      
+
 
         <DataGrid x:Name="MainGrid" Panel.ZIndex="1" Grid.Row="1"
                   AutoGenerateColumns="False"
@@ -346,11 +365,11 @@ FontSize="12" Cursor="Hand" Click="Apply"/>
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
                   GridLinesVisibility="All"
-                  Background="#FF202020"
-                  RowBackground="#FF202020"
-                  AlternatingRowBackground="#FF242424"
+                  Background="#FF282828"
+                  RowBackground="#FF282828"
+                  AlternatingRowBackground="#FF2E2E2E"
                   Foreground="#FFD4D4D4"
-                  BorderBrush="#FF333333" BorderThickness="0"
+                  BorderBrush="#FF3A3A3A" BorderThickness="0"
                   HorizontalGridLinesBrush="#FF2A2A2A"
                   VerticalGridLinesBrush="#FF2A2A2A"
                   ColumnHeaderHeight="34"
@@ -363,16 +382,47 @@ FontSize="12" Cursor="Hand" Click="Apply"/>
 
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Background"             Value="#FF1E2A3A"/>
-                    <Setter Property="Foreground"             Value="#FF4AA3F0"/>
-                    <Setter Property="FontWeight"             Value="SemiBold"/>
-                    <Setter Property="FontFamily"             Value="Consolas"/>
-                    <Setter Property="FontSize"               Value="12"/>
-                    <Setter Property="Padding"                Value="10,0"/>
-                    <Setter Property="BorderBrush"            Value="#FF2A4A6A"/>
-                    <Setter Property="BorderThickness"        Value="0,0,1,1"/>
+                    <Setter Property="Background"      Value="#FF282828"/>
+                    <Setter Property="Foreground"      Value="#FFFAE306"/>
+                    <Setter Property="FontWeight"      Value="SemiBold"/>
+                    <Setter Property="FontFamily"      Value="Consolas"/>
+                    <Setter Property="FontSize"        Value="12"/>
+                    <Setter Property="Padding"         Value="10,0"/>
+                    <Setter Property="BorderBrush"     Value="#FF3A3A3A"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                    <Setter Property="Cursor"                 Value="Arrow"/>
+                    <Setter Property="Cursor"          Value="Arrow"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridColumnHeader">
+                                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                                    <Grid>
+                                        <ContentPresenter Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                        <Path x:Name="SortArrow" Visibility="Collapsed" HorizontalAlignment="Right"
+                              VerticalAlignment="Center" Margin="0,0,8,0" Width="8" Height="6"
+                              Fill="#FFFAE306" Stretch="Fill" Data="M0,0 L1,0 0.5,1 Z"/>
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="SortDirection" Value="Ascending">
+                                        <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                                    </Trigger>
+                                    <Trigger Property="SortDirection" Value="Descending">
+                                        <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="SortArrow" Property="RenderTransform">
+                                            <Setter.Value>
+                                                <RotateTransform Angle="180" CenterX="4" CenterY="3"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </DataGrid.ColumnHeaderStyle>
 
@@ -392,17 +442,17 @@ FontSize="12" Cursor="Hand" Click="Apply"/>
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="RowBorder" Property="Background" Value="#FF162030"/>
-                                        <Setter TargetName="Bar"       Property="Fill"       Value="#FF1A74C0"/>
+                                        <Setter TargetName="RowBorder" Property="Background" Value="#332D2A0D"/>
+                                        <Setter TargetName="Bar"       Property="Fill"       Value="#FFFAE306"/>
                                     </Trigger>
-                                    
+
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                 </Style>
             </DataGrid.RowStyle>
-            
+
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness"  Value="0"/>
@@ -417,8 +467,8 @@ FontSize="12" Cursor="Hand" Click="Apply"/>
                             <Setter Property="BorderThickness" Value="0"/>
                         </Trigger>
                         <Trigger Property="IsEditing" Value="True">
-                            <Setter Property="Background"      Value="#FF0A1520"/>
-                            <Setter Property="BorderBrush"     Value="#FF1A74C0"/>
+                            <Setter Property="Background"      Value="#FF333333"/>
+                            <Setter Property="BorderBrush"     Value="#FFFAE306"/>
                             <Setter Property="BorderThickness" Value="0,0,0,2"/>
                         </Trigger>
                     </Style.Triggers>
@@ -432,11 +482,11 @@ FontSize="12" Cursor="Hand" Click="Apply"/>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0">
                 <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#FF555555">
                     <Run Text="Rows: "/>
-                    <Run x:Name="RowCountRun" Text="0" Foreground="#FF4AA3F0"/>
+                    <Run x:Name="RowCountRun" Text="0" Foreground="#FFFAE306"/>
                     <Run Text="   Cols: "/>
-                    <Run x:Name="ColCountRun" Text="0" Foreground="#FF4AA3F0"/>
+                    <Run x:Name="ColCountRun" Text="0" Foreground="#FFFAE306"/>
                     <Run Text="   Table: "/>
-                    <Run x:Name="TableNameRun" Text="—" Foreground="#FF4AA3F0"/>
+                    <Run x:Name="TableNameRun" Text="—" Foreground="#FFFAE306"/>
                 </TextBlock>
             </StackPanel>
         </Border>

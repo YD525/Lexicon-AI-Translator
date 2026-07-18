@@ -231,7 +231,7 @@ namespace LexTranslator.UIManagement
 
                                                 if (TempLinks.Count > 0)
                                                 {
-                                                    TrackingWin.LoadDialogueRecords(SelectKey,Mod, TempLinks);
+                                                    TrackingWin.LoadDialogueRecords(SelectKey,Mod, TempLinks, Token);
                                                 }
                                                 else
                                                 {
@@ -260,7 +260,7 @@ namespace LexTranslator.UIManagement
 
                                                 if (BookLinks.Count > 0)
                                                 {
-                                                    TrackingWin.LoadBookRecords(SelectKey,Mod, BookLinks);
+                                                    TrackingWin.LoadBookRecords(SelectKey,Mod, BookLinks, Token);
                                                 }
                                                 else
                                                 {
@@ -285,7 +285,7 @@ namespace LexTranslator.UIManagement
 
                                             if (Records.Count > 1)
                                             {
-                                                TrackingWin.LoadRelatedTextRecords(SelectKey,Records);
+                                                TrackingWin.LoadRelatedTextRecords(SelectKey,Records, Token);
                                             }
                                             else
                                             {

@@ -32,7 +32,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <Border Grid.Column="0" Width="4" Height="14" Background="#FFFAE306" CornerRadius="2" VerticalAlignment="Center"/>
+                        <Border Grid.Column="0" Width="4" Height="14" Background="#FFF7F1BA" CornerRadius="2" VerticalAlignment="Center"/>
                         <Label Grid.Column="1" Content="Related NPCs" Foreground="White" FontWeight="Bold" FontSize="13" Margin="6 0 0 0" VerticalAlignment="Center"/>
 
                         <Path Grid.Column="3" Name="NpcChevron" Width="12" Height="7" Stretch="Uniform" Margin="0 0 4 0"
@@ -48,7 +48,7 @@
                     </Grid>
                 </Border>
                 <Border Grid.Row="1" Name="NpcContentHost" ClipToBounds="True" Margin="0 0 0 10">
-                    <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Name="NpcScrollViewer" Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Name="NpcListPanel" Orientation="Vertical"/>
                     </ScrollViewer>
                 </Border>
@@ -63,7 +63,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <Border Grid.Column="0" Width="4" Height="14" Background="#FFFAE306" CornerRadius="2" VerticalAlignment="Center"/>
+                        <Border Grid.Column="0" Width="4" Height="14" Background="#FFF7F1BA" CornerRadius="2" VerticalAlignment="Center"/>
                         <Label Grid.Column="1" Content="Related Text Entries" Foreground="White" FontWeight="Bold" FontSize="13" Margin="6 0 0 0" VerticalAlignment="Center"/>
 
                         <Path Grid.Column="3" Name="RelatedTextChevron" Width="12" Height="7" Stretch="Uniform" Margin="0 0 4 0"
@@ -79,7 +79,7 @@
                     </Grid>
                 </Border>
                 <Border Grid.Row="3" Name="RelatedTextContentHost" ClipToBounds="True" Margin="0 0 0 10">
-                    <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Name="RelatedTextScrollViewer" Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Name="RelatedTextListPanel" Orientation="Vertical"/>
                     </ScrollViewer>
                 </Border>
@@ -94,7 +94,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <Border Grid.Column="0" Width="4" Height="14" Background="#FFFAE306" CornerRadius="2" VerticalAlignment="Center"/>
+                        <Border Grid.Column="0" Width="4" Height="14" Background="#FFF7F1BA" CornerRadius="2" VerticalAlignment="Center"/>
                         <Label Name="AutoLabName" Grid.Column="1" Content="Related Dialogue Scenes" Foreground="White" FontWeight="Bold" FontSize="13" Margin="6 0 0 0" VerticalAlignment="Center"/>
 
                         <Path Grid.Column="3" Name="DialogueChevron" Width="12" Height="7" Stretch="Uniform" Margin="0 0 4 0"
@@ -110,7 +110,7 @@
                     </Grid>
                 </Border>
                 <Border Grid.Row="5" Name="DialogueContentHost" ClipToBounds="True" Margin="0 0 0 10">
-                    <ScrollViewer Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Name="DialogueScrollViewer" Style="{DynamicResource for_scrollviewer}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Name="DialogueListPanel" Orientation="Vertical"/>
                     </ScrollViewer>
                 </Border>

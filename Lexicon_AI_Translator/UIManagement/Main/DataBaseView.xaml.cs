@@ -15,7 +15,6 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System.Linq;
-using LexTranslator.TranslateManage;
 using LexTranslator.IDEManagement;
 
 namespace LexTranslator
@@ -330,10 +329,10 @@ namespace LexTranslator
                     EditFactory.SetValue(TextBox.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
                     EditFactory.SetValue(TextBox.MinHeightProperty, 80d);
                     EditFactory.SetValue(TextBox.MaxHeightProperty, 200d);
-                    EditFactory.SetValue(TextBox.BackgroundProperty, new SolidColorBrush(Color.FromRgb(13, 31, 48)));
+                    EditFactory.SetValue(TextBox.BackgroundProperty, new SolidColorBrush(Color.FromRgb(51, 51, 51)));
                     EditFactory.SetValue(TextBox.ForegroundProperty, new SolidColorBrush(Colors.White));
                     EditFactory.SetValue(TextBox.BorderThicknessProperty, new Thickness(0));
-                    EditFactory.SetValue(TextBox.CaretBrushProperty, new SolidColorBrush(Color.FromRgb(11, 116, 209)));
+                    EditFactory.SetValue(TextBox.CaretBrushProperty, new SolidColorBrush(Color.FromRgb(250, 227, 6)));
                     EditFactory.SetValue(TextBox.FontFamilyProperty, new FontFamily("Consolas"));
                     EditFactory.SetValue(TextBox.FontSizeProperty, 12d);
                     EditFactory.SetValue(TextBox.PaddingProperty, new Thickness(10, 6, 10, 6));
@@ -410,9 +409,10 @@ namespace LexTranslator
             var Name = ColumnName.ToLower();
 
             SolidColorBrush Fg;
-            if (Name == "id" || Name.EndsWith("id") || Name.EndsWith("_id"))
-                Fg = new SolidColorBrush(Color.FromRgb(74, 163, 240));   // Blue — primary key
-            else if (Name.Contains("time") || Name.Contains("date") || Name.EndsWith("at"))
+            //if (Name == "id" || Name.EndsWith("id") || Name.EndsWith("_id"))
+            //    Fg = new SolidColorBrush(Color.FromRgb(250, 227, 6));   
+            //else 
+            if (Name.Contains("time") || Name.Contains("date") || Name.EndsWith("at"))
                 Fg = new SolidColorBrush(Color.FromRgb(102, 102, 102));  // Gray — timestamp
             else
                 Fg = new SolidColorBrush(Color.FromRgb(212, 212, 212));  // Default
@@ -436,12 +436,12 @@ namespace LexTranslator
         {
             var Style = new Style(typeof(TextBox));
             Style.Setters.Add(new Setter(TextBox.BackgroundProperty,
-                new SolidColorBrush(Color.FromRgb(13, 31, 48))));
+                new SolidColorBrush(Color.FromRgb(51, 51, 51))));
             Style.Setters.Add(new Setter(TextBox.ForegroundProperty,
                 new SolidColorBrush(Colors.White)));
             Style.Setters.Add(new Setter(TextBox.BorderThicknessProperty, new Thickness(0)));
             Style.Setters.Add(new Setter(TextBox.CaretBrushProperty,
-                new SolidColorBrush(Color.FromRgb(11, 116, 209))));
+                new SolidColorBrush(Color.FromRgb(250, 227, 6))));
             Style.Setters.Add(new Setter(TextBox.FontFamilyProperty, new FontFamily("Consolas")));
             Style.Setters.Add(new Setter(TextBox.FontSizeProperty, 12d));
             Style.Setters.Add(new Setter(TextBox.PaddingProperty, new Thickness(10, 0, 10, 0)));
@@ -565,7 +565,7 @@ namespace LexTranslator
         }
 
         #region Completion
-        
+
         public CompletionWindow Completion;
 
         private static readonly string[] SqlKeywords =
@@ -612,7 +612,7 @@ namespace LexTranslator
             Completion.StartOffset = (Start >= 0 && Doc.GetCharAt(Start) == '[') ? Start : Offset;
 
             StyleCompletionWindow(Completion);
-            AttachCompletionBehavior(Completion);  
+            AttachCompletionBehavior(Completion);
 
             foreach (string Kw in BracketKeywords)
                 Completion.CompletionList.CompletionData.Add(
@@ -650,7 +650,7 @@ namespace LexTranslator
             Completion.StartOffset = Offset;
 
             StyleCompletionWindow(Completion);
-            AttachCompletionBehavior(Completion);  
+            AttachCompletionBehavior(Completion);
 
             Completion.CompletionList.CompletionData.Add(
                 new MyCompletionData(DefaultValue, $"Current value for [{FieldName}]", GetValueIcon()));
@@ -697,7 +697,7 @@ namespace LexTranslator
             Completion.StartOffset = Start;
 
             StyleCompletionWindow(Completion);
-            AttachCompletionBehavior(Completion);  // ← 传入 Completion
+            AttachCompletionBehavior(Completion); 
 
             var Data = Completion.CompletionList.CompletionData;
             foreach (string Kw in SqlKeywords)

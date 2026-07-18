@@ -19,27 +19,27 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="130"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Column="0">
+                        <Grid Grid.Column="0" Margin="5 0 5 0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Ellipse Style="{DynamicResource NormalState}">
                                 </Ellipse>
                                 
-                                <TextBox Style ="{DynamicResource LineKeyFont}" Margin="5 0 0 0">
+                                <TextBox Style ="{DynamicResource LineKeyFont}" Margin="5 0 0 0" Opacity="0.9">
 
                                 </TextBox>
                             </StackPanel>
                         </Grid>
 
-                        <Grid Grid.Column="1" Margin="10 0 10 0">
+                        <Grid Grid.Column="1" Margin="5 0 5 0">
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-                                <TextBox Style = "{DynamicResource LineKeyFont}">
+                                <TextBox Style = "{DynamicResource LineKeyFont}"  Opacity="0.9">
 
                                 </TextBox>
 
@@ -54,20 +54,20 @@
 
                         </Grid>
 
-                        <Grid Grid.Column="2">
+                        <Grid Grid.Column="2" Margin="5 0 5 0">
                             <TextBox Style="{DynamicResource LineOriginalFont}">
                                
                             </TextBox>
                         </Grid>
 
-                        <Grid Grid.Column="3">
+                        <Grid Grid.Column="3" Margin="5 0 5 0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="0"/>
                             </Grid.ColumnDefinitions>
                       
                             <Border Style="{DynamicResource LineTranslatedBorder}" Grid.Column="0">
-                                <avalonEdit:TextEditor Style="{DynamicResource LineTranslatedFont}" Margin="5" Name="FromStr" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" IsReadOnly="True"  FontFamily="Consolas" FontSize="16" ShowLineNumbers="True" WordWrap="True" TextOptions.TextFormattingMode="Display">
+                                <avalonEdit:TextEditor Style="{DynamicResource LineTranslatedFont}" Margin="5" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" IsReadOnly="True"  FontFamily="Consolas" FontSize="16" ShowLineNumbers="True" WordWrap="True" TextOptions.TextFormattingMode="Display">
 
                                 </avalonEdit:TextEditor>
                             </Border>

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.TextFormatting;
-using LexTranslator.SkyrimManage;
+using System.Windows.Threading;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.UIManagement;
-using PhoenixEngine.Translate;
 
 namespace LexTranslator
 {
@@ -24,8 +23,29 @@ namespace LexTranslator
             this.Key = Key;
         }
     }
+
     public partial class RecordTracking : Window
     {
+        private static readonly SolidColorBrush CardBackgroundBrush;
+        private static readonly SolidColorBrush NameTextBrush;
+        private static readonly SolidColorBrush GrayTextBrush;
+        private static readonly SolidColorBrush HighlightTextBrush;
+
+        static RecordTracking()
+        {
+            CardBackgroundBrush = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+            CardBackgroundBrush.Freeze();
+
+            NameTextBrush = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
+            NameTextBrush.Freeze();
+
+            GrayTextBrush = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
+            GrayTextBrush.Freeze();
+
+            HighlightTextBrush = new SolidColorBrush(Color.FromRgb(247, 241, 186));
+            HighlightTextBrush.Freeze();
+        }
+
         private Window _Owner;
 
         private bool _NpcExpanded = true;
@@ -34,7 +54,7 @@ namespace LexTranslator
 
         public ModFile ModRef = null;
 
-        public RecordTracking(ModFile Mod,Window Owner)
+        public RecordTracking(ModFile Mod, Window Owner)
         {
             InitializeComponent();
 
@@ -89,6 +109,7 @@ namespace LexTranslator
             DialogueChevronRotate.Angle = hasDialogue ? 0 : 180;
             _DialogueExpanded = hasDialogue;
         }
+
         private void OwnerMainWindow_StateChanged(object Sender, EventArgs E)
         {
             if (_Owner.WindowState == WindowState.Minimized)
@@ -176,6 +197,7 @@ namespace LexTranslator
             Row.BeginAnimation(RowDefinition.HeightProperty, HeightAnimation);
             ChevronRotate.BeginAnimation(RotateTransform.AngleProperty, RotateAnimation);
         }
+
         private void ExpandSection(RowDefinition Row, RotateTransform ChevronRotate)
         {
             Row.BeginAnimation(RowDefinition.HeightProperty, null);
@@ -209,22 +231,32 @@ namespace LexTranslator
             }
         }
 
-        public void LoadRelatedTextRecords(string CurrentKey,List<RecordItem> Records)
+        public void LoadRelatedTextRecords(string CurrentKey, List<RecordItem> Records, CancellationToken Token)
         {
             RelatedTextListPanel.Children.Clear();
 
             int Count = Records != null ? Records.Count : 0;
             bool HasData = Count > 0;
 
+            Border CurrentCard = null;
+
             if (HasData)
             {
                 for (int i = 0; i < Records.Count; i++)
                 {
-                    RelatedTextListPanel.Children.Add(BuildRelatedTextCard(CurrentKey,Records[i]));
+                    var Card = BuildRelatedTextCard(CurrentKey, Records[i]);
+                    RelatedTextListPanel.Children.Add(Card);
+
+                    if (Records[i].UniqueKey == CurrentKey)
+                        CurrentCard = Card;
                 }
             }
+
+            if (CurrentCard != null)
+                ScrollToCurrentCardDeferred(RelatedTextScrollViewer, CurrentCard, Token);
         }
-        public void LoadBookRecords(string CurrentKey,ModFile ModRef, List<RecordItem> Records)
+
+        public void LoadBookRecords(string CurrentKey, ModFile ModRef, List<RecordItem> Records, CancellationToken Token)
         {
             AutoLabName.Content = "Related Book Entries";
 
@@ -233,15 +265,25 @@ namespace LexTranslator
             int Count = Records != null ? Records.Count : 0;
             bool HasData = Count > 0;
 
+            Border CurrentCard = null;
+
             if (HasData)
             {
                 foreach (var GetRecord in Records)
                 {
-                    DialogueListPanel.Children.Add(BuildRelatedTextCard(CurrentKey, GetRecord));
+                    var Card = BuildRelatedTextCard(CurrentKey, GetRecord);
+                    DialogueListPanel.Children.Add(Card);
+
+                    if (GetRecord.UniqueKey == CurrentKey)
+                        CurrentCard = Card;
                 }
             }
+
+            if (CurrentCard != null)
+                ScrollToCurrentCardDeferred(DialogueScrollViewer, CurrentCard, Token);
         }
-        public void LoadDialogueRecords(string CurrentKey,ModFile ModRef, List<ManagedDialNode> Records)
+
+        public void LoadDialogueRecords(string CurrentKey, ModFile ModRef, List<ManagedDialNode> Records, CancellationToken Token)
         {
             AutoLabName.Content = "Related Dialogue Scenes";
 
@@ -250,17 +292,25 @@ namespace LexTranslator
             int Count = Records != null ? Records.Count : 0;
             bool HasData = Count > 0;
 
+            Border CurrentCard = null;
+
             if (HasData)
             {
                 for (int i = 0; i < Records.Count; i++)
                 {
-                    var GetLine = BuildDialogueCard(CurrentKey,ModRef, Records[i]);
+                    var GetLine = BuildDialogueCard(CurrentKey, ModRef, Records[i]);
                     if (GetLine != null)
                     {
                         DialogueListPanel.Children.Add(GetLine);
+
+                        if (((TrackingItem)GetLine.Tag).Key == CurrentKey)
+                            CurrentCard = GetLine;
                     }
                 }
             }
+
+            if (CurrentCard != null)
+                ScrollToCurrentCardDeferred(DialogueScrollViewer, CurrentCard, Token);
         }
 
         //Card builders
@@ -285,7 +335,7 @@ namespace LexTranslator
             }
 
             Border CardBorder = new Border();
-            CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+            CardBorder.Background = CardBackgroundBrush;  
             CardBorder.CornerRadius = new CornerRadius(6);
             CardBorder.Margin = new Thickness(0, 0, 0, 6);
             CardBorder.Padding = new Thickness(8, 6, 8, 6);
@@ -306,14 +356,14 @@ namespace LexTranslator
 
             TextBlock NameText = new TextBlock();
             NameText.Text = NpcName;
-            NameText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
+            NameText.Foreground = NameTextBrush;  
             NameText.FontSize = 12;
             NameText.FontWeight = FontWeights.DemiBold;
             InfoLine.Children.Add(NameText);
 
             TextBlock GenderText = new TextBlock();
             GenderText.Text = "  (" + Gender + ")";
-            GenderText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
+            GenderText.Foreground = GrayTextBrush; 
             GenderText.FontSize = 12;
             InfoLine.Children.Add(GenderText);
 
@@ -323,7 +373,7 @@ namespace LexTranslator
             return CardBorder;
         }
 
-        private Border BuildRelatedTextCard(string CurrentKey,RecordItem Item)
+        private Border BuildRelatedTextCard(string CurrentKey, RecordItem Item)
         {
             string Source = "";
 
@@ -343,7 +393,7 @@ namespace LexTranslator
             }
 
             Border CardBorder = new Border();
-            CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+            CardBorder.Background = CardBackgroundBrush;  
             CardBorder.CornerRadius = new CornerRadius(6);
             CardBorder.Margin = new Thickness(0, 0, 0, 6);
             CardBorder.Padding = new Thickness(8, 6, 8, 6);
@@ -365,7 +415,7 @@ namespace LexTranslator
 
             if (CurrentKey == Item.UniqueKey)
             {
-                TextLine.Opacity = 0.65;
+                TextLine.Foreground = HighlightTextBrush; 
             }
 
             if (GetFakeGrid.TransText.Length == 0)
@@ -385,14 +435,14 @@ namespace LexTranslator
 
             TextBlock InFoText = new TextBlock();
             InFoText.Text = Item.ParentSig + " " + Item.ChildSig;
-            InFoText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
+            InFoText.Foreground = HighlightTextBrush;  
             InFoText.FontSize = 12;
             InFoText.FontWeight = FontWeights.DemiBold;
             InfoLine.Children.Add(InFoText);
 
             TextBlock ResponseIdText = new TextBlock();
             ResponseIdText.Text = "  #" + Item.UniqueKey;
-            ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
+            ResponseIdText.Foreground = GrayTextBrush;  
             ResponseIdText.FontSize = 12;
             InfoLine.Children.Add(ResponseIdText);
 
@@ -402,10 +452,10 @@ namespace LexTranslator
             return CardBorder;
         }
 
-        private Border BuildDialogueCard(string CurrentKey,ModFile ModRef, ManagedDialNode Item)
+        private Border BuildDialogueCard(string CurrentKey, ModFile ModRef, ManagedDialNode Item)
         {
             if (Item.RecordOffset == -1) return null;
-            var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(false,Item.RecordOffset, Item.SubOffset);
+            var GetRecord = ModRef.EspReader.GetRecordItemByOffsets(false, Item.RecordOffset, Item.SubOffset);
             if (GetRecord != null)
             {
                 string Source = "";
@@ -414,7 +464,7 @@ namespace LexTranslator
 
                 if (GetFakeGrid == null)
                 {
-                    GetFakeGrid = new FakeGrid(0,GetRecord.ParentSig,GetRecord.UniqueKey,GetRecord.String,"",0);
+                    GetFakeGrid = new FakeGrid(0, GetRecord.ParentSig, GetRecord.UniqueKey, GetRecord.String, "", 0);
                     Source = GetRecord.String;
                 }
                 else
@@ -426,11 +476,11 @@ namespace LexTranslator
                 }
 
                 Border CardBorder = new Border();
-                CardBorder.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+                CardBorder.Background = CardBackgroundBrush;  
                 CardBorder.CornerRadius = new CornerRadius(6);
                 CardBorder.Margin = new Thickness(0, 0, 0, 6);
                 CardBorder.Padding = new Thickness(8, 6, 8, 6);
-                CardBorder.Tag = new TrackingItem(ModRef,GetRecord.UniqueKey);
+                CardBorder.Tag = new TrackingItem(ModRef, GetRecord.UniqueKey);
                 CardBorder.PreviewMouseDown += AnyCard_PreviewMouseDown;
                 CardBorder.Cursor = Cursors.Hand;
 
@@ -449,7 +499,7 @@ namespace LexTranslator
 
                 if (CurrentKey == GetRecord.UniqueKey)
                 {
-                    TextLine.Opacity = 0.65;
+                    TextLine.Foreground = HighlightTextBrush;  
                 }
 
                 if (GetFakeGrid.TransText.Length == 0)
@@ -474,22 +524,20 @@ namespace LexTranslator
                 }
                 else
                 {
-                    //Double checking prevents display errors; I'm unsure if the emoji value in ESP will be exactly 999.
                     if (Item.SubOffset == 0)
                     {
                         EmotionText.Text = "Tittle";
                     }
                 }
-               
-                EmotionText.Foreground = new SolidColorBrush(Color.FromRgb(0xFA, 0xE3, 0x06));
+
+                EmotionText.Foreground = HighlightTextBrush;  
                 EmotionText.FontSize = 12;
                 EmotionText.FontWeight = FontWeights.DemiBold;
                 InfoLine.Children.Add(EmotionText);
 
-
                 TextBlock ResponseIdText = new TextBlock();
                 ResponseIdText.Text = "  #" + GetRecord.UniqueKey;
-                ResponseIdText.Foreground = new SolidColorBrush(Color.FromRgb(0xBF, 0xBF, 0xBF));
+                ResponseIdText.Foreground = GrayTextBrush;  
                 ResponseIdText.FontSize = 12;
                 InfoLine.Children.Add(ResponseIdText);
 
@@ -509,7 +557,8 @@ namespace LexTranslator
                 TrackingItem GetTrack = (TrackingItem)((sender as Border).Tag);
                 if (!GetTrack.ModRef.ListView.Goto(GetTrack.Key))
                 {
-                    GetTrack.ModRef?.Win.SelectSig("ALL",new Action(() => {
+                    GetTrack.ModRef?.Win.SelectSig("ALL", new Action(() =>
+                    {
                         GetTrack.ModRef.ListView.Goto(GetTrack.Key);
                     }));
                 }
@@ -519,6 +568,82 @@ namespace LexTranslator
         private void Window_Closed(object sender, EventArgs e)
         {
             MultiWindowController.TrackingWin = null;
+        }
+
+        private void ScrollIntoViewCentered(ScrollViewer Sv, FrameworkElement Element)
+        {
+            try
+            {
+                if (Sv == null || Element == null) return;
+                if (!Element.IsDescendantOf(Sv)) return;
+                if (Element.ActualHeight == 0 || Sv.ViewportHeight == 0) return;
+
+                GeneralTransform Transform = Element.TransformToAncestor(Sv);
+                Point Position = Transform.Transform(new Point(0, 0));
+
+                double CurrentOffset = Sv.VerticalOffset;
+                double ElementTop = CurrentOffset + Position.Y;
+
+                double TargetOffset = ElementTop - (Sv.ViewportHeight - Element.ActualHeight) / 2;
+
+                if (TargetOffset < 0) TargetOffset = 0;
+                if (TargetOffset > Sv.ScrollableHeight) TargetOffset = Sv.ScrollableHeight;
+
+                Sv.ScrollToVerticalOffset(TargetOffset);
+            }
+            catch
+            {
+            }
+        }
+
+        private void ScrollToCurrentCardDeferred(ScrollViewer Sv, Border Card, CancellationToken Token)
+        {
+            if (Sv == null || Card == null) return;
+            if (Token.IsCancellationRequested) return;
+            if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished) return;
+
+            void TryScroll()
+            {
+                if (Token.IsCancellationRequested) return;
+                try
+                {
+                    Sv.UpdateLayout();
+                    ScrollIntoViewCentered(Sv, Card);
+                }
+                catch
+                {
+                }
+            }
+
+            DispatcherOperation Op;
+            try
+            {
+                Op = Dispatcher.BeginInvoke(new Action(TryScroll), DispatcherPriority.Loaded);
+            }
+            catch
+            {
+                return;
+            }
+
+            CancellationTokenRegistration Registration = default;
+            Registration = Token.Register(() =>
+            {
+                try { Op.Abort(); } catch { }
+                Registration.Dispose();
+            });
+
+            Task.Delay(240, Token).ContinueWith(T =>
+            {
+                if (T.IsCanceled) return;
+                try
+                {
+                    if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished) return;
+                    Dispatcher.Invoke(TryScroll);
+                }
+                catch
+                {
+                }
+            }, TaskScheduler.Default);
         }
 
         public void MatchTransItem(string Original, uint StringKey, CancellationToken CancellationToken)
@@ -610,6 +735,6 @@ namespace LexTranslator
             //        }
             //    }
         }
-
     }
 }
+

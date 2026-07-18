@@ -446,12 +446,12 @@
     </Style>
 
     <Style x:Key="ColorB" TargetType="Border">
-        <Setter Property="Background"  Value="#FF0B9BD4"/>
+        <Setter Property="Background"  Value="#FFA7A7A7"/>
         <Setter Property="Cursor"  Value="Hand"/>
     </Style>
 
     <Style x:Key="ColorC" TargetType="Border">
-        <Setter Property="Background"  Value="#FFE59924"/>
+        <Setter Property="Background"  Value="#FFF7F1BA"/>
         <Setter Property="Cursor"  Value="Hand"/>
     </Style>
 
@@ -517,6 +517,7 @@
         <Setter Property="BorderBrush" Value="{x:Null}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
     </Style>
     <Style x:Key="LineTranslatedBorder" TargetType="Border">
         <Setter Property="Background" Value="#FF1D1D1D"/>
@@ -534,6 +535,7 @@
         <Setter Property="Background" Value="{x:Null}"/>
         <Setter Property="BorderBrush" Value="{x:Null}"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
     </Style>
 
     <!-- Minimize icon -->
@@ -1119,7 +1121,7 @@
 
     <!--ListView Selected-->
     <Color x:Key="LineANormal">Black</Color>
-    <Color x:Key="LineASelected">#FF7A7979</Color>
+    <Color x:Key="LineASelected">#FFF7F1BA</Color>
     <Color x:Key="DefFontColor">White</Color>
 
     <Style x:Key="SplitterStyle" TargetType="{x:Type GridSplitter}">
@@ -1162,7 +1164,7 @@
 
     <Style x:Key="ColSplitterStyle" TargetType="{x:Type GridSplitter}">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Width"      Value="8"/>
+        <Setter Property="Width"      Value="3"/>
         <Setter Property="Margin"     Value="0 8 0 8"/>
         <Setter Property="Cursor"     Value="SizeWE"/>
         <Setter Property="Template">
@@ -1438,14 +1440,14 @@
                                 </Border>
                             </Grid>
                         </Border>
-                        <Border Name="ActiveMark" Height="2" VerticalAlignment="Bottom" Margin="8 0 8 0" CornerRadius="2" Background="#FFFAE306" Visibility="Collapsed"/>
+                        <Border Name="ActiveMark" Height="2" VerticalAlignment="Bottom" Margin="8 0 8 0" CornerRadius="2" Background="#FFF7F1BA" Visibility="Collapsed"/>
                     </Grid>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="TabBg" Property="Background" Value="#FF333333"/>
                             <Setter TargetName="Label" Property="Foreground" Value="White"/>
-                            <Setter TargetName="Dot" Property="Fill" Value="#FFFAE306"/>
+                            <Setter TargetName="Dot" Property="Fill" Value="#FFF7F1BA"/>
                             <Setter TargetName="ActiveMark" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="Root" Property="Opacity" Value="1"/>
                         </Trigger>

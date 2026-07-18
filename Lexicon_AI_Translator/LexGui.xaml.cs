@@ -443,24 +443,28 @@ namespace LexTranslator
 
         private void SetMenuSelectedState(Border MenuBorder, bool IsSelected)
         {
-            if (MenuBorder.Child is Grid internalGrid)
+            if (MenuBorder.Child is Grid InternalGrid)
             {
-                var Grids = internalGrid.Children.OfType<Grid>().ToList();
+                var Icons = InternalGrid.Children.OfType<Viewbox>().ToList();
+                var Grids = InternalGrid.Children.OfType<Grid>().ToList();
 
-                if (Grids.Count >= 2)
+                if (Grids.Count >= 2 && Icons.Count >0)
                 {
                     var IndicatorBar = Grids[0];
                     var BGMask = Grids[1];
+                    var Icon = Icons[0];
 
                     if (IsSelected)
                     {
                         IndicatorBar.Visibility = Visibility.Visible;
                         BGMask.Visibility = Visibility.Visible;
+                        Icon.Opacity = 1;
                     }
                     else
                     {
                         IndicatorBar.Visibility = Visibility.Hidden;
                         BGMask.Visibility = Visibility.Hidden;
+                        Icon.Opacity = 0.6;
                     }
                 }
             }

@@ -194,7 +194,7 @@
 
             <Grid Style="{DynamicResource ListViewHeader}" Grid.Row="3" PreviewMouseUp="SyncColumnWidth" Name="TransViewHeader">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="130"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>

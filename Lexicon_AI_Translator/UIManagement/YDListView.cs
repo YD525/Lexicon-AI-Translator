@@ -1,12 +1,10 @@
 ﻿using System.Windows.Controls;
 using System.Windows;
-using LexTranslator;
 using LexTranslator.UIManage;
 using System.Windows.Media;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using LexTranslator.UIManagement;
-using LexTranslator.SkyrimManage;
 using System.Threading;
 using System.Collections.Generic;
 using System;

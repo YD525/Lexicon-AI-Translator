@@ -340,7 +340,7 @@ namespace LexTranslator.UIManagement
         {
             if (Enable)
             {
-                HotKeyDot.Fill = new SolidColorBrush(Color.FromRgb(11, 116, 209));
+                HotKeyDot.Fill = new SolidColorBrush(Color.FromRgb(247, 241, 186));
                 HotKeyArea.ToolTip = ToolTipNextAutoOn;
             }
             else

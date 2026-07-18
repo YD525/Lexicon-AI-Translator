@@ -18,6 +18,14 @@ namespace LexTranslator.UIManagement
     /// </summary>
     public partial class RowStyleWin : Window
     {
+        private static readonly SolidColorBrush ModifiedStateBrush;
+
+        static RowStyleWin()
+        {
+            ModifiedStateBrush = new SolidColorBrush(Color.FromRgb(11, 116, 209));
+            ModifiedStateBrush.Freeze();
+        }
+
         public RowStyleWin()
         {
             InitializeComponent();
@@ -26,7 +34,7 @@ namespace LexTranslator.UIManagement
 
         //Oh no, the way I wrote this is a disaster—I completely forgot the order.
         //Refactoring this area involves a massive amount of work... some of the code here is a real nightmare.
-        public static void SetColor(Grid Grid,int R,int G,int B)
+        public static void SetColor(Grid Grid, int R, int G, int B)
         {
             Color FontColor = Color.FromRgb((byte)R, (byte)G, (byte)B);
 
@@ -40,21 +48,21 @@ namespace LexTranslator.UIManagement
             StackPanel GetStackPanel = (StackPanel)GetTypeGrid.Children[0];
 
             TextBox GetType = (TextBox)GetStackPanel.Children[0];
-            GetType.Foreground = new SolidColorBrush(FontColor);
+            GetType.Foreground = new SolidColorBrush(FontColor); 
 
             StackPanel GetKeyPanel = (StackPanel)((Grid)GetChildGrid.Children[0]).Children[0];
             TextBox GetKey = (TextBox)GetKeyPanel.Children[1];
-            GetKey.Foreground = new SolidColorBrush(FontColor);
+            GetKey.Foreground = new SolidColorBrush(FontColor); 
 
             Grid GetOriginalGrid = (Grid)GetChildGrid.Children[2];
             TextBox GetOriginal = (TextBox)GetOriginalGrid.Children[0];
-            GetOriginal.Foreground = new SolidColorBrush(FontColor);
+            GetOriginal.Foreground = new SolidColorBrush(FontColor); 
 
             Grid GetTranslatedGrid = (Grid)GetChildGrid.Children[3];
             Border GetTranslatedBorder = (Border)GetTranslatedGrid.Children[0];
 
             TextEditor GetTranslated = (TextEditor)(GetTranslatedBorder.Child);
-            GetTranslated.Foreground = new SolidColorBrush(FontColor);
+            GetTranslated.Foreground = new SolidColorBrush(FontColor); 
         }
 
         public static string GetType(Grid Grid)
@@ -78,7 +86,7 @@ namespace LexTranslator.UIManagement
             return GetKey.Text;
         }
 
-        public static void MarkLeader(Grid Grid,bool Visible = true)
+        public static void MarkLeader(Grid Grid, bool Visible = true)
         {
             Grid GetDataGrid = ((Grid)((Border)Grid.Children[0]).Child);
 
@@ -96,7 +104,7 @@ namespace LexTranslator.UIManagement
             }
         }
 
-        public static void SetOriginal(Grid Grid,string Text)
+        public static void SetOriginal(Grid Grid, string Text)
         {
             Grid GetDataGrid = ((Grid)((Border)Grid.Children[0]).Child);
 
@@ -131,7 +139,7 @@ namespace LexTranslator.UIManagement
             return GetTranslated.Text;
         }
 
-        public static void SetTranslated(Grid Grid,string Translated)
+        public static void SetTranslated(Grid Grid, string Translated)
         {
             Grid SetDataGrid = ((Grid)((Border)Grid.Children[0]).Child);
 
@@ -155,7 +163,7 @@ namespace LexTranslator.UIManagement
 
         public static List<string> RecordModifyStates = new List<string>();
 
-        public Grid CreateLine(ModFile Mod,bool IsModify,double Height, BaseUnit Item)
+        public Grid CreateLine(ModFile Mod, bool IsModify, double Height, BaseUnit Item)
         {
             var FindDictionary = Mod.Lex_Dictionary.CheckDictionary(Item.Key);
 
@@ -185,7 +193,7 @@ namespace LexTranslator.UIManagement
                 CanQueryAdvancedDictionary = true;
             }
 
-            var QueryTranslated = Mod.P_Translator.QueryTransData(Item.Key,Item.Type,Item.Original,CanQueryAdvancedDictionary);
+            var QueryTranslated = Mod.P_Translator.QueryTransData(Item.Key, Item.Type, Item.Original, CanQueryAdvancedDictionary);
 
             if (QueryTranslated != null)
             {
@@ -193,7 +201,7 @@ namespace LexTranslator.UIManagement
                 {
                     Item.Translated = QueryTranslated.TransText;
                 }
-            }          
+            }
 
             Color FontColor = Colors.White;
 
@@ -239,7 +247,7 @@ namespace LexTranslator.UIManagement
 
             if (IsModify || RecordModifyStates.Contains(Item.Key))
             {
-                State.Fill = new SolidColorBrush(Color.FromRgb(11, 116, 209));
+                State.Fill = ModifiedStateBrush;
             }
 
             TextBox GetKey = (TextBox)GetStackPanel.Children[1];
@@ -247,8 +255,8 @@ namespace LexTranslator.UIManagement
             GetKey.Text = Item.Key;
 
             if (FontColor == Colors.White)
-            { 
-               FontColor = (Color)Application.Current.Resources["DefFontColor"];
+            {
+                FontColor = (Color)Application.Current.Resources["DefFontColor"];
             }
             GetKey.Foreground = new SolidColorBrush(FontColor);
 
@@ -266,11 +274,11 @@ namespace LexTranslator.UIManagement
             else
             {
                 GetType.Text = Item.Type;
-            }  
+            }
 
             if (FontColor == Colors.White)
-            { 
-               FontColor = (Color)Application.Current.Resources["DefFontColor"];
+            {
+                FontColor = (Color)Application.Current.Resources["DefFontColor"];
             }
 
             GetType.Foreground = new SolidColorBrush(FontColor);
@@ -294,7 +302,7 @@ namespace LexTranslator.UIManagement
                         }
                     }
                 }
-               
+
             }
 
             Grid GetOriginalGrid = (Grid)GetChildGrid.Children[2];
@@ -329,8 +337,8 @@ namespace LexTranslator.UIManagement
             GetTranslated.Text = Item.Translated;
 
             if (FontColor == Colors.White)
-            { 
-               FontColor = (Color)Application.Current.Resources["DefFontColor"];
+            {
+                FontColor = (Color)Application.Current.Resources["DefFontColor"];
             }
 
             GetTranslated.Foreground = new SolidColorBrush(FontColor);
@@ -369,7 +377,7 @@ namespace LexTranslator.UIManagement
                 GetKey.Cursor = Cursors.Hand;
                 GetOriginal.Cursor = Cursors.Hand;
                 GetTranslated.Cursor = Cursors.IBeam;
-                GetTranslated.IsReadOnly = false;              
+                GetTranslated.IsReadOnly = false;
                 GetTranslated.VerticalContentAlignment = VerticalAlignment.Center;
 
                 ApplyLTROrRtl(GetTranslated);
@@ -377,10 +385,10 @@ namespace LexTranslator.UIManagement
 
             if (Item.Score < 0)
             {
-                GetKey.Foreground = new SolidColorBrush(Colors.Red);
-                GetOriginal.Foreground = new SolidColorBrush(Colors.Red);
-                GetTranslated.Foreground = new SolidColorBrush(Colors.Red);
-                GetType.Foreground = new SolidColorBrush(Colors.Red);
+                GetKey.Foreground = Brushes.Red;
+                GetOriginal.Foreground = Brushes.Red;
+                GetTranslated.Foreground = Brushes.Red;
+                GetType.Foreground = Brushes.Red;
                 GetTranslatedBorder.Visibility = Visibility.Collapsed;
                 GetTranslated.IsReadOnly = true;
             }
@@ -422,7 +430,7 @@ namespace LexTranslator.UIManagement
             //try
             //{
             //    string OriginalText = RTB.Text;
-               
+
             //    // Get Key And Target Grid
             //    string Key = P_Convert.ObjToStr(RTB.Tag);
             //    var Target = DeFine.WorkWin.TransViewList.KeyToFakeGrid(Key);
@@ -441,11 +449,11 @@ namespace LexTranslator.UIManagement
             //}
             //finally
             //{
-                
+
             //}
         }
 
-    
+
 
         public void OnePreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -460,7 +468,7 @@ namespace LexTranslator.UIManagement
             if (Parent is ScrollViewer ScrollViewer)
             {
                 ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset - e.Delta);
-                e.Handled = true; 
+                e.Handled = true;
             }
         }
 
