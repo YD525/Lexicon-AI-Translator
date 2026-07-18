@@ -35,7 +35,7 @@ namespace LexTranslator
 
         public static string BackupPath = @"\BackUpData\";
 
-        public static string CurrentVersion = "5.1.3.3";
+        public static string CurrentVersion = "5.1.3.5";
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
         public static RowStyleWin RowStyleWin = new RowStyleWin();

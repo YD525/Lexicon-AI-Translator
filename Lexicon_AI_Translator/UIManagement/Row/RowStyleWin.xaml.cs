@@ -22,7 +22,7 @@ namespace LexTranslator.UIManagement
 
         static RowStyleWin()
         {
-            ModifiedStateBrush = new SolidColorBrush(Color.FromRgb(11, 116, 209));
+            ModifiedStateBrush = new SolidColorBrush(Color.FromRgb(247, 241, 186));
             ModifiedStateBrush.Freeze();
         }
 

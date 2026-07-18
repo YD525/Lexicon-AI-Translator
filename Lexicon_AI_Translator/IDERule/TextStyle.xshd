@@ -2,10 +2,10 @@
 <SyntaxDefinition name="SkyrimBook" extensions=".slua;.lua"
                   xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 
-	<Color name="Tag"     foreground="#FFA500" />
-	<Color name="XMLTag"  foreground="#569CD6" />
-
-	<Color name="StringDouble" foreground="#DADADA" />
+	<Color name="Tag"     foreground="#FFF7F1BA" />
+	<Color name="XMLTag"  foreground="#FFF7F1BA" />
+	<Color name="StringDouble" foreground="#FFF7F1BA" />
+	
 	<Color name="StringSingle" foreground="#CE9178" />
 
 	<RuleSet>
