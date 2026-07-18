@@ -18,7 +18,7 @@
                 <Border Style="{DynamicResource LineBorderStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="55"/>
                             <ColumnDefinition Width="130"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
@@ -29,7 +29,7 @@
                                 <Ellipse Style="{DynamicResource NormalState}">
                                 </Ellipse>
                                 
-                                <TextBox Style ="{DynamicResource LineKeyFont}" Margin="5 0 0 0" Opacity="0.9">
+                                <TextBox Visibility="Collapsed" Style ="{DynamicResource LineKeyFont}" Margin="5 0 0 0" Opacity="0.9">
 
                                 </TextBox>
                             </StackPanel>

@@ -441,7 +441,7 @@ namespace LexTranslator
             InfoLine.Children.Add(InFoText);
 
             TextBlock ResponseIdText = new TextBlock();
-            ResponseIdText.Text = "  #" + Item.UniqueKey;
+            ResponseIdText.Text = "  #" + Item.ParentSig + " " + Item.ChildSig;
             ResponseIdText.Foreground = GrayTextBrush;  
             ResponseIdText.FontSize = 12;
             InfoLine.Children.Add(ResponseIdText);
@@ -536,7 +536,7 @@ namespace LexTranslator
                 InfoLine.Children.Add(EmotionText);
 
                 TextBlock ResponseIdText = new TextBlock();
-                ResponseIdText.Text = "  #" + GetRecord.UniqueKey;
+                ResponseIdText.Text = "  #" + GetRecord.ParentSig + " " + GetRecord.ChildSig;
                 ResponseIdText.Foreground = GrayTextBrush;  
                 ResponseIdText.FontSize = 12;
                 InfoLine.Children.Add(ResponseIdText);

@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using LexTranslator.SkyrimModManager;
-using LexTranslator.TranslateManage;
-using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;
 using PhoenixEngine.Translate;
 
@@ -31,7 +29,7 @@ namespace LexTranslator.SkyrimManagement
                 this.RECID = P_Convert.ObjToInt(Item.RECID);
             }
 
-            this.Key = Crc32Helper.ComputeCrc32(this.RECID + "_" + Item.EDID + "_" + Item.REC);
+            this.Key = this.RECID + "_" + Item.EDID + "_" + Item.REC;
             this.SourceText = Item.Source;
 
             if (Item.Source == Item.Dest)

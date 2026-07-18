@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using LexTranslator.TranslateManage;
-using LexTranslator.TranslateManagement;
 using PhoenixEngine.Common;
 using PhoenixEngine.Translate;
 
@@ -1058,105 +1057,111 @@ namespace LexTranslator.SkyrimManagement
 
         private Dictionary<long, RecordItem> OffsetRecordMap = new Dictionary<long, RecordItem>();
 
+        private object LockQuery = new object();
+
         public void Query()
         {
-            if (!InitOnce)
+            lock (LockQuery)
             {
-                EnsureNotDisposed();
-
-                OffsetRecordMap.Clear();
-                Records.Clear();
-
-                Dictionary<uint, Character> InfoToCharacter = null;
-                List<CharacterRecordInfo> Characters = new List<CharacterRecordInfo>();
-
-                Characters.AddRange(EspNative.GetAllCharacters(_Instance));
-
-                InfoToCharacter = new Dictionary<uint, Character>(Characters.Sum(c => c.LinkedInfos.Count));
-
-                foreach (var Character in Characters)
+                if (!InitOnce)
                 {
-                    var NCH = new Character
+                    EnsureNotDisposed();
+
+                    OffsetRecordMap.Clear();
+                    Records.Clear();
+
+                    Dictionary<uint, Character> InfoToCharacter = null;
+                    List<CharacterRecordInfo> Characters = new List<CharacterRecordInfo>();
+
+                    Characters.AddRange(EspNative.GetAllCharacters(_Instance));
+
+                    InfoToCharacter = new Dictionary<uint, Character>(Characters.Sum(c => c.LinkedInfos.Count));
+
+                    foreach (var Character in Characters)
                     {
-                        Name = Character.Name,
-                        Gender = (CharacterGender)Character.Gender,
-                        VoiceType = Character.VoiceType
-                    };
-                    foreach (var InfoFID in Character.LinkedInfos)
-                    {
-                        if (!InfoToCharacter.ContainsKey(InfoFID))
-                            InfoToCharacter[InfoFID] = NCH;
-                    }
-                }
-
-                Characters.Clear();
-
-                foreach (var GetRecord in EspNative.SearchBySig(_Instance, "ALL"))
-                {
-                    uint RealFormID = GetRecord.FormID;
-                    string ParentFormID = GetRecord.GetFormIDHex();
-                    string ParentSig = GetRecord.Sig;
-
-                    string ParentEditorID = GetRecord.EditorID;
-
-                    foreach (var Sub in GetRecord.SubRecords)
-                    {
-                        var MergeSig = TranslatorRef.GetFileUniqueKey() + ":" + ParentFormID + ":" + ParentSig + ":" + Sub.Sig + ":" + Sub.Index + ":" + ParentEditorID;
-                        string UniqueKey = Crc32Helper.ComputeCrc32(MergeSig);
-
-                        RecordItem NRecordItem = new RecordItem
+                        var NCH = new Character
                         {
-                            RealFormID = RealFormID,
-                            StringID = Sub.StringID,
-                            FormID = ParentFormID,
-                            EditorID = ParentEditorID,
-                            ParentSig = ParentSig,
-                            ChildSig = Sub.Sig,
-                            UniqueKey = UniqueKey,
-                            String = Sub.Content,
-                            ParentIndex = GetRecord.Index,
-                            SubIndex = Sub.Index,
-                            OccurrenceIndex = Sub.OccurrenceIndex
+                            Name = Character.Name,
+                            Gender = (CharacterGender)Character.Gender,
+                            VoiceType = Character.VoiceType
                         };
-
-                        if (InfoToCharacter != null && InfoToCharacter.TryGetValue(RealFormID, out var MatchedChar))
+                        foreach (var InfoFID in Character.LinkedInfos)
                         {
-                            if (GameCharacters.TryGetValue(UniqueKey, out var List))
-                                List.Add(MatchedChar);
-                            else
-                                GameCharacters[UniqueKey] = new List<Character> { MatchedChar };
-                        }
-
-                        if (NRecordItem.String.Length > 0)
-                        {
-                            if (!Records.ContainsKey(NRecordItem.UniqueKey))
-                            {
-                                Records.Add(NRecordItem.UniqueKey, NRecordItem);
-
-                                bool IsCell = false;
-
-                                if (NRecordItem.ParentSig == "CELL")
-                                {
-                                    IsCell = true;
-                                }
-
-                                long OffsetKey = MakeOffsetKey(IsCell, NRecordItem.ParentIndex, NRecordItem.SubIndex);
-
-                                OffsetRecordMap[OffsetKey] = NRecordItem;
-                            }
-                            else
-                            {
-                                throw new Exception("Warning: Duplicate key detected: {NRecordItem.UniqueKey}");
-                            }
-                        }
-                        else
-                        {
-
+                            if (!InfoToCharacter.ContainsKey(InfoFID))
+                                InfoToCharacter[InfoFID] = NCH;
                         }
                     }
-                }
 
-                InitOnce = true;
+                    Characters.Clear();
+
+                    foreach (var GetRecord in EspNative.SearchBySig(_Instance, "ALL"))
+                    {
+                        uint RealFormID = GetRecord.FormID;
+                        string ParentFormID = GetRecord.GetFormIDHex();
+                        string ParentSig = GetRecord.Sig;
+
+                        bool IsCell = false;
+
+                        if (ParentSig == "CELL")
+                        {
+                            IsCell = true;
+                        }
+
+                        string ParentEditorID = GetRecord.EditorID;
+
+                        foreach (var Sub in GetRecord.SubRecords)
+                        {
+                            var MergeSig = ParentSig + "_" + Sub.Sig + "_" + ParentEditorID + GetRecord.GetFormIDHex() + "_"+ GetRecord.Index + "_" + Sub.Index + "_" + TranslatorRef.GetFileUniqueKey() + "_" + (IsCell?1:0).ToString();
+                            string UniqueKey = MergeSig;
+
+                            RecordItem NRecordItem = new RecordItem
+                            {
+                                RealFormID = RealFormID,
+                                StringID = Sub.StringID,
+                                FormID = ParentFormID,
+                                EditorID = ParentEditorID,
+                                ParentSig = ParentSig,
+                                ChildSig = Sub.Sig,
+                                UniqueKey = UniqueKey,
+                                String = Sub.Content,
+                                ParentIndex = GetRecord.Index,
+                                SubIndex = Sub.Index,
+                                OccurrenceIndex = Sub.OccurrenceIndex
+                            };
+
+                            if (InfoToCharacter != null && InfoToCharacter.TryGetValue(RealFormID, out var MatchedChar))
+                            {
+                                if (GameCharacters.TryGetValue(UniqueKey, out var List))
+                                    List.Add(MatchedChar);
+                                else
+                                    GameCharacters[UniqueKey] = new List<Character> { MatchedChar };
+                            }
+
+                            if (NRecordItem.String.Length > 0)
+                            {
+                                if (!Records.ContainsKey(NRecordItem.UniqueKey))
+                                {
+                                    Records.Add(NRecordItem.UniqueKey, NRecordItem);
+
+                                    long OffsetKey = MakeOffsetKey(IsCell, NRecordItem.ParentIndex, NRecordItem.SubIndex);
+
+                                    OffsetRecordMap[OffsetKey] = NRecordItem;
+                                }
+                                else
+                                {
+                                    var Get = NRecordItem.UniqueKey;
+                                    throw new Exception($"Warning: Duplicate key detected: {NRecordItem.UniqueKey}");
+                                }
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
+
+                    InitOnce = true;
+                }
             }
         }
 
