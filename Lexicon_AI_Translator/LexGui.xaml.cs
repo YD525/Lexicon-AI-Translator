@@ -357,6 +357,13 @@ namespace LexTranslator
                 {
                     case "InFo":
                         {
+                            if (IsExpanded)
+                            {
+                                SyncAnimation();
+                                ShowLeftMenu(false);
+                                LogView.Visibility = Visibility.Collapsed;
+                            }
+
                             YDChart.Stop();
                             PageIndex = 0;
                             StartLexGlowLoop();
@@ -374,6 +381,13 @@ namespace LexTranslator
                         break;
                     case "DashBoard":
                         {
+                            if (IsExpanded)
+                            {
+                                SyncAnimation();
+                                ShowLeftMenu(false);
+                                LogView.Visibility = Visibility.Collapsed;
+                            }
+
                             PageIndex = 1;
                             StopLexGlowLoop();
 
@@ -406,6 +420,13 @@ namespace LexTranslator
                         break;
                     case "Settings":
                         {
+                            if (IsExpanded)
+                            {
+                                SyncAnimation();
+                                ShowLeftMenu(false);
+                                LogView.Visibility = Visibility.Collapsed;
+                            }
+
                             YDChart.Stop();
                             PageIndex = 3;
                             StopLexGlowLoop();
