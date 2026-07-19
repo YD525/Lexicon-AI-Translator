@@ -289,54 +289,46 @@ public class YDListView
             return;
 
         SelectLineID++;
-
         if (SelectLineID >= RealLines.Count)
         {
             SelectLineID = 0;
         }
 
+        var TargetLogicItem = RealLines[SelectLineID];
+        Grid MatchGrid = null;
+        foreach (var G in VisibleRows)
+        {
+            if (RowStyleWin.GetKey(G.View).Equals(TargetLogicItem.Key))
+            {
+                MatchGrid = G.View;
+                break;
+            }
+        }
+
+        if (MatchGrid != null && IsGridInViewport(MatchGrid))
+        {
+            SetSelectLine(MatchGrid, true);
+        }
         else
         {
-            var TargetLogicItem = RealLines[SelectLineID];
-
-            Grid MatchGrid = null;
-            foreach (var G in VisibleRows)
+            double Offset = 0;
+            for (int i = 0; i < SelectLineID; i++)
             {
-                if (RowStyleWin.GetKey(G.View).Equals(TargetLogicItem.Key))
-                {
-                    MatchGrid = G.View;
-                    break;
-                }
+                Offset += RealLines[i].Height;
             }
-
-            if (MatchGrid != null && IsGridInViewport(MatchGrid))
+            Scroll.ScrollToVerticalOffset(Offset);
+            UpdateVisibleRows(true);
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                SetSelectLine(MatchGrid, true);
-            }
-            else
-            {
-                double Offset = 0;
-                for (int i = 0; i < SelectLineID; i++)
+                foreach (var G in VisibleRows)
                 {
-                    Offset += RealLines[i].Height;
-                }
-
-                Scroll.ScrollToVerticalOffset(Offset);
-
-                UpdateVisibleRows(true);
-
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                {
-                    foreach (var G in VisibleRows)
+                    if (RowStyleWin.GetKey(G.View).Equals(TargetLogicItem.Key))
                     {
-                        if (RowStyleWin.GetKey(G.View).Equals(TargetLogicItem.Key))
-                        {
-                            SetSelectLine(G.View, true);
-                            break;
-                        }
+                        SetSelectLine(G.View, true);
+                        break;
                     }
-                }));
-            }
+                }
+            }));
         }
     }
 
