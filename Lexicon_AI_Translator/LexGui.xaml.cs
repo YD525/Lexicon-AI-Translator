@@ -690,6 +690,7 @@ namespace LexTranslator
                 CTX.View.Visibility = Visibility.Visible;
                 ActiveTab = CTX.View;
                 ActiveTab.Active();
+                MultiWindowController.AttachMod(ActiveTab.LastSetKey,this,ActiveTab.Mod);
                 TranslateConfigView.ChangeTab();
             }
         }

@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using LexTranslator.UIManagement;
 using LexTranslator.SkyrimManagement;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace LexTranslator
 {
@@ -171,69 +173,84 @@ namespace LexTranslator
             });
         }
 
-        public Thread AutoSelectIDETrd = null;
-        public void SelectLineFromIDE(int LineID, string Value)
+
+        private CancellationTokenSource SearchCts = null;
+        public async Task SelectLineFromIDEAsync(int LineId, string Value, CancellationToken CancellationToken = default, bool FocusEditor = false)
         {
-            if (AutoSelectIDETrd != null)
+            SearchCts?.Cancel();
+            SearchCts = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken);
+            var LocalCts = SearchCts;
+            var Token = LocalCts.Token;
+
+            try
             {
-                try
+                string FullText = null;
+                this.Dispatcher.Invoke(() =>
                 {
-                    AutoSelectIDETrd.Abort();
-                }
-                catch { }
-                AutoSelectIDETrd = null;
-            }
+                    FullText = TextEditor.Text; 
+                });
 
-            Value = "\"" + Value + "\"";
+                string SearchValue = "\"" + Value + "\"";
+                int StartLine = LineId == 0 ? 1 : LineId;
 
-            if (LineID == 0)
-            {
-                LineID = 1;
-            }
+                var SearchResult = await Task.Run(() =>
+                {
+                    int FoundLine = -1;
+                    int FoundOffset = -1;
+                    int FoundLength = SearchValue.Length;
 
-            AutoSelectIDETrd = new Thread(() =>
-            {
-                try
+                    using (var Reader = new System.IO.StringReader(FullText))
+                    {
+                        int CurrentLine = 1;
+                        string LineText;
+                        while ((LineText = Reader.ReadLine()) != null)
+                        {
+                            if (CurrentLine >= StartLine)
+                            {
+                                Token.ThrowIfCancellationRequested();
+                                int Index = LineText.IndexOf(SearchValue, StringComparison.OrdinalIgnoreCase);
+                                if (Index >= 0)
+                                {
+                                    FoundLine = CurrentLine;
+                                    FoundOffset = Index;
+                                    break;
+                                }
+                            }
+                            CurrentLine++;
+                        }
+                    }
+
+                    return (FoundLine, FoundOffset, FoundLength);
+                }, Token);
+
+                if (SearchResult.FoundLine != -1)
                 {
                     this.Dispatcher.Invoke(() =>
                     {
+                        Token.ThrowIfCancellationRequested();
                         var Editor = TextEditor;
                         var Doc = Editor.Document;
-
-                        int TotalLines = Doc.LineCount;
-
-                        for (int i = LineID; i <= TotalLines; i++)
+                        var Line = Doc.GetLineByNumber(SearchResult.FoundLine);
+                        int Offset = Line.Offset + SearchResult.FoundOffset;
+                        Editor.ScrollToLine(SearchResult.FoundLine);
+                        Editor.Select(Offset, SearchResult.FoundLength);
+                        Editor.CaretOffset = Offset + SearchResult.FoundLength;
+                        if (FocusEditor)
                         {
-                            var Line = Doc.GetLineByNumber(i);
-                            string Text = Doc.GetText(Line);
-
-                            int Index = Text.IndexOf(Value, StringComparison.OrdinalIgnoreCase);
-
-                            if (Index >= 0)
-                            {
-                                int Offset = Line.Offset + Index;
-
-                                Editor.ScrollToLine(i);
-                                Editor.Select(Offset, Value.Length);
-                                Editor.CaretOffset = Offset + Value.Length;
-                                Editor.Focus();
-
-                                break;
-                            }
+                            Editor.Focus();
                         }
                     });
                 }
-                catch (OperationCanceledException)
-                {
-                }
-
-                AutoSelectIDETrd = null;
-            });
-
-
-            AutoSelectIDETrd.Start();
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception) { }
+            finally
+            {
+                if (SearchCts == LocalCts)
+                    SearchCts = null;
+            }
         }
     }
 
-  
+
 }

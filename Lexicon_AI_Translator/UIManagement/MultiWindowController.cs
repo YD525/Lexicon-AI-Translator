@@ -159,6 +159,10 @@ namespace LexTranslator.UIManagement
         private static CancellationTokenSource _DebounceTokenSource;
         public static void AttachMod(string SelectKey, LexGui CurrentWin, ModFile Mod)
         {
+            if (SelectKey == null || SelectKey == string.Empty)
+            {
+                return;
+            }
             string AttachKey = SelectKey + "_" + Mod.FileName;
 
             if (LastSetAttachKey != AttachKey)
@@ -305,16 +309,16 @@ namespace LexTranslator.UIManagement
                                     OpenCodeWin(Mod, CurrentWin);
 
                                     var GetGrid = Mod.ListView.KeyToFakeGrid(SelectKey);
-
                                     string Text = GetGrid.RealSource;
-
                                     if (Mod.PexLinks.ContainsKey(SelectKey) && Text == "")
-                                    {
                                         Text = GetGrid.SourceText;
-                                    }
 
-                                    CodeWin.SelectLineFromIDE(Mod.PexLinks[SelectKey], Text);
+                                    if (CodeWin.TextEditor.Text != Mod.PSCCode)
+                                        CodeWin.TextEditor.Text = Mod.PSCCode;
 
+                                    _ = CodeWin.SelectLineFromIDEAsync(Mod.PexLinks[SelectKey], Text);
+
+                                    CurrentWin.Focus();
                                     break;
                                 }
                         }
