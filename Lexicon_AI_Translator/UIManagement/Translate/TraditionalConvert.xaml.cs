@@ -49,7 +49,8 @@ namespace LexTranslator
         {
             ConvertTrd = new Thread(() =>
             {
-                int Total = _Owner.TransListView.RealLines.Count;
+                int Total = 0;
+
 
                 for (int i = 0; i < _Owner.TransListView.RealLines.Count; i++)
                 {
@@ -57,11 +58,37 @@ namespace LexTranslator
                     {
                         continue;
                     }
-                    string Source = _Owner.TransListView.RealLines[i].SourceText;
-                    var Result = ChineseVariantMap.SimplifiedToTraditionalByReq(Source);
 
-                    if (Source.ToLower().Replace(" ","") != Result.ToLower().Replace(" ", ""))
+                    string Source = _Owner.TransListView.RealLines[i].SourceText;
+
+                    bool IsCloud = false;
+                    _Owner.TransListView.RealLines[i].SyncData(this._Owner.Mod, ref IsCloud);
+
+                    if (_Owner.TransListView.RealLines[i].TransText.Length == 0)
                     {
+                        Total++;
+                    }
+                }
+
+                int Current = 0;
+                for (int i = 0; i < _Owner.TransListView.RealLines.Count; i++)
+                {
+                    if (_Owner.TransListView.RealLines[i].Score <= 0)
+                    {
+                        continue;
+                    }
+
+                    string Source = _Owner.TransListView.RealLines[i].SourceText;
+
+                    bool IsCloud = false;
+                    _Owner.TransListView.RealLines[i].SyncData(this._Owner.Mod,ref IsCloud);
+
+                    if (_Owner.TransListView.RealLines[i].TransText.Length == 0)
+                    {
+                        Current++;
+
+                        var Result = ChineseVariantMap.SimplifiedToTraditionalByReq(Source);
+
                         _Owner.TransListView.RealLines[i].TransText = Result;
 
                         var Key = _Owner.TransListView.RealLines[i].Key;
@@ -70,9 +97,8 @@ namespace LexTranslator
 
                         Link[Key] = Result;
 
-                        bool IsCloud = false;
                         ConvertAllBtn.Dispatcher.Invoke(new Action(() => {
-                            _Owner.TransListView.RealLines[i].SyncData(_Owner.Mod,ref IsCloud);
+                            _Owner.TransListView.RealLines[i].SyncData(_Owner.Mod, ref IsCloud);
                         }));
 
                         CloudDBCache.AddCache(_Owner.Mod.P_Translator.GetFileUniqueKey(), Key, (int)_Owner.Mod.P_Translator.To, Source, Result);
@@ -80,10 +106,10 @@ namespace LexTranslator
                         ConvertAllBtn.Dispatcher.Invoke(new Action(() => {
                             _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
                         }));
-                    }
+                    } 
 
                     ConvertAllBtn.Dispatcher.Invoke(new Action(() => {
-                        ConvertAllBtn.Content = string.Format("Converting ({0}/{1})", i, Total);
+                        ConvertAllBtn.Content = string.Format("Converting ({0}/{1})", Current, Total);
                     }));
                 }
 
