@@ -434,7 +434,7 @@ namespace LexTranslator
             InfoLine.Margin = new Thickness(0, 4, 0, 0);
 
             TextBlock InFoText = new TextBlock();
-            InFoText.Text = Item.ParentSig + " " + Item.ChildSig;
+            InFoText.Text = "Matched";
             InFoText.Foreground = HighlightTextBrush;  
             InFoText.FontSize = 12;
             InFoText.FontWeight = FontWeights.DemiBold;
