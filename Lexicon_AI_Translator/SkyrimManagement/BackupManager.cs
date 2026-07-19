@@ -12,49 +12,60 @@ namespace LexTranslator.SkyrimManagement
 
         public static string BackupSuffix = "_backup.zip";
 
-        public static string CreateBackupName(string FileName,int ID)
+        public static string CreateBackupName(string FileName, int ID)
         {
             string Time = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
             return $"{Time}_{ID}_{FileName}";
         }
 
-        public static string AddFile(string Path,ref List<ZipFileInfo> InFos)
+        public static string AddFile(string Path, ref List<ZipFileInfo> InFos)
         {
+            NextCall:
+
             int ID = 0;
 
             string FileName = new FileInfo(Path).Name;
-           
+
             string GetManagePath = new FileInfo(Path).Directory + @"\" + FileName + BackupSuffix;
 
             if (File.Exists(GetManagePath))
             {
-                InFos = ZipHelper.GetFileList(GetManagePath);
-
-                if (InFos.Count >= 10)
+                try
                 {
-                    ZipFileInfo Oldest = InFos.OrderBy(x => x.Time).FirstOrDefault();
+                    InFos = ZipHelper.GetFileList(GetManagePath);
 
-                    if (Oldest != null)
+                    if (InFos.Count >= 10)
                     {
-                        ZipHelper.DeleteFileFromZip(
-                            GetManagePath,
-                            Oldest.Name
-                        );
+                        ZipFileInfo Oldest = InFos.OrderBy(x => x.Time).FirstOrDefault();
 
-                        InFos.Remove(Oldest);
+                        if (Oldest != null)
+                        {
+                            ZipHelper.DeleteFileFromZip(
+                                GetManagePath,
+                                Oldest.Name
+                            );
+
+                            InFos.Remove(Oldest);
+                        }
                     }
+
+                    ID = InFos.Count;
+
+                    ZipHelper.AddFileToZip(GetManagePath, Path, CreateBackupName(FileName, ID));
+
+                    return GetManagePath;
                 }
-
-                ID = InFos.Count;
-
-                ZipHelper.AddFileToZip(GetManagePath,Path,CreateBackupName(FileName, ID));
-
-                return GetManagePath;
+                catch 
+                {
+                    //If the compressed archive is corrupted, it needs to be regenerated.
+                    File.Delete(GetManagePath);
+                    goto NextCall;
+                }
             }
             else
             {
-                ZipHelper.CompressFile(Path,GetManagePath,CreateBackupName(FileName, ID));
+                ZipHelper.CompressFile(Path, GetManagePath, CreateBackupName(FileName, ID));
             }
 
             return GetManagePath;
