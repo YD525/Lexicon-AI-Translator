@@ -920,7 +920,7 @@ namespace LexTranslator
                 if (_Owner.ActiveTab != null)
                 {
                     LanguageDetector Detector = new LanguageDetector();
-                    for (int i = 0; i < 200; i++)
+                    for (int i = 0; i < 700; i++)
                     {
                         if (_Owner.ActiveTab.TransListView.RealLines.Count > i)
                         {
