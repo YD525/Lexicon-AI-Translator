@@ -59,7 +59,11 @@ namespace LexTranslator.SkyrimManagement
                 catch 
                 {
                     //If the compressed archive is corrupted, it needs to be regenerated.
-                    File.Delete(GetManagePath);
+                    if (File.Exists(GetManagePath))
+                    {
+                        File.Delete(GetManagePath);
+                    }
+                    
                     goto NextCall;
                 }
             }
