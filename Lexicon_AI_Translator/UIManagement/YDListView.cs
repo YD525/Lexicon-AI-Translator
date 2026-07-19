@@ -235,11 +235,8 @@ public class YDListView
             return;
 
         SelectLineID--;
-
         if (SelectLineID < 0)
-        {
             SelectLineID = RealLines.Count - 1;
-        }
 
         var TargetLogicItem = RealLines[SelectLineID];
 
@@ -267,10 +264,10 @@ public class YDListView
 
             Scroll.ScrollToVerticalOffset(Offset);
 
-            UpdateVisibleRows(true);
-
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
             {
+                UpdateVisibleRows(true);
+
                 foreach (var G in VisibleRows)
                 {
                     if (RowStyleWin.GetKey(G.View).Equals(TargetLogicItem.Key))
@@ -316,10 +313,13 @@ public class YDListView
             {
                 Offset += RealLines[i].Height;
             }
+
             Scroll.ScrollToVerticalOffset(Offset);
-            UpdateVisibleRows(true);
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
             {
+                UpdateVisibleRows(true);
+
                 foreach (var G in VisibleRows)
                 {
                     if (RowStyleWin.GetKey(G.View).Equals(TargetLogicItem.Key))

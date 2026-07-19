@@ -462,6 +462,7 @@ namespace LexTranslator.UIManagement
                             MousePos.Y >= 0 && MousePos.Y <= ToStr.ActualHeight)
                         {
                             ToStr.Focus();
+                            ToStr.CaretOffset = ToStr.Text.Length;
                         }
 
                         AutoLoadHistoryList();
