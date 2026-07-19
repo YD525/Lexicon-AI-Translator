@@ -912,5 +912,27 @@ namespace LexTranslator
             //Select * From AdvancedDictionary Where Source Like '%[pagebreak]%' or  Source Like '%<font' (I just threw this together to match the content of all the books.) - > Compared to using regular expressions for pattern matching, utilizing the `LIKE` and `GLOB` commands in SQL operates directly at the database engine level, enabling millisecond-level query performance.
             DeFine.OpenDataBaseView(this,$"Select * From AdvancedDictionary Where [From] = {(int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.From} And [To] = {(int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.To} Limit 100000");
         }
+
+        private void DetectFrom(object sender, MouseButtonEventArgs e)
+        {
+            if (_Owner != null)
+            {
+                if (_Owner.ActiveTab != null)
+                {
+                    LanguageDetector Detector = new LanguageDetector();
+                    for (int i = 0; i < 200; i++)
+                    {
+                        if (_Owner.ActiveTab.TransListView.RealLines.Count > i)
+                        {
+                            P_Language.DetectLanguage(ref Detector, _Owner.ActiveTab.TransListView.RealLines[i].SourceText);
+                        }
+                    }
+
+                    _Owner.ActiveTab.Mod.P_Translator.From = Detector.GetMaxLang();
+                    SFrom.SelectedValue = _Owner.ActiveTab.Mod.P_Translator.From.ToString();
+                }
+            }
+          
+        }
     }
 }
