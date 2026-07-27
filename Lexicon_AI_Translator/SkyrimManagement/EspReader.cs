@@ -904,7 +904,7 @@ namespace LexTranslator.SkyrimManagement
                         );
                 }
                 else
-               if (Item.ParentSig == "BOOK" && Item.ChildSig == "FULL")//Tittle
+                if (Item.ParentSig == "BOOK" && Item.ChildSig == "FULL")//Tittle
                 {
                     return new BookInFoItem(
                        Item.ParentIndex,

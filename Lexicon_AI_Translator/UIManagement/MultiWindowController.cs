@@ -113,23 +113,26 @@ namespace LexTranslator.UIManagement
                     if (GetRecord.ParentSig == "BOOK")
                     {
                         var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
-                        RecordItem Tittle = null;
-                        RecordItem Content = null;
-
-                        if (GetBookInFo.TittleSubOffset != -1)
-                            Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
-
-                        if (GetBookInFo.ContentSubOffset != -1)
-                            Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
-
-                        List<RecordItem> BookLinks = new List<RecordItem>();
-
-                        if (Tittle != null) BookLinks.Add(Tittle);
-                        if (Content != null) BookLinks.Add(Content);
-
-                        foreach (var GetLink in BookLinks)
+                        if (GetBookInFo != null)
                         {
-                            FindKeys.Add(GetLink.UniqueKey);
+                            RecordItem Tittle = null;
+                            RecordItem Content = null;
+
+                            if (GetBookInFo.TittleSubOffset != -1)
+                                Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+
+                            if (GetBookInFo.ContentSubOffset != -1)
+                                Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+
+                            List<RecordItem> BookLinks = new List<RecordItem>();
+
+                            if (Tittle != null) BookLinks.Add(Tittle);
+                            if (Content != null) BookLinks.Add(Content);
+
+                            foreach (var GetLink in BookLinks)
+                            {
+                                FindKeys.Add(GetLink.UniqueKey);
+                            }
                         }
                     }
                 }
@@ -245,30 +248,34 @@ namespace LexTranslator.UIManagement
                                             else if (GetRecord.ParentSig == "BOOK")
                                             {
                                                 var GetBookInFo = Mod.EspReader.GetBookInFo(GetRecord);
-                                                RecordItem Tittle = null;
-                                                RecordItem Content = null;
 
-                                                if (GetBookInFo.TittleSubOffset != -1)
+                                                if (GetBookInFo != null)
                                                 {
-                                                    Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
-                                                }
+                                                    RecordItem Tittle = null;
+                                                    RecordItem Content = null;
 
-                                                if (GetBookInFo.ContentSubOffset != -1)
-                                                {
-                                                    Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
-                                                }
+                                                    if (GetBookInFo.TittleSubOffset != -1)
+                                                    {
+                                                        Tittle = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.TittleSubOffset);
+                                                    }
 
-                                                List<RecordItem> BookLinks = new List<RecordItem>();
-                                                if (Tittle != null) BookLinks.Add(Tittle);
-                                                if (Content != null) BookLinks.Add(Content);
+                                                    if (GetBookInFo.ContentSubOffset != -1)
+                                                    {
+                                                        Content = Mod.EspReader.GetRecordItemByOffsets(false, GetBookInFo.RecordOffset, GetBookInFo.ContentSubOffset);
+                                                    }
 
-                                                if (BookLinks.Count > 0)
-                                                {
-                                                    TrackingWin.LoadBookRecords(SelectKey,Mod, BookLinks, Token);
-                                                }
-                                                else
-                                                {
-                                                    TrackingWin.DialogueListPanel.Children.Clear();
+                                                    List<RecordItem> BookLinks = new List<RecordItem>();
+                                                    if (Tittle != null) BookLinks.Add(Tittle);
+                                                    if (Content != null) BookLinks.Add(Content);
+
+                                                    if (BookLinks.Count > 0)
+                                                    {
+                                                        TrackingWin.LoadBookRecords(SelectKey, Mod, BookLinks, Token);
+                                                    }
+                                                    else
+                                                    {
+                                                        TrackingWin.DialogueListPanel.Children.Clear();
+                                                    }
                                                 }
                                             }
 

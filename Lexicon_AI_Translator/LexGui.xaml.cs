@@ -90,6 +90,8 @@ namespace LexTranslator
                 TranslateConfigView = new TranslateConfig(this);
                 TranslateConfigView.Hide();
             }
+
+            LastSetLogButton = InputLogButton;
         }
 
         private void ShowTranslateConfigView(object sender, MouseButtonEventArgs e)
@@ -1016,8 +1018,7 @@ namespace LexTranslator
                             case PlatformType.DeepSeek:
                                 {
                                     List<string> Models = new List<string>();
-                                    Models.Add("deepseek-chat");
-                                    Models.Add("deepseek-reasoner");
+                                    Models.Add("deepseek-v4-pro");
 
                                     KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(0, "DeepSeek", "https://platform.deepseek.com/api_keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
                                 }
