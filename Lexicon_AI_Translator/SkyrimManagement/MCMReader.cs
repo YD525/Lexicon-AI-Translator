@@ -214,7 +214,7 @@ namespace LexTranslator.SkyrimManage
             }
 
             // Save as UTF-8 with BOM.
-            // Compatible with Skyrim MCM TXT files and ensures correct encoding detection by text editors.
+            // Compatible with Papyrus Script MCM TXT files and ensures correct encoding detection by text editors.
             File.WriteAllText(OutPutPath,RichText.ToString(),new UTF8Encoding(true));
 
             Close();
