@@ -10,6 +10,8 @@ using LexTranslator.UIManage;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
 using PhoenixEngine.Unit;
+using PhoenixEngine.Common;
+using LexTranslator.TranslateManage;
 
 namespace LexTranslator.UIManagement
 {
@@ -423,34 +425,34 @@ namespace LexTranslator.UIManagement
 
         public void SaveText(TextEditor RTB)
         {
-            //// Skip if In Normal View Mode Or Working Window / TransViewList Is Null
-            //if (DeFine.GlobalLocalSetting.ViewMode == "Normal" ||
-            //    DeFine.WorkWin == null ||
-            //    DeFine.WorkWin.TransViewList == null) return;
-            //try
-            //{
-            //    string OriginalText = RTB.Text;
+            // Skip if In Normal View Mode Or Working Window / TransViewList Is Null
+            if (DeFine.GlobalLocalSetting.ViewMode == "Normal" ||
+                DeFine.WorkWin == null ||
+                DeFine.WorkWin.ActiveTab == null) return;
+            try
+            {
+                string OriginalText = RTB.Text;
 
-            //    // Get Key And Target Grid
-            //    string Key = P_Convert.ObjToStr(RTB.Tag);
-            //    var Target = DeFine.WorkWin.TransViewList.KeyToFakeGrid(Key);
+                // Get Key And Target Grid
+                string Key = P_Convert.ObjToStr(RTB.Tag);
+                var Target = DeFine.WorkWin.ActiveTab.TransListView.KeyToFakeGrid(Key);
 
-            //    // Update Translation Data And History Cache
-            //    if (Target != null)
-            //    {
-            //        TranslatorInterface.Instance.AutoSetLink(Key, Target.SourceText, OriginalText);
-            //        bool IsCloud = false;
-            //        Target.SyncData(ref IsCloud);
-            //        TranslatorInterface.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);
-            //    }
+                // Update Translation Data And History Cache
+                if (Target != null)
+                {
+                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(Key, Target.SourceText, OriginalText);
+                    bool IsCloud = false;
+                    Target.SyncData(DeFine.WorkWin.ActiveTab.Mod, ref IsCloud);
+                    TranslatorInterface.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);
+                }
 
-            //    // Apply LTR Or RTL Layout
-            //    ApplyLTROrRtl(RTB);
-            //}
-            //finally
-            //{
+                // Apply LTR Or RTL Layout
+                ApplyLTROrRtl(RTB);
+            }
+            finally
+            {
 
-            //}
+            }
         }
 
 
