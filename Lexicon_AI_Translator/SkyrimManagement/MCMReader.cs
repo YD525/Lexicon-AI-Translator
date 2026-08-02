@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Shapes;
 using LexTranslator.SkyrimManagement;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
@@ -99,15 +100,23 @@ namespace LexTranslator.SkyrimManage
         }
         public bool CheckIsMCM()
         {
+            int MaxCheckCount = 2;
             foreach (var Get in Lines)
             {
-                if ((Get.StartsWith("$")|| Get.StartsWith("#")) && (Get.Contains("\t") || Get.Contains(" ")))
+                if (MaxCheckCount > 0)
                 {
-                    return true;
+                    if (Get.Trim().Length > 0)
+                    {
+                        MaxCheckCount--;
+                        if ((Get.StartsWith("$") || Get.StartsWith("#")) && (Get.Contains("\t") || Get.Contains(" ")))
+                        {
+                            return true;
+                        }
+                    }
                 }
                 else
                 {
-                    return false;
+                    break;
                 }
             }
             return false;
@@ -133,8 +142,13 @@ namespace LexTranslator.SkyrimManage
             foreach (var GetLine in FileStr.Split(new char[2] { '\r', '\n' }))
             {
                 if (GetLine.Trim().Length > 0)
-                { 
-                   this.Lines.Add(GetLine.Trim());
+                {
+                    //Remove invisible BOM character (U+FEFF) from the beginning of the line.
+                    string Line = GetLine.TrimStart('\uFEFF').Trim();
+                    // Convert escaped newline characters (\n) to real newline characters for display.
+                    Line = Line.Replace("\\n", "\n");
+
+                    this.Lines.Add(Line);
                 }
             }
 
@@ -179,16 +193,29 @@ namespace LexTranslator.SkyrimManage
         {
             if (File.Exists(OutPutPath))
             {
-                return;
+                File.Delete(OutPutPath);
             }
-            string RichText = "";
+
+            StringBuilder RichText = new StringBuilder();
+
             foreach (var GetMCMItem in this.MCMItems)
             {
                 string NewStr = GetMCMItem.GetTextIfTrans(TranslatorRef);
                 new TranslationPreprocessor().NormalizePunctuation(ref NewStr);
-                RichText += string.Format("${0}\t{1}\n", GetMCMItem.EditorID, NewStr);
+
+                // Convert actual newline characters to escaped \n format used in MCM TXT files.
+                NewStr = NewStr.Replace("\r\n", "\\n").Replace("\n", "\\n");
+
+                RichText.Append('$')
+                        .Append(GetMCMItem.EditorID)
+                        .Append('\t')
+                        .Append(NewStr)
+                        .Append("\r\n");
             }
-            DataHelper.WriteFile(OutPutPath,Encoding.UTF8.GetBytes(RichText));
+
+            // Save as UTF-8 with BOM.
+            // Compatible with Skyrim MCM TXT files and ensures correct encoding detection by text editors.
+            File.WriteAllText(OutPutPath,RichText.ToString(),new UTF8Encoding(true));
 
             Close();
         }

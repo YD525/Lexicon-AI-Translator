@@ -20,7 +20,6 @@ using PhoenixEngine.Translate;
 using PhoenixEngine;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Unit;
-using LexTranslator.TranslateManage;
 
 namespace LexTranslator.UIManage
 {
