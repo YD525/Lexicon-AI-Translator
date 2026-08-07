@@ -12,6 +12,8 @@ using PhoenixEngine.Additional;
 using PhoenixEngine.Unit;
 using PhoenixEngine.Common;
 using LexTranslator.TranslateManage;
+using System;
+using PhoenixEngine.Memory;
 
 namespace LexTranslator.UIManagement
 {
@@ -440,7 +442,8 @@ namespace LexTranslator.UIManagement
                 // Update Translation Data And History Cache
                 if (Target != null)
                 {
-                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(Key, Target.SourceText, OriginalText);
+                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(Key, Target.SourceText,new P_String(OriginalText,1));
+
                     bool IsCloud = false;
                     Target.SyncData(DeFine.WorkWin.ActiveTab.Mod, ref IsCloud);
                     TranslatorInterface.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);

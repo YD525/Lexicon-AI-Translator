@@ -14,6 +14,7 @@ using PhoenixEngine;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine;
 using PhoenixEngine.Events;
+using PhoenixEngine.Memory;
 using PhoenixEngine.Request;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
@@ -212,7 +213,7 @@ namespace LexTranslator.SkyrimManagement
                     }
 
                     var Link = this.P_Translator.GetLink();
-                    Link[GetKey] = GetTransText;
+                    Link[GetKey] = new P_String(GetTransText,0);
                 }
             }
         }
@@ -228,22 +229,28 @@ namespace LexTranslator.SkyrimManagement
 
                 if (DeFine.GlobalLocalSetting.UseFullPunctuationJa)
                 {
-                    Link.CheckLinks(new Action<string, string, bool>((string Key, string Value, bool Unique) =>
+                    Link.CheckLinks(new Action<string, P_String, bool>((string Key, P_String Value, bool Unique) =>
                     {
-                        if (Value.Length > 0)
+                        if (Value.String.Length > 0)
                         {
-                            Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value,true);
+                            Value.String = TranslationPreprocessor.ToFullWidthSymbols(Value.String,true);
+                            Value.Type = 0;
+
+                            Link[Key] = Value;
                         }
                     }));
                 }
                 else
                 if (DeFine.GlobalLocalSetting.UseFullPunctuation)
                 {
-                    Link.CheckLinks(new Action<string, string, bool>((string Key, string Value, bool Unique) =>
+                    Link.CheckLinks(new Action<string, P_String, bool>((string Key, P_String Value, bool Unique) =>
                     {
-                        if (Value.Length > 0)
+                        if (Value.String.Length > 0)
                         {
-                            Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value, false);
+                            Value.String = TranslationPreprocessor.ToFullWidthSymbols(Value.String,false);
+                            Value.Type = 0;
+
+                            Link[Key] = Value;
                         }
                     }));
                 }
@@ -730,7 +737,7 @@ namespace LexTranslator.SkyrimManagement
                             HasAddAIMemory = true;
 
                             var Link = P_Translator.GetLink();
-                            Link[Row.Key] = GetTrans.Value;
+                            Link[Row.Key] = new P_String(GetTrans.Value,0);
 
                             var GetFakeGrid = ListView.KeyToFakeGrid(Row.Key);
                             if (GetFakeGrid != null)
@@ -967,7 +974,7 @@ namespace LexTranslator.SkyrimManagement
                                 if (GetUnit != null)
                                 {
                                     TotalCount++;
-                                    P_Translator.SetLink(GetUnit.Key, GetUnit.Translated);
+                                    P_Translator.SetLink(GetUnit.Key, new P_String(GetUnit.Translated,0));
                                     SetTransBarTittle(string.Format("STRINGS({0}/{1})",
                                           GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount, ListView.Rows));
 
@@ -999,7 +1006,7 @@ namespace LexTranslator.SkyrimManagement
                         {
                             if (GetBatchCore.TranslatedQueue.TryDequeue(out var TailUnit))
                             {
-                                P_Translator.SetLink(TailUnit.Key, TailUnit.Translated);
+                                P_Translator.SetLink(TailUnit.Key,new P_String(TailUnit.Translated,1));
                             }
                         }
 

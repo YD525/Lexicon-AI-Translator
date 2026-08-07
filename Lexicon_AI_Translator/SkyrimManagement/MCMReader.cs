@@ -46,7 +46,7 @@ namespace LexTranslator.SkyrimManage
 
             if (GetStr!=null)
             {
-                this.TransText = GetStr;
+                this.TransText = GetStr.String;
                 if (this.TransText.Length > 0)
                 {
                     return this.TransText;
@@ -71,7 +71,7 @@ namespace LexTranslator.SkyrimManage
 
             if (GetStr != null)
             {
-                this.TransText = GetStr;
+                this.TransText = GetStr.String;
 
                 if (this.TransText.Length > 0)
                 {

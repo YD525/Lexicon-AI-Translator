@@ -5,6 +5,7 @@ using System.Windows.Input;
 using LexTranslator.UIManagement;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Language;
+using PhoenixEngine.Memory;
 
 namespace LexTranslator
 {
@@ -95,7 +96,7 @@ namespace LexTranslator
 
                         var Link = _Owner.Mod.P_Translator.GetLink();
 
-                        Link[Key] = Result;
+                        Link[Key] = new P_String(Result,1);
 
                         ConvertAllBtn.Dispatcher.Invoke(new Action(() => {
                             _Owner.TransListView.RealLines[i].SyncData(_Owner.Mod, ref IsCloud);

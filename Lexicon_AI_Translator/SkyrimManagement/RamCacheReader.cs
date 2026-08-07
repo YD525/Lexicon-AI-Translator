@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using LexTranslator.SkyrimModManager;
 using LexTranslator.TranslateManage;
 using PhoenixEngine.Translate;
+using PhoenixEngine.Memory;
 
 namespace LexTranslator.SkyrimManagement
 {
@@ -30,7 +31,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         foreach (var Get in RamLines)
                         {
-                            TranslatorRef.GetLink().Add(Get.Key, Get.TransText);
+                            TranslatorRef.GetLink().Add(Get.Key,new P_String(Get.TransText,0));
                         }
                     }
                 }

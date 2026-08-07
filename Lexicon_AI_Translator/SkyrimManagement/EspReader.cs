@@ -822,7 +822,7 @@ namespace LexTranslator.SkyrimManagement
                 var GetTransData = Link[Record.UniqueKey];
                 if (GetTransData != null)
                 {
-                    if (GetTransData.Length > 0 && GetTransData != Record.String)
+                    if (GetTransData.String.Length > 0 && GetTransData.String != Record.String)
                     {
                         bool IsCell = false;
 
@@ -836,7 +836,7 @@ namespace LexTranslator.SkyrimManagement
                             continue;
                         }
 
-                        if (EspNative.ModifySubRecordByOffset(_Instance, IsCell, Record.ParentIndex, Record.SubIndex, GetTransData))
+                        if (EspNative.ModifySubRecordByOffset(_Instance, IsCell, Record.ParentIndex, Record.SubIndex, GetTransData.String))
                         {
                             ModifyCount++;
                         }

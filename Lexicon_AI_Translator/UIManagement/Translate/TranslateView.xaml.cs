@@ -27,6 +27,7 @@ using System.IO;
 using static LexTranslator.SkyrimManagement.DSDConverter;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
+using PhoenixEngine.Memory;
 
 namespace LexTranslator.UIManagement
 {
@@ -983,7 +984,7 @@ namespace LexTranslator.UIManagement
                     }
 
                     var Link = Mod.P_Translator.GetLink();
-                    Link[GetKey] = GetTransText;
+                    Link[GetKey] = new P_String(GetTransText,0);
                 }
             }
         }
@@ -1073,7 +1074,7 @@ namespace LexTranslator.UIManagement
                                 {
                                     if (RealLines[i].SourceText != RealLines[i].TransText)
                                     {
-                                        Mod.P_Translator.SetLink(RealLines[i].Key, RealLines[i].TransText);
+                                        Mod.P_Translator.SetLink(RealLines[i].Key,new P_String(RealLines[i].TransText,0));
                                     }
                                 }
 
@@ -1288,7 +1289,7 @@ namespace LexTranslator.UIManagement
                 TransListView.RealLines[i].TransText = TransListView.RealLines[i].SourceText + "(" + i.ToString() + ")";
 
                 var Link = Mod.P_Translator.GetLink();
-                Link[TransListView.RealLines[i].Key] = TransListView.RealLines[i].TransText;
+                Link[TransListView.RealLines[i].Key] = new P_String(TransListView.RealLines[i].TransText,0);
 
                 TransListView.RealLines[i].SyncUI(TransListView);
             }
@@ -1497,13 +1498,13 @@ namespace LexTranslator.UIManagement
 
                                 var Link = Mod.P_Translator.GetLink();
 
-                                Link[GetGrid.Key] = GetGrid.TransText;
+                                Link[GetGrid.Key] =new P_String(GetGrid.TransText,1);
 
 
                             }
                             else
                             {
-                                Mod.P_Translator.AutoSetLink(GetGrid.Key, GetGrid.SourceText, GetGrid.TransText);
+                                Mod.P_Translator.AutoSetLink(GetGrid.Key, GetGrid.SourceText,new P_String(GetGrid.TransText,1));
                             }
                         }
                         catch { }

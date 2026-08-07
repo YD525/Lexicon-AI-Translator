@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml.Linq;
 using LexTranslator.SkyrimModManager;
 using PhoenixEngine.Common;
+using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
 
 namespace LexTranslator.SkyrimManagement
@@ -39,7 +40,7 @@ namespace LexTranslator.SkyrimManagement
             else
             {
                 this.TransText = Item.Dest;
-                TranslatorRef.GetLink().Add(this.Key, Item.Dest);
+                TranslatorRef.GetLink().Add(this.Key, new P_String(Item.Dest,0));
             }
         }
 
@@ -51,7 +52,7 @@ namespace LexTranslator.SkyrimManagement
             var GetResult = Link[GetKey];
             if (GetResult != null)
             {
-                this.TransText = GetResult;
+                this.TransText = GetResult.String;
                 if (this.TransText.Length > 0)
                 {
                     return this.TransText;

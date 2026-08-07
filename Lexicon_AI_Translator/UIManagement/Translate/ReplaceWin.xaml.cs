@@ -1,8 +1,9 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using LexTranslator.TranslateManage;
-using LexTranslator.UIManage;
 using LexTranslator.UIManagement;
 using PhoenixEngine.Common;
+using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
 
 namespace LexTranslator
@@ -57,6 +58,8 @@ namespace LexTranslator
                     {
                         if (_Owner.TransListView != null)
                         {
+                            List<string> ModifyKeys = new List<string>();
+
                             for (int i = 0; i < _Owner.TransListView.Rows; i++)
                             {
                                 var GetRow = _Owner.TransListView.RealLines[i];
@@ -70,12 +73,19 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,0));
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
                                     GetRow.SyncUI(_Owner.TransListView);
+
+                                    ModifyKeys.Add(GetRow.Key);
                                 }
+                            }
+
+                            if (ModifyKeys.Count > 0)
+                            { 
+                            
                             }
                         }
                     }
@@ -91,6 +101,8 @@ namespace LexTranslator
                     {
                         if (_Owner.TransListView != null)
                         {
+                            List<string> ModifyKeys = new List<string>();
+
                             for (int i = 0; i < _Owner.TransListView.Rows; i++)
                             {
                                 var GetRow = _Owner.TransListView.RealLines[i];
@@ -104,11 +116,13 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, GetRow.TransText);
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText, 0));
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
                                     GetRow.SyncUI(_Owner.TransListView);
+
+                                    ModifyKeys.Add(GetRow.Key);
                                 }
                             }
                         }
