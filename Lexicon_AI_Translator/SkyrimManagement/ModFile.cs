@@ -107,9 +107,14 @@ namespace LexTranslator.SkyrimManagement
                 {
                     if (Previous == null)
                     {
+                        bool IsCloud = false;
+
+                        FakeGrid GetRow = this.ListView.KeyToFakeGrid(Key);
+                        GetRow.SyncData(this,ref IsCloud);
+
                         HistoryDBCache.AddHistory(
                         new HistoryItem(this.P_Translator.GetFileUniqueKey(),Key, (int)this.P_Translator.To,
-                        string.Empty,
+                        GetRow.TransText,
                         0,
                         DateTime.Now,
                         ""
@@ -127,17 +132,15 @@ namespace LexTranslator.SkyrimManagement
                             DateTime.Now,
                             ""
                             ));
-                        }
-
-                        HistoryDBCache.AddHistory(new HistoryItem(this.P_Translator.GetFileUniqueKey(),Key, (int)this.P_Translator.To,
-                         Current.String,
-                         0,
-                         DateTime.Now,
-                         Current.RangeID
-                         ));
+                        }          
                     }
 
-                     
+                    HistoryDBCache.AddHistory(new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
+                        Current.String,
+                        0,
+                        DateTime.Now,
+                        Current.RangeID
+                        ));
                 }
             });
         }
