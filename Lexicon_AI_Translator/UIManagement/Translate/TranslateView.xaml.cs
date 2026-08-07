@@ -466,32 +466,9 @@ namespace LexTranslator.UIManagement
                             ToStr.Focus();
                             ToStr.CaretOffset = ToStr.Text.Length;
                         }
-
-                        AutoLoadHistoryList();
                     }));
 
                     //DeFine.ExtendWin.SetOriginal(GridHandle.SourceText, Mod.EspReader.ToStringsFile.QueryData(GridHandle.Key));
-                }
-            }
-        }
-
-        public void AutoLoadHistoryList()
-        {
-            if (HistoryLayer.Visibility == Visibility.Visible)
-            {
-                HistoryList.Items.Clear();
-
-                var QueryHistorys = TranslatorInterface.GetTranslatorCache(LastSetKey);
-                if (QueryHistorys != null)
-                {
-                    foreach (var Get in QueryHistorys)
-                    {
-                        HistoryList.Items.Add(new
-                        {
-                            ChangeTime = Get.ChangeTime,
-                            Translated = Get.Translated
-                        });
-                    }
                 }
             }
         }
@@ -1036,19 +1013,6 @@ namespace LexTranslator.UIManagement
             DeFine.GlobalLocalSetting.SaveConfig();
         }
 
-        private void HistoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            foreach (var GetItem in HistoryList.SelectedItems)
-            {
-                var GetCol = HistoryList.SelectedItem.GetType().GetProperty("Translated");
-                if (GetCol != null)
-                {
-                    string Translated = P_Convert.ObjToStr(P_Convert.ObjToStr(GetCol.GetValue(GetItem, null)));
-                    ToStr.Text = Translated;
-                }
-            }
-        }
-
         private void ImportRamCache_Click(object sender, RoutedEventArgs e)
         {
             var Dialog = new System.Windows.Forms.OpenFileDialog();
@@ -1344,33 +1308,7 @@ namespace LexTranslator.UIManagement
             NNPCFinder.Owner = _Parent;
             NNPCFinder.Show();
         }
-        public void AutoSizeHistoryList()
-        {
-            if (HistoryLayer.Visibility == Visibility.Visible)
-            {
-                ChangeTimeCol.Width = 150;
-                double Width = HistoryLayer.ActualWidth - 150;
-                if (Width < 0) Width = 300;
-                TranslatedCol.Width = Width;
-            }
-        }
-        private void ShowHistorys(object sender, MouseButtonEventArgs e)
-        {
-            if (HistoryLayer.Visibility == Visibility.Collapsed)
-            {
-                HistoryLayer.Visibility = Visibility.Visible;
 
-                AutoSizeHistoryList();
-                HistoryButtonFont.Content = "History ↑";
-
-                AutoLoadHistoryList();
-            }
-            else
-            {
-                HistoryLayer.Visibility = Visibility.Collapsed;
-                HistoryButtonFont.Content = "History ↓";
-            }
-        }
         private void SpeakFromStr(object sender, MouseButtonEventArgs e)
         {
             SpeechHelper.TryPlaySound(this.Mod.P_Translator.From,FromStr.Text);
@@ -1583,11 +1521,6 @@ namespace LexTranslator.UIManagement
                         bool RefCloud = false;
                         GetGrid.SyncData(Mod, ref RefCloud);
 
-                        if (GetGrid.TransText.Length > 0)
-                        {
-                            TranslatorInterface.SetTranslatorHistoryCache(GetGrid.Key, GetGrid.TransText, false);
-                        }
-
                         GetGrid.TransText = ToStr.Text;
 
                         try
@@ -1608,8 +1541,6 @@ namespace LexTranslator.UIManagement
                             }
                         }
                         catch { }
-
-                        TranslatorInterface.SetTranslatorHistoryCache(GetGrid.Key, GetGrid.TransText, false);
 
                         GetGrid.SyncData(Mod, ref RefCloud);
                         GetGrid.SyncUI(TransListView);
@@ -2540,6 +2471,11 @@ namespace LexTranslator.UIManagement
 
                 Saving = false;
             }).Start();
+        }
+
+        private void ShowHistory(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

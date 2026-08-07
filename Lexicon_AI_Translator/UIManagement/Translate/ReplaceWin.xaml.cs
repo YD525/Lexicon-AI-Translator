@@ -76,8 +76,6 @@ namespace LexTranslator
 
                                     _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,1,GenRangeID));
 
-                                    TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
-
                                     GetRow.SyncUI(_Owner.TransListView);
                                 }
                             }
@@ -111,8 +109,6 @@ namespace LexTranslator
                                     GetRow.TransText = GetNewTrans;
 
                                     _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,1,GenRangeID));
-
-                                    TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
                                     GetRow.SyncUI(_Owner.TransListView);
                                 }

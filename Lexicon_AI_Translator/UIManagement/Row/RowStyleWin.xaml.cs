@@ -446,7 +446,6 @@ namespace LexTranslator.UIManagement
 
                     bool IsCloud = false;
                     Target.SyncData(DeFine.WorkWin.ActiveTab.Mod, ref IsCloud);
-                    TranslatorInterface.SetTranslatorHistoryCache(Key, OriginalText, IsCloud);
                 }
 
                 // Apply LTR Or RTL Layout

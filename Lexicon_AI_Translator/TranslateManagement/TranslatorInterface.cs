@@ -269,18 +269,6 @@ namespace LexTranslator.TranslateManage
                 }));
             }
         }
-
-      
-        public static void SetTranslatorHistoryCache(string Key, string Translated, bool IsCloud)
-        {
-           
-        }
-        public static List<TranslatorHistoryCache> GetTranslatorCache(string Key)
-        {
-           
-
-            return null;
-        }
     }
 
     public class TranslatorHistoryCache

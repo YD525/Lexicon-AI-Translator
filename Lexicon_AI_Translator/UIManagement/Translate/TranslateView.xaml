@@ -414,27 +414,14 @@ Fill="White"/>
                                     </Label>
                                 </Border>
 
-                                <Border Name="ShowHistoryButton" Style="{DynamicResource LiteButton}" PreviewMouseDown="ShowHistorys">
+                                <Border Name="ShowHistoryButton" Style="{DynamicResource LiteButton}" PreviewMouseDown="ShowHistory">
                                     <Label Name="HistoryButtonFont" Style="{DynamicResource LiteButtonFont}" Foreground="White">
-                                        History ↓
+                                        History
                                     </Label>
                                 </Border>
 
                             </StackPanel>
 
-
-                            <Grid Grid.Row="1" Panel.ZIndex="999" Visibility="Collapsed" Name="HistoryLayer">
-                                <Border Style="{DynamicResource TopLayerBorder}">
-                                    <ListView Name="HistoryList" Grid.Row="0" Margin="0,5,0,5" ItemContainerStyle="{StaticResource ListViewItemStyle}" SelectionChanged="HistoryList_SelectionChanged">
-                                        <ListView.View>
-                                            <GridView>
-                                                <GridViewColumn Header="ChangeTime" Width="100"   DisplayMemberBinding="{Binding ChangeTime}" x:Name="ChangeTimeCol"/>
-                                                <GridViewColumn Header="Translated" Width="360"   DisplayMemberBinding="{Binding Translated}" x:Name="TranslatedCol"/>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                </Border>
-                            </Grid>
                             <Border Style="{DynamicResource IDEBorder}" Grid.Row="1">
                                 <avalonEdit:TextEditor Style="{DynamicResource IDEStyle}" Margin="5" Name="ToStr" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" FontFamily="Consolas" FontSize="16" ShowLineNumbers="True" WordWrap="True" TextOptions.TextFormattingMode="Display" TextChanged="ToStr_TextChanged">
 
