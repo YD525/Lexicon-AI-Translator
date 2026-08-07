@@ -108,20 +108,36 @@ namespace LexTranslator.SkyrimManagement
                     if (Previous == null)
                     {
                         HistoryDBCache.AddHistory(
-                        new HistoryItem(this.P_Translator.GetFileUniqueKey(), 0, Key, (int)this.P_Translator.To,
+                        new HistoryItem(this.P_Translator.GetFileUniqueKey(),Key, (int)this.P_Translator.To,
                         string.Empty,
                         0,
-                        TimeHelper.DateTimeToTimestamp(DateTime.Now),
-                        Current.RangeID
+                        DateTime.Now,
+                        ""
                         ));
                     }
+                    else
+                    {
+                        //We need to prevent system-translated data from polluting the history. However, we need a way to save the previous record translated by the system.
+                        if (!HistoryDBCache.CheckHistoryItem(this.P_Translator.GetFileUniqueKey(), (int)this.P_Translator.To, Key,Previous.String))
+                        {
+                            HistoryDBCache.AddHistory(
+                            new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
+                            Previous.String,
+                            0,
+                            DateTime.Now,
+                            ""
+                            ));
+                        }
 
-                    HistoryDBCache.AddHistory(new HistoryItem(this.P_Translator.GetFileUniqueKey(), 0, Key, (int)this.P_Translator.To,
-                    Current.String,
-                    0,
-                    TimeHelper.DateTimeToTimestamp(DateTime.Now),
-                    Current.RangeID
-                    ));
+                        HistoryDBCache.AddHistory(new HistoryItem(this.P_Translator.GetFileUniqueKey(),Key, (int)this.P_Translator.To,
+                         Current.String,
+                         0,
+                         DateTime.Now,
+                         Current.RangeID
+                         ));
+                    }
+
+                     
                 }
             });
         }
@@ -1025,7 +1041,9 @@ namespace LexTranslator.SkyrimManagement
                         {
                             if (GetBatchCore.TranslatedQueue.TryDequeue(out var TailUnit))
                             {
-                                P_Translator.SetLink(TailUnit.Key, new P_String(TailUnit.Translated, 1));
+                                //I feel that system-translated records should not be saved in the rollback.
+                                //It's sufficient to only save the records translated and modified by users line by line. Otherwise, it would be too long to read.
+                                P_Translator.SetLink(TailUnit.Key, new P_String(TailUnit.Translated, 0));
                             }
                         }
 
