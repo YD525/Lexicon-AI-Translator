@@ -233,10 +233,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         if (Value.String.Length > 0)
                         {
-                            Value.String = TranslationPreprocessor.ToFullWidthSymbols(Value.String,true);
-                            Value.Type = 0;
-
-                            Link[Key] = Value;
+                            Link[Key] =new P_String(TranslationPreprocessor.ToFullWidthSymbols(Value.String, true),0);
                         }
                     }));
                 }
@@ -247,10 +244,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         if (Value.String.Length > 0)
                         {
-                            Value.String = TranslationPreprocessor.ToFullWidthSymbols(Value.String,false);
-                            Value.Type = 0;
-
-                            Link[Key] = Value;
+                            Link[Key] = new P_String(TranslationPreprocessor.ToFullWidthSymbols(Value.String, false),0);
                         }
                     }));
                 }
