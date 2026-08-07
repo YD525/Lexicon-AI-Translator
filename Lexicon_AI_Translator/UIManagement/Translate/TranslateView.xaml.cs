@@ -1407,6 +1407,8 @@ namespace LexTranslator.UIManagement
                 {
                     List<string> GetKeys = HistoryDBCache.GetPreviousKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
                     RestoreRecordHistory(GetKeys);
+                    //must redirect to the affected line; otherwise, the user won't know where they've been rolled back to.
+                    this.TransListView.Goto(GetKeys[0]);
                 }
 
                 return;
@@ -1424,6 +1426,8 @@ namespace LexTranslator.UIManagement
                 {
                     List<string> GetKeys = HistoryDBCache.GetNextKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
                     RestoreRecordHistory(GetKeys);
+
+                    this.TransListView.Goto(GetKeys[0]);
                 }
 
                 return;
