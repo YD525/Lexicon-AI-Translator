@@ -105,6 +105,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 if (Current.Type == 1)
                 {
+                    int ID = 0;
                     if (Previous == null)
                     {
                         bool IsCloud = false;
@@ -112,30 +113,40 @@ namespace LexTranslator.SkyrimManagement
                         FakeGrid GetRow = this.ListView.KeyToFakeGrid(Key);
                         GetRow.SyncData(this,ref IsCloud);
 
-                        HistoryDBCache.AddHistory(
+                        ID = HistoryDBCache.AddHistory(
                         new HistoryItem(this.P_Translator.GetFileUniqueKey(),Key, (int)this.P_Translator.To,
                         GetRow.TransText,
                         0,
                         DateTime.Now,
                         ""
                         ));
+
+                        HistoryDBCache.CheckPreviousHistoryItem(ID, this.P_Translator.GetFileUniqueKey(), (int)this.P_Translator.To, Key, GetRow.TransText, out int TargetID);
+                        if (TargetID > 0)
+                        {
+                            HistoryDBCache.DeleteHistory(this.P_Translator.GetFileUniqueKey(), TargetID);
+                        }
                     }
                     else
                     {
                         //We need to prevent system-translated data from polluting the history. However, we need a way to save the previous record translated by the system.
-                        if (!HistoryDBCache.CheckPreviousHistoryItem(this.P_Translator.GetFileUniqueKey(), (int)this.P_Translator.To, Key,Previous.String))
+                        ID = HistoryDBCache.AddHistory(
+                          new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
+                          Previous.String,
+                          0,
+                          DateTime.Now,
+                          ""
+                          ));
+
+                        HistoryDBCache.CheckPreviousHistoryItem(ID, this.P_Translator.GetFileUniqueKey(), (int)this.P_Translator.To, Key, Previous.String, out int TargetID);
+                        if (TargetID > 0)
                         {
-                            HistoryDBCache.AddHistory(
-                            new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
-                            Previous.String,
-                            0,
-                            DateTime.Now,
-                            ""
-                            ));
+                            HistoryDBCache.DeleteHistory(this.P_Translator.GetFileUniqueKey(), TargetID);
                         }          
                     }
 
-                    HistoryDBCache.AddHistory(new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
+                        ID = HistoryDBCache.AddHistory(
+                        new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
                         Current.String,
                         0,
                         DateTime.Now,

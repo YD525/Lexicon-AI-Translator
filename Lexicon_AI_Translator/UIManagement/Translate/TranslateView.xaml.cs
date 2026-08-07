@@ -405,7 +405,7 @@ namespace LexTranslator.UIManagement
                 if (Mod.EspReader.Records.ContainsKey(LastSetKey))
                 {
                     var GetRecord = Mod.EspReader.Records[LastSetKey];
-                    SetLog("Select:" + GetRecord.FormID + " | " + GetRecord.ParentSig + " " + GetRecord.ChildSig);
+                    SetLog("Select:" + Key);
                 }
             }
             else
@@ -2288,6 +2288,12 @@ namespace LexTranslator.UIManagement
             Mod.CancelTranslateWork();
 
             Mod.P_Translator.GetLink().Clear();
+
+            if (CurrentHistory != null)
+            {
+                CurrentHistory.Close();
+                CurrentHistory = null;
+            }
         }
 
         private void Mask_MouseDown(object sender, MouseButtonEventArgs e)

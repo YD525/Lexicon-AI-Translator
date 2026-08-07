@@ -20,7 +20,7 @@
             <Setter Property="FontSize" Value="12" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsCurrent}" Value="1">
-                    <Setter Property="Background" Value="#FFFAE306" />
+                    <Setter Property="Background" Value="#FFF7F1BA" />
                     <Setter Property="Foreground" Value="#FF1A1A1A" />
                     <Setter Property="FontWeight" Value="Bold" />
                 </DataTrigger>
@@ -170,9 +170,9 @@
     </Window.Resources>
 
     <Border Background="Transparent" CornerRadius="9">
-        <Border Background="#FF282828" CornerRadius="9">
+        <Border Background="#FF282828" CornerRadius="9" BorderThickness="1" BorderBrush="#FFF7F1BA">
             <Grid>
-                <Grid Grid.Row="0" Height="36" VerticalAlignment="Top" PreviewMouseDown="WinHead_MouseLeftButtonDown">
+                <Grid Grid.Row="0" Height="36" VerticalAlignment="Top" Background="Transparent" PreviewMouseDown="WinHead_MouseLeftButtonDown">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="25" />
