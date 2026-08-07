@@ -1461,7 +1461,10 @@ namespace LexTranslator.UIManagement
             {
                 e.Handled = true;
 
-                var Keys = HistoryDBCache.GetSelectKeys(this.Mod.P_Translator.GetFileUniqueKey());
+                var Keys = GetSelectRecordHistoryKey();
+
+                if (Keys == null) return;
+
                 if (Keys.Count > 0)
                 {
                     List<string> GetKeys = HistoryDBCache.GetPreviousKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
@@ -1475,7 +1478,10 @@ namespace LexTranslator.UIManagement
             {
                 e.Handled = true;
 
-                var Keys = HistoryDBCache.GetSelectKeys(this.Mod.P_Translator.GetFileUniqueKey());
+                var Keys = GetSelectRecordHistoryKey();
+
+                if (Keys == null) return;
+
                 if (Keys.Count > 0)
                 {
                     List<string> GetKeys = HistoryDBCache.GetNextKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
@@ -1484,6 +1490,28 @@ namespace LexTranslator.UIManagement
 
                 return;
             }
+        }
+
+        public List<string> GetSelectRecordHistoryKey()
+        {
+            int FileUniqueKey = this.Mod.P_Translator.GetFileUniqueKey();
+
+            var Keys = HistoryDBCache.GetSelectKeys(FileUniqueKey);
+
+            if (Keys.Count == 0)
+            {
+                var Key = HistoryDBCache.GetLastKey(FileUniqueKey);
+                if (Key == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    Keys.Add(Key);
+                }
+            }
+
+            return Keys;
         }
 
         public void RestoreRecordHistory(List<string> GetKeys)
@@ -1496,7 +1524,25 @@ namespace LexTranslator.UIManagement
                 {
                     var GetHistoryItem = HistoryDBCache.KeyToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[i]);
 
-                    this.Mod.P_Translator.SetLink(GetHistoryItem.Key,new P_String(GetHistoryItem.CurrentText,0, GetHistoryItem.RangeID));
+                    var Row = this.TransListView.KeyToFakeGrid(GetHistoryItem.Key);
+                    bool IsCloud = false;
+                    Row.SyncData(this.Mod,ref IsCloud);
+
+                    if (IsCloud)
+                    {
+                        CloudDBCache.DeleteCache(GetHistoryItem.FileUniqueKey, GetHistoryItem.Key, this.Mod.P_Translator.To);
+                    }
+                    else
+                    {
+                        LocalDBCache.DeleteCache(GetHistoryItem.FileUniqueKey, GetHistoryItem.Key, this.Mod.P_Translator.To);
+                    }
+
+                    this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.SourceText, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
+                }
+
+                for (int i = 0; i < this.TransListView.Rows; i++)
+                {
+                    this.TransListView.RealLines[i].SyncUI(this.TransListView);
                 }
             }
         }
