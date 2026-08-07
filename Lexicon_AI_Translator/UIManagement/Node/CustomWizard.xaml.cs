@@ -5,16 +5,17 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using LexTranslator.TranslateManage;
 using LexTranslator.UIManage;
 using PhoenixEngine;
 using PhoenixEngine.Common;
 using PhoenixEngine.Engine;
+using PhoenixEngine.Language;
 using PhoenixEngine.Memory;
 using PhoenixEngine.P_Delegate;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Request;
+using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
 
 namespace LexTranslator
@@ -39,17 +40,17 @@ namespace LexTranslator
                     {
                         PlatformType.SelectedValue = "Cloud AI";
                     }
-                break;
+                    break;
                 case CustomPlatformType.LocalAI:
                     {
                         PlatformType.SelectedValue = "Local AI";
                     }
-                break;
+                    break;
                 case CustomPlatformType.Traditional:
                     {
                         PlatformType.SelectedValue = "Traditional";
                     }
-                break;
+                    break;
             }
         }
 
@@ -75,17 +76,17 @@ namespace LexTranslator
                             PlatformType.SelectedValue = CurrentPlatformType;
                         }
                     }
-                break;
+                    break;
                 case 2:
                     {
                         Tittle.Content = "Config Request body";
                     }
-                break;
+                    break;
                 case 3:
                     {
                         Tittle.Content = "Identify the content returned by the request";
                     }
-                break;
+                    break;
             }
 
             if (Step == 3)
@@ -166,7 +167,7 @@ namespace LexTranslator
 
                             CustomPlatform.Type = CustomPlatformType.LocalAI;
                         }
-                    break;
+                        break;
                     case "Cloud AI":
                         {
                             AutomaticFields.Items.Clear();
@@ -176,7 +177,7 @@ namespace LexTranslator
 
                             CustomPlatform.Type = CustomPlatformType.CloudAI;
                         }
-                    break;
+                        break;
                     case "Traditional":
                         {
                             AutomaticFields.Items.Clear();
@@ -187,7 +188,7 @@ namespace LexTranslator
 
                             CustomPlatform.Type = CustomPlatformType.Traditional;
                         }
-                    break;
+                        break;
                 }
             }
 
@@ -292,15 +293,15 @@ namespace LexTranslator
                     UrlTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
                 }
 
-                 CustomPlatform.Url_Tags = CustomKeyValueToTags(TagData);
+                CustomPlatform.Url_Tags = CustomKeyValueToTags(TagData);
             }
         }
-        public List<ReqReplaceTag> CustomKeyValueToTags(List<ReqCustomKeyValue>Array)
+        public List<ReqReplaceTag> CustomKeyValueToTags(List<ReqCustomKeyValue> Array)
         {
             List<ReqReplaceTag> ReqTags = new List<ReqReplaceTag>();
             foreach (var Get in Array)
             {
-                ReqTags.Add(new ReqReplaceTag(Get.Key,Get.Value));
+                ReqTags.Add(new ReqReplaceTag(Get.Key, Get.Value));
             }
             return ReqTags;
         }
@@ -381,72 +382,88 @@ namespace LexTranslator
                 throw (new Exception("Adding more than 500 platforms is not supported."));
             }
 
-            switch (CurrentPlatformType)
+            BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "", "", 100);
+            var UnitGroup = new Translator("-1", DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, false).ToUnitGroup(TestUnit);
+            Languages From = DeFine.GlobalLocalSetting.SourceLanguage;
+            Languages To = DeFine.GlobalLocalSetting.TargetLanguage;
+
+            if (From == To)
             {
-                case "Local AI":
-                    {
-                        AICall GenAICall = new AICall();
-                        CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
-                        NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config);
+                From = Languages.English;
+                To = Languages.French;
+            }
+            try
+            {
 
-                        BaseUnit TestUnit = new BaseUnit(-525,"525","","Test Line","","",100);
-                        NCustomLocalAIApi.QuickTrans(
-                            new List<ReplaceTag>(),
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From,
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To,
-                            false,
-                            0,
-                            string.Empty,
-                            ref GenAICall
+                switch (CurrentPlatformType)
+                {
+                    case "Local AI":
+                        {
+                            AICall GenAICall = new AICall();
+                            CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
+                            NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config);
+
+                            NCustomLocalAIApi.QuickTrans(
+                                new List<ReplaceTag>(),
+                                UnitGroup,
+                                From,
+                                To,
+                                false,
+                                0,
+                                string.Empty,
+                                ref GenAICall
+                                );
+
+                            Response.Text = GenAICall.ReceiveString;
+                            CurrentResponse = GenAICall.ReceiveString;
+                        }
+                        break;
+                    case "Cloud AI":
+                        {
+                            AICall GenAICall = new AICall();
+                            CustomAIApi NCustomAIApi = new CustomAIApi();
+                            NCustomAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config, ProxyCenter.CurrentProxy);
+
+                            NCustomAIApi.QuickTrans(
+                                ApiKey,
+                                new List<ReplaceTag>(),
+                                UnitGroup,
+                                From,
+                                To,
+                                false,
+                                0,
+                                string.Empty,
+                                ref GenAICall
+                                );
+
+                            Response.Text = GenAICall.ReceiveString;
+                            CurrentResponse = GenAICall.ReceiveString;
+                        }
+                        break;
+                    case "Traditional":
+                        {
+                            PlatformCall GenPlatformCall = new PlatformCall();
+                            CustomApi NCustomApi = new CustomApi();
+                            NCustomApi.Init(TestID, Phoenix.Config, ProxyCenter.CurrentProxy);
+
+                            NCustomApi.QuickTrans(
+                                ApiKey,
+                                UnitGroup,
+                                From,
+                                To,
+                                ref GenPlatformCall
                             );
 
-                        Response.Text = GenAICall.ReceiveString;
-                        CurrentResponse = GenAICall.ReceiveString;
-                    }
-                    break;
-                case "Cloud AI":
-                    {
-                        AICall GenAICall = new AICall();
-                        CustomAIApi NCustomAIApi = new CustomAIApi();
-                        NCustomAIApi.Init(TestID, new AITranslationMemory(),Phoenix.Config,ProxyCenter.CurrentProxy);
+                            Response.Text = GenPlatformCall.ReceiveString;
+                            CurrentResponse = GenPlatformCall.ReceiveString;
+                        }
+                        break;
+                }
 
-                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "","", 100);
-                        NCustomAIApi.QuickTrans(
-                            ApiKey,
-                            new List<ReplaceTag>(),
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From,
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To,
-                            false,
-                            0,
-                            string.Empty,
-                            ref GenAICall
-                            );
-
-                        Response.Text = GenAICall.ReceiveString;
-                        CurrentResponse = GenAICall.ReceiveString;
-                    }
-                    break;
-                case "Traditional":
-                    {
-                        PlatformCall GenPlatformCall = new PlatformCall();
-                        CustomApi NCustomApi = new CustomApi();
-                        NCustomApi.Init(TestID,Phoenix.Config,ProxyCenter.CurrentProxy);
-
-                        BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "","", 100);
-                        NCustomApi.QuickTrans(
-                            ApiKey,
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.ToUnitGroup(TestUnit),
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.From,
-                            DeFine.WorkWin.ActiveTab.Mod.P_Translator.To,
-                            ref GenPlatformCall
-                        );
-
-                        Response.Text = GenPlatformCall.ReceiveString;
-                        CurrentResponse = GenPlatformCall.ReceiveString;
-                    }
-                    break;
+            }
+            catch(Exception Ex)
+            {
+                MessageBoxExtend.Show(this, Ex.Message);
             }
 
             if (Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
@@ -461,7 +478,7 @@ namespace LexTranslator
             if (GetSelectValue.Trim().Length > 0)
             {
                 TagType = "Url";
-                TagKey = GetSelectValue.Substring(0,GetSelectValue.IndexOf("->"));
+                TagKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
 
                 BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
             }
@@ -473,7 +490,7 @@ namespace LexTranslator
             if (GetSelectValue.Trim().Length > 0)
             {
                 TagType = "Header";
-                TagKey = GetSelectValue.Substring(0,GetSelectValue.IndexOf("->"));
+                TagKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
 
                 BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
             }
@@ -485,7 +502,7 @@ namespace LexTranslator
             if (GetSelectValue.Trim().Length > 0)
             {
                 TagType = "Payload";
-                TagKey = GetSelectValue.Substring(0,GetSelectValue.IndexOf("->"));
+                TagKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
 
                 BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
             }
@@ -557,7 +574,7 @@ namespace LexTranslator
                             {
                                 if (CustomPlatform.Url_Tags[i].Key.Equals(TagKey))
                                 {
-                                    CustomPlatform.Url_Tags[i].SetValue(GetAutomaticField,ReqEncodeType.Null);
+                                    CustomPlatform.Url_Tags[i].SetValue(GetAutomaticField, ReqEncodeType.Null);
                                     ChangeBindingState(GetAutomaticField);
                                     break;
                                 }
@@ -592,12 +609,12 @@ namespace LexTranslator
                         break;
                 }
             }
-            
+
         }
 
         public bool MatchTranslationJson(string Input)
         {
-            return Regex.IsMatch(Input,@"^\s*\{\s*""translation""\s*:\s*""(?:\\.|[^""\\])*""\s*\}\s*$");
+            return Regex.IsMatch(Input, @"^\s*\{\s*""translation""\s*:\s*""(?:\\.|[^""\\])*""\s*\}\s*$");
         }
 
         private void P_ResponseTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -652,7 +669,7 @@ namespace LexTranslator
             {
                 TransStr = CurrentResponse.StringDivision(QueryRule.LeftStr, QueryRule.RightStr);
             }
-            
+
             MessageBoxExtend.Show(this, TransStr);
         }
 
@@ -663,10 +680,10 @@ namespace LexTranslator
             NPlatformConfig.Enable = false;
 
             CustomPlatform.QueryRule = QueryRule;
-            
+
             NPlatformConfig.ApiKeys.Add(ApiKey);
 
-            while(Phoenix.Config.PlatformConfigs.ContainsKey(CustomPlatform.CustomID))
+            while (Phoenix.Config.PlatformConfigs.ContainsKey(CustomPlatform.CustomID))
             {
                 CustomPlatform.CustomID = Phoenix.Config.PlatformConfigs.Count + 1;
             }
