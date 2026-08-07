@@ -62,7 +62,7 @@ namespace LexTranslator
             try
             {
                 StatusText.Text = "Loading history records...";
-                var RawItems = HistoryDBCache.GetHistoryItems(_FileUniqueKey);
+                var RawItems = HistoryDBCache.GetHistoryItems(_FileUniqueKey,(int)_Owner.Mod.P_Translator.To);
 
                 var List = RawItems
                     .OrderBy(x => x.Rowid)

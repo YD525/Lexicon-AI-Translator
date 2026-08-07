@@ -1025,9 +1025,7 @@ namespace LexTranslator.SkyrimManagement
                         {
                             if (GetBatchCore.TranslatedQueue.TryDequeue(out var TailUnit))
                             {
-                                //I feel that system-translated records should not be saved in the rollback.
-                                //It's sufficient to only save the records translated and modified by users line by line. Otherwise, it would be too long to read.
-                                P_Translator.SetLink(TailUnit.Key, new P_String(TailUnit.Translated, 0));
+                                P_Translator.SetLink(TailUnit.Key, new P_String(TailUnit.Translated, 1));
                             }
                         }
 
