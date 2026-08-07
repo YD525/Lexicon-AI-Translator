@@ -1406,6 +1406,9 @@ namespace LexTranslator.UIManagement
                 if (Keys.Count > 0)
                 {
                     List<string> GetKeys = HistoryDBCache.GetPreviousKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
+                    //Points to the current node.
+                    HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[0]);
+
                     RestoreRecordHistory(GetKeys);
                     //must redirect to the affected line; otherwise, the user won't know where they've been rolled back to.
                     this.TransListView.Goto(GetKeys[0]);
@@ -1425,6 +1428,9 @@ namespace LexTranslator.UIManagement
                 if (Keys.Count > 0)
                 {
                     List<string> GetKeys = HistoryDBCache.GetNextKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
+
+                    HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[0]);
+
                     RestoreRecordHistory(GetKeys);
 
                     this.TransListView.Goto(GetKeys[0]);
@@ -1460,8 +1466,6 @@ namespace LexTranslator.UIManagement
         {
             if (GetKeys.Count > 0)
             {
-                HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[0]);
-
                 for (int i = 0; i < GetKeys.Count; i++)
                 {
                     var GetHistoryItem = HistoryDBCache.KeyToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[i]);
