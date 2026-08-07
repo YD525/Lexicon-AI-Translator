@@ -119,6 +119,9 @@
     </Compile>
     <Compile Include="DeFine.cs" />
     <Compile Include="IDEManagement\CompleteHelper.cs" />
+    <Compile Include="UIManagement\Translate\HistoryWindow.xaml.cs">
+      <DependentUpon>HistoryWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIManagement\Translate\InteractiveView.xaml.cs">
       <DependentUpon>InteractiveView.xaml</DependentUpon>
     </Compile>
@@ -198,6 +201,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIManagement\Main\DataBaseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\Translate\HistoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

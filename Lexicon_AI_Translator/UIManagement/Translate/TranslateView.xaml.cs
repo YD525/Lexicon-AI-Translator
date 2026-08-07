@@ -155,16 +155,17 @@ namespace LexTranslator.UIManagement
                 }
 
                 ReSetHistoryPointer();
+                CurrentHistory?.RefreshData();
             }
         }
 
         //If the user uses Ctrl + Z to scroll back multiple times, the current key may not be the latest. The key selection needs to be reset when reopening the file, including when applying string translations.
         public void ReSetHistoryPointer()
         {
-            var GetLastKey = HistoryDBCache.GetLastKey(this.Mod.P_Translator.GetFileUniqueKey());
-            if (GetLastKey != null)
+            var GetLastID = HistoryDBCache.GetLastID(this.Mod.P_Translator.GetFileUniqueKey());
+            if (GetLastID > 0)
             {
-                HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetLastKey);
+                HistoryDBCache.SelectID(this.Mod.P_Translator.GetFileUniqueKey(), GetLastID);
             }
         }
 
@@ -1411,19 +1412,22 @@ namespace LexTranslator.UIManagement
             {
                 e.Handled = true;
 
-                var Keys = GetSelectRecordHistoryKey();
+                var SelectIDs = GetSelectRecordHistoryKey();
 
-                if (Keys == null) return;
+                if (SelectIDs == null) return;
 
-                if (Keys.Count > 0)
+                if (SelectIDs.Count > 0)
                 {
-                    List<string> GetKeys = HistoryDBCache.GetPreviousKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
-                    //Points to the current node.
-                    HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[0]);
+                    List<int> PreviousIDs = HistoryDBCache.GetPreviousIDs(this.Mod.P_Translator.GetFileUniqueKey(), SelectIDs[0]);
 
-                    RestoreRecordHistory(GetKeys);
+                    if (PreviousIDs.Count == 0) return;
+
+                    //Points to the current node.
+                    HistoryDBCache.SelectID(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]);
+
+                    RestoreRecordHistory(PreviousIDs,false);
                     //must redirect to the affected line; otherwise, the user won't know where they've been rolled back to.
-                    this.TransListView.Goto(GetKeys[0]);
+                    this.TransListView.Goto(HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]).Key);
                 }
 
                 return;
@@ -1433,54 +1437,56 @@ namespace LexTranslator.UIManagement
             {
                 e.Handled = true;
 
-                var Keys = GetSelectRecordHistoryKey();
+                var SelectIDs = GetSelectRecordHistoryKey();
 
-                if (Keys == null) return;
+                if (SelectIDs == null) return;
 
-                if (Keys.Count > 0)
+                if (SelectIDs.Count > 0)
                 {
-                    List<string> GetKeys = HistoryDBCache.GetNextKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
+                    List<int> NextIDs = HistoryDBCache.GetNextIDs(this.Mod.P_Translator.GetFileUniqueKey(), SelectIDs[0]);
 
-                    HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[0]);
+                    if (NextIDs.Count == 0) return;
 
-                    RestoreRecordHistory(GetKeys);
+                    HistoryDBCache.SelectID(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]);
 
-                    this.TransListView.Goto(GetKeys[0]);
+                    RestoreRecordHistory(NextIDs,true);
+
+                    this.TransListView.Goto(HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]).Key);
                 }
 
                 return;
             }
         }
 
-        public List<string> GetSelectRecordHistoryKey()
+        public List<int> GetSelectRecordHistoryKey()
         {
             int FileUniqueKey = this.Mod.P_Translator.GetFileUniqueKey();
 
-            var Keys = HistoryDBCache.GetSelectKeys(FileUniqueKey);
+            var IDs = HistoryDBCache.GetSelectIDs(FileUniqueKey);
 
-            if (Keys.Count == 0)
+            if (IDs.Count == 0)
             {
-                var Key = HistoryDBCache.GetLastKey(FileUniqueKey);
-                if (Key == null)
+                var ID = HistoryDBCache.GetLastID(FileUniqueKey);
+                if (ID <= 0)
                 {
                     return null;
                 }
                 else
                 {
-                    Keys.Add(Key);
+                    IDs.Add(ID);
                 }
             }
 
-            return Keys;
+            return IDs;
         }
 
-        public void RestoreRecordHistory(List<string> GetKeys)
+        public void RestoreRecordHistory(List<int> GetIDs,bool IsNext)
         {
-            if (GetKeys.Count > 0)
+            if (GetIDs.Count > 0)
             {
-                for (int i = 0; i < GetKeys.Count; i++)
+                for (int i = 0; i < GetIDs.Count; i++)
                 {
-                    var GetHistoryItem = HistoryDBCache.KeyToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[i]);
+                    var GetHistoryItem = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), GetIDs[i]);
 
                     var Row = this.TransListView.KeyToFakeGrid(GetHistoryItem.Key);
                     bool IsCloud = false;
@@ -1495,13 +1501,27 @@ namespace LexTranslator.UIManagement
                         LocalDBCache.DeleteCache(GetHistoryItem.FileUniqueKey, GetHistoryItem.Key, this.Mod.P_Translator.To);
                     }
 
-                    this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.SourceText, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
+                    string NewText = "";
+                    if (!IsNext)
+                    {
+                        NewText = GetHistoryItem.CurrentText;
+                        this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.SourceText, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
+                    }
+                    else
+                    {
+                        NewText = GetHistoryItem.CurrentText;
+                        this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.SourceText, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
+                    }
+
+                    Row.TransText = NewText;
                 }
 
                 for (int i = 0; i < this.TransListView.Rows; i++)
                 {
                     this.TransListView.RealLines[i].SyncUI(this.TransListView);
                 }
+
+                CurrentHistory?.RefreshData();
             }
         }
 
@@ -1576,12 +1596,14 @@ namespace LexTranslator.UIManagement
         {
             ApplyTranslatedText();
             ReSetHistoryPointer();
+            CurrentHistory?.RefreshData();
         }
 
         private void TranslateOTButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             TranslateCurrent();
             ReSetHistoryPointer();
+            CurrentHistory?.RefreshData();
         }
 
 
@@ -2011,206 +2033,6 @@ namespace LexTranslator.UIManagement
             CacheViewIsShow = false;
         }
 
-        //public void SaveFile()
-        //{
-        //    new Thread(() =>
-        //    {
-        //        this.LoadFileButton.Dispatcher.Invoke(new Action(() =>
-        //        {
-        //            LoadFileButton.Content = UILanguageHelper.UICache["LoadFileButton2"];
-        //        }));
-
-        //        try
-        //        {
-        //            CancelBatchTranslation();
-
-        //            EmptyFromAndToText();
-
-        //            CalcStatistics();
-
-        //            Thread.Sleep(100);
-
-        //            if (CurrentTransType == 6)
-        //            {
-        //                //Set Trans Data
-        //                UPDateFile(false);
-        //            }
-        //            else
-        //            {
-        //                //Set Trans Data
-        //                UPDateFile(true);
-        //            }
-
-        //            LoadSaveState = 0;
-
-        //            this.CancelBtn.Dispatcher.Invoke(new Action(() =>
-        //            {
-        //                CancelBtn.Opacity = 0.3;
-        //                CancelBtn.IsEnabled = false;
-        //            }));
-
-        //            string GetFilePath = LastSetPath.Substring(0, LastSetPath.LastIndexOf(@"\")) + @"\";
-        //            string GetFileFullName = LastSetPath.Substring(LastSetPath.LastIndexOf(@"\") + @"\".Length);
-        //            string GetFileSuffix = GetFileFullName.Split('.')[1];
-        //            string GetFileName = GetFileFullName.Split('.')[0];
-
-        //            var Link = TranslatorInterface.Instance.GetLink();
-
-        //            if (DeFine.GlobalLocalSetting.UseFullPunctuation)
-        //            {
-        //                Link.CheckLinks(new Action<string, string, bool>((string Key, string Value, bool Unique) =>
-        //                {
-        //                    if (Value.Length > 0)
-        //                    {
-        //                        Link[Key] = TranslationPreprocessor.ToFullWidthSymbols(Value);
-        //                    }
-        //                }));
-        //            }
-
-        //            if (CurrentTransType == 11)
-        //            {
-        //                if (Link.Count > 0)
-        //                {
-        //                    if (GlobalXmlReader.XmlItems.Count > 0)
-        //                    {
-        //                        GlobalXmlReader.Save(LastSetPath);
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            if (CurrentTransType == 6)
-        //            {
-        //                if (Link.Count > 0)
-        //                {
-        //                    if (GlobalRamCacheReader != null)
-        //                    {
-        //                        if (!GlobalRamCacheReader.Save(LastSetPath))
-        //                        {
-        //                            MessageBox.Show("Build RamCache Error!");
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            if (CurrentTransType == 3)
-        //            {
-        //                if (Link.Count > 0)
-        //                {
-        //                    if (GlobalPexReader != null)
-        //                    {
-        //                        GlobalPexReader.Core.GetStrings(out List<PexStringItem> Strings);
-
-        //                        int TranslateCount = 0;
-        //                        for (int i = 0; i < Strings.Count; i++)
-        //                        {
-        //                            var StringItem = Strings[i];
-        //                            StringItem.Translated = TranslatorInterface.Instance.GetLink(StringItem.UniqueKey);
-        //                            if (StringItem.Translated.Length > 0)
-        //                            {
-        //                                TranslateCount++;
-        //                            }
-        //                        }
-
-        //                        if (TranslateCount > 0)
-        //                        {
-        //                            string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
-
-        //                            if (!File.Exists(GetBackUPPath))
-        //                            {
-        //                                File.Copy(LastSetPath, GetBackUPPath);
-        //                            }
-
-        //                            GlobalPexReader.Core.SavePex(LastSetPath, out int SaveState).Close();
-
-        //                            if (SaveState > 0 == false)
-        //                            {
-        //                                MessageBox.Show("Build Script Error!");
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            if (CurrentTransType == 2)
-        //            {
-        //                string TempFilePath = LastSetPath + ".Temp";
-
-        //                int ModifyCount = GlobalEspReader.SaveEsp(TempFilePath);
-
-        //                if (ModifyCount == 0)
-        //                {
-        //                    if (File.Exists(TempFilePath))
-        //                    {
-        //                        File.Delete(TempFilePath);
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    string GetBackUPPath = LastSetPath + ".backup";
-
-        //                    if (!File.Exists(GetBackUPPath))
-        //                    {
-        //                        File.Copy(LastSetPath, GetBackUPPath);
-        //                    }
-
-        //                    if (File.Exists(LastSetPath))
-        //                    {
-        //                        File.Delete(LastSetPath);
-        //                    }
-
-        //                    if (File.Exists(TempFilePath))
-        //                    {
-        //                        File.Move(TempFilePath, LastSetPath);
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            if (CurrentTransType == 1)
-        //            {
-        //                if (Link.Count > 0)
-        //                    if (GlobalMCMReader != null)
-        //                    {
-        //                        string GetBackUPPath = GetFilePath + GetFileFullName + ".backup";
-
-        //                        if (!File.Exists(GetBackUPPath))
-        //                        {
-        //                            File.Copy(LastSetPath, GetBackUPPath);
-        //                        }
-
-        //                        if (File.Exists(LastSetPath))
-        //                        {
-        //                            File.Delete(LastSetPath);
-        //                        }
-
-        //                        GlobalMCMReader.SaveMCMConfig(LastSetPath);
-
-        //                        if (!File.Exists(LastSetPath))
-        //                        {
-        //                            MessageBox.Show("Save File Error!");
-        //                            File.Copy(GetBackUPPath, LastSetPath);
-        //                        }
-        //                    }
-        //            }
-
-        //            new LexDictionary().CreatDictionary();
-        //        }
-        //        catch (Exception Ex)
-        //        {
-        //            MessageBox.Show(Ex.Message);
-        //        }
-        //        CancelTransEsp(null, null);
-        //    }).Start();
-        //}
-
-        //public void GetStatisticsR()
-        //{
-        //    this.Dispatcher.Invoke(new Action(() =>
-        //    {
-        //        CalcStatistics();
-        //    }));
-        //}
-
-
         public int GlobalTransCount = 0;
         public void GetGlobalTransCount()
         {
@@ -2495,9 +2317,17 @@ namespace LexTranslator.UIManagement
             }).Start();
         }
 
+        public HistoryWindow CurrentHistory = null;
         private void ShowHistory(object sender, MouseButtonEventArgs e)
         {
+            if (CurrentHistory != null)
+            {
+                CurrentHistory.Close();
+            }
 
+            CurrentHistory = new HistoryWindow(this,this.Mod.P_Translator.GetFileUniqueKey());
+
+            CurrentHistory.Show();
         }
     }
 }

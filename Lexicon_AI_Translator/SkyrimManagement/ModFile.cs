@@ -24,12 +24,12 @@ using static PexInterface.PexHeuristicAnalysis;
 namespace LexTranslator.SkyrimManagement
 {
     public enum GameFileType
-    { 
-       Null = 0,ESP = 1,PEX = 2,MCM = 3,XML = 5,JSON = 6
+    {
+        Null = 0, ESP = 1, PEX = 2, MCM = 3, XML = 5, JSON = 6
     }
     public enum GameFileState
-    { 
-       Null = 0,Load = 1,Save = 2
+    {
+        Null = 0, Load = 1, Save = 2
     }
     public class ModFile
     {
@@ -61,7 +61,7 @@ namespace LexTranslator.SkyrimManagement
             this.CanRestored = false;
 
             //Although each tag has its own independent translator, there's only one Node selection view on the interface. This means multiple instances use a single configuration file. Furthermore, the current thread count must be calculated by adding up the number of running instances, and so on. I suddenly realized, what about the thread limit in the settings interface? It limits the number of threads for a single instance. Therefore, to be on the safe side, this version will only allow one translation to run simultaneously for now.
-            this.P_Translator = new Translator(Path,DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
+            this.P_Translator = new Translator(Path, DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
 
             if (System.IO.File.Exists(Path))
             {
@@ -105,22 +105,30 @@ namespace LexTranslator.SkyrimManagement
             {
                 if (Current.Type == 1)
                 {
-                    var NHistoryItem = new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, this.P_Translator.To,
-                        Previous.String,
-                        Current.String,
+                    if (Previous == null)
+                    {
+                        HistoryDBCache.AddHistory(
+                        new HistoryItem(this.P_Translator.GetFileUniqueKey(), 0, Key, (int)this.P_Translator.To,
+                        string.Empty,
                         0,
                         TimeHelper.DateTimeToTimestamp(DateTime.Now),
                         Current.RangeID
-                        );
+                        ));
+                    }
 
-                    HistoryDBCache.AddHistory(NHistoryItem);
+                    HistoryDBCache.AddHistory(new HistoryItem(this.P_Translator.GetFileUniqueKey(), 0, Key, (int)this.P_Translator.To,
+                    Current.String,
+                    0,
+                    TimeHelper.DateTimeToTimestamp(DateTime.Now),
+                    Current.RangeID
+                    ));
                 }
             });
         }
 
         public void SetListView(YDListView ListView)
-        { 
-           this.ListView = ListView;
+        {
+            this.ListView = ListView;
         }
 
         public bool CanRestored = false;
@@ -215,7 +223,7 @@ namespace LexTranslator.SkyrimManagement
                 {
                     bool IsCloud = false;
 
-                    ListView.RealLines[i].SyncData(this,ref IsCloud);
+                    ListView.RealLines[i].SyncData(this, ref IsCloud);
 
                     string GetKey = ListView.RealLines[i].Key;
 
@@ -230,7 +238,7 @@ namespace LexTranslator.SkyrimManagement
                     }
 
                     var Link = this.P_Translator.GetLink();
-                    Link[GetKey] = new P_String(GetTransText,0);
+                    Link[GetKey] = new P_String(GetTransText, 0);
                 }
             }
         }
@@ -250,7 +258,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         if (Value.String.Length > 0)
                         {
-                            Link[Key] = new P_String(TranslationPreprocessor.ToFullWidthSymbols(Value.String, true),0);
+                            Link[Key] = new P_String(TranslationPreprocessor.ToFullWidthSymbols(Value.String, true), 0);
                         }
                     }));
                 }
@@ -261,7 +269,7 @@ namespace LexTranslator.SkyrimManagement
                     {
                         if (Value.String.Length > 0)
                         {
-                            Link[Key] = new P_String(TranslationPreprocessor.ToFullWidthSymbols(Value.String, false),0);
+                            Link[Key] = new P_String(TranslationPreprocessor.ToFullWidthSymbols(Value.String, false), 0);
                         }
                     }));
                 }
@@ -275,7 +283,7 @@ namespace LexTranslator.SkyrimManagement
                     SyncListView(true);
                 }
 
-                bool EspIsCreate = false; 
+                bool EspIsCreate = false;
 
                 switch (this.Type)
                 {
@@ -287,7 +295,7 @@ namespace LexTranslator.SkyrimManagement
                         break;
                     case GameFileType.JSON:
                         {
-                            if (!RamCacheReader.Save(this,this.Path))
+                            if (!RamCacheReader.Save(this, this.Path))
                             {
                                 RestoreBackup();
                                 MessageBox.Show("Build RamCache Error!");
@@ -370,7 +378,7 @@ namespace LexTranslator.SkyrimManagement
                 Lex_Dictionary.WriteDictionary(this.ListView);
                 Lex_Dictionary.CreateDictionary();
 
-                this.Win.Dispatcher.Invoke(new Action(() => 
+                this.Win.Dispatcher.Invoke(new Action(() =>
                 {
                     this.Win._Parent?.RemoveTab(this.Path);
                     MessageBoxExtend.Show(
@@ -399,28 +407,28 @@ namespace LexTranslator.SkyrimManagement
                     {
                         XmlReader.Close();
                     }
-                break;
+                    break;
                 case GameFileType.JSON:
                     {
                         RamCacheReader.Close();
                     }
-                break;
+                    break;
                 case GameFileType.ESP:
                     {
                         EspReader.Close();
                     }
-                break;
+                    break;
                 case GameFileType.PEX:
                     {
                         PexReader.Core.Close();
                         PexLinks.Clear();
                     }
-                break;
+                    break;
                 case GameFileType.MCM:
                     {
                         MCMReader.Close();
                     }
-                break;
+                    break;
             }
         }
 
@@ -453,7 +461,7 @@ namespace LexTranslator.SkyrimManagement
                         if (QueryGrid.TransText.Length == 0)
                         {
                             bool IsCloud = false;
-                            QueryGrid.SyncData(this,ref IsCloud);
+                            QueryGrid.SyncData(this, ref IsCloud);
                         }
                     }
                 }
@@ -487,7 +495,7 @@ namespace LexTranslator.SkyrimManagement
 
             return TranslateCount;
         }
-       
+
         public void Prepare()
         {
             if (P_Translator != null)
@@ -543,10 +551,10 @@ namespace LexTranslator.SkyrimManagement
                     List<BaseUnit> BaseUnits = GetCanTransUnits();
                     InitTrd = new Thread(() =>
                     {
-                        P_Translator.Init(BaseUnits,GetTranslateCount(),
-                        new P_BucketContainer.CheckLinks((TempUnits,Unit) =>
+                        P_Translator.Init(BaseUnits, GetTranslateCount(),
+                        new P_BucketContainer.CheckLinks((TempUnits, Unit) =>
                         {
-                            return MultiWindowController.CheckLinks(this,TempUnits,Unit);
+                            return MultiWindowController.CheckLinks(this, TempUnits, Unit);
                         }));
                         InitTrd = null;
                     });
@@ -649,7 +657,7 @@ namespace LexTranslator.SkyrimManagement
             {
                 var Row = ListView.RealLines[i];
                 bool IsCloud = false;
-                Row.SyncData(this,ref IsCloud);
+                Row.SyncData(this, ref IsCloud);
 
                 bool HasAddAIMemory = false;
 
@@ -748,7 +756,7 @@ namespace LexTranslator.SkyrimManagement
                             HasAddAIMemory = true;
 
                             var Link = P_Translator.GetLink();
-                            Link[Row.Key] = new P_String(GetTrans.Value,0);
+                            Link[Row.Key] = new P_String(GetTrans.Value, 0);
 
                             var GetFakeGrid = ListView.KeyToFakeGrid(Row.Key);
                             if (GetFakeGrid != null)
@@ -828,7 +836,7 @@ namespace LexTranslator.SkyrimManagement
             return BaseUnits;
         }
 
-       
+
         public void MakeReady()
         {
             Phoenix.Config.ProtectedPatterns.Clear();
@@ -928,7 +936,7 @@ namespace LexTranslator.SkyrimManagement
                         {
                             var Row = ListView.RealLines[i];
                             bool IsCloud = false;
-                            Row.SyncData(this,ref IsCloud);
+                            Row.SyncData(this, ref IsCloud);
 
                             if (!string.IsNullOrEmpty(Row.TransText))
                             {
@@ -985,16 +993,16 @@ namespace LexTranslator.SkyrimManagement
                                 if (GetUnit != null)
                                 {
                                     TotalCount++;
-                                    P_Translator.SetLink(GetUnit.Key, new P_String(GetUnit.Translated,0));
+                                    P_Translator.SetLink(GetUnit.Key, new P_String(GetUnit.Translated, 0));
                                     SetTransBarTittle(string.Format("STRINGS({0}/{1})",
                                           GetBatchCore.BaseTranslatedCount + GetBatchCore.TranslatedCount, ListView.Rows));
 
-                                    ListView.MainCanvas.Dispatcher.Invoke(new Action(() => 
+                                    ListView.MainCanvas.Dispatcher.Invoke(new Action(() =>
                                     {
                                         bool IsCloud = false;
-                                        ListView.KeyToFakeGrid(GetUnit.Key).SyncData(this,ref IsCloud);
+                                        ListView.KeyToFakeGrid(GetUnit.Key).SyncData(this, ref IsCloud);
                                     }));
-                                   
+
                                 }
                                 else
                                 if (!IsEnd)
@@ -1019,7 +1027,7 @@ namespace LexTranslator.SkyrimManagement
                             {
                                 //I feel that system-translated records should not be saved in the rollback.
                                 //It's sufficient to only save the records translated and modified by users line by line. Otherwise, it would be too long to read.
-                                P_Translator.SetLink(TailUnit.Key,new P_String(TailUnit.Translated,0));
+                                P_Translator.SetLink(TailUnit.Key, new P_String(TailUnit.Translated, 0));
                             }
                         }
 
