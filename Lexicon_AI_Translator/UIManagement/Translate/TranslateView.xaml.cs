@@ -153,6 +153,18 @@ namespace LexTranslator.UIManagement
                 {
                     this.RefreshDictionary.Opacity = 1.0;
                 }
+
+                ReSetHistoryPointer();
+            }
+        }
+
+        //If the user uses Ctrl + Z to scroll back multiple times, the current key may not be the latest. The key selection needs to be reset when reopening the file, including when applying string translations.
+        public void ReSetHistoryPointer()
+        {
+            var GetLastKey = HistoryDBCache.GetLastKey(this.Mod.P_Translator.GetFileUniqueKey());
+            if (GetLastKey != null)
+            {
+                HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetLastKey);
             }
         }
 
@@ -1563,11 +1575,13 @@ namespace LexTranslator.UIManagement
         private void ApplyTranslatedText(object sender, MouseButtonEventArgs e)
         {
             ApplyTranslatedText();
+            ReSetHistoryPointer();
         }
 
         private void TranslateOTButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             TranslateCurrent();
+            ReSetHistoryPointer();
         }
 
 
