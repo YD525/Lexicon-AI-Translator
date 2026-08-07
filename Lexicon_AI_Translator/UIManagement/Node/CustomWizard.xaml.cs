@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using LexTranslator.UIManage;
 using PhoenixEngine;
 using PhoenixEngine.Common;
@@ -80,6 +82,10 @@ namespace LexTranslator
                 case 2:
                     {
                         Tittle.Content = "Config Request body";
+
+                        AutomaticFieldsHint.Text = _AutomaticFieldsList.Count > 0
+                            ? "Automatic fields available for this platform: " + string.Join("  /  ", _AutomaticFieldsList)
+                            : "";
                     }
                     break;
                 case 3:
@@ -131,8 +137,10 @@ namespace LexTranslator
         private CustomReqCore TestCustomCore = null;
         private ReqQueryRuleItem QueryRule = null;
 
-        public string TagType = "";
-        public string TagKey = "";
+        // Automatic fields available for the currently selected platform type (Step 1),
+        // reused as the dropdown source for every binding row in Step 2.
+        private List<string> _AutomaticFieldsList = new List<string>();
+
         private void Next(object sender, MouseButtonEventArgs e)
         {
             if (Step == 1)
@@ -161,31 +169,19 @@ namespace LexTranslator
                 {
                     case "Local AI":
                         {
-                            AutomaticFields.Items.Clear();
-                            AutomaticFields.Items.Add("{AI_Prompt}");
-                            AutomaticFields.Items.Add("{AI_Model}");
-
+                            _AutomaticFieldsList = new List<string> { "{AI_Prompt}", "{AI_Model}" };
                             CustomPlatform.Type = CustomPlatformType.LocalAI;
                         }
                         break;
                     case "Cloud AI":
                         {
-                            AutomaticFields.Items.Clear();
-                            AutomaticFields.Items.Add("{API_KEY}");
-                            AutomaticFields.Items.Add("{AI_Prompt}");
-                            AutomaticFields.Items.Add("{AI_Model}");
-
+                            _AutomaticFieldsList = new List<string> { "{API_KEY}", "{AI_Prompt}", "{AI_Model}" };
                             CustomPlatform.Type = CustomPlatformType.CloudAI;
                         }
                         break;
                     case "Traditional":
                         {
-                            AutomaticFields.Items.Clear();
-                            AutomaticFields.Items.Add("{API_KEY}");
-                            AutomaticFields.Items.Add("{SourceStr}");
-                            AutomaticFields.Items.Add("{P_From}");
-                            AutomaticFields.Items.Add("{P_To}");
-
+                            _AutomaticFieldsList = new List<string> { "{API_KEY}", "{SourceStr}", "{P_From}", "{P_To}" };
                             CustomPlatform.Type = CustomPlatformType.Traditional;
                         }
                         break;
@@ -262,9 +258,7 @@ namespace LexTranslator
         {
             CustomPlatform = null;
             CurrentPlatformType = string.Empty;
-
-            TagType = string.Empty;
-            TagKey = string.Empty;
+            _AutomaticFieldsList = new List<string>();
 
             SyncUI();
         }
@@ -278,70 +272,130 @@ namespace LexTranslator
             }
         }
 
-        private void Url_TextChanged(object sender, TextChangedEventArgs e)
+        // Builds/updates the tag list for a field (Url/Header/Payload), keeping any value the
+        // user already bound for a key that is still present, instead of wiping it on every keystroke.
+        private List<ReqReplaceTag> MergeTags(List<ReqCustomKeyValue> RawKeyValues, List<ReqReplaceTag> OldTags)
         {
-            if (TestCustomCore != null)
+            List<ReqReplaceTag> Merged = new List<ReqReplaceTag>();
+
+            foreach (var Kv in RawKeyValues)
             {
-                CustomPlatform.Url = HttpUtility.UrlDecode(Url.Text);
-                TestCustomCore.SetUrl(CustomPlatform.Url);
-                UrlTags.Items.Clear();
+                var Old = OldTags != null ? OldTags.FirstOrDefault(T => T.Key == Kv.Key) : null;
+                Merged.Add(Old != null ? Old : new ReqReplaceTag(Kv.Key, Kv.Value));
+            }
 
-                var TagData = TestCustomCore.GetUrlKeyValues();
+            return Merged;
+        }
 
-                foreach (var GetTag in TagData)
+        // Renders one row per detected key with an editable ComboBox showing its current
+        // bound value; picking or typing a value commits immediately via TagValue_Changed.
+        private void RebuildBindingRows(StackPanel Container, string TagTypeName, List<ReqCustomKeyValue> RawKeyValues, List<ReqReplaceTag> Tags)
+        {
+            Container.Children.Clear();
+
+            foreach (var Kv in RawKeyValues)
+            {
+                var BoundTag = Tags.FirstOrDefault(T => T.Key == Kv.Key);
+                string CurrentValue = BoundTag != null ? BoundTag.GetValue() : Kv.Value;
+
+                Grid Row = new Grid { Margin = new Thickness(0, 2, 0, 2) };
+                Row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                Row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+
+                Label KeyLabel = new Label
                 {
-                    UrlTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
-                }
+                    Content = Kv.Key,
+                    Foreground = Brushes.White,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetColumn(KeyLabel, 0);
 
-                CustomPlatform.Url_Tags = CustomKeyValueToTags(TagData);
+                ComboBox ValueBox = new ComboBox
+                {
+                    IsEditable = true,
+                    Text = CurrentValue,
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    ItemsSource = _AutomaticFieldsList,
+                    Tag = new Tuple<string, string>(TagTypeName, Kv.Key)
+                };
+                ValueBox.SelectionChanged += TagValue_Changed;
+                ValueBox.LostKeyboardFocus += TagValue_Changed;
+                Grid.SetColumn(ValueBox, 1);
+
+                Row.Children.Add(KeyLabel);
+                Row.Children.Add(ValueBox);
+
+                Container.Children.Add(Row);
             }
         }
-        public List<ReqReplaceTag> CustomKeyValueToTags(List<ReqCustomKeyValue> Array)
+
+        private void TagValue_Changed(object sender, RoutedEventArgs e)
         {
-            List<ReqReplaceTag> ReqTags = new List<ReqReplaceTag>();
-            foreach (var Get in Array)
+            if (CustomPlatform == null) return;
+
+            ComboBox Box = (ComboBox)sender;
+            var Info = (Tuple<string, string>)Box.Tag;
+            string TagTypeName = Info.Item1;
+            string Key = Info.Item2;
+            string NewValue = Box.Text;
+
+            List<ReqReplaceTag> Tags;
+            switch (TagTypeName)
             {
-                ReqTags.Add(new ReqReplaceTag(Get.Key, Get.Value));
+                case "Url": Tags = CustomPlatform.Url_Tags; break;
+                case "Header": Tags = CustomPlatform.Header_Tags; break;
+                case "Payload": Tags = CustomPlatform.PayLoad_Tags; break;
+                default: return;
             }
-            return ReqTags;
+
+            var ExistingTag = Tags.FirstOrDefault(T => T.Key == Key);
+            if (ExistingTag != null)
+            {
+                ExistingTag.SetValue(NewValue, ReqEncodeType.Null);
+            }
+            else
+            {
+                Tags.Add(new ReqReplaceTag(Key, NewValue));
+            }
+        }
+
+        private void Url_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TestCustomCore == null) return;
+
+            CustomPlatform.Url = HttpUtility.UrlDecode(Url.Text);
+            TestCustomCore.SetUrl(CustomPlatform.Url);
+
+            var RawTags = TestCustomCore.GetUrlKeyValues();
+            CustomPlatform.Url_Tags = MergeTags(RawTags, CustomPlatform.Url_Tags);
+
+            RebuildBindingRows(UrlBindings, "Url", RawTags, CustomPlatform.Url_Tags);
         }
 
         private void Header_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (TestCustomCore != null)
-            {
-                CustomPlatform.Header = Header.Text;
-                TestCustomCore.SetHeader(CustomPlatform.Header);
-                HeaderTags.Items.Clear();
+            if (TestCustomCore == null) return;
 
-                var TagData = TestCustomCore.GetHeaderKeyValues();
+            CustomPlatform.Header = Header.Text;
+            TestCustomCore.SetHeader(CustomPlatform.Header);
 
-                foreach (var GetTag in TagData)
-                {
-                    HeaderTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
-                }
+            var RawTags = TestCustomCore.GetHeaderKeyValues();
+            CustomPlatform.Header_Tags = MergeTags(RawTags, CustomPlatform.Header_Tags);
 
-                CustomPlatform.Header_Tags = CustomKeyValueToTags(TagData);
-            }
+            RebuildBindingRows(HeaderBindings, "Header", RawTags, CustomPlatform.Header_Tags);
         }
 
         private void Payload_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (TestCustomCore != null)
-            {
-                CustomPlatform.PayLoad = Payload.Text;
-                TestCustomCore.SetPayLoad(CustomPlatform.PayLoad);
-                PayloadTags.Items.Clear();
+            if (TestCustomCore == null) return;
 
-                var TagData = TestCustomCore.GetPayLoadKeyValues();
+            CustomPlatform.PayLoad = Payload.Text;
+            TestCustomCore.SetPayLoad(CustomPlatform.PayLoad);
 
-                foreach (var GetTag in TagData)
-                {
-                    PayloadTags.Items.Add(GetTag.Key + "->" + GetTag.Value);
-                }
+            var RawTags = TestCustomCore.GetPayLoadKeyValues();
+            CustomPlatform.PayLoad_Tags = MergeTags(RawTags, CustomPlatform.PayLoad_Tags);
 
-                CustomPlatform.PayLoad_Tags = CustomKeyValueToTags(TagData);
-            }
+            RebuildBindingRows(PayloadBindings, "Payload", RawTags, CustomPlatform.PayLoad_Tags);
         }
 
         private void IsPost_Click(object sender, RoutedEventArgs e)
@@ -461,7 +515,7 @@ namespace LexTranslator
                 }
 
             }
-            catch(Exception Ex)
+            catch (Exception Ex)
             {
                 MessageBoxExtend.Show(this, Ex.Message);
             }
@@ -470,146 +524,6 @@ namespace LexTranslator
             {
                 Phoenix.Config.PlatformConfigs.Remove(TestID);
             }
-        }
-
-        private void UrlTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string GetSelectValue = P_Convert.ObjToStr(UrlTags.SelectedValue);
-            if (GetSelectValue.Trim().Length > 0)
-            {
-                TagType = "Url";
-                TagKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
-
-                BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
-            }
-        }
-
-        private void HeaderTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string GetSelectValue = P_Convert.ObjToStr(HeaderTags.SelectedValue);
-            if (GetSelectValue.Trim().Length > 0)
-            {
-                TagType = "Header";
-                TagKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
-
-                BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
-            }
-        }
-
-        private void PayloadTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string GetSelectValue = P_Convert.ObjToStr(PayloadTags.SelectedValue);
-            if (GetSelectValue.Trim().Length > 0)
-            {
-                TagType = "Payload";
-                TagKey = GetSelectValue.Substring(0, GetSelectValue.IndexOf("->"));
-
-                BindingInFo.Content = string.Format("Select {0},{1}", TagType, TagKey);
-            }
-        }
-
-        public void ChangeBindingState(string NewValue)
-        {
-            switch (TagType)
-            {
-                case "Url":
-                    {
-                        for (int i = 0; i < UrlTags.Items.Count; i++)
-                        {
-                            string GetValue = UrlTags.Items[i].ToString();
-                            string GetKey = GetValue.Substring(0, GetValue.IndexOf("->"));
-
-                            if (GetKey.Equals(TagKey))
-                            {
-                                UrlTags.Items[i] = GetKey + "->" + NewValue;
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                case "Header":
-                    {
-                        for (int i = 0; i < HeaderTags.Items.Count; i++)
-                        {
-                            string GetValue = HeaderTags.Items[i].ToString();
-                            string GetKey = GetValue.Substring(0, GetValue.IndexOf("->"));
-
-                            if (GetKey.Equals(TagKey))
-                            {
-                                HeaderTags.Items[i] = GetKey + "->" + NewValue;
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                case "Payload":
-                    {
-                        for (int i = 0; i < PayloadTags.Items.Count; i++)
-                        {
-                            string GetValue = PayloadTags.Items[i].ToString();
-                            string GetKey = GetValue.Substring(0, GetValue.IndexOf("->"));
-
-                            if (GetKey.Equals(TagKey))
-                            {
-                                PayloadTags.Items[i] = GetKey + "->" + NewValue;
-                                break;
-                            }
-                        }
-                    }
-                    break;
-            }
-        }
-
-        private void BindingTag(object sender, SelectionChangedEventArgs e)
-        {
-            string GetAutomaticField = P_Convert.ObjToStr(AutomaticFields.SelectedValue);
-
-            if (GetAutomaticField.Length > 0)
-            {
-                switch (TagType)
-                {
-                    case "Url":
-                        {
-                            for (int i = 0; i < CustomPlatform.Url_Tags.Count; i++)
-                            {
-                                if (CustomPlatform.Url_Tags[i].Key.Equals(TagKey))
-                                {
-                                    CustomPlatform.Url_Tags[i].SetValue(GetAutomaticField, ReqEncodeType.Null);
-                                    ChangeBindingState(GetAutomaticField);
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    case "Header":
-                        {
-                            for (int i = 0; i < CustomPlatform.Header_Tags.Count; i++)
-                            {
-                                if (CustomPlatform.Header_Tags[i].Key.Equals(TagKey))
-                                {
-                                    CustomPlatform.Header_Tags[i].SetValue(GetAutomaticField, ReqEncodeType.Null);
-                                    ChangeBindingState(GetAutomaticField);
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    case "Payload":
-                        {
-                            for (int i = 0; i < CustomPlatform.PayLoad_Tags.Count; i++)
-                            {
-                                if (CustomPlatform.PayLoad_Tags[i].Key.Equals(TagKey))
-                                {
-                                    CustomPlatform.PayLoad_Tags[i].SetValue(GetAutomaticField, ReqEncodeType.Null);
-                                    ChangeBindingState(GetAutomaticField);
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
-
         }
 
         public bool MatchTranslationJson(string Input)
@@ -706,9 +620,7 @@ namespace LexTranslator
             CustomPlatform = null;
             CurrentPlatformType = string.Empty;
             QueryRule = null;
-            TagType = string.Empty;
-            TagKey = string.Empty;
-            CurrentPlatformType = string.Empty;
+            _AutomaticFieldsList = new List<string>();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
