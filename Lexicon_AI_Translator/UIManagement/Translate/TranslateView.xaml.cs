@@ -156,6 +156,9 @@ namespace LexTranslator.UIManagement
 
                 ReSetHistoryPointer();
                 CurrentHistory?.RefreshData();
+
+                //Automatically shrink records when there are more than 10,000 records.
+                HistoryDBCache.CompactHistory(this.Mod.P_Translator.GetFileUniqueKey());
             }
         }
 
