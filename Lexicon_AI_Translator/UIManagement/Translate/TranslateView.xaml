@@ -414,7 +414,7 @@ Fill="White"/>
                                     </Label>
                                 </Border>
 
-                                <Border Name="ShowHistoryButton" Style="{DynamicResource LiteButton}" PreviewMouseDown="ShowHistory">
+                                <Border Name="ShowHistoryButton" Style="{DynamicResource LiteButton}" PreviewMouseDown="ShowHistory" ToolTip="Undo last operation (Ctrl+↑),Redo last operation (Ctrl+↓)">
                                     <Label Name="HistoryButtonFont" Style="{DynamicResource LiteButtonFont}" Foreground="White">
                                         History
                                     </Label>

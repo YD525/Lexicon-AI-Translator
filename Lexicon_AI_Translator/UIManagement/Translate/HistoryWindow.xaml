@@ -209,10 +209,9 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0"
-                               Text="History Manager"
+                               Text="History View"
                                Foreground="White"
-                               FontSize="13"
-                               FontWeight="SemiBold"
+                               FontSize="12"
                                VerticalAlignment="Center"
                                Margin="14,0,0,0" />
 

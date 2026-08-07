@@ -1466,14 +1466,14 @@ namespace LexTranslator.UIManagement
                 return;
             }
 
-            if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.Key == Key.Up && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
                 RestorePreviousHistory();
                 return;
             }
 
-            if (e.Key == Key.Y && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.Key == Key.Down && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
                 RestoreNextHistory();
