@@ -1430,7 +1430,14 @@ namespace LexTranslator.UIManagement
 
                     RestoreRecordHistory(PreviousIDs,false);
                     //must redirect to the affected line; otherwise, the user won't know where they've been rolled back to.
-                    this.TransListView.Goto(HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]).Key);
+                    var Current = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]);
+                    if (Current != null)
+                    {
+                        if (!this.TransListView.IsKeyInViewport(Current.Key))
+                        {
+                            this.TransListView.Goto(Current.Key);
+                        }
+                    }
                 }
 
                 return;
@@ -1454,7 +1461,14 @@ namespace LexTranslator.UIManagement
 
                     RestoreRecordHistory(NextIDs,true);
 
-                    this.TransListView.Goto(HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]).Key);
+                    var Current = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]);
+                    if (Current != null)
+                    {
+                        if (!this.TransListView.IsKeyInViewport(Current.Key))
+                        {
+                            this.TransListView.Goto(Current.Key);
+                        }
+                    }
                 }
 
                 return;

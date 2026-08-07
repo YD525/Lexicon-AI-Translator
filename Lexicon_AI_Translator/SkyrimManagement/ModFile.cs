@@ -123,7 +123,7 @@ namespace LexTranslator.SkyrimManagement
                     else
                     {
                         //We need to prevent system-translated data from polluting the history. However, we need a way to save the previous record translated by the system.
-                        if (!HistoryDBCache.CheckHistoryItem(this.P_Translator.GetFileUniqueKey(), (int)this.P_Translator.To, Key,Previous.String))
+                        if (!HistoryDBCache.CheckPreviousHistoryItem(this.P_Translator.GetFileUniqueKey(), (int)this.P_Translator.To, Key,Previous.String))
                         {
                             HistoryDBCache.AddHistory(
                             new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
