@@ -28,6 +28,7 @@ using static LexTranslator.SkyrimManagement.DSDConverter;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
 using PhoenixEngine.Memory;
+using PhoenixEngine.Engine.ADO;
 
 namespace LexTranslator.UIManagement
 {
@@ -1430,20 +1431,56 @@ namespace LexTranslator.UIManagement
                         NextAuto();
                     }
                 }
+
+                return;
             }
             if (e.Key == Key.F2)
             {
+                e.Handled = true;
+
                 if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
                 {
                     ApplyTranslatedText();
                 }
+
+                return;
             }
             if (e.Key == Key.F1)
             {
+                e.Handled = true;
+
                 if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
                 {
                     TranslateCurrent();
                 }
+
+                return;
+            }
+
+            if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+
+                var Keys = HistoryDBCache.GetSelectKeys(this.Mod.P_Translator.GetFileUniqueKey());
+                if (Keys.Count > 0)
+                {
+                    List<string> GetKeys = HistoryDBCache.GetPreviousKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
+                }
+
+                return;
+            }
+
+            if (e.Key == Key.Y && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+
+                var Keys = HistoryDBCache.GetSelectKeys(this.Mod.P_Translator.GetFileUniqueKey());
+                if (Keys.Count > 0)
+                {
+                    List<string> GetKeys = HistoryDBCache.GetNextKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
+                }
+
+                return;
             }
         }
 

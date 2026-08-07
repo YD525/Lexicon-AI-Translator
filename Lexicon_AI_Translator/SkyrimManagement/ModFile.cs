@@ -13,8 +13,10 @@ using PexInterface;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine;
+using PhoenixEngine.Engine.ADO;
 using PhoenixEngine.Events;
 using PhoenixEngine.Memory;
+using PhoenixEngine.Platform.Request;
 using PhoenixEngine.Request;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
@@ -99,6 +101,22 @@ namespace LexTranslator.SkyrimManagement
                     EspReader = new EspReader(P_Translator);
                 }
             }
+
+            this.P_Translator.GetLink().OnValueChanged += new Action<string, P_String, P_String>((Key, Previous, Current) =>
+            {
+                if (Current.Type == 1)
+                {
+                    var NHistoryItem = new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, this.P_Translator.To,
+                        Previous.String,
+                        Current.String,
+                        0,
+                        TimeHelper.DateTimeToTimestamp(DateTime.Now),
+                        Current.RangeID
+                        );
+
+                    HistoryDBCache.AddHistory(NHistoryItem);
+                }
+            });
         }
 
         public void SetListView(YDListView ListView)
@@ -1078,7 +1096,6 @@ namespace LexTranslator.SkyrimManagement
         public void CancelTranslateWork()
         {
             RowStyleWin.RecordModifyStates.Clear();
-            TranslatorInterface.TranslatorHistoryCaches.Clear();
 
             FristInit = false;
 

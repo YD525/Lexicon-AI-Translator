@@ -2,7 +2,6 @@
 using LexTranslator.UIManagement;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using PhoenixEngine.Events;
 using PhoenixEngine.P_Delegate;
@@ -271,28 +270,14 @@ namespace LexTranslator.TranslateManage
             }
         }
 
-        public static Dictionary<int, List<TranslatorHistoryCache>> TranslatorHistoryCaches = new Dictionary<int, List<TranslatorHistoryCache>>();
+      
         public static void SetTranslatorHistoryCache(string Key, string Translated, bool IsCloud)
         {
-            int GetKey = Key.GetHashCode();
-
-            if (!TranslatorHistoryCaches.ContainsKey(GetKey))
-            {
-                TranslatorHistoryCaches.Add(GetKey, new List<TranslatorHistoryCache>());
-            }
-
-            if (!TranslatorHistoryCaches[GetKey].Any(C => C.Translated == Translated))
-            {
-                TranslatorHistoryCaches[GetKey].Add(new TranslatorHistoryCache(Translated, IsCloud));
-            }
+           
         }
         public static List<TranslatorHistoryCache> GetTranslatorCache(string Key)
         {
-            int GetKey = Key.GetHashCode();
-            if (TranslatorHistoryCaches.ContainsKey(GetKey))
-            {
-                return TranslatorHistoryCaches[GetKey];
-            }
+           
 
             return null;
         }
