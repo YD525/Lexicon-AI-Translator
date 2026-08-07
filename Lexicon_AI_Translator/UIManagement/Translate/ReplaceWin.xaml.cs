@@ -3,6 +3,7 @@ using System.Windows;
 using LexTranslator.TranslateManage;
 using LexTranslator.UIManagement;
 using PhoenixEngine.Common;
+using PhoenixEngine.Engine.ADO;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
 
@@ -58,7 +59,7 @@ namespace LexTranslator
                     {
                         if (_Owner.TransListView != null)
                         {
-                            List<string> ModifyKeys = new List<string>();
+                            var GenRangeID = HistoryDBCache.GenRangeID();
 
                             for (int i = 0; i < _Owner.TransListView.Rows; i++)
                             {
@@ -73,19 +74,12 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,0));
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,1,GenRangeID));
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
                                     GetRow.SyncUI(_Owner.TransListView);
-
-                                    ModifyKeys.Add(GetRow.Key);
                                 }
-                            }
-
-                            if (ModifyKeys.Count > 0)
-                            { 
-                            
                             }
                         }
                     }
@@ -101,7 +95,7 @@ namespace LexTranslator
                     {
                         if (_Owner.TransListView != null)
                         {
-                            List<string> ModifyKeys = new List<string>();
+                            var GenRangeID = HistoryDBCache.GenRangeID();
 
                             for (int i = 0; i < _Owner.TransListView.Rows; i++)
                             {
@@ -116,13 +110,11 @@ namespace LexTranslator
 
                                     GetRow.TransText = GetNewTrans;
 
-                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText, 0));
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,1,GenRangeID));
 
                                     TranslatorInterface.SetTranslatorHistoryCache(GetRow.Key, GetRow.TransText,IsCloud);
 
                                     GetRow.SyncUI(_Owner.TransListView);
-
-                                    ModifyKeys.Add(GetRow.Key);
                                 }
                             }
                         }
