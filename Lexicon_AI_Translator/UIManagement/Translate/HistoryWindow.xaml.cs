@@ -7,6 +7,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using PhoenixEngine.Engine.ADO;
 using LexTranslator.UIManagement;
+using PhoenixEngine.ADO;
+using PhoenixEngine.Memory;
+using PhoenixEngine.Translate;
+using System.Threading;
 
 namespace LexTranslator
 {
@@ -62,13 +66,16 @@ namespace LexTranslator
             try
             {
                 StatusText.Text = "Loading history records...";
-                var RawItems = HistoryDBCache.GetHistoryItems(_FileUniqueKey,(int)_Owner.Mod.P_Translator.To);
+
+                var RawItems = HistoryDBCache.GetHistoryItems(
+                    _FileUniqueKey,
+                    (int)_Owner.Mod.P_Translator.To
+                );
 
                 var List = RawItems
                     .OrderBy(x => x.Rowid)
-                    .Select((Item, Idx) => new HistoryRecord
+                    .Select(Item => new HistoryRecord
                     {
-                        Index = Idx + 1,
                         FileUniqueKey = Item.FileUniqueKey,
                         Rowid = Item.Rowid,
                         Key = Item.Key,
@@ -81,8 +88,11 @@ namespace LexTranslator
                     .ToList();
 
                 _AllRecords = List;
+
                 ApplyFilter();
-                StatusText.Text = $"Loaded {_FilteredRecords.Count} records (total: {_AllRecords.Count})";
+
+                StatusText.Text =
+                    $"Loaded {_FilteredRecords.Count} records (total: {_AllRecords.Count})";
 
                 if (_FilteredRecords.Any(R => R.IsCurrent == 1))
                 {
@@ -93,7 +103,13 @@ namespace LexTranslator
             catch (Exception Ex)
             {
                 StatusText.Text = $"Error: {Ex.Message}";
-                MessageBox.Show($"Failed to load history:\n{Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                MessageBox.Show(
+                    $"Failed to load history:\n{Ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
             }
         }
 
@@ -166,10 +182,13 @@ namespace LexTranslator
                 return;
             }
 
-            if (MessageBox.Show($"Delete all {_AllRecords.Count} history records?\nThis cannot be undone.",
-                                "Confirm Clear All",
-                                MessageBoxButton.YesNo,
-                                MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MessageBoxExtend.Show(
+                     this,
+                     "Confirm Clear All",
+                     $"Delete all {_AllRecords.Count} history records?\nThis cannot be undone.",
+                     MsgAction.YesNo,
+                     MsgType.Waring
+                 ) > 0)
             {
                 try
                 {
@@ -217,11 +236,128 @@ namespace LexTranslator
                 catch { }
             }
         }
+    
+        private DataGridRow _ContextMenuRow;
+        private void HistoryGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var Element = e.OriginalSource as DependencyObject;
+
+            var Row = ItemsControl.ContainerFromElement(
+                HistoryGrid,
+                Element
+            ) as DataGridRow;
+
+            if (Row == null)
+                return;
+
+            _ContextMenuRow = Row;
+
+            foreach (var Item in HistoryGrid.Items)
+            {
+                if (HistoryGrid.ItemContainerGenerator.ContainerFromItem(Item) is DataGridRow OldRow)
+                {
+                    if (Equals(OldRow.Tag, "ContextMenu"))
+                        OldRow.Tag = null;
+                }
+            }
+
+            Row.Tag = "ContextMenu";
+        }
+
+
+
+        private void GoToMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_ContextMenuRow?.Item is HistoryRecord Record)
+            {
+                int ID = Record.Rowid;
+                var HistoryItem = HistoryDBCache.IDToHistoryItem(this._FileUniqueKey,ID);
+
+                if (HistoryItem != null)
+                {
+                    _Owner.TransListView.Goto(HistoryItem.Key);
+                }
+
+                RefreshData();
+            }
+        }
+
+        private void RestoreMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_ContextMenuRow?.Item is HistoryRecord Record)
+            {
+                int ID = Record.Rowid;
+                var HistoryItem = HistoryDBCache.IDToHistoryItem(this._FileUniqueKey, ID);
+
+                if (HistoryItem != null)
+                {
+                    _Owner.TransListView.Goto(HistoryItem.Key);
+
+                    HistoryDBCache.SelectID(this._FileUniqueKey,ID);
+
+                    var Row = _Owner.TransListView.KeyToFakeGrid(HistoryItem.Key);
+                    bool IsCloud = false;
+                    Row.SyncData(_Owner.Mod, ref IsCloud);
+
+                    if (IsCloud)
+                    {
+                        CloudDBCache.DeleteCache(HistoryItem.FileUniqueKey, HistoryItem.Key, _Owner.Mod.P_Translator.To);
+                    }
+                    else
+                    {
+                        LocalDBCache.DeleteCache(HistoryItem.FileUniqueKey, HistoryItem.Key, _Owner.Mod.P_Translator.To);
+                    }
+
+                    string NewText = HistoryItem.CurrentText;
+                    _Owner.Mod.P_Translator.AutoSetLink(HistoryItem.Key, Row.SourceText, new P_String(HistoryItem.CurrentText, 0, HistoryItem.RangeID));
+
+                    Row.TransText = NewText;
+
+                    for (int i = 0; i < _Owner.TransListView.Rows; i++)
+                    {
+                        _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
+                    }
+
+                    RefreshData();
+                }
+            }
+        }
+
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_ContextMenuRow?.Item is HistoryRecord Record)
+            {
+                int ID = Record.Rowid;
+
+                var Result = MessageBox.Show(
+                    $"Are you sure you want to delete this history record?\n\nRowID: {ID}",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.None
+                );
+
+                if (Result != MessageBoxResult.Yes)
+                    return;
+
+                HistoryDBCache.DeleteHistory(this._FileUniqueKey, ID);
+
+                RefreshData();
+            }
+        }
+        private void SetAsCurrentMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_ContextMenuRow?.Item is HistoryRecord Record)
+            {
+                int ID = Record.Rowid;
+
+                HistoryDBCache.SelectID(this._FileUniqueKey, ID);
+                RefreshData();
+            }
+        }
     }
 
     public class HistoryRecord
     {
-        public int Index { get; set; }
         public int FileUniqueKey { get; set; }
         public int Rowid { get; set; }
         public string Key { get; set; }

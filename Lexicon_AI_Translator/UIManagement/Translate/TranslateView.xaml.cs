@@ -1362,6 +1362,61 @@ namespace LexTranslator.UIManagement
             NextAuto();
         }
 
+        public void RestorePreviousHistory()
+        {
+            var SelectIDs = GetSelectRecordHistoryKey();
+
+            if (SelectIDs == null) return;
+
+            if (SelectIDs.Count > 0)
+            {
+                List<int> PreviousIDs = HistoryDBCache.GetPreviousIDs(this.Mod.P_Translator.GetFileUniqueKey(), SelectIDs[0]);
+
+                if (PreviousIDs.Count == 0) return;
+
+                //Points to the current node.
+                HistoryDBCache.SelectID(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]);
+
+                RestoreRecordHistory(PreviousIDs, false);
+                //must redirect to the affected line; otherwise, the user won't know where they've been rolled back to.
+                var Current = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]);
+                if (Current != null)
+                {
+                    if (!this.TransListView.IsKeyInViewport(Current.Key))
+                    {
+                        this.TransListView.Goto(Current.Key);
+                    }
+                }
+            }
+        }
+
+        public void RestoreNextHistory()
+        {
+            var SelectIDs = GetSelectRecordHistoryKey();
+
+            if (SelectIDs == null) return;
+
+            if (SelectIDs.Count > 0)
+            {
+                List<int> NextIDs = HistoryDBCache.GetNextIDs(this.Mod.P_Translator.GetFileUniqueKey(), SelectIDs[0]);
+
+                if (NextIDs.Count == 0) return;
+
+                HistoryDBCache.SelectID(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]);
+
+                RestoreRecordHistory(NextIDs, true);
+
+                var Current = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]);
+                if (Current != null)
+                {
+                    if (!this.TransListView.IsKeyInViewport(Current.Key))
+                    {
+                        this.TransListView.Goto(Current.Key);
+                    }
+                }
+            }
+        }
+
         WordCompletionManager CompletionManager = null;
         public void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -1414,63 +1469,14 @@ namespace LexTranslator.UIManagement
             if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-
-                var SelectIDs = GetSelectRecordHistoryKey();
-
-                if (SelectIDs == null) return;
-
-                if (SelectIDs.Count > 0)
-                {
-                    List<int> PreviousIDs = HistoryDBCache.GetPreviousIDs(this.Mod.P_Translator.GetFileUniqueKey(), SelectIDs[0]);
-
-                    if (PreviousIDs.Count == 0) return;
-
-                    //Points to the current node.
-                    HistoryDBCache.SelectID(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]);
-
-                    RestoreRecordHistory(PreviousIDs,false);
-                    //must redirect to the affected line; otherwise, the user won't know where they've been rolled back to.
-                    var Current = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), PreviousIDs[0]);
-                    if (Current != null)
-                    {
-                        if (!this.TransListView.IsKeyInViewport(Current.Key))
-                        {
-                            this.TransListView.Goto(Current.Key);
-                        }
-                    }
-                }
-
+                RestorePreviousHistory();
                 return;
             }
 
             if (e.Key == Key.Y && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-
-                var SelectIDs = GetSelectRecordHistoryKey();
-
-                if (SelectIDs == null) return;
-
-                if (SelectIDs.Count > 0)
-                {
-                    List<int> NextIDs = HistoryDBCache.GetNextIDs(this.Mod.P_Translator.GetFileUniqueKey(), SelectIDs[0]);
-
-                    if (NextIDs.Count == 0) return;
-
-                    HistoryDBCache.SelectID(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]);
-
-                    RestoreRecordHistory(NextIDs,true);
-
-                    var Current = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), NextIDs[0]);
-                    if (Current != null)
-                    {
-                        if (!this.TransListView.IsKeyInViewport(Current.Key))
-                        {
-                            this.TransListView.Goto(Current.Key);
-                        }
-                    }
-                }
-
+                RestoreNextHistory();
                 return;
             }
         }

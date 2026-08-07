@@ -14,17 +14,40 @@
     <Window.Resources>
         <local:CurrentStatusConverter x:Key="CurrentStatusConverter" />
 
+        <Style TargetType="ContextMenu">
+            <Setter Property="Background" Value="#FF2A2A2A" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HasDropShadow" Value="False" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                            <ItemsPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="HistoryRowStyle" TargetType="DataGridRow">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="12" />
+
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsCurrent}" Value="1">
                     <Setter Property="Background" Value="#FFF7F1BA" />
                     <Setter Property="Foreground" Value="#FF1A1A1A" />
                     <Setter Property="FontWeight" Value="Bold" />
                 </DataTrigger>
-                <Trigger Property="IsMouseOver" Value="True">
+
+                <Trigger Property="Tag" Value="ContextMenu">
                     <Setter Property="Background" Value="#30FFFFFF" />
                 </Trigger>
             </Style.Triggers>
@@ -250,12 +273,65 @@
                               Style="{StaticResource HistoryDataGridStyle}"
                               RowHeaderWidth="0"
                               Padding="0"
-                              Margin="0">
+                              Margin="0"
+                              PreviewMouseRightButtonDown="HistoryGrid_PreviewMouseRightButtonDown">
+
+                        <DataGrid.ContextMenu>
+                            <ContextMenu Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF444444">
+                                <ContextMenu.Resources>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Icon" Value="{x:Null}" />
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="Padding" Value="10,5" />
+                                        <Setter Property="Margin" Value="0" />
+                                        <Setter Property="MinWidth" Value="0" />
+                                        <Setter Property="UseLayoutRounding" Value="True" />
+                                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="MenuItem">
+                                                    <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderThickness="0"
+                                    Padding="{TemplateBinding Padding}"
+                                    SnapsToDevicePixels="True"
+                                    UseLayoutRounding="True">
+                                                        <ContentPresenter x:Name="HeaderHost"
+                                                  ContentSource="Header"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"
+                                                  SnapsToDevicePixels="True"
+                                                  UseLayoutRounding="True" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsHighlighted" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="#FF555555" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                                            <Setter Property="Foreground" Value="#FF666666" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ContextMenu.Resources>
+
+                                <MenuItem Header="Go to" Click="GoToMenuItem_Click" />
+                                <MenuItem Header="Set as Current" Click="SetAsCurrentMenuItem_Click" />
+                                <MenuItem Header="Restore" Click="RestoreMenuItem_Click" />
+                                <MenuItem Header="Delete" Click="DeleteMenuItem_Click" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+
                         <DataGrid.Resources>
                             <Style TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}" />
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="#" Binding="{Binding Index}"
+                            <DataGridTextColumn Header="#" Binding="{Binding Rowid}"
                                                 Width="45" IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
