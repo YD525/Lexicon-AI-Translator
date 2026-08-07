@@ -878,12 +878,12 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Interface Configs" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="UI Configs" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                                                        <TextBlock Text="Interface language settings" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
-                                                        <ComboBox Name="UILanguages" SelectionChanged="UILanguages_SelectionChanged" Width="150" Style="{StaticResource SettingComboBox}"/>
+                                                        <TextBlock Text="UI language settings" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
+                                                        <ComboBox Name="UILanguages" IsEnabled="False" SelectionChanged="UILanguages_SelectionChanged" Width="150" Style="{StaticResource SettingComboBox}"/>
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
