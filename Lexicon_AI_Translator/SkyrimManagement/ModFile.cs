@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Web.Caching;
 using System.Windows;
 using LexTranslator.FileManagement;
 using LexTranslator.SkyrimManage;

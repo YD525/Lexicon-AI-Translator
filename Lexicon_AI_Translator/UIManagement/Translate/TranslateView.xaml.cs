@@ -1465,6 +1465,7 @@ namespace LexTranslator.UIManagement
                 if (Keys.Count > 0)
                 {
                     List<string> GetKeys = HistoryDBCache.GetPreviousKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
+                    RestoreRecordHistory(GetKeys);
                 }
 
                 return;
@@ -1478,9 +1479,25 @@ namespace LexTranslator.UIManagement
                 if (Keys.Count > 0)
                 {
                     List<string> GetKeys = HistoryDBCache.GetNextKey(this.Mod.P_Translator.GetFileUniqueKey(), Keys[0]);
+                    RestoreRecordHistory(GetKeys);
                 }
 
                 return;
+            }
+        }
+
+        public void RestoreRecordHistory(List<string> GetKeys)
+        {
+            if (GetKeys.Count > 0)
+            {
+                HistoryDBCache.SelectKey(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[0]);
+
+                for (int i = 0; i < GetKeys.Count; i++)
+                {
+                    var GetHistoryItem = HistoryDBCache.KeyToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), GetKeys[i]);
+
+                    this.Mod.P_Translator.SetLink(GetHistoryItem.Key,new P_String(GetHistoryItem.CurrentText,0, GetHistoryItem.RangeID));
+                }
             }
         }
 
