@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using LexTranslator.TranslateManage;
+﻿using System.Windows;
 using LexTranslator.UIManagement;
 using PhoenixEngine.Common;
 using PhoenixEngine.Engine.ADO;
@@ -116,6 +114,8 @@ namespace LexTranslator
                         }
                     }
                 }
+
+                _Owner.ReSetHistoryPointer();
             }
 
             SourceStr.Text = string.Empty;
