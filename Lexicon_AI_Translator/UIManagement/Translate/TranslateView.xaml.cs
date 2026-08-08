@@ -29,7 +29,6 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Engine.ADO;
-using System.Windows.Media.TextFormatting;
 
 namespace LexTranslator.UIManagement
 {
@@ -1508,6 +1507,7 @@ namespace LexTranslator.UIManagement
         {
             if (GetIDs.Count > 0)
             {
+                List<string> UPDateKeys = new List<string>();
                 for (int i = 0; i < GetIDs.Count; i++)
                 {
                     var GetHistoryItem = HistoryDBCache.IDToHistoryItem(this.Mod.P_Translator.GetFileUniqueKey(), GetIDs[i]);
@@ -1538,11 +1538,18 @@ namespace LexTranslator.UIManagement
                     }
 
                     Row.TransText = NewText;
+
+                    UPDateKeys.Add(GetHistoryItem.Key);
                 }
 
                 for (int i = 0; i < this.TransListView.Rows; i++)
                 {
-                    this.TransListView.RealLines[i].SyncUI(this.TransListView);
+                    if (UPDateKeys.Contains(this.TransListView.RealLines[i].Key))
+                    {
+                        bool IsCloud = false;
+                        this.TransListView.RealLines[i].SyncData(this.Mod, ref IsCloud);
+                        this.TransListView.RealLines[i].SyncUI(this.TransListView);
+                    }
                 }
 
                 CurrentHistory?.RefreshData();
@@ -2360,19 +2367,13 @@ namespace LexTranslator.UIManagement
                 TranslateView.CurrentHistory = new HistoryWindow(this, this.Mod.P_Translator.GetFileUniqueKey());
 
                 TranslateView.CurrentHistory.Show();
-
-                TranslateView.CurrentHistory.Top = (DeFine.WorkWin.Top - TranslateView.CurrentHistory.ActualHeight) - 3;
-                TranslateView.CurrentHistory.Width = DeFine.WorkWin.ActualWidth;
-                TranslateView.CurrentHistory.Left = DeFine.WorkWin.Left;
+                TranslateView.CurrentHistory.UpdateFollowPosition();
             }
             else
             {
                 TranslateView.CurrentHistory.FileUniqueKey = this.Mod.P_Translator.GetFileUniqueKey();
 
-                TranslateView.CurrentHistory.Top = (DeFine.WorkWin.Top - TranslateView.CurrentHistory.ActualHeight) - 3;
-                TranslateView.CurrentHistory.Width = DeFine.WorkWin.ActualWidth;
-                TranslateView.CurrentHistory.Left = DeFine.WorkWin.Left;
-
+                TranslateView.CurrentHistory.UpdateFollowPosition();
                 TranslateView.CurrentHistory.RefreshData();
             }
         }

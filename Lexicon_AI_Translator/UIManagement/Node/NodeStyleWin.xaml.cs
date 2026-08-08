@@ -418,7 +418,7 @@ namespace LexTranslator.UIManagement
                Border GetBtnHandle = (Border)sender;
                CustomPlatformType GetType = (CustomPlatformType)GetBtnHandle.Tag;
 
-                CustomWizard NCustomWizard = new CustomWizard(null);
+                CustomWizard NCustomWizard = new CustomWizard(DeFine.WorkWin);
                 NCustomWizard.Owner = DeFine.WorkWin;
                 NCustomWizard.Show();
                 NCustomWizard.SelectPlatformType(GetType);

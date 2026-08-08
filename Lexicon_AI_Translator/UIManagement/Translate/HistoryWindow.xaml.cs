@@ -38,7 +38,7 @@ namespace LexTranslator
             this.PreviewKeyDown += Window_PreviewKeyDown;
         }
 
-        private void UpdateFollowPosition()
+        public void UpdateFollowPosition()
         {
             double Gap = 3;
 
