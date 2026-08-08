@@ -1462,6 +1462,12 @@ namespace LexTranslator.UIManagement
 
                 if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
                 {
+                    if (!Phoenix.CheckAvailableNodes())
+                    {
+                        MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
+                        return;
+                    }
+
                     TranslateCurrent();
                     ReSetHistoryPointer();
                     CurrentHistory?.RefreshData();
