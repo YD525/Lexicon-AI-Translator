@@ -2352,11 +2352,16 @@ namespace LexTranslator.UIManagement
             if (CurrentHistory != null)
             {
                 CurrentHistory.Close();
+                CurrentHistory = null;
             }
 
             CurrentHistory = new HistoryWindow(this,this.Mod.P_Translator.GetFileUniqueKey());
 
             CurrentHistory.Show();
+
+            CurrentHistory.Top = (DeFine.WorkWin.Top - CurrentHistory.ActualHeight) - 3;
+            CurrentHistory.Width = DeFine.WorkWin.ActualWidth;
+            CurrentHistory.Left = DeFine.WorkWin.Left;
         }
     }
 }

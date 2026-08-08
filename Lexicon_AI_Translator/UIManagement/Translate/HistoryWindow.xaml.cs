@@ -26,7 +26,7 @@ namespace LexTranslator
             InitializeComponent();
             _FileUniqueKey = FileUniqueKey;
 
-            this.Owner = Application.Current.MainWindow;
+            this.Owner = DeFine.WorkWin;
             this._Owner = Owner;
 
             if (!this.Resources.Contains("CurrentStatusConverter"))
