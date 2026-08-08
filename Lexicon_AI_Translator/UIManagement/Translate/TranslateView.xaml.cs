@@ -1450,6 +1450,8 @@ namespace LexTranslator.UIManagement
                 if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
                 {
                     ApplyTranslatedText();
+                    ReSetHistoryPointer();
+                    CurrentHistory?.RefreshData();
                 }
 
                 return;
@@ -1461,6 +1463,8 @@ namespace LexTranslator.UIManagement
                 if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
                 {
                     TranslateCurrent();
+                    ReSetHistoryPointer();
+                    CurrentHistory?.RefreshData();
                 }
 
                 return;
