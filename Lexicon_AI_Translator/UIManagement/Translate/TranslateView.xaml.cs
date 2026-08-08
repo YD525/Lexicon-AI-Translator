@@ -1632,6 +1632,12 @@ namespace LexTranslator.UIManagement
 
         private void TranslateOTButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (!Phoenix.CheckAvailableNodes())
+            {
+                MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
+                return;
+            }
+
             TranslateCurrent();
             ReSetHistoryPointer();
             CurrentHistory?.RefreshData();

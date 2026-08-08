@@ -621,6 +621,7 @@ namespace LexTranslator
                 CustomPlatform.CustomID = Phoenix.Config.PlatformConfigs.Count + 1;
             }
 
+            NPlatformConfig.Model = Model;
             NPlatformConfig.CustomInFo = CustomPlatform;
 
             Phoenix.Config.PlatformConfigs.Add(CustomPlatform.CustomID, NPlatformConfig);
