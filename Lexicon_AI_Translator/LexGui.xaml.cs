@@ -24,6 +24,7 @@ using PhoenixEngine.Language;
 using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
+using System.Windows.Threading;
 
 namespace LexTranslator
 {
@@ -692,7 +693,17 @@ namespace LexTranslator
                 CTX.View.Visibility = Visibility.Visible;
                 ActiveTab = CTX.View;
                 ActiveTab.Active();
-                MultiWindowController.AttachMod(ActiveTab.LastSetKey,this,ActiveTab.Mod);
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    MultiWindowController.AttachMod(ActiveTab.LastSetKey,this,ActiveTab.Mod);
+
+                    if (TranslateView.CurrentHistory != null)
+                    {
+                        ActiveTab.ShowHistory();
+                    }
+                }), DispatcherPriority.ContextIdle);
+
                 TranslateConfigView.ChangeTab();
             }
         }

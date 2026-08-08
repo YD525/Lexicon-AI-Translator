@@ -16,7 +16,7 @@ namespace LexTranslator
 {
     public partial class HistoryWindow : Window
     {
-        private int _FileUniqueKey;
+        public int FileUniqueKey;
         private List<HistoryRecord> _AllRecords = new List<HistoryRecord>();
         private List<HistoryRecord> _FilteredRecords = new List<HistoryRecord>();
 
@@ -24,7 +24,8 @@ namespace LexTranslator
         public HistoryWindow(TranslateView Owner, int FileUniqueKey)
         {
             InitializeComponent();
-            _FileUniqueKey = FileUniqueKey;
+
+            this.FileUniqueKey = FileUniqueKey;
 
             this.Owner = DeFine.WorkWin;
             this._Owner = Owner;
@@ -37,14 +38,42 @@ namespace LexTranslator
             this.PreviewKeyDown += Window_PreviewKeyDown;
         }
 
+        private void UpdateFollowPosition()
+        {
+            double Gap = 3;
+
+            this.Left = DeFine.WorkWin.Left;
+            this.Top = (DeFine.WorkWin.Top - this.ActualHeight) - Gap;
+            this.Width = DeFine.WorkWin.Width;
+        }
+
+        private void OwnerMainWindow_LocationChanged(object Sender, EventArgs E)
+        {
+            UpdateFollowPosition();
+        }
+
+        private void OwnerMainWindow_SizeChanged(object Sender, SizeChangedEventArgs E)
+        {
+            UpdateFollowPosition();
+        }
+
         private void Window_Loaded(object Sender, RoutedEventArgs E)
         {
             LoadHistoryData();
+
+            DeFine.WorkWin.LocationChanged += OwnerMainWindow_LocationChanged;
+            DeFine.WorkWin.SizeChanged += OwnerMainWindow_SizeChanged;
         }
 
         private void Window_Closing(object Sender, System.ComponentModel.CancelEventArgs E)
         {
-            this._Owner.CurrentHistory = null;
+            DeFine.WorkWin.LocationChanged -= OwnerMainWindow_LocationChanged;
+            DeFine.WorkWin.SizeChanged -= OwnerMainWindow_SizeChanged;
+
+            if (TranslateView.CurrentHistory == this)
+            {
+                TranslateView.CurrentHistory = null;
+            } 
         }
 
         private void Window_PreviewKeyDown(object Sender, KeyEventArgs E)
@@ -68,7 +97,7 @@ namespace LexTranslator
                 StatusText.Text = "Loading history records...";
 
                 var RawItems = HistoryDBCache.GetHistoryItems(
-                    _FileUniqueKey,
+                    FileUniqueKey,
                     (int)_Owner.Mod.P_Translator.To
                 );
 
@@ -193,7 +222,7 @@ namespace LexTranslator
                 try
                 {
                     StatusText.Text = "Clearing all records...";
-                    if (HistoryDBCache.ClearHistory(_FileUniqueKey))
+                    if (HistoryDBCache.ClearHistory(FileUniqueKey))
                     {
                         _AllRecords.Clear();
                         _FilteredRecords.Clear();
@@ -271,7 +300,7 @@ namespace LexTranslator
             if (_ContextMenuRow?.Item is HistoryRecord Record)
             {
                 int ID = Record.Rowid;
-                var HistoryItem = HistoryDBCache.IDToHistoryItem(this._FileUniqueKey,ID);
+                var HistoryItem = HistoryDBCache.IDToHistoryItem(this.FileUniqueKey,ID);
 
                 if (HistoryItem != null)
                 {
@@ -287,13 +316,13 @@ namespace LexTranslator
             if (_ContextMenuRow?.Item is HistoryRecord Record)
             {
                 int ID = Record.Rowid;
-                var HistoryItem = HistoryDBCache.IDToHistoryItem(this._FileUniqueKey, ID);
+                var HistoryItem = HistoryDBCache.IDToHistoryItem(this.FileUniqueKey, ID);
 
                 if (HistoryItem != null)
                 {
                     _Owner.TransListView.Goto(HistoryItem.Key);
 
-                    HistoryDBCache.SelectID(this._FileUniqueKey,ID);
+                    HistoryDBCache.SelectID(this.FileUniqueKey,ID);
 
                     var Row = _Owner.TransListView.KeyToFakeGrid(HistoryItem.Key);
                     bool IsCloud = false;
@@ -339,7 +368,7 @@ namespace LexTranslator
                 if (Result != MessageBoxResult.Yes)
                     return;
 
-                HistoryDBCache.DeleteHistory(this._FileUniqueKey, ID);
+                HistoryDBCache.DeleteHistory(this.FileUniqueKey, ID);
 
                 RefreshData();
             }
@@ -350,7 +379,7 @@ namespace LexTranslator
             {
                 int ID = Record.Rowid;
 
-                HistoryDBCache.SelectID(this._FileUniqueKey, ID);
+                HistoryDBCache.SelectID(this.FileUniqueKey, ID);
                 RefreshData();
             }
         }

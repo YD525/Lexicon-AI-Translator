@@ -447,7 +447,7 @@ namespace LexTranslator.UIManagement
                     bool IsCloud = false;
                     Target.SyncData(DeFine.WorkWin.ActiveTab.Mod, ref IsCloud);
 
-                    DeFine.WorkWin.ActiveTab.CurrentHistory?.RefreshData();
+                    TranslateView.CurrentHistory?.RefreshData();
                     DeFine.WorkWin.ActiveTab.ReSetHistoryPointer();
                 }
 

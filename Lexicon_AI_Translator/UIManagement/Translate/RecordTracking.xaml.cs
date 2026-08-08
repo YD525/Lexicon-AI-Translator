@@ -139,7 +139,7 @@ namespace LexTranslator
 
         private void UpdateFollowPosition()
         {
-            double Gap = 8;
+            double Gap = 3;
 
             this.Left = _Owner.Left + _Owner.ActualWidth + Gap;
             this.Top = _Owner.Top;

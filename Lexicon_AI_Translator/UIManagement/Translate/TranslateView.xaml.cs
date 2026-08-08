@@ -29,6 +29,7 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Engine.ADO;
+using System.Windows.Media.TextFormatting;
 
 namespace LexTranslator.UIManagement
 {
@@ -2346,22 +2347,34 @@ namespace LexTranslator.UIManagement
             }).Start();
         }
 
-        public HistoryWindow CurrentHistory = null;
+        public static HistoryWindow CurrentHistory = null;
         private void ShowHistory(object sender, MouseButtonEventArgs e)
         {
-            if (CurrentHistory != null)
+            ShowHistory();
+        }
+
+        public void ShowHistory()
+        {
+            if (TranslateView.CurrentHistory == null)
             {
-                CurrentHistory.Close();
-                CurrentHistory = null;
+                TranslateView.CurrentHistory = new HistoryWindow(this, this.Mod.P_Translator.GetFileUniqueKey());
+
+                TranslateView.CurrentHistory.Show();
+
+                TranslateView.CurrentHistory.Top = (DeFine.WorkWin.Top - TranslateView.CurrentHistory.ActualHeight) - 3;
+                TranslateView.CurrentHistory.Width = DeFine.WorkWin.ActualWidth;
+                TranslateView.CurrentHistory.Left = DeFine.WorkWin.Left;
             }
+            else
+            {
+                TranslateView.CurrentHistory.FileUniqueKey = this.Mod.P_Translator.GetFileUniqueKey();
 
-            CurrentHistory = new HistoryWindow(this,this.Mod.P_Translator.GetFileUniqueKey());
+                TranslateView.CurrentHistory.Top = (DeFine.WorkWin.Top - TranslateView.CurrentHistory.ActualHeight) - 3;
+                TranslateView.CurrentHistory.Width = DeFine.WorkWin.ActualWidth;
+                TranslateView.CurrentHistory.Left = DeFine.WorkWin.Left;
 
-            CurrentHistory.Show();
-
-            CurrentHistory.Top = (DeFine.WorkWin.Top - CurrentHistory.ActualHeight) - 3;
-            CurrentHistory.Width = DeFine.WorkWin.ActualWidth;
-            CurrentHistory.Left = DeFine.WorkWin.Left;
+                TranslateView.CurrentHistory.RefreshData();
+            }
         }
     }
 }
