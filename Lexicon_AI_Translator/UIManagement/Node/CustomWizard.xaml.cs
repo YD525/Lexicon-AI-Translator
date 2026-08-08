@@ -169,18 +169,27 @@ namespace LexTranslator
                 {
                     case "Local AI":
                         {
+                            TestModelCap.Visibility = Visibility.Visible;
+                            TestModel.Visibility = Visibility.Visible;
+
                             _AutomaticFieldsList = new List<string> { "{AI_Prompt}", "{AI_Model}" };
                             CustomPlatform.Type = CustomPlatformType.LocalAI;
                         }
                         break;
                     case "Cloud AI":
                         {
+                            TestModelCap.Visibility = Visibility.Visible;
+                            TestModel.Visibility = Visibility.Visible;
+
                             _AutomaticFieldsList = new List<string> { "{API_KEY}", "{AI_Prompt}", "{AI_Model}" };
                             CustomPlatform.Type = CustomPlatformType.CloudAI;
                         }
                         break;
                     case "Traditional":
                         {
+                            TestModelCap.Visibility = Visibility.Collapsed;
+                            TestModel.Visibility = Visibility.Collapsed;
+
                             _AutomaticFieldsList = new List<string> { "{API_KEY}", "{SourceStr}", "{P_From}", "{P_To}" };
                             CustomPlatform.Type = CustomPlatformType.Traditional;
                         }
@@ -457,6 +466,8 @@ namespace LexTranslator
                             CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
                             NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config);
 
+                            NCustomLocalAIApi.Model = Model;
+
                             NCustomLocalAIApi.QuickTrans(
                                 new List<ReplaceTag>(),
                                 UnitGroup,
@@ -470,6 +481,8 @@ namespace LexTranslator
 
                             Response.Text = GenAICall.ReceiveString;
                             CurrentResponse = GenAICall.ReceiveString;
+
+                            MessageBoxExtend.Show(this, CurrentResponse);
                         }
                         break;
                     case "Cloud AI":
@@ -477,6 +490,8 @@ namespace LexTranslator
                             AICall GenAICall = new AICall();
                             CustomAIApi NCustomAIApi = new CustomAIApi();
                             NCustomAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config, ProxyCenter.CurrentProxy);
+
+                            NCustomAIApi.Model = Model;
 
                             NCustomAIApi.QuickTrans(
                                 ApiKey,
@@ -492,6 +507,8 @@ namespace LexTranslator
 
                             Response.Text = GenAICall.ReceiveString;
                             CurrentResponse = GenAICall.ReceiveString;
+
+                            MessageBoxExtend.Show(this, CurrentResponse);
                         }
                         break;
                     case "Traditional":
@@ -510,6 +527,8 @@ namespace LexTranslator
 
                             Response.Text = GenPlatformCall.ReceiveString;
                             CurrentResponse = GenPlatformCall.ReceiveString;
+
+                            MessageBoxExtend.Show(this, CurrentResponse);
                         }
                         break;
                 }
@@ -626,6 +645,12 @@ namespace LexTranslator
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ClearValue();
+        }
+
+        public string Model = "";
+        private void TestModel_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Model = TestModel.Text;
         }
     }
 }

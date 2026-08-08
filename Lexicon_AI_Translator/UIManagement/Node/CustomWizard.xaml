@@ -65,6 +65,12 @@
                             </Label>
                             <TextBox Name="TestApiKey" TextChanged="TestApiKey_TextChanged" Width="200" VerticalContentAlignment="Center">
                             </TextBox>
+
+                            <Label Foreground="White" Name="TestModelCap">
+                                Test Model
+                            </Label>
+                            <TextBox Name="TestModel" TextChanged="TestModel_TextChanged" Width="200" VerticalContentAlignment="Center">
+                            </TextBox>
                         </StackPanel>
 
                         <Label Foreground="White">

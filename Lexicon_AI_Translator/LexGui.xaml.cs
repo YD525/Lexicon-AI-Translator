@@ -1041,7 +1041,7 @@ namespace LexTranslator
 
             foreach (var CustomPlatform in CloudAIs)
             {
-                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatform.Model, CustomPlatformType.CloudAI, new List<string>()));
+                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatform.Model, CustomPlatformType.CloudAI, new List<string>() { CustomPlatform.Model }));
             }
 
             for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)

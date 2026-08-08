@@ -41,7 +41,7 @@ namespace LexTranslator
         public static RowStyleWin RowStyleWin = new RowStyleWin();
         public static NodeStyleWin NodeStyleWin = new NodeStyleWin();
 
-        public static PlatformConfigStyleWin PlatformConfigStyleWin = new PlatformConfigStyleWin(null);
+        public static PlatformConfigStyleWin PlatformConfigStyleWin = null;
 
         public static DataBaseView DataBaseView = null;
 
@@ -148,6 +148,8 @@ namespace LexTranslator
             if (Win != null)
             {
                 DeFine.WorkWin = Win;
+
+                PlatformConfigStyleWin = new PlatformConfigStyleWin(DeFine.WorkWin);
 
                 ChartDataRef = new ChartData();
 
