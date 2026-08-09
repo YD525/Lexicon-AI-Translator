@@ -7,11 +7,13 @@
         mc:Ignorable="d"
         Title="EMPTY" Height="1000" Width="1000">
     <Grid Background="Black">
-        <local:LexTranslatorRadarChart 
-    TopValue="85" 
-    TopRightValue="70" 
-    BottomRightValue="45" 
-    BottomLeftValue="60" 
-    TopLeftValue="55" />
+        <local:LexTranslatorRadarChart
+    TranslationQuality="88"
+    TranslationSpeed="75"
+    ResourceOverhead="50"
+    Automation="18"
+    Manualization="65" 
+    ShowLevelValues="False"
+            />
     </Grid>
 </Window>
