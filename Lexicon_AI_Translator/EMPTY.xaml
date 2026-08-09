@@ -1,0 +1,17 @@
+﻿<Window x:Class="LexTranslator.EMPTY"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LexTranslator"
+        mc:Ignorable="d"
+        Title="EMPTY" Height="1000" Width="1000">
+    <Grid Background="Black">
+        <local:LexTranslatorRadarChart 
+    TopValue="85" 
+    TopRightValue="70" 
+    BottomRightValue="45" 
+    BottomLeftValue="60" 
+    TopLeftValue="55" />
+    </Grid>
+</Window>
