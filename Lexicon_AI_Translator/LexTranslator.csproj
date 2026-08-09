@@ -105,6 +105,7 @@
     </ApplicationDefinition>
     <Compile Include="FileManagement\ZipHelper.cs" />
     <Compile Include="SkyrimManagement\BackupManager.cs" />
+    <Compile Include="SkyrimManagement\Base26Helper.cs" />
     <Compile Include="UIManagement\Main\CGView.xaml.cs">
       <DependentUpon>CGView.xaml</DependentUpon>
     </Compile>
