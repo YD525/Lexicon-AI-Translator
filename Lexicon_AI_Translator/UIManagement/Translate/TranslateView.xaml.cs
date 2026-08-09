@@ -405,12 +405,12 @@ namespace LexTranslator.UIManagement
                 if (Mod.EspReader.Records.ContainsKey(LastSetKey))
                 {
                     var GetRecord = Mod.EspReader.Records[LastSetKey];
-                    SetLog("Select:" + Key);
+                    SetLog("KEY:" + Key + ",EDITID:" + GetRecord.EditorID);
                 }
             }
             else
             {
-                SetLog("Select:" + LastSetKey);
+                SetLog("KEY:" + LastSetKey);
             }
 
             if (Mod.Type == GameFileType.ESP)

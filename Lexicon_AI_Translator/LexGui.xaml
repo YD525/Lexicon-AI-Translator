@@ -331,7 +331,7 @@ IsHitTestVisible="False"/>
                                             Translator
                                         </Label>
                                         <Border CornerRadius="5" Background="#FF4D4D4D" VerticalAlignment="Center" Margin="5">
-                                            <Label Foreground="White" Padding="10 2 10 2" FontWeight="DemiBold" FontSize="15">Lite
+                                            <Label Foreground="White" Padding="10 2 10 2" FontWeight="DemiBold" FontSize="15">eXTra
                                             </Label>
                                         </Border>
                                     </StackPanel>
