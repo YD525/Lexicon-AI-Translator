@@ -589,7 +589,10 @@ namespace LexTranslator.SkyrimManagement
                         InitTrd = null;
                     });
 
-                    if (!DeFine.GlobalLocalSetting.EnableAnalyzingWords)
+
+                    bool TempBool = true;
+
+                    if (!TempBool)
                     {
                         InitTrd.Start();
 

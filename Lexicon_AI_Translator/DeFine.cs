@@ -186,7 +186,6 @@ namespace LexTranslator
         public int DeepSeekTokenUsage { get; set; } = 0;
         public int LocalAITokenUsage { get; set; } = 0;
 
-        public bool EnableAnalyzingWords { get; set; } = true;
         public bool AutoUpdateStringsFileToDatabase { get; set; } = false;
 
         public bool EnableLanguageDetect { get; set; } = true;
@@ -240,7 +239,6 @@ namespace LexTranslator
                             this.DeepSeekTokenUsage = GetSetting.DeepSeekTokenUsage;
                             this.LocalAITokenUsage = GetSetting.LocalAITokenUsage;
 
-                            this.EnableAnalyzingWords = GetSetting.EnableAnalyzingWords;
                             this.AutoUpdateStringsFileToDatabase = GetSetting.AutoUpdateStringsFileToDatabase;
 
                             this.EnableLanguageDetect = GetSetting.EnableLanguageDetect;

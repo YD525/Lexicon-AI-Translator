@@ -23,14 +23,14 @@ namespace LexTranslator.UIManagement
 
         public void SetHeaderTagEnableInFo(Grid Header, string InFo)
         {
-            if (Header.Children[0] is StackPanel)
+            if (Header.Children[1] is StackPanel)
             {
-                Label GetInFoControlHandle = ((Border)((StackPanel)Header.Children[0]).Children[0]).Child as Label;
+                Label GetInFoControlHandle = ((Border)((StackPanel)Header.Children[1]).Children[0]).Child as Label;
                 GetInFoControlHandle.Content = InFo;
             }
-            if (Header.Children[0] is Border)
+            if (Header.Children[1] is Border)
             {
-                Label GetInFoControlHandle = ((Border)Header.Children[0]).Child as Label;
+                Label GetInFoControlHandle = ((Border)Header.Children[1]).Child as Label;
                 GetInFoControlHandle.Content = InFo;
             }
         }

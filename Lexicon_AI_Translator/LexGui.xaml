@@ -941,8 +941,12 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
                                                         <CheckBox Name="CanTranslateBook" Click="CanTranslateBook_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Margin="0 5 0 0">
                                                         <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="Selecting this option for batch translation will translate book texts. Book texts are usually very long. If you are using a cloud platform for translation, please be aware of token consumption."/>
                                                     </StackPanel>
+                                                   
                                                 </StackPanel>
                                             </Border>
 
@@ -970,20 +974,10 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
                                                         <CheckBox Name="AutoUpdateStringsFileToDatabase" Click="AutoUpdateStringsFileToDatabase_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="When enabled, matched entries from strings files will be automatically imported into the Advanced Dictionary, allowing strings file records to be efficiently reused. Entries from a single strings file can be shared across multiple mods, maximizing their usefulness. This is an experimental feature designed to improve the efficiency of strings file utilization."/>
                                                     </StackPanel>
-                                                </StackPanel>
-                                            </Border>
 
-                                            <Border Style="{StaticResource SettingCard}">
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                                        <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Word Analysis" Style="{StaticResource SettingSectionTitle}"/>
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <CheckBox Name="EnableAnalyzingWords" Click="EnableAnalyzingWords_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="Tokenize all entries and sort them, then prioritize translating the words with the highest hit rate. This helps build context. (It can only improve accuracy somewhat, as it's difficult to determine precisely due to multi-threading.)"/>
+                                                    <StackPanel Margin="0 5 0 0">
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="When enabled, matched entries from strings files will be automatically imported into the Advanced Dictionary, allowing strings file records to be efficiently reused. Entries from a single strings file can be shared across multiple mods, maximizing their usefulness. This is an experimental feature designed to improve the efficiency of strings file utilization."/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
@@ -996,6 +990,9 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
                                                         <CheckBox Name="GlobalSearch" Click="EnableGlobalSearch_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Margin="0 5 0 0">
                                                         <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="Allow retrieval of the entire database using source text. This option may speed up translation but could reduce accuracy, as the same text may have different meanings across mods."/>
                                                     </StackPanel>
                                                 </StackPanel>

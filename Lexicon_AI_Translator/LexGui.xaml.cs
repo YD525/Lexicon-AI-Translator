@@ -1213,15 +1213,6 @@ namespace LexTranslator
                     AutoUpdateStringsFileToDatabase.IsChecked = false;
                 }
 
-                if (DeFine.GlobalLocalSetting.EnableAnalyzingWords)
-                {
-                    EnableAnalyzingWords.IsChecked = true;
-                }
-                else
-                {
-                    EnableAnalyzingWords.IsChecked = false;
-                }
-
                 if (Phoenix.Config.EnableGlobalSearch)
                 {
                     GlobalSearch.IsChecked = true;
@@ -1403,20 +1394,6 @@ namespace LexTranslator
             else
             {
                 DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase = false;
-            }
-
-            DeFine.GlobalLocalSetting.SaveConfig();
-        }
-
-        private void EnableAnalyzingWords_Click(object sender, RoutedEventArgs e)
-        {
-            if (EnableAnalyzingWords.IsChecked == true)
-            {
-                DeFine.GlobalLocalSetting.EnableAnalyzingWords = true;
-            }
-            else
-            {
-                DeFine.GlobalLocalSetting.EnableAnalyzingWords = false;
             }
 
             DeFine.GlobalLocalSetting.SaveConfig();
