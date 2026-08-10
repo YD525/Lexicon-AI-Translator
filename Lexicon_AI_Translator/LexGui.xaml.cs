@@ -1133,17 +1133,6 @@ namespace LexTranslator
             else
             if (Name.Equals("AI Configs"))
             {
-                SContextLimit.Text = Phoenix.Config.ContextLimit.ToString();
-
-                if (Phoenix.Config.ContextEnable)
-                {
-                    SContextEnable.IsChecked = true;
-                }
-                else
-                {
-                    SContextEnable.IsChecked = false;
-                }
-
                 SAIKeyword.Text = Phoenix.Config.UserCustomAIPrompt;
             }
             else
@@ -1198,6 +1187,17 @@ namespace LexTranslator
             else
             if (Name.Equals("Engine Configs"))
             {
+                SContextLimit.Text = Phoenix.Config.ContextLimit.ToString();
+
+                if (Phoenix.Config.ContextEnable)
+                {
+                    SContextEnable.IsChecked = true;
+                }
+                else
+                {
+                    SContextEnable.IsChecked = false;
+                }
+
                 SThrottlingRatio.Text = Phoenix.Config.ThrottleRatio.ToString();
 
                 SRotationDelay.Text = Phoenix.Config.ThrottleDelayMs.ToString();

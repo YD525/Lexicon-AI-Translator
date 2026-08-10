@@ -761,37 +761,17 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
                                         <StackPanel Margin="20,14,20,20" MaxWidth="700" HorizontalAlignment="Stretch">
 
-                                            <Border Style="{StaticResource SettingCard}">
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                                        <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Context Configs" Style="{StaticResource SettingSectionTitle}"/>
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="Context Generation Limit:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
-                                                        <Border Style="{StaticResource SettingInputBorder}" Width="100">
-                                                            <TextBox Name="SContextLimit" TextChanged="SContextLimit_TextChanged" Style="{StaticResource SettingTextBox}"/>
-                                                        </Border>
-                                                    </StackPanel>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="This setting controls the maximum length of context provided to the AI for each translation. It uses a character count limit, with a default maximum of 200 characters. Providing context helps the AI maintain a consistent tone and accurately translate technical terms or industry-specific vocabulary, which can significantly improve translation quality. This is especially useful for ensuring consistent output for synonyms and related concepts. Setting this limit too high will increase the cost of your cloud translation service. This setting applies only to batch translations."/>
-                                                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                                                        <TextBlock Text="Context Generation" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
-                                                        <CheckBox Name="SContextEnable" Click="SContextEnable_Click" Style="{StaticResource SettingToggle}"/>
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </Border>
-
                                             <Border Style="{StaticResource SettingCard}" Margin="0">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="AI Keyword Configs" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="AI Configs" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
-                                                    <TextBlock Text="AI Keyword:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,0,6"/>
+                                                    <TextBlock Text="AI Prompt:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,0,6"/>
                                                     <Border Style="{StaticResource SettingInputBorder}">
                                                         <TextBox Name="SAIKeyword" TextChanged="SAIKeyword_TextChanged" Style="{StaticResource SettingTextBox}" TextWrapping="Wrap" AcceptsReturn="True" Height="160" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
                                                     </Border>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="Append user-defined keywords at the end when requesting AI."/>
+                                                    <TextBlock Style="{StaticResource SettingHint}" Text="When requesting AI, add user-defined prompt words at the end of the prompt words. It is not recommended to set prompt words as they may conflict with internal prompt words in the software."/>
                                                 </StackPanel>
                                             </Border>
 
@@ -929,6 +909,26 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                                                         <CheckBox Name="UseFullPunctuationJa" Click="UseFullPunctuationJa_Click" Style="{StaticResource SettingToggle}" Margin="0,0,10,0"/>
                                                         <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Output punctuation marks in the Japanese style."/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Style="{StaticResource SettingCard}">
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                                        <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Context Configs" Style="{StaticResource SettingSectionTitle}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Context Generation Limit:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
+                                                        <Border Style="{StaticResource SettingInputBorder}" Width="100">
+                                                            <TextBox Name="SContextLimit" TextChanged="SContextLimit_TextChanged" Style="{StaticResource SettingTextBox}"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBlock Style="{StaticResource SettingHint}" Text="This setting controls the maximum length of context provided to the AI for each translation. It uses a character count limit, with a default maximum of 200 characters. Providing context helps the AI maintain a consistent tone and accurately translate technical terms or industry-specific vocabulary, which can significantly improve translation quality. This is especially useful for ensuring consistent output for synonyms and related concepts. Setting this limit too high will increase the cost of your cloud translation service."/>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                                                        <TextBlock Text="Context Generation" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
+                                                        <CheckBox Name="SContextEnable" Click="SContextEnable_Click" Style="{StaticResource SettingToggle}"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
