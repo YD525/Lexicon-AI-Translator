@@ -43,7 +43,6 @@ namespace LexTranslator
         public TranslateConfig TranslateConfigView = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            new EMPTY().Show();
             DeFine.Init(this);
 
             DeFine.GlobalLocalSetting.ReadConfig();

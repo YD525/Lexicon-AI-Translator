@@ -571,7 +571,7 @@ Chinese character processed by —
                             </Grid>
                         </Grid>
 
-                        <Grid Visibility="Visible" Tag="Main">
+                        <Grid Visibility="Hidden" Tag="Main">
 
                             <Grid Visibility="Visible" Panel.ZIndex="2" Name="EmptyTabView" Background="Transparent"     
                             PreviewDragEnter="Window_DragEnter"
@@ -636,7 +636,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                             </Grid>
                         </Grid>
 
-                        <Grid Visibility="Hidden" Tag="Setting">
+                        <Grid Visibility="Visible" Tag="Setting">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="5"/>
                                 <RowDefinition Height="50"/>
@@ -709,7 +709,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                             <Grid Grid.Row="2" Name="SettingFrames">
 
                                 <!-- Page: Request & ApiKey -->
-                                <Border Tag="Request And ApiKey Configs" Visibility="Visible" Background="Transparent">
+                                <Border Tag="Request And ApiKey Configs" Visibility="Collapsed" Background="Transparent">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
                                         <StackPanel Margin="20,14,20,20" MaxWidth="700" HorizontalAlignment="Stretch">
 
@@ -892,10 +892,20 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                 </Border>
 
                                 <!-- Page: Engine Configs -->
-                                <Border Tag="Engine Configs" Visibility="Collapsed" Background="Transparent">
+                                <Border Tag="Engine Configs" Visibility="Visible"  Background="Transparent">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource for_scrollviewer}">
                                         <StackPanel Margin="20,14,20,20" MaxWidth="700" HorizontalAlignment="Stretch">
 
+                                            <local:LexTranslatorRadarChart
+                                            TranslationQuality="88"
+                                            TranslationSpeed="75"
+                                            ResourceOverhead="50"
+                                            Automation="18"
+                                            Manualization="65" 
+                                            ShowLevelValues="False"
+        />
+                 
+                                        
                                             <Border Style="{StaticResource SettingCard}">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">

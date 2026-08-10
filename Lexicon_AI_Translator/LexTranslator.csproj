@@ -103,9 +103,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EMPTY.xaml.cs">
-      <DependentUpon>EMPTY.xaml</DependentUpon>
-    </Compile>
     <Compile Include="FileManagement\ZipHelper.cs" />
     <Compile Include="SkyrimManagement\BackupManager.cs" />
     <Compile Include="SkyrimManagement\Base26Helper.cs" />
@@ -195,10 +192,6 @@
       <DependentUpon>MainChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="YDControls\RealtimeLineChart.cs" />
-    <Page Include="EMPTY.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UIManagement\Main\CGView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
