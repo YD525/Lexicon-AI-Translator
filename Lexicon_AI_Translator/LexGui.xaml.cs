@@ -361,11 +361,16 @@ namespace LexTranslator
                 {
                     case "InFo":
                         {
-                            if (IsExpanded)
+                            if (IsNodeExpanded)
                             {
                                 SyncAnimation();
-                                ShowLeftMenu(false);
+                                ShowNodeMenu(false);
                                 LogView.Visibility = Visibility.Collapsed;
+                            }
+
+                            if (TranslateView.CurrentHistory != null)
+                            {
+                                TranslateView.CurrentHistory.Visibility = Visibility.Hidden;
                             }
 
                             YDChart.Stop();
@@ -385,11 +390,16 @@ namespace LexTranslator
                         break;
                     case "DashBoard":
                         {
-                            if (IsExpanded)
+                            if (IsNodeExpanded)
                             {
                                 SyncAnimation();
-                                ShowLeftMenu(false);
+                                ShowNodeMenu(false);
                                 LogView.Visibility = Visibility.Collapsed;
+                            }
+
+                            if (TranslateView.CurrentHistory != null)
+                            {
+                                TranslateView.CurrentHistory.Visibility = Visibility.Hidden;
                             }
 
                             PageIndex = 1;
@@ -411,6 +421,11 @@ namespace LexTranslator
                         break;
                     case "TransHub":
                         {
+                            if (TranslateView.CurrentHistory != null)
+                            {
+                                TranslateView.CurrentHistory.Visibility = Visibility.Visible;
+                            }
+
                             YDChart.Stop();
                             PageIndex = 2;
                             StopLexGlowLoop();
@@ -424,11 +439,16 @@ namespace LexTranslator
                         break;
                     case "Settings":
                         {
-                            if (IsExpanded)
+                            if (IsNodeExpanded)
                             {
                                 SyncAnimation();
-                                ShowLeftMenu(false);
+                                ShowNodeMenu(false);
                                 LogView.Visibility = Visibility.Collapsed;
+                            }
+
+                            if (TranslateView.CurrentHistory != null)
+                            {
+                                TranslateView.CurrentHistory.Visibility = Visibility.Hidden;
                             }
 
                             YDChart.Stop();
@@ -821,19 +841,20 @@ namespace LexTranslator
         #endregion
 
         #region Nodes
-        public bool IsExpanded = false;
-        private void ShowLeftMenu(object sender, MouseButtonEventArgs e)
+
+        public bool IsNodeExpanded = false;
+        private void ShowNodeMenu(object sender, MouseButtonEventArgs e)
         {
-            if (IsExpanded)
+            if (IsNodeExpanded)
             {
                 SyncAnimation();
-                ShowLeftMenu(false);
+                ShowNodeMenu(false);
                 LogView.Visibility = Visibility.Collapsed;
             }
             else
             {
                 SyncAnimation();
-                ShowLeftMenu(true);
+                ShowNodeMenu(true);
                 LogView.Visibility = Visibility.Visible;
             }
         }
@@ -868,35 +889,33 @@ namespace LexTranslator
 
             CollapseAnimation.Completed += (_, __) =>
             {
-                LeftMenu.Visibility = Visibility.Collapsed;
-                LeftMenu.BeginAnimation(HeightProperty, null);
+                NodeMenu.Visibility = Visibility.Collapsed;
+                NodeMenu.BeginAnimation(HeightProperty, null);
             };
         }
-        public bool LeftMenuIsShow = false;
-        public void ShowLeftMenu(bool Show)
+        public bool NodeMenuIsShow = false;
+        public void ShowNodeMenu(bool Show)
         {
-            LeftMenuIsShow = Show;
+            NodeMenuIsShow = Show;
 
             this.Dispatcher.Invoke(new Action(() =>
             {
                 if (Show)
                 {
-                    UIHelper.LeftMenuIsShow = true;
                     Mask.Visibility = Visibility.Visible;
                     Storyboard Storyboard = (Storyboard)this.Resources["ExpandMenu"];
                     Storyboard.Begin();
 
-                    IsExpanded = true;
-                    LeftMenu.Visibility = Visibility.Visible;
+                    IsNodeExpanded = true;
+                    NodeMenu.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    UIHelper.LeftMenuIsShow = false;
                     Mask.Visibility = Visibility.Collapsed;
                     Storyboard Storyboard = (Storyboard)this.Resources["CollapseMenu"];
                     Storyboard.Begin();
 
-                    IsExpanded = false;
+                    IsNodeExpanded = false;
                 }
             }));
         }
@@ -905,10 +924,10 @@ namespace LexTranslator
 
         private void Mask_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (LeftMenuIsShow)
+            if (NodeMenuIsShow)
             {
                 SyncAnimation();
-                ShowLeftMenu(false);
+                ShowNodeMenu(false);
                 LogView.Visibility = Visibility.Collapsed;
             }
         }
@@ -1492,20 +1511,10 @@ namespace LexTranslator
             if (SContextEnable.IsChecked == true)
             {
                 Phoenix.Config.ContextEnable = true;
-
-                if (DeFine.NodeStyleWin.ContextCheckBox != null)
-                {
-                    DeFine.NodeStyleWin.ContextCheckBox.IsChecked = true;
-                }
             }
             else
             {
                 Phoenix.Config.ContextEnable = false;
-
-                if (DeFine.NodeStyleWin.ContextCheckBox != null)
-                {
-                    DeFine.NodeStyleWin.ContextCheckBox.IsChecked = false;
-                }
             }
         }
 

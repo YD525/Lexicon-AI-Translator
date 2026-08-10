@@ -808,10 +808,10 @@ namespace LexTranslator.UIManagement
                                             MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
                                             CallSuccess = false;
 
-                                            if (!_Parent.IsExpanded)
+                                            if (!_Parent.IsNodeExpanded)
                                             {
                                                 _Parent.SyncAnimation();
-                                                _Parent.ShowLeftMenu(true);
+                                                _Parent.ShowNodeMenu(true);
                                                 _Parent.LogView.Visibility = Visibility.Visible;
                                             }
                                             return;

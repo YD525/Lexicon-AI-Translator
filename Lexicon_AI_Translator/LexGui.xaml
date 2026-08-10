@@ -23,14 +23,14 @@
         </Storyboard>
 
         <Storyboard x:Key="ExpandMenu">
-            <DoubleAnimation Storyboard.TargetName="LeftMenu"
+            <DoubleAnimation Storyboard.TargetName="NodeMenu"
                  Storyboard.TargetProperty="Height"
                  From="0" To="350" Duration="0:0:0.3"
                  AccelerationRatio="0.3" DecelerationRatio="0.7"/>
         </Storyboard>
 
         <Storyboard x:Key="CollapseMenu">
-            <DoubleAnimation Storyboard.TargetName="LeftMenu"
+            <DoubleAnimation Storyboard.TargetName="NodeMenu"
                  Storyboard.TargetProperty="Height"
                  From="450" To="0" Duration="0:0:0.3"
                  AccelerationRatio="0.3" DecelerationRatio="0.7"/>
@@ -167,7 +167,7 @@ IsHitTestVisible="False"/>
                         </Grid>
                     </Border>
 
-                    <Border Style="{DynamicResource BlockButton}" Grid.Column="3" PreviewMouseDown="ShowLeftMenu" Name="NodeManage">
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="3" PreviewMouseDown="ShowNodeMenu" Name="NodeManage">
                         <Grid>
                             <ContentControl Style="{DynamicResource NodeIconStyle}" Name="NodeEffect" Panel.ZIndex="1"/>
                         </Grid>
@@ -238,8 +238,8 @@ IsHitTestVisible="False"/>
 
                 <Grid>
                     <!--LeftMenu-->
-                    <Border Style="{DynamicResource LeftMenu}" Name="LeftMenu" Height="0" Margin="0 40 0 0">
-                        <Border BorderBrush="#FF606060" BorderThickness="1">
+                    <Border Style="{DynamicResource NodeMenu}" Name="NodeMenu" Height="0" Margin="0 40 0 0">
+                        <Border BorderBrush="Black" BorderThickness="1">
                             <StackPanel Name="Nodes">
 
                             </StackPanel>

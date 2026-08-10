@@ -23,14 +23,14 @@ namespace LexTranslator.UIManagement
 
         public void SetHeaderTagEnableInFo(Grid Header, string InFo)
         {
-            if (Header.Children[1] is StackPanel)
+            if (Header.Children[0] is StackPanel)
             {
-                Label GetInFoControlHandle = ((Border)((StackPanel)Header.Children[1]).Children[1]).Child as Label;
+                Label GetInFoControlHandle = ((Border)((StackPanel)Header.Children[0]).Children[0]).Child as Label;
                 GetInFoControlHandle.Content = InFo;
             }
-            if (Header.Children[1] is Border)
+            if (Header.Children[0] is Border)
             {
-                Label GetInFoControlHandle = ((Border)Header.Children[1]).Child as Label;
+                Label GetInFoControlHandle = ((Border)Header.Children[0]).Child as Label;
                 GetInFoControlHandle.Content = InFo;
             }
         }
@@ -43,8 +43,6 @@ namespace LexTranslator.UIManagement
             GetTittle.Content = Tittle;
             return NewHeaderTag;
         }
-
-        public CheckBox ContextCheckBox = null;
         public Grid GenMainNodeTree(string Tittle)
         {
             Grid NewHeaderTag = UIHelper.CloneElement(MainHeaderTag);
@@ -52,32 +50,7 @@ namespace LexTranslator.UIManagement
             Label GetTittle = NewHeaderTag.Children[0]  as Label;
             GetTittle.Content = Tittle;
 
-            ContextCheckBox = ((NewHeaderTag.Children[1] as StackPanel).Children[0] as StackPanel).Children[1] as CheckBox;
-
-            if (Phoenix.Config.ContextEnable)
-            {
-                ContextCheckBox.IsChecked = true;
-            }
-            else
-            {
-                ContextCheckBox.IsChecked = false;
-            }
-
-            ContextCheckBox.Click += ContextCheckBox_Click;
-
             return NewHeaderTag;
-        }
-
-        private void ContextCheckBox_Click(object sender, RoutedEventArgs e)
-        {
-            if (ContextCheckBox.IsChecked == true)
-            {
-                Phoenix.Config.ContextEnable = true;
-            }
-            else
-            {
-                Phoenix.Config.ContextEnable = false;
-            }
         }
 
         public Color GetNodeColor(CustomPlatformType Type)
@@ -162,6 +135,11 @@ namespace LexTranslator.UIManagement
             TextBlock DisableBtn = GetStackPanel.Children[2] as TextBlock;
             DisableBtn.Tag = NodeGrid;
             DisableBtn.PreviewMouseDown += DisableBtn_PreviewMouseDown;
+
+            if (PlatformName.Equals("PreTranslate Node"))
+            {
+                DisableBtn.Visibility = Visibility.Hidden;
+            }
 
             return NodeGrid;
         }

@@ -118,8 +118,6 @@ namespace LexTranslator.UIManage
                  FontWeights.Normal,
                  FontStretches.Normal);
 
-        public static bool LeftMenuIsShow = false;
-
         public static double MeasureTextWidth(string Text, double FontSize)
         {
             if (string.IsNullOrEmpty(Text))
@@ -296,9 +294,7 @@ namespace LexTranslator.UIManage
         {
             try
             {
-                if (!LeftMenuIsShow) return;
-
-                if (!DeFine.WorkWin.IsExpanded)
+                if (!DeFine.WorkWin.IsNodeExpanded)
                 {
                     return;
                 }
