@@ -913,12 +913,12 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                         <TextBlock Text="Punctuation Output Format" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <CheckBox Name="UseFullPunctuation" Click="UseFullPunctuation_Click" Style="{StaticResource SettingToggle}" Margin="0,0,10,0"/>
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Replace half-width punctuation with full-width when saving"/>
+                                                        <CheckBox Name="UseFullPunctuation" Click="UseFullPunctuation_Click" Style="{StaticResource SettingToggle}" Margin="0,0,8,0"/>
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" VerticalAlignment="Center" Text="Output punctuation marks in the Chinese style."/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-                                                        <CheckBox Name="UseFullPunctuationJa" Click="UseFullPunctuationJa_Click" Style="{StaticResource SettingToggle}" Margin="0,0,10,0"/>
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Output punctuation marks in the Japanese style."/>
+                                                        <CheckBox Name="UseFullPunctuationJa" Click="UseFullPunctuationJa_Click" Style="{StaticResource SettingToggle}" Margin="0,0,8,0"/>
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" VerticalAlignment="Center" Text="Output punctuation marks in the Japanese style."/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
@@ -935,7 +935,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                             <TextBox Name="SContextLimit" TextChanged="SContextLimit_TextChanged" Style="{StaticResource SettingTextBox}"/>
                                                         </Border>
                                                     </StackPanel>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="This setting controls the maximum length of context provided to the AI for each translation. It uses a character count limit, with a default maximum of 200 characters. Providing context helps the AI maintain a consistent tone and accurately translate technical terms or industry-specific vocabulary, which can significantly improve translation quality. This is especially useful for ensuring consistent output for synonyms and related concepts. Setting this limit too high will increase the cost of your cloud translation service."/>
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="Controls the maximum context length provided to the AI for each translation. A default limit of 200 characters helps maintain consistent tone, terminology, and translation quality. Enabling context generation also improves consistency across multiple AI platforms, as AIMemory can share translation context between different AI services. Higher limits may increase cloud translation costs."/>
                                                     <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
                                                         <TextBlock Text="Context Generation" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
                                                         <CheckBox Name="SContextEnable" Click="SContextEnable_Click" Style="{StaticResource SettingToggle}"/>
@@ -950,11 +950,12 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                         <TextBlock Text="Localizable Areas" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <CheckBox Name="CanTranslateBook" Click="CanTranslateBook_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                        <CheckBox Name="CanTranslateBook" Click="CanTranslateBook_Click" Style="{StaticResource SettingToggle}" Margin="0,0,8,0" VerticalAlignment="Top"/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Include Book Texts."/>
                                                     </StackPanel>
-
+                                                    
                                                     <StackPanel Margin="0 5 0 0">
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="Selecting this option for batch translation will translate book texts. Book texts are usually very long. If you are using a cloud platform for translation, please be aware of token consumption."/>
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" Text="Selecting this option for batch translation will translate book texts. Book texts are usually very long. If you are using a cloud platform for translation, please be aware of token consumption."/>
                                                     </StackPanel>
 
                                                 </StackPanel>
@@ -978,12 +979,12 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal">
-                                                        <CheckBox Name="GlobalSearch" Click="EnableGlobalSearch_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                        <CheckBox Name="GlobalSearch" Click="EnableGlobalSearch_Click" Style="{StaticResource SettingToggle}" Margin="0,0,8,0" VerticalAlignment="Top"/>
                                                         <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Global Data Retrieval."/>
                                                     </StackPanel>
 
                                                     <StackPanel Margin="0 5 0 0">
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="Allow retrieval of the entire database using source text. This option may speed up translation but could reduce accuracy, as the same text may have different meanings across mods."/>
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" Text="Allow retrieval of the entire database using source text. This option may speed up translation but could reduce accuracy, as the same text may have different meanings across mods."/>
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0 13 0 0">
@@ -992,7 +993,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     </StackPanel>
 
                                                     <StackPanel Margin="0 5 0 0">
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="When enabled, matched entries from strings files will be automatically imported into the Advanced Dictionary, allowing strings file records to be efficiently reused. Entries from a single strings file can be shared across multiple mods, maximizing their usefulness. This is an experimental feature designed to improve the efficiency of strings file utilization."/>
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" Text="When enabled, matched entries from strings files will be automatically imported into the Advanced Dictionary, allowing strings file records to be efficiently reused. Entries from a single strings file can be shared across multiple mods, maximizing their usefulness. This is an experimental feature designed to improve the efficiency of strings file utilization."/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
@@ -1009,7 +1010,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                             <TextBox Name="P_Placeholders" TextChanged="P_Placeholders_TextChanged" Style="{StaticResource SettingTextBox}"/>
                                                         </Border>
                                                     </StackPanel>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="The preprocessor is used to protect keywords from translation by both AI and traditional platforms. It uses regular expressions to determine which words can be protected. Please separate multiple regular expressions with &quot;,&quot;. (You need to ensure the preprocessor node is enabled for it to function.)"/>
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="The Preprocessor is used to protect keywords from translation by both AI and traditional platforms. It uses regular expressions to determine which words can be protected. Please separate multiple regular expressions with &quot;,&quot;. (You need to ensure the preprocessor node is enabled for it to function.)"/>
                                                 </StackPanel>
                                             </Border>
 
@@ -1026,7 +1027,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                             <TextBox Name="SThrottlingRatio" TextChanged="SThrottlingRatio_TextChanged" Style="{StaticResource SettingTextBox}"/>
                                                         </Border>
                                                     </StackPanel>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="When the number of threads reaches the specified percentage of the maximum number of threads (default 0.7 = 70%), the current limiting policy is triggered."/>
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="When the number of threads reaches the specified percentage of the maximum number of threads (default 0.7 = 70%), the current limiting policy is triggered."/>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
                                                         <TextBlock Text="Rotation Delay:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
@@ -1034,7 +1035,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                             <TextBox Name="SRotationDelay" TextChanged="SRotationDelay_TextChanged" Style="{StaticResource SettingTextBox}"/>
                                                         </Border>
                                                     </StackPanel>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="Sleep time after triggering the throttling policy (default 200 milliseconds). (If you don't understand, don't mess around.)"/>
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="Sleep time after triggering the throttling policy (default 200 milliseconds). (If you don't understand, don't mess around.)"/>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
                                                         <TextBlock Text="Max Thread Limit:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
@@ -1042,12 +1043,24 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                             <TextBox Name="SMaxThread" TextChanged="SMaxThread_TextChanged" Style="{StaticResource SettingTextBox}"/>
                                                         </Border>
                                                     </StackPanel>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="Set the maximum number of threads allowed to be created during batch translation."/>
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="Set the maximum number of threads allowed to be created during batch translation."/>
+                                                </StackPanel>
+                                            </Border>
 
-                                                    <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
-                                                        <TextBlock Text="LanguageDetect:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
-                                                        <CheckBox Name="SEnableLanguageDetect" Click="SEnableLanguageDetect_Click" Style="{StaticResource SettingToggle}"/>
+
+                                            <Border Style="{StaticResource SettingCard}" Margin="0">
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                                        <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Language Detection" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
+                                                        <CheckBox Name="SEnableLanguageDetect" Click="SEnableLanguageDetect_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Auto Detection."/>
+                                                    </StackPanel>
+
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="When the language selection is set to Auto, attempt to detect the target language automatically."/>
                                                 </StackPanel>
                                             </Border>
                                         </StackPanel>

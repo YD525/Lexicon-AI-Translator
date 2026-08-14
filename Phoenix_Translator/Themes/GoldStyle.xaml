@@ -1566,6 +1566,20 @@
         <Setter Property="Margin" Value="0,8,0,0"/>
     </Style>
 
+
+    <Style x:Key="SettingHintR" TargetType="TextBox">
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="BorderBrush" Value="{x:Null}"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Foreground" Value="#FF808080"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Margin" Value="0,8,0,0"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+    </Style>
+
     <Style x:Key="SettingInputBorder" TargetType="Border">
         <Setter Property="Background" Value="#FF1A1A1A"/>
         <Setter Property="BorderBrush" Value="#FF3D3D3D"/>
