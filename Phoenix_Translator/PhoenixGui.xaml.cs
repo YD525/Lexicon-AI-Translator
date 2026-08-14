@@ -375,7 +375,7 @@ namespace PhoenixTranslator
                             YDChart.Stop();
                             PageIndex = 0;
                             StartLexGlowLoop();
-                            LexVer.Content = DeFine.CurrentVersion;
+                            PhoenixVer.Content = DeFine.CurrentVersion;
                             EngineVer.Content = Phoenix.Version;
                             PEXAnalysisVer.Content = PexHeuristicAnalysis.Version;
                             PEXReaderVer.Content = PexInterop.Version;
@@ -568,7 +568,7 @@ namespace PhoenixTranslator
 
         private void UpdateTabShowState()
         {
-            bool IsEmpty = LexTabs.Items.Count == 0;
+            bool IsEmpty = PhoenixTabs.Items.Count == 0;
 
             EmptyTabView.Visibility = IsEmpty ? Visibility.Visible : Visibility.Collapsed;
             Tab.Visibility = IsEmpty ? Visibility.Collapsed : Visibility.Visible;
@@ -586,13 +586,13 @@ namespace PhoenixTranslator
         private AdornerLayer _AdornerLayer;
         private DragAdorner _DragAdorner;
 
-        private void LexTabs_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void PhoenixTabs_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             _DragStartPoint = e.GetPosition(null);
             _DraggedTab = FindAncestor<TabItem>(e.OriginalSource as DependencyObject);
         }
 
-        private void LexTabs_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void PhoenixTabs_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (_DraggedTab == null || e.LeftButton != MouseButtonState.Pressed)
                 return;
@@ -608,30 +608,30 @@ namespace PhoenixTranslator
                 AnimateOpacity(_DraggedTab, 0.35, 120);
                 _DraggedTab.Cursor = Cursors.SizeWE;
 
-                _AdornerLayer = AdornerLayer.GetAdornerLayer(LexTabs);
-                _DragAdorner = new DragAdorner(LexTabs, _DraggedTab, e.GetPosition(LexTabs));
+                _AdornerLayer = AdornerLayer.GetAdornerLayer(PhoenixTabs);
+                _DragAdorner = new DragAdorner(PhoenixTabs, _DraggedTab, e.GetPosition(PhoenixTabs));
                 _AdornerLayer.Add(_DragAdorner);
             }
 
-            _DragAdorner.UpdatePosition(e.GetPosition(LexTabs));
+            _DragAdorner.UpdatePosition(e.GetPosition(PhoenixTabs));
 
             TabItem TargetTab = FindAncestor<TabItem>(e.OriginalSource as DependencyObject);
             if (TargetTab == null || TargetTab == _DraggedTab)
                 return;
 
-            int DraggedIndex = LexTabs.Items.IndexOf(_DraggedTab);
-            int TargetIndex = LexTabs.Items.IndexOf(TargetTab);
+            int DraggedIndex = PhoenixTabs.Items.IndexOf(_DraggedTab);
+            int TargetIndex = PhoenixTabs.Items.IndexOf(TargetTab);
             if (DraggedIndex < 0 || TargetIndex < 0)
                 return;
 
-            LexTabs.Items.RemoveAt(DraggedIndex);
-            LexTabs.Items.Insert(TargetIndex, _DraggedTab);
-            LexTabs.SelectedItem = _DraggedTab;
+            PhoenixTabs.Items.RemoveAt(DraggedIndex);
+            PhoenixTabs.Items.Insert(TargetIndex, _DraggedTab);
+            PhoenixTabs.SelectedItem = _DraggedTab;
 
             FlashSwap(TargetTab);
         }
 
-        private void LexTabs_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        private void PhoenixTabs_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (_DraggedTab != null)
             {
@@ -688,9 +688,9 @@ namespace PhoenixTranslator
         }
 
         public TranslateView ActiveTab = null;
-        private void LexTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void PhoenixTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var Tab = LexTabs.SelectedItem as TabItem;
+            var Tab = PhoenixTabs.SelectedItem as TabItem;
             if (Tab == null)
                 return;
 
@@ -728,7 +728,7 @@ namespace PhoenixTranslator
             }
         }
 
-        private void LexTabs_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void PhoenixTabs_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var Dep = e.OriginalSource as DependencyObject;
 
@@ -764,12 +764,12 @@ namespace PhoenixTranslator
         {
             UI(() =>
             {
-                foreach (TabItem Item in LexTabs.Items)
+                foreach (TabItem Item in PhoenixTabs.Items)
                 {
                     if (Item.Tag is FileTabContext CTX && CTX.Path == Path)
                     {
                         if (Select)
-                            LexTabs.SelectedItem = Item;
+                            PhoenixTabs.SelectedItem = Item;
 
                         return;
                     }
@@ -791,12 +791,12 @@ namespace PhoenixTranslator
                     Tag = CTXNew
                 };
 
-                LexTabs.Items.Add(Tab);
+                PhoenixTabs.Items.Add(Tab);
 
                 TabViews.Children.Add(View);
 
                 if (Select)
-                    LexTabs.SelectedItem = Tab;
+                    PhoenixTabs.SelectedItem = Tab;
 
                 UpdateTabShowState();
             });
@@ -808,7 +808,7 @@ namespace PhoenixTranslator
                 TabItem Target = null;
                 FileTabContext CTX = null;
 
-                foreach (TabItem Item in LexTabs.Items)
+                foreach (TabItem Item in PhoenixTabs.Items)
                 {
                     if (Item.Tag is FileTabContext c && c.Path == Path)
                     {
@@ -832,7 +832,7 @@ namespace PhoenixTranslator
                     ActiveTab = null;
                 }
 
-                LexTabs.Items.Remove(Target);
+                PhoenixTabs.Items.Remove(Target);
 
                 UpdateTabShowState();
             });
@@ -1656,8 +1656,9 @@ namespace PhoenixTranslator
             }
         }
 
+
         #endregion
 
-     
+
     }
 }

@@ -76,7 +76,7 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22">
-                        Lex Translator
+                        Phoenix Translator
                     </Label>
                     <Border CornerRadius="3" Background="#FF303030" VerticalAlignment="Center" Margin="5 0 0 0">
                         <Label Foreground="White" VerticalAlignment="Center" FontSize="10" Name="Version">

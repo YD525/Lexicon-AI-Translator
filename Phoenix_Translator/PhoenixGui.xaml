@@ -324,7 +324,7 @@ IsHitTestVisible="False"/>
                                                     </LinearGradientBrush.GradientStops>
                                                 </LinearGradientBrush>
                                             </Label.Foreground>
-                                            Lex
+                                            Phoenix
                                         </Label>
 
                                         <Label FontWeight="ExtraBold" FontSize="50" Foreground="White">
@@ -380,7 +380,7 @@ IsHitTestVisible="False"/>
                                                     <Label Foreground="White" VerticalAlignment="Center" FontWeight="DemiBold">
                                                         Main Program
                                                     </Label>
-                                                    <Label Foreground="White" Name="LexVer">
+                                                    <Label Foreground="White" Name="PhoenixVer">
 
                                                     </Label>
                                                 </StackPanel>
@@ -505,7 +505,7 @@ Chinese character processed by —
 
                                                 <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/Neko41" Text="Neko41" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
-            Helped create the German dictionaries for Lex Translator.
+            Helped create the German dictionaries for Phoenix Translator.
                                                 </TextBlock>
 
                                                 <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
@@ -515,7 +515,7 @@ Chinese character processed by —
 
                                                 <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/50809501" Text="50809501" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
-            Helped create the Simplified Chinese dictionaries for Lex Translator.
+            Helped create the Simplified Chinese dictionaries for Phoenix Translator.
                                                 </TextBlock>
 
                                                 <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
@@ -530,7 +530,7 @@ Chinese character processed by —
 
                                                 <TextBlock Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="20 6 20 0">
             <Run Tag="https://www.nexusmods.com/profile/zhuabaobao123" Text="zhuabaobao123" FontWeight="Bold" Cursor="Hand" Foreground="#FFFAE306" MouseDown="OpenUrl_MouseDown"/> — 
-             created the localized Chinese interface for Lex.
+             created the localized Chinese interface for Phoenix.
                                                 </TextBlock>
 
                                             </StackPanel>
@@ -585,7 +585,7 @@ Chinese character processed by —
                                     <TextBlock Text="No Mod Files Loaded" Foreground="#E0E0E0" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
                                     <TextBlock Text="Drag &amp; drop multiple files or click below to select" Foreground="#707070" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
-                                    <Border Width="180" Height="42" CornerRadius="6" BorderThickness="1" Style="{StaticResource ModButtonStyle}" Tag="LexTabAdd" PreviewMouseDown="SelectFile">
+                                    <Border Width="180" Height="42" CornerRadius="6" BorderThickness="1" Style="{StaticResource ModButtonStyle}" Tag="PhoenixTabAdd" PreviewMouseDown="SelectFile">
                                         <TextBlock Text="Select Mod File" Foreground="#D0D0D0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </Border>
 
@@ -620,12 +620,12 @@ Chinese character processed by —
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
 
-                                <TabControl x:Name="LexTabs" Grid.Row="0" Style="{DynamicResource LexTabControl}"
-PreviewMouseDown="LexTabs_PreviewMouseDown"
-PreviewMouseMove="LexTabs_PreviewMouseMove"
-PreviewMouseUp="LexTabs_PreviewMouseUp"
-PreviewMouseLeftButtonDown="LexTabs_PreviewMouseLeftButtonDown"
-SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
+                                <TabControl x:Name="PhoenixTabs" Grid.Row="0" Style="{DynamicResource LexTabControl}"
+PreviewMouseDown="PhoenixTabs_PreviewMouseDown"
+PreviewMouseMove="PhoenixTabs_PreviewMouseMove"
+PreviewMouseUp="PhoenixTabs_PreviewMouseUp"
+PreviewMouseLeftButtonDown="PhoenixTabs_PreviewMouseLeftButtonDown"
+SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch">
 
                                 </TabControl>
 
