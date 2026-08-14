@@ -20,7 +20,7 @@ namespace PhoenixTranslator.UIManagement
             }
         }
 
-        private static void OpenCodeWin(ModFile Mod, LexGui Win)
+        private static void OpenCodeWin(ModFile Mod, PhoenixGui Win)
         {
             if (CodeWin == null)
             {
@@ -43,7 +43,7 @@ namespace PhoenixTranslator.UIManagement
             }
         }
 
-        private static void OpenTrackingWin(ModFile Mod, LexGui Win)
+        private static void OpenTrackingWin(ModFile Mod, PhoenixGui Win)
         {
             if (TrackingWin == null)
             {
@@ -160,7 +160,7 @@ namespace PhoenixTranslator.UIManagement
         public static object AttachLock = new object();
 
         private static CancellationTokenSource _DebounceTokenSource;
-        public static void AttachMod(string SelectKey, LexGui CurrentWin, ModFile Mod)
+        public static void AttachMod(string SelectKey, PhoenixGui CurrentWin, ModFile Mod)
         {
             if (SelectKey == null || SelectKey == string.Empty)
             {

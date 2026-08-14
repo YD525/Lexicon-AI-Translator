@@ -27,8 +27,8 @@ namespace PhoenixTranslator
     /// </summary>
     public partial class CustomWizard : Window
     {
-        private LexGui _Owner;
-        public CustomWizard(LexGui Owner)
+        private PhoenixGui _Owner;
+        public CustomWizard(PhoenixGui Owner)
         {
             InitializeComponent();
             this._Owner = Owner;

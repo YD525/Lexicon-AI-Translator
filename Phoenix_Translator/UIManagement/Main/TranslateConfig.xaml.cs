@@ -37,8 +37,8 @@ namespace PhoenixTranslator
     /// </summary>
     public partial class TranslateConfig : Window
     {
-        private LexGui _Owner;
-        public TranslateConfig(LexGui Owner)
+        private PhoenixGui _Owner;
+        public TranslateConfig(PhoenixGui Owner)
         {
             InitializeComponent();
             this._Owner = Owner;

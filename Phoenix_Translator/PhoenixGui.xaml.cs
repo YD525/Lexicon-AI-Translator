@@ -31,9 +31,9 @@ namespace PhoenixTranslator
     /// <summary>
     /// Interaction logic for LexGui.xaml
     /// </summary>
-    public partial class LexGui : Window
+    public partial class PhoenixGui : Window
     {
-        public LexGui()
+        public PhoenixGui()
         {
             InitializeComponent();
         }

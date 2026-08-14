@@ -52,8 +52,8 @@ namespace PhoenixTranslator.UIManagement
             InitializeComponent();
         }
 
-        public LexGui _Parent = null;
-        public void SetFile(LexGui Parent, string Path)
+        public PhoenixGui _Parent = null;
+        public void SetFile(PhoenixGui Parent, string Path)
         {
             if (Mod == null)
             {

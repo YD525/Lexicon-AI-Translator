@@ -19,8 +19,8 @@ namespace PhoenixTranslator.UIManagement
     /// </summary>
     public partial class PlatformConfigStyleWin : Window
     {
-        private LexGui _Owner;
-        public PlatformConfigStyleWin(LexGui Owner)
+        private PhoenixGui _Owner;
+        public PlatformConfigStyleWin(PhoenixGui Owner)
         {
             InitializeComponent();
             this._Owner = Owner;

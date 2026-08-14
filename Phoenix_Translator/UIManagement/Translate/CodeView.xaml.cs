@@ -19,9 +19,9 @@ namespace PhoenixTranslator
     /// </summary>
     public partial class CodeView : Window
     {
-        private LexGui _Owner;
+        private PhoenixGui _Owner;
         public ModFile ModRef = null;
-        public CodeView(ModFile Mod,LexGui Owner)
+        public CodeView(ModFile Mod,PhoenixGui Owner)
         {
             InitializeComponent();
 

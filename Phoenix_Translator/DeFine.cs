@@ -45,7 +45,7 @@ namespace PhoenixTranslator
 
         public static DataBaseView DataBaseView = null;
 
-        public static LexGui WorkWin = null;
+        public static PhoenixGui WorkWin = null;
 
         public static CGView CG = null;
 
@@ -143,7 +143,7 @@ namespace PhoenixTranslator
                     }));
             });
         }
-        public static void Init(LexGui Win)
+        public static void Init(PhoenixGui Win)
         {
             if (Win != null)
             {

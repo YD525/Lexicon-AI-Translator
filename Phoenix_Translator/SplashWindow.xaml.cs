@@ -53,7 +53,7 @@ namespace PhoenixTranslator
         }
 
         public Thread LoadingTrd = null;
-        public static LexGui Main = null;
+        public static PhoenixGui Main = null;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -145,7 +145,7 @@ namespace PhoenixTranslator
                
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    SplashWindow.Main = new LexGui();
+                    SplashWindow.Main = new PhoenixGui();
                     SplashWindow.Main.Show();
                     CanExit = false;
 

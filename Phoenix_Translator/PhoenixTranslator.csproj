@@ -126,8 +126,8 @@
     <Compile Include="UIManagement\Translate\InteractiveView.xaml.cs">
       <DependentUpon>InteractiveView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LexGui.xaml.cs">
-      <DependentUpon>LexGui.xaml</DependentUpon>
+    <Compile Include="PhoenixGui.xaml.cs">
+      <DependentUpon>PhoenixGui.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\Main\TranslateConfig.xaml.cs">
       <DependentUpon>TranslateConfig.xaml</DependentUpon>
@@ -216,7 +216,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LexGui.xaml">
+    <Page Include="PhoenixGui.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
