@@ -1,13 +1,16 @@
-# Lexicon AI Translator
+# Phoenix Translator
 
-**Lexicon AI Translator** is a free, open-source tool for Skyrim mod localization.
-It supports multiple mod-related file formats, including PEX, ESM, ESP, and MCM.
-The tool focuses on structured string preprocessing, rule-based protection, and customizable translation workflows to reduce errors during batch translation.
-With optional integration of local or online translation engines and user-defined dictionaries, Lexicon AI Translator helps translators work more efficiently while maintaining control over the final output.
+**Phoenix Translator** is a free, open-source tool for Skyrim mod localization.
 
-If you want to give feedback, report issues, or discuss Lex Translator, please feel free to visit any of the following sites:  
+It supports multiple mod-related file formats, including **PEX, ESM, ESP, and MCM**. The tool focuses on structured string preprocessing, rule-based protection, contextual grouping, and customizable translation workflows to reduce errors during batch translation.
 
-- [Nexus Mods (for international users)](https://www.nexusmods.com/skyrimspecialedition/mods/143056)  
+Phoenix Translator also features **Aggregated Translation**, which groups related strings together before translation. By providing related dialogue and terminology as contextual information, it can improve consistency across repeated terms, character dialogue, and similar sentences while reducing the inconsistencies that can occur when every string is translated independently.
+
+With optional integration of local or online translation engines and user-defined dictionaries, Phoenix Translator helps translators work more efficiently while maintaining control over the final output.
+
+If you want to give feedback, report issues, or discuss Phoenix Translator, please feel free to visit the following site:
+
+- [Nexus Mods (for international users)](https://www.nexusmods.com/skyrimspecialedition/mods/143056)
 
 You can download it directly from Nexus Mods or build it yourself here. Both versions are kept up to date.
 
@@ -17,65 +20,102 @@ Your support and feedback are greatly appreciated!
 
 ## 📦 Features
 
-- ✅ Support for `.pex`, `.esm`, `.esp`, and `.mcm` formats  
-- 🔁 Batch processing and translation history tracking  
-- 🌐 Integration with OpenAI, DeepL, and other translation APIs  
-- 🧠 Heuristic filtering to avoid code-related terms being mistranslated  
-- 🔧 Designed for extendability and customization
+- ✅ Support for `.pex`, `.esm`, `.esp`, and `.mcm` formats
+- 🧠 **Aggregated Translation** — Groups related strings and provides contextual information to improve translation consistency
+- 🔁 Batch processing and translation history tracking
+- 🌐 Integration with OpenAI, DeepL, and other translation APIs
+- 🧠 Heuristic filtering to avoid code-related terms being mistranslated
+- 📚 Support for user-defined dictionaries and translation references
+- 🔧 Customizable translation workflows
+- 📝 Sequential Text Mode for improving consistency in conversational content
+- ⚡ Designed for large-scale Skyrim mod localization
+
+### 🧠 Aggregated Translation
+
+Traditional batch translation usually treats each string as an independent translation task. This can cause the same character, item, location, or terminology to receive different translations across a mod.
+
+Phoenix Translator's **Aggregated Translation** analyzes relationships between strings and groups related content into translation buckets.
+
+Related strings can then be translated with additional contextual information, allowing the translation engine to better understand:
+
+- Repeated terminology
+- Character names and dialogue
+- Similar sentences
+- Related NPC dialogue
+- Context-dependent expressions
+- Frequently repeated phrases
+
+This helps improve terminology consistency and allows the translation model to consider related content instead of translating every sentence in isolation.
+
+The system can combine text similarity, contextual relationships, and configurable bucket limits to organize large amounts of content into manageable translation groups.
+
+For conversational mods, **Sequential Text Mode** can also be used when preserving the original dialogue order is more important than similarity-based grouping.
 
 ---
 
-### Steps:
+## 🛠️ Building from Source
 
-1. Clone the repository:  
-   [https://github.com/YD525/PhoenixEngine](https://github.com/YD525/PhoenixEngine)
+### PhoenixEngine
+
+Phoenix Translator depends on **PhoenixEngine**, which provides several of the core components used by the application.
+
+1. Clone the PhoenixEngine repository:
+
+   https://github.com/YD525/PhoenixEngine
 
 2. Open the solution in Visual Studio and build the project.
 
-3. After building, make sure to **reference the generated DLLs** (e.g., `PhoenixEngine.dll`) in the **Lex Translator** project.  
-   You can do this either by adding project references or linking the compiled DLLs directly.
+3. After building, make sure to **reference the generated DLLs**, such as `PhoenixEngine.dll`, in the Phoenix Translator project.
 
-This step is **mandatory** — the LexTranslator project will not build correctly without it.
+You can do this either by adding project references or by referencing the compiled DLLs directly.
+
+This step is **mandatory** — the Phoenix Translator project will not build correctly without the required PhoenixEngine assemblies.
 
 ---
 
 ## 🧩 Third-party Components
 
-This project uses the following key open-source libraries/frameworks:
+This project uses the following key open-source libraries and frameworks:
 
-- [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) – WPF text editor component used for code/text display.  
-
----
-
-### 🙏 Special Thanks
-
-I would like to give special thanks to the developers of 
-
-[Cutleast](https://github.com/Cutleast) It helped me solve some problems with reading PEX,ESP files.
-
-[Noggog](https://github.com/Noggog) for helping me understand how StringsFile reads and writes.
-
-[Cutleast](https://github.com/Cutleast), [SkyHorizon3](https://github.com/SkyHorizon3) for helping me resolve the issue with generating specific JSON fields in the DSD file.
-
-[SSEAT](https://github.com/Cutleast/SSE-Auto-Translator) This is a highly automated program that can automatically download pre-translated content, avoiding repeated translation of a single module. It's ideal for use with Lex, The functions of both parties may also be integrated in the future.
-
-[Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) Without this framework, there would be no earliest version of Lex.
-
-[walkswithwolf](https://www.nexusmods.com/profile/walkswithwolf?gameId=110) Help me understand the structure of Skyrim files.
-
-[Champollion](https://github.com/Orvid/Champollion) This framework was a huge help!
-
-[Kanie17](https://www.nexusmods.com/profile/Kanie17/mods) introduced many meaningful feature improvements.
-
-[50809501](https://www.nexusmods.com/profile/50809501) has been continuously maintaining the Chinese dictionary database for Lex.
-
-[Neko41](https://www.nexusmods.com/profile/Neko41) created the German dictionary database for Lex.
-
-[撒倫](https://home.gamer.com.tw/profile/index.php?owner=salunt) offered many meaningful suggestions regarding Traditional Chinese.
-
-[zhuabaobao123](https://www.nexusmods.com/profile/zhuabaobao123) Created the Chinese interface for Lex.
-
-Their excellent libraries provide Lex Translator with a stable and solid foundation, allowing us to focus more on developing the translation features.
-Acknowledgements: Nexus Mods,9DM,2Game.info,and 泰姆瑞尔MOD组, for their support and encouragement that inspire my creative work.
+- [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) – WPF text editor component used for code and text display.
+- [Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) – Skyrim plugin and game data framework.
+- [Champollion](https://github.com/Orvid/Champollion) – Papyrus-related tooling used by the project.
+- [SSE-Auto-Translator](https://github.com/Cutleast/SSE-Auto-Translator) – Automated Skyrim translation tool and a useful reference for translation workflows.
 
 ---
+
+## 🙏 Special Thanks
+
+I would like to give special thanks to everyone who has contributed to Phoenix Translator through development assistance, technical advice, testing, localization, and valuable suggestions.
+
+**YD525 & Cutleast** — Interface improvements.
+
+**YD525, Cutleast, and [SSEAT](https://www.nexusmods.com/skyrimspecialedition/mods/111491)** — ESP and PEX file parsing.
+
+**[繁化姬](https://zhconvert.org)** — Chinese character processing.
+
+**[Noggog](https://github.com/Noggog) & [Mutagen](https://github.com/Mutagen-Modding/Mutagen)** — Helped identify and fix issues when reading ESP files, suggested exporting Strings files, and assisted with resolving framework conflicts.
+
+**[Cutleast](https://github.com/cutleast) & [SkyHorizon3](https://github.com/SkyHorizon3)** — Helped resolve issues regarding the generation of specific JSON fields within DSD files.
+
+**[csavasvdb](https://www.nexusmods.com/profile/csavasvdb)** — Recommended "Sequential Text Mode" to improve translation accuracy in conversational mods and proposed ideas for manual bucketing.
+
+**[walkswithwolf](https://next.nexusmods.com/profile/walkswithwolf)** — Provided valuable insights to help me understand the core structure of Skyrim files.
+
+**[Kanie17](https://next.nexusmods.com/profile/Kanie17)** — Suggested multi-color highlighting, improved the keyword search, and actively assisted in testing the program.
+
+**[Neko41](https://www.nexusmods.com/profile/Neko41)** — Helped create the German dictionaries for Phoenix Translator.
+
+**[Jacky66evil](https://home.gamer.com.tw/profile/index.php?owner=jacky66666)** — Suggested separating the translation cache by model name and helped build the Traditional Chinese dictionaries.
+
+**[50809501](https://www.nexusmods.com/profile/50809501)** — Helped create the Simplified Chinese dictionaries for Phoenix Translator.
+
+**[is365s](https://www.nexusmods.com/profile/is365s)** — Reported primary key duplication bugs within XML files and continuously helped test the application.
+
+**[撒倫](https://home.gamer.com.tw/profile/index.php?owner=salunt)** — Offered numerous meaningful suggestions regarding Traditional Chinese recognition and translation.
+
+**[zhuabaobao123](https://www.nexusmods.com/profile/zhuabaobao123)** — Created the localized Chinese interface for Phoenix Translator.
+
+Their contributions, suggestions, testing, and support have provided Phoenix Translator with a stable foundation and helped us continue improving its translation capabilities.
+
+Special thanks also go to **Nexus Mods, 9DM, 2Game.info, and 泰姆瑞尔MOD组** for their support and encouragement, which continue to inspire my work on Phoenix Translator.
