@@ -541,6 +541,31 @@ namespace PhoenixTranslator
         }
 
         #region FileTabs
+        private Border _BtnScrollLeft;
+        private Border _BtnScrollRight;
+        private ScrollViewer _TabScrollViewer;
+        private void PhoenixTabs_Loaded(object sender, RoutedEventArgs e)
+        {
+            PhoenixTabs.ApplyTemplate();
+
+            _BtnScrollLeft = PhoenixTabs.Template?.FindName("BtnScrollLeft", PhoenixTabs) as Border;
+            _BtnScrollRight = PhoenixTabs.Template?.FindName("BtnScrollRight", PhoenixTabs) as Border;
+            _TabScrollViewer = PhoenixTabs.Template?.FindName("TabScrollViewer", PhoenixTabs) as ScrollViewer;
+
+            if (_BtnScrollLeft != null)
+                _BtnScrollLeft.PreviewMouseDown += ScrollTabsLeft_PreviewMouseDown;
+
+            if (_BtnScrollRight != null)
+                _BtnScrollRight.PreviewMouseDown += ScrollTabsRight_PreviewMouseDown;
+
+            if (_TabScrollViewer != null)
+            {
+                _TabScrollViewer.PreviewMouseWheel += TabScrollViewer_PreviewMouseWheel;
+                _TabScrollViewer.ScrollChanged += TabScrollViewer_ScrollChanged;
+            }
+
+            UpdateScrollButtonsState();
+        }
 
         public void LoadFile()
         {
@@ -590,6 +615,12 @@ namespace PhoenixTranslator
         {
             _DragStartPoint = e.GetPosition(null);
             _DraggedTab = FindAncestor<TabItem>(e.OriginalSource as DependencyObject);
+
+            if (_DraggedTab == null)
+            {
+                WinHead_MouseLeftButtonDown(sender, e);
+                return;
+            }
         }
 
         private void PhoenixTabs_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -611,11 +642,13 @@ namespace PhoenixTranslator
                 _AdornerLayer = AdornerLayer.GetAdornerLayer(PhoenixTabs);
                 _DragAdorner = new DragAdorner(PhoenixTabs, _DraggedTab, e.GetPosition(PhoenixTabs));
                 _AdornerLayer.Add(_DragAdorner);
+
+                Mouse.Capture(PhoenixTabs, CaptureMode.SubTree);
             }
 
             _DragAdorner.UpdatePosition(e.GetPosition(PhoenixTabs));
 
-            TabItem TargetTab = FindAncestor<TabItem>(e.OriginalSource as DependencyObject);
+            TabItem TargetTab = HitTestTabItem(e.GetPosition(PhoenixTabs));
             if (TargetTab == null || TargetTab == _DraggedTab)
                 return;
 
@@ -631,6 +664,15 @@ namespace PhoenixTranslator
             FlashSwap(TargetTab);
         }
 
+        private TabItem HitTestTabItem(Point PosInTabs)
+        {
+            HitTestResult Result = VisualTreeHelper.HitTest(PhoenixTabs, PosInTabs);
+            if (Result == null)
+                return null;
+
+            return FindAncestor<TabItem>(Result.VisualHit);
+        }
+
         private void PhoenixTabs_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (_DraggedTab != null)
@@ -638,6 +680,9 @@ namespace PhoenixTranslator
                 AnimateOpacity(_DraggedTab, 1.0, 150);
                 _DraggedTab.ClearValue(FrameworkElement.CursorProperty);
             }
+
+            if (Mouse.Captured == PhoenixTabs)
+                Mouse.Capture(null);
 
             if (_AdornerLayer != null && _DragAdorner != null)
             {
@@ -726,6 +771,8 @@ namespace PhoenixTranslator
 
                 TranslateConfigView.ChangeTab();
             }
+
+            ScrollToSelectedTab();
         }
 
         private void PhoenixTabs_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -737,7 +784,7 @@ namespace PhoenixTranslator
 
             var AnyBtn = FindAncestor<Border>(Dep);
 
-            if (AnyBtn != null && AnyBtn.Tag?.ToString() == "LexTabClose")
+            if (AnyBtn != null && AnyBtn.Tag?.ToString() == "PhoenixTabClose")
             {
                 var TabItem = FindAncestor<TabItem>(Dep);
 
@@ -751,7 +798,7 @@ namespace PhoenixTranslator
                 }
             }
 
-            if (AnyBtn != null && AnyBtn.Tag?.ToString() == "LexTabAdd")
+            if (AnyBtn != null && AnyBtn.Tag?.ToString() == "PhoenixTabAdd")
             {
                 e.Handled = true;
 
@@ -799,6 +846,8 @@ namespace PhoenixTranslator
                     PhoenixTabs.SelectedItem = Tab;
 
                 UpdateTabShowState();
+
+                UpdateScrollButtonsState();
             });
         }
         public void RemoveTab(string Path)
@@ -835,8 +884,76 @@ namespace PhoenixTranslator
                 PhoenixTabs.Items.Remove(Target);
 
                 UpdateTabShowState();
+
+                UpdateScrollButtonsState();
             });
         }
+
+        #region TabScroll
+
+        private ScrollViewer GetTabScrollViewer()
+        {
+            return _TabScrollViewer;
+        }
+
+        private void TabScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var SV = sender as ScrollViewer;
+            if (SV == null) return;
+
+            SV.ScrollToHorizontalOffset(SV.HorizontalOffset - e.Delta);
+            e.Handled = true;
+        }
+
+        private void TabScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            UpdateScrollButtonsState();
+        }
+
+        public void UpdateScrollButtonsState()
+        {
+            if (_TabScrollViewer == null || _BtnScrollLeft == null || _BtnScrollRight == null)
+                return;
+
+            bool NeedsScroll = _TabScrollViewer.ScrollableWidth > 0.5;
+
+            _BtnScrollLeft.Visibility = NeedsScroll ? Visibility.Visible : Visibility.Collapsed;
+            _BtnScrollRight.Visibility = NeedsScroll ? Visibility.Visible : Visibility.Collapsed;
+
+            _BtnScrollLeft.IsEnabled = _TabScrollViewer.HorizontalOffset > 0.5;
+            _BtnScrollRight.IsEnabled = _TabScrollViewer.HorizontalOffset < _TabScrollViewer.ScrollableWidth - 0.5;
+
+            _BtnScrollLeft.Opacity = _BtnScrollLeft.IsEnabled ? 1.0 : 0.3;
+            _BtnScrollRight.Opacity = _BtnScrollRight.IsEnabled ? 1.0 : 0.3;
+        }
+
+        private const double TabScrollStep = 120;
+
+        private void ScrollTabsLeft_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            var SV = GetTabScrollViewer();
+            SV?.ScrollToHorizontalOffset(SV.HorizontalOffset - TabScrollStep);
+        }
+
+        private void ScrollTabsRight_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            var SV = GetTabScrollViewer();
+            SV?.ScrollToHorizontalOffset(SV.HorizontalOffset + TabScrollStep);
+        }
+
+        private void ScrollToSelectedTab()
+        {
+            var SV = GetTabScrollViewer();
+            var Selected = PhoenixTabs.SelectedItem as TabItem;
+            if (SV == null || Selected == null) return;
+
+            Selected.BringIntoView();
+        }
+
+        #endregion
+
         #endregion
 
         #region Nodes
@@ -1657,8 +1774,7 @@ namespace PhoenixTranslator
         }
 
 
+
         #endregion
-
-
     }
 }

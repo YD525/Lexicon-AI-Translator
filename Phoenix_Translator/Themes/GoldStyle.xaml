@@ -1413,7 +1413,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="LexTabItem" TargetType="TabItem">
+    <Style x:Key="PhoenixTabItem" TargetType="TabItem">
         <Setter Property="Padding" Value="12 6 8 6"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -1431,7 +1431,7 @@
 
                                 <TextBlock Name="Label" Grid.Column="1" Text="{TemplateBinding Header}" Foreground="#FFCFCFCF" FontSize="13.2" FontWeight="Medium" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
 
-                                <Border Name="CloseBtn" Cursor="Hand" Tag="LexTabClose" Grid.Column="2" Width="16" Height="16" CornerRadius="4" Margin="8 0 0 0" Background="Transparent" Visibility="Collapsed">
+                                <Border Name="CloseBtn" Cursor="Hand" Tag="PhoenixTabClose" Grid.Column="2" Width="16" Height="16" CornerRadius="4" Margin="8 0 0 0" Background="Transparent" Visibility="Collapsed">
                                     <Viewbox Width="9" Height="9" Stretch="Uniform">
                                         <Canvas Width="12" Height="12">
                                             <Path Data="M2,2 L10,10 M10,2 L2,10" Stroke="#FF9A9A9A" StrokeThickness="1.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
@@ -1474,24 +1474,56 @@
         </Setter>
     </Style>
 
-    <Style x:Key="LexTabControl" TargetType="TabControl">
-        <Setter Property="ItemContainerStyle" Value="{StaticResource LexTabItem}"/>
+
+    <Style x:Key="PhoenixTabControl" TargetType="TabControl">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource PhoenixTabItem}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabControl">
                     <DockPanel>
-                        <Border DockPanel.Dock="Top" Background="Transparent" Padding="8 4 8 0" VerticalAlignment="Top">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TabPanel Name="HeaderPanel" IsItemsHost="True" VerticalAlignment="Center"/>
-                                <Border Name="AddTabBtn" Cursor="Hand" Tag="LexTabAdd" Width="22" Height="22" Margin="4 0 0 0" CornerRadius="5" Background="Transparent" VerticalAlignment="Center">
+                        <Border DockPanel.Dock="Top" Background="Transparent" Padding="8 4 8 0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" MinWidth="0"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Name="AddTabBtn" Grid.Column="0" Cursor="Hand" Tag="PhoenixTabAdd" Width="22" Height="22" Margin="0 0 6 0"
+                                CornerRadius="5" Background="#FF2A2A2A" VerticalAlignment="Center">
                                     <Viewbox Width="10" Height="10" Stretch="Uniform">
                                         <Canvas Width="12" Height="12">
                                             <Path Data="M6,1 L6,11 M1,6 L11,6" Stroke="#FF9A9A9A" StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False"/>
                                         </Canvas>
                                     </Viewbox>
                                 </Border>
-                            </StackPanel>
+
+                                <Border Name="BtnScrollLeft" Grid.Column="1" Cursor="Hand" Width="20" Height="22" Margin="0 0 2 0"
+                                CornerRadius="5" Background="#FF2A2A2A" Visibility="Collapsed" VerticalAlignment="Center">
+                                    <Viewbox Width="8" Height="8" Stretch="Uniform">
+                                        <Canvas Width="12" Height="12">
+                                            <Path Data="M8,1 L3,6 L8,11" Stroke="#FF9A9A9A" StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+
+                                <ScrollViewer Name="TabScrollViewer" Grid.Column="2" ClipToBounds="True"
+                                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" VerticalAlignment="Center">
+                                    <TabPanel Name="HeaderPanel" IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                </ScrollViewer>
+
+                                <Border Name="BtnScrollRight" Grid.Column="3" Cursor="Hand" Width="20" Height="22" Margin="2 0 0 0"
+                                CornerRadius="5" Background="#FF2A2A2A" Visibility="Collapsed" VerticalAlignment="Center">
+                                    <Viewbox Width="8" Height="8" Stretch="Uniform">
+                                        <Canvas Width="12" Height="12">
+                                            <Path Data="M4,1 L9,6 L4,11" Stroke="#FF9A9A9A" StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+
+                            </Grid>
                         </Border>
                         <Border>
                             <ContentPresenter Name="PART_SelectedContentHost" ContentSource="SelectedContent"/>

@@ -620,12 +620,13 @@ Chinese character processed by —
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
 
-                                <TabControl x:Name="PhoenixTabs" Grid.Row="0" Style="{DynamicResource LexTabControl}"
+                                <TabControl x:Name="PhoenixTabs" Grid.Row="0" Style="{DynamicResource PhoenixTabControl}"
+Loaded="PhoenixTabs_Loaded"
 PreviewMouseDown="PhoenixTabs_PreviewMouseDown"
 PreviewMouseMove="PhoenixTabs_PreviewMouseMove"
 PreviewMouseUp="PhoenixTabs_PreviewMouseUp"
 PreviewMouseLeftButtonDown="PhoenixTabs_PreviewMouseLeftButtonDown"
-SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch">
+SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch" Margin="0 0 155 0">
 
                                 </TabControl>
 
