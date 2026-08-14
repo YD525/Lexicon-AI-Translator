@@ -939,7 +939,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Context Configs" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="Context Extend" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="Context Generation Limit:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
