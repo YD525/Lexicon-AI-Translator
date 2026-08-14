@@ -78,9 +78,6 @@ This step is **mandatory** — the Phoenix Translator project will not build cor
 This project uses the following key open-source libraries and frameworks:
 
 - [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) – WPF text editor component used for code and text display.
-- [Mutagen.Bethesda](https://github.com/Mutagen-Modding/Mutagen) – Skyrim plugin and game data framework.
-- [Champollion](https://github.com/Orvid/Champollion) – Papyrus-related tooling used by the project.
-- [SSE-Auto-Translator](https://github.com/Cutleast/SSE-Auto-Translator) – Automated Skyrim translation tool and a useful reference for translation workflows.
 
 ---
 
