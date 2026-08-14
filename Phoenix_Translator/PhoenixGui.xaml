@@ -868,7 +868,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
                                                         <CheckBox Name="RTLEnable" Click="RTLEnable_Click" Style="{StaticResource SettingToggle}" Margin="0,0,10,0"/>
-                                                        <TextBlock Text="Display text in RTL layout" Style="{StaticResource SettingFieldLabel}"/>
+                                                        <TextBlock Text="Enable Right-to-Left (RTL) Layout" Style="{StaticResource SettingFieldLabel}"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
@@ -937,8 +937,8 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     </StackPanel>
                                                     <TextBox Style="{StaticResource SettingHintR}" Text="Controls the maximum context length provided to the AI for each translation. A default limit of 200 characters helps maintain consistent tone, terminology, and translation quality. Enabling context generation also improves consistency across multiple AI platforms, as AIMemory can share translation context between different AI services. Higher limits may increase cloud translation costs."/>
                                                     <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
-                                                        <TextBlock Text="Context Generation" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
-                                                        <CheckBox Name="SContextEnable" Click="SContextEnable_Click" Style="{StaticResource SettingToggle}"/>
+                                                        <CheckBox Name="SContextEnable" Click="SContextEnable_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Enable Context Generation."/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
@@ -1057,7 +1057,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
                                                         <CheckBox Name="SEnableLanguageDetect" Click="SEnableLanguageDetect_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
-                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Auto Detection."/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Enable Auto Detection."/>
                                                     </StackPanel>
 
                                                     <TextBox Style="{StaticResource SettingHintR}" Text="When the language selection is set to Auto, attempt to detect the target language automatically."/>

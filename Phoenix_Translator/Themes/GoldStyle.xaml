@@ -1578,6 +1578,7 @@
         <Setter Property="Margin" Value="0,8,0,0"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
     <Style x:Key="SettingInputBorder" TargetType="Border">
