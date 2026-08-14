@@ -956,28 +956,18 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     <StackPanel Margin="0 5 0 0">
                                                         <TextBlock Style="{StaticResource SettingHint}" Margin="0" Text="Selecting this option for batch translation will translate book texts. Book texts are usually very long. If you are using a cloud platform for translation, please be aware of token consumption."/>
                                                     </StackPanel>
-                                                   
+
                                                 </StackPanel>
                                             </Border>
 
-                                            <Border Style="{StaticResource SettingCard}">
+                                            <Border Style="{StaticResource SettingCard}" Margin="0">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Placeholders" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="Translation Bucket" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="P-Placeholders:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
-                                                        <Border Style="{StaticResource SettingInputBorder}" Width="320">
-                                                            <TextBox Name="P_Placeholders" TextChanged="P_Placeholders_TextChanged" Style="{StaticResource SettingTextBox}"/>
-                                                        </Border>
-                                                    </StackPanel>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="The preprocessor is used to protect keywords from translation by both AI and traditional platforms. It uses regular expressions to determine which words can be protected. Please separate multiple regular expressions with &quot;,&quot;. (You need to ensure the preprocessor node is enabled for it to function.)"/>
-                                                </StackPanel>
-                                            </Border>
 
-                                            <Border Style="{StaticResource SettingCard}">
-                                               
+                                                </StackPanel>
                                             </Border>
 
                                             <Border Style="{StaticResource SettingCard}">
@@ -986,7 +976,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                                         <TextBlock Text="DataBase" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
-                                                    
+
                                                     <StackPanel Orientation="Horizontal">
                                                         <CheckBox Name="GlobalSearch" Click="EnableGlobalSearch_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
                                                         <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Global Data Retrieval."/>
@@ -1007,11 +997,27 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                 </StackPanel>
                                             </Border>
 
+                                            <Border Style="{StaticResource SettingCard}">
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                                        <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Placeholders" Style="{StaticResource SettingSectionTitle}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="P-Placeholders:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
+                                                        <Border Style="{StaticResource SettingInputBorder}" Width="320">
+                                                            <TextBox Name="P_Placeholders" TextChanged="P_Placeholders_TextChanged" Style="{StaticResource SettingTextBox}"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBlock Style="{StaticResource SettingHint}" Text="The preprocessor is used to protect keywords from translation by both AI and traditional platforms. It uses regular expressions to determine which words can be protected. Please separate multiple regular expressions with &quot;,&quot;. (You need to ensure the preprocessor node is enabled for it to function.)"/>
+                                                </StackPanel>
+                                            </Border>
+
                                             <Border Style="{StaticResource SettingCard}" Margin="0">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Engine" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="Multithreading" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal">
