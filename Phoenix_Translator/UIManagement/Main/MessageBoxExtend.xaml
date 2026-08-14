@@ -1,0 +1,79 @@
+﻿<Window x:Class="PhoenixTranslator.MessageBoxExtend"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhoenixTranslator"
+        mc:Ignorable="d"
+        Title="MessageBoxExtend"  Height="450" Width="800" ShowInTaskbar="False">
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="WindowStyle" Value="None" />
+            <Setter Property="ResizeMode" Value="CanResize" />
+            <Setter Property="AllowsTransparency" Value="True" />
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome CaptionHeight="0" ResizeBorderThickness="0"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Style>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="370"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Background="Black" Opacity="0.7" Panel.ZIndex="1" Grid.Column="0" Grid.ColumnSpan="3">
+        </Grid>
+
+        <Grid Panel.ZIndex="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="1" Name="GroundColor">
+                <Border Background="#FF0A61AF" CornerRadius="8" Panel.ZIndex="100" Name="MainBackground">
+                </Border>
+
+                <Grid Panel.ZIndex="200">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="38"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="38"/>
+                    </Grid.RowDefinitions>
+                    <Label Name="Caption" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="10 0 0 0">
+                        Tittle
+                    </Label>
+                    <Grid Grid.Row="1">
+                        <TextBox IsReadOnly="True" Margin="13 0 13 0" Name="CurrentMsg" FontSize="13" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" TextWrapping="Wrap" AcceptsReturn="True" Foreground="White">
+                            Test Line
+                        </TextBox>
+                    </Grid>
+
+                    <Grid Grid.Row="2" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal" Margin="0 0 5 0">
+                            <Border BorderThickness="1" BorderBrush="White" Margin="5" Background="#FF0C539C" Width="65" PreviewMouseDown="Confirm" Name="ConfirmBtn" Cursor="Hand">
+                                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13">
+                                    Yes
+                                </Label>
+                            </Border>
+
+                            <Border BorderThickness="1" BorderBrush="White" Margin="5" Background="#FF0887E9" Width="60" PreviewMouseDown="Cancel" Name="CancelBtn" Cursor="Hand">
+                                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13">
+                                    No
+                                </Label>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</Window>
