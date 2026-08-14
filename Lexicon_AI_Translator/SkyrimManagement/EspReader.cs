@@ -1111,9 +1111,9 @@ namespace LexTranslator.SkyrimManagement
 
                         foreach (var Sub in GetRecord.SubRecords)
                         {
-                            var MergeSig =  (IsCell ? "C|" : "") + Base26Helper.EncodeBase26(TranslatorRef.GetFileUniqueKey()) + "1" + Base26Helper.EncodeBase26(GetRecord.Index) + "0" + Base26Helper.EncodeBase26(Sub.Index);
+                            var CalcKey =  (IsCell ? "C|" : "") + Base26Helper.EncodeBase26(TranslatorRef.GetFileUniqueKey()) + "1" + Base26Helper.EncodeBase26(GetRecord.Index) + "0" + Base26Helper.EncodeBase26(Sub.Index);
 
-                            string UniqueKey = MergeSig;
+                            string UniqueKey = CalcKey;
 
                             RecordItem NRecordItem = new RecordItem
                             {
