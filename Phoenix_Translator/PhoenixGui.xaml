@@ -771,7 +771,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                     <Border Style="{StaticResource SettingInputBorder}">
                                                         <TextBox Name="SAIKeyword" TextChanged="SAIKeyword_TextChanged" Style="{StaticResource SettingTextBox}" TextWrapping="Wrap" AcceptsReturn="True" Height="160" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
                                                     </Border>
-                                                    <TextBlock Style="{StaticResource SettingHint}" Text="When requesting AI, add user-defined prompt words at the end of the prompt words. It is not recommended to set prompt words as they may conflict with internal prompt words in the software."/>
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="When requesting AI, add user-defined prompt words at the end of the prompt words. It is not recommended to set prompt words as they may conflict with internal prompt words in the software."/>
                                                 </StackPanel>
                                             </Border>
 
@@ -858,17 +858,29 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="UI Configs" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="Text Direction" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
 
-                                                    <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
-                                                        <TextBlock Text="UI language settings" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
-                                                        <ComboBox Name="UILanguages" IsEnabled="False" SelectionChanged="UILanguages_SelectionChanged" Width="150" Style="{StaticResource SettingComboBox}"/>
-                                                    </StackPanel>
-
-                                                    <StackPanel Orientation="Horizontal" Margin="0,13,0,0">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
                                                         <CheckBox Name="RTLEnable" Click="RTLEnable_Click" Style="{StaticResource SettingToggle}" Margin="0,0,10,0"/>
                                                         <TextBlock Text="Enable Right-to-Left (RTL) Layout" Style="{StaticResource SettingFieldLabel}"/>
+                                                    </StackPanel>
+
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="Enables right-to-left (RTL) layout for translated text. This is useful for languages such as Arabic and Hebrew that are written from right to left, ensuring proper text direction and readability."/>
+                                                </StackPanel>
+                                            </Border>
+
+
+                                            <Border Style="{StaticResource SettingCard}">
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                                        <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="UI Language" Style="{StaticResource SettingSectionTitle}"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,8,0" Opacity="0.3">
+                                                        <TextBlock Text="UI language settings" Style="{StaticResource SettingFieldLabel}" Margin="0,0,10,0"/>
+                                                        <ComboBox Name="UILanguages" IsEnabled="False" SelectionChanged="UILanguages_SelectionChanged" Width="150" Style="{StaticResource SettingComboBox}"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
@@ -877,7 +889,7 @@ SelectionChanged="LexTabs_SelectionChanged" VerticalAlignment="Stretch">
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Theme Configs" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="Theme" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
                                                         <!--<Border Width="130" Height="34" CornerRadius="5" Background="{StaticResource SettingAccentBrush}" Cursor="Hand" PreviewMouseDown="ChangeTechDarkBlue">
