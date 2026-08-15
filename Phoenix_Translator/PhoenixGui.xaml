@@ -929,7 +929,7 @@ SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch" Marg
                                                         <CheckBox Name="UseFullPunctuation" Click="UseFullPunctuation_Click" Style="{StaticResource SettingToggle}" Margin="0,0,8,0"/>
                                                         <TextBox Style="{StaticResource SettingHintR}" Margin="0" VerticalAlignment="Center" Text="Output punctuation marks in the Chinese style."/>
                                                     </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                                                    <StackPanel Orientation="Horizontal" Margin="0 13 0 0">
                                                         <CheckBox Name="UseFullPunctuationJa" Click="UseFullPunctuationJa_Click" Style="{StaticResource SettingToggle}" Margin="0,0,8,0"/>
                                                         <TextBox Style="{StaticResource SettingHintR}" Margin="0" VerticalAlignment="Center" Text="Output punctuation marks in the Japanese style."/>
                                                     </StackPanel>
@@ -979,6 +979,45 @@ SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch" Marg
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                                         <TextBlock Text="Translation Bucket" Style="{StaticResource SettingSectionTitle}"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Bucket Length Limit:" Style="{StaticResource SettingFieldLabel}" Margin="0,0,8,0"/>
+                                                        <Border Style="{StaticResource SettingInputBorder}" Width="100">
+                                                            <TextBox Name="BucketLengthLimit" TextChanged="BucketLengthLimit_TextChanged" Style="{StaticResource SettingTextBox}"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <StackPanel Margin="0 5 0 0">
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" Text="Increasing the bucket size can significantly boost speed and enhance content quality by reducing context fragmentation. However, please ensure that the target platform's token limit supports large-capacity buckets."/>
+                                                    </StackPanel>
+
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0 13 0 0">
+                                                        <CheckBox Name="PreserveConversationContext" Click="PreserveConversationContext_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Preserve Conversation Context."/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Margin="0 5 0 0">
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" Text="When enabled, Always send the complete conversation context to the AI, including already translated lines, to ensure translation consistency and preserve the original dialogue flow."/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0 13 0 0">
+                                                        <CheckBox Name="ForceContextDeduplication" Click="ForceContextDeduplication_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Force Context Deduplication."/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Margin="0 5 0 0">
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" Text="Enable duplicate removal in confirmed dialogue relationships. Similarity-based groups are always deduplicated, while this option also removes duplicates from fully related dialogue contexts. This can reduce AI token usage but may affect dialogue context completeness."/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0 13 0 0">
+                                                        <CheckBox Name="StrictLinkBucketPurity" Click="StrictLinkBucketPurity_Click" Style="{StaticResource SettingToggle}" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                                        <TextBlock Style="{StaticResource SettingHint}" Margin="0" VerticalAlignment="Center" Text="Strict Link Bucket Purity."/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Margin="0 5 0 0">
+                                                        <TextBox Style="{StaticResource SettingHintR}" Margin="0" Text="Whether to enforce absolute purity of 'Link Buckets' (Type == 1 — buckets holding units that have a real, established link relationship in the ESP file). Enabled (true): once built, Link Buckets can never have additional content appended or merged into them (orphan-unit backfill, similarity-bucket merging, etc. all skip Link Buckets). Every unit inside a Link Bucket is guaranteed to come from the same genuine ESP link chain — nothing unrelated gets mixed in. This matters because these buckets are sent together as shared context; letting unrelated content leak in can confuse the AI about which entries are actually related, leading to wrong context inference or inconsistent translations. Disabled (false, default): Link Buckets may still receive extra content appended to them whenever there's remaining capacity, which improves packing efficiency and reduces the total bucket count, at the cost of allowing unrelated entries into an otherwise link-only bucket."/>
                                                     </StackPanel>
 
                                                 </StackPanel>

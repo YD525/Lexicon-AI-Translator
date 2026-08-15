@@ -1776,5 +1776,25 @@ namespace PhoenixTranslator
 
 
         #endregion
+
+        private void BucketLengthLimit_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void PreserveConversationContext_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ForceContextDeduplication_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StrictLinkBucketPurity_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
