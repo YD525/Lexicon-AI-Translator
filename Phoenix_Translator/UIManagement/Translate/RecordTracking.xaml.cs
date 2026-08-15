@@ -31,6 +31,10 @@ namespace PhoenixTranslator
         private static readonly SolidColorBrush GrayTextBrush;
         private static readonly SolidColorBrush HighlightTextBrush;
 
+        private bool _NpcUserCollapsed = false;
+        private bool _RelatedTextUserCollapsed = false;
+        private bool _DialogueUserCollapsed = false;
+
         static RecordTracking()
         {
             CardBackgroundBrush = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
@@ -91,23 +95,26 @@ namespace PhoenixTranslator
             NpcRow.BeginAnimation(RowDefinition.HeightProperty, null);
             NpcChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
             bool hasNpc = NpcListPanel.Children.Count > 0;
-            NpcRow.Height = new GridLength(hasNpc ? 1 : 0, GridUnitType.Star);
-            NpcChevronRotate.Angle = hasNpc ? 0 : 180;
-            _NpcExpanded = hasNpc;
+            bool NpcOpen = hasNpc && !_NpcUserCollapsed;
+            NpcRow.Height = new GridLength(NpcOpen ? 1 : 0, GridUnitType.Star);
+            NpcChevronRotate.Angle = NpcOpen ? 0 : 180;
+            _NpcExpanded = NpcOpen;
 
             RelatedTextRow.BeginAnimation(RowDefinition.HeightProperty, null);
             RelatedTextChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
             bool hasRelated = RelatedTextListPanel.Children.Count > 0;
-            RelatedTextRow.Height = new GridLength(hasRelated ? 1 : 0, GridUnitType.Star);
-            RelatedTextChevronRotate.Angle = hasRelated ? 0 : 180;
-            _RelatedTextExpanded = hasRelated;
+            bool RelatedOpen = hasRelated && !_RelatedTextUserCollapsed;
+            RelatedTextRow.Height = new GridLength(RelatedOpen ? 1 : 0, GridUnitType.Star);
+            RelatedTextChevronRotate.Angle = RelatedOpen ? 0 : 180;
+            _RelatedTextExpanded = RelatedOpen;
 
             DialogueRow.BeginAnimation(RowDefinition.HeightProperty, null);
             DialogueChevronRotate.BeginAnimation(RotateTransform.AngleProperty, null);
             bool hasDialogue = DialogueListPanel.Children.Count > 0;
-            DialogueRow.Height = new GridLength(hasDialogue ? 1 : 0, GridUnitType.Star);
-            DialogueChevronRotate.Angle = hasDialogue ? 0 : 180;
-            _DialogueExpanded = hasDialogue;
+            bool DialogueOpen = hasDialogue && !_DialogueUserCollapsed;
+            DialogueRow.Height = new GridLength(DialogueOpen ? 1 : 0, GridUnitType.Star);
+            DialogueChevronRotate.Angle = DialogueOpen ? 0 : 180;
+            _DialogueExpanded = DialogueOpen;
         }
 
         private void OwnerMainWindow_StateChanged(object Sender, EventArgs E)
@@ -150,20 +157,20 @@ namespace PhoenixTranslator
 
         private void NpcHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
         {
-            ToggleSection(NpcContentHost, NpcRow, NpcChevronRotate, ref _NpcExpanded);
+            ToggleSection(NpcContentHost, NpcRow, NpcChevronRotate, ref _NpcExpanded, ref _NpcUserCollapsed);
         }
 
         private void RelatedTextHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
         {
-            ToggleSection(RelatedTextContentHost, RelatedTextRow, RelatedTextChevronRotate, ref _RelatedTextExpanded);
+            ToggleSection(RelatedTextContentHost, RelatedTextRow, RelatedTextChevronRotate, ref _RelatedTextExpanded, ref _RelatedTextUserCollapsed);
         }
 
         private void DialogueHeader_PreviewMouseDown(object Sender, MouseButtonEventArgs E)
         {
-            ToggleSection(DialogueContentHost, DialogueRow, DialogueChevronRotate, ref _DialogueExpanded);
+            ToggleSection(DialogueContentHost, DialogueRow, DialogueChevronRotate, ref _DialogueExpanded, ref _DialogueUserCollapsed);
         }
 
-        private void ToggleSection(Border ContentHost, RowDefinition Row, RotateTransform ChevronRotate, ref bool IsExpanded)
+        private void ToggleSection(Border ContentHost, RowDefinition Row, RotateTransform ChevronRotate, ref bool IsExpanded, ref bool UserCollapsed)
         {
             if (IsExpanded)
             {
@@ -175,6 +182,7 @@ namespace PhoenixTranslator
             }
 
             IsExpanded = !IsExpanded;
+            UserCollapsed = !IsExpanded;
         }
 
         private void CollapseSection(RowDefinition Row, RotateTransform ChevronRotate)
