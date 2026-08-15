@@ -222,8 +222,8 @@
                             From StringsFile
                         </Label>
                     </Border>
-                    <Border Name="RefreshDictionary" Style="{DynamicResource ButtonStyle}" Height="25" Opacity="0.5" PreviewMouseDown="RefreshDictionary_PreviewMouseDown">
-                        <Label Style="{DynamicResource ButtonFont}" Name="RefreshButton">
+                    <Border Name="RefreshDictionary" Style="{DynamicResource ButtonStyle}" Height="22" VerticalAlignment="Center" PreviewMouseDown="RefreshDictionary_PreviewMouseDown">
+                        <Label Style="{DynamicResource ButtonFont}" Name="RefreshButton" VerticalAlignment="Center" Padding="8 0 8 0">
                             Refresh
                         </Label>
                     </Border>
@@ -233,8 +233,8 @@
                         Translated
                     </Label>
 
-                    <Border Name="ManageCache" Style="{DynamicResource ButtonStyle}" Height="25" PreviewMouseDown="ManageCache_PreviewMouseDown">
-                        <Label Style="{DynamicResource ButtonFont}">
+                    <Border Name="ManageCache" Style="{DynamicResource ButtonStyle}" Height="22" VerticalAlignment="Center" PreviewMouseDown="ManageCache_PreviewMouseDown">
+                        <Label Style="{DynamicResource ButtonFont}" VerticalAlignment="Center" Padding="8 0 8 0">
                             Cache
                         </Label>
                     </Border>
