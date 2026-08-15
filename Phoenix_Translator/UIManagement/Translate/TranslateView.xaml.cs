@@ -2381,7 +2381,7 @@ namespace PhoenixTranslator.UIManagement
         {
             if (TranslateView.CurrentHistory == null)
             {
-                TranslateView.CurrentHistory = new HistoryWindow(this, this.Mod.P_Translator.GetFileUniqueKey());
+                TranslateView.CurrentHistory = new HistoryWindow(this.Mod.P_Translator.GetFileUniqueKey());
 
                 TranslateView.CurrentHistory.Show();
                 TranslateView.CurrentHistory.UpdateFollowPosition();

@@ -21,16 +21,13 @@ namespace PhoenixTranslator
         public int FileUniqueKey;
         private List<HistoryRecord> _AllRecords = new List<HistoryRecord>();
         private List<HistoryRecord> _FilteredRecords = new List<HistoryRecord>();
-
-        private TranslateView _Owner = null;
-        public HistoryWindow(TranslateView Owner, int FileUniqueKey)
+        public HistoryWindow(int FileUniqueKey)
         {
             InitializeComponent();
 
             this.FileUniqueKey = FileUniqueKey;
 
             this.Owner = DeFine.WorkWin;
-            this._Owner = Owner;
 
             if (!this.Resources.Contains("CurrentStatusConverter"))
             {
@@ -141,7 +138,7 @@ namespace PhoenixTranslator
 
                 var RawItems = HistoryDBCache.GetHistoryItems(
                     FileUniqueKey,
-                    (int)_Owner.Mod.P_Translator.To
+                    (int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.To
                 );
 
                 var List = RawItems
@@ -347,7 +344,7 @@ namespace PhoenixTranslator
 
                 if (HistoryItem != null)
                 {
-                    _Owner.TransListView.Goto(HistoryItem.Key);
+                    DeFine.WorkWin.ActiveTab.TransListView.Goto(HistoryItem.Key);
                 }
 
                 RefreshData();
@@ -363,31 +360,31 @@ namespace PhoenixTranslator
 
                 if (HistoryItem != null)
                 {
-                    _Owner.TransListView.Goto(HistoryItem.Key);
+                    DeFine.WorkWin.ActiveTab.TransListView.Goto(HistoryItem.Key);
 
                     HistoryDBCache.SelectID(this.FileUniqueKey,ID);
 
-                    var Row = _Owner.TransListView.KeyToFakeGrid(HistoryItem.Key);
+                    var Row = DeFine.WorkWin.ActiveTab.TransListView.KeyToFakeGrid(HistoryItem.Key);
                     bool IsCloud = false;
-                    Row.SyncData(_Owner.Mod, ref IsCloud);
+                    Row.SyncData(DeFine.WorkWin.ActiveTab.Mod, ref IsCloud);
 
                     if (IsCloud)
                     {
-                        CloudDBCache.DeleteCache(HistoryItem.FileUniqueKey, HistoryItem.Key, _Owner.Mod.P_Translator.To);
+                        CloudDBCache.DeleteCache(HistoryItem.FileUniqueKey, HistoryItem.Key, DeFine.WorkWin.ActiveTab.Mod.P_Translator.To);
                     }
                     else
                     {
-                        LocalDBCache.DeleteCache(HistoryItem.FileUniqueKey, HistoryItem.Key, _Owner.Mod.P_Translator.To);
+                        LocalDBCache.DeleteCache(HistoryItem.FileUniqueKey, HistoryItem.Key, DeFine.WorkWin.ActiveTab.Mod.P_Translator.To);
                     }
 
                     string NewText = HistoryItem.CurrentText;
-                    _Owner.Mod.P_Translator.AutoSetLink(HistoryItem.Key, Row.SourceText, new P_String(HistoryItem.CurrentText, 0, HistoryItem.RangeID));
+                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(HistoryItem.Key, Row.SourceText, new P_String(HistoryItem.CurrentText, 0, HistoryItem.RangeID));
 
                     Row.TransText = NewText;
 
-                    for (int i = 0; i < _Owner.TransListView.Rows; i++)
+                    for (int i = 0; i < DeFine.WorkWin.ActiveTab.TransListView.Rows; i++)
                     {
-                        _Owner.TransListView.RealLines[i].SyncUI(_Owner.TransListView);
+                        DeFine.WorkWin.ActiveTab.TransListView.RealLines[i].SyncUI(DeFine.WorkWin.ActiveTab.TransListView);
                     }
 
                     RefreshData();
