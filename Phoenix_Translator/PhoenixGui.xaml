@@ -1095,7 +1095,7 @@ SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch" Marg
                                                             <TextBox Name="SMaxThread" TextChanged="SMaxThread_TextChanged" Style="{StaticResource SettingTextBox}"/>
                                                         </Border>
                                                     </StackPanel>
-                                                    <TextBox Style="{StaticResource SettingHintR}" Text="Set the maximum number of threads allowed to be created during batch translation."/>
+                                                    <TextBox Style="{StaticResource SettingHintR}" Text="Set the maximum number of threads allowed to be created during batch translation.(Do not change this setting unless you fully understand it; an overly high thread count is dangerous. If the target API has no rate limits and responds fast, setting 1000 threads could fire 1000 requests in just one second. If you're using a paid cloud AI service, your balance will be drained instantly on mods with large entry counts!)"/>
                                                 </StackPanel>
                                             </Border>
 
