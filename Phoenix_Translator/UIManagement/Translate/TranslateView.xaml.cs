@@ -662,27 +662,28 @@ namespace PhoenixTranslator.UIManagement
                         {
                             AutoSig = string.Empty;
                         }
-                        Mod.PexReader.Core.GetStrings(out List<PexStringItem> Strings, AutoSig);
 
-                        foreach (var GetItem in Strings)
+                        Mod.PexReader.SelectStrings();
+
+                        foreach (var GetItem in Mod.PexReader.Records)
                         {
-                            if (GetItem.FunctionRef != null)
+                            if (GetItem.Value.FunctionRef != null)
                             {
-                                int CalcLineIndex = GetItem.FunctionRef.PscStartLineIndex;
+                                int CalcLineIndex = GetItem.Value.FunctionRef.PscStartLineIndex;
 
-                                if (Mod.PexLinks.ContainsKey(GetItem.UniqueKey))
+                                if (Mod.PexReader.PexLinks.ContainsKey(GetItem.Value.UniqueKey))
                                 {
-                                    Mod.PexLinks[GetItem.UniqueKey] = CalcLineIndex;
+                                    Mod.PexReader.PexLinks[GetItem.Value.UniqueKey] = CalcLineIndex;
                                 }
                                 else
                                 {
-                                    Mod.PexLinks.Add(GetItem.UniqueKey, CalcLineIndex);
+                                    Mod.PexReader.PexLinks.Add(GetItem.Value.UniqueKey, CalcLineIndex);
                                 }
                             }
 
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine("Auto", P_Convert.ObjToStr(GetItem.StringTableID), GetItem.UniqueKey, GetItem.Original, "", GetItem.Score));
+                                TransListView.AddRowR(LineRenderer.CreateLine("Auto", P_Convert.ObjToStr(GetItem.Value.StringTableID), GetItem.Value.UniqueKey, GetItem.Value.Original, "", GetItem.Value.Score));
                             }));
                         }
 

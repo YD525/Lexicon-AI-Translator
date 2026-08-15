@@ -11,6 +11,8 @@ using PhoenixEngine.ADO;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
 using System.Threading;
+using PhoenixTranslator.SkyrimManage;
+using PhoenixTranslator.SkyrimManagement;
 
 namespace PhoenixTranslator
 {
@@ -90,6 +92,47 @@ namespace PhoenixTranslator
             }
         }
 
+        public string GetOriginal(string Key)
+        {
+            var Tab = DeFine.WorkWin?.ActiveTab;
+
+            if (Tab?.Mod.Type == SkyrimManagement.GameFileType.ESP)
+            {
+                if (Tab.Mod.EspReader?.Records.TryGetValue(Key, out var Record) == true)
+                {
+                    return Record.String;
+                }
+            }
+            else
+            if (Tab?.Mod.Type == SkyrimManagement.GameFileType.PEX)
+            {
+                if (Tab.Mod.PexReader.Records.TryGetValue(Key, out var Record) == true)
+                {
+                    return Record.Original;
+                }
+            }
+            else
+            if (Tab?.Mod.Type == SkyrimManagement.GameFileType.MCM)
+            {
+                MCMItem Item = Tab.Mod.MCMReader.MCMItems.FirstOrDefault(x => x.Key == Key);
+                if (Item != null)
+                {
+                    return Item.SourceText;
+                }
+            }
+            else
+            if (Tab?.Mod.Type == SkyrimManagement.GameFileType.XML)
+            {
+                XmlItem Item = Tab.Mod.XmlReader.XmlItems.FirstOrDefault(x => x.Key == Key);
+                if (Item != null)
+                {
+                    return Item.SourceText;
+                }
+            }
+
+            return string.Empty;
+        }
+
         private void LoadHistoryData()
         {
             try
@@ -105,9 +148,9 @@ namespace PhoenixTranslator
                     .OrderBy(x => x.Rowid)
                     .Select(Item => new HistoryRecord
                     {
-                        FileUniqueKey = Item.FileUniqueKey,
                         Rowid = Item.Rowid,
                         Key = Item.Key,
+                        Original = GetOriginal(Item.Key),
                         To = Item.To,
                         CurrentText = Item.CurrentText,
                         IsCurrent = Item.IsCurrent,
@@ -387,9 +430,10 @@ namespace PhoenixTranslator
 
     public class HistoryRecord
     {
-        public int FileUniqueKey { get; set; }
         public int Rowid { get; set; }
         public string Key { get; set; }
+
+        public string Original { get; set; }
         public int To { get; set; }
         public string PreviousText { get; set; }
         public string CurrentText { get; set; }

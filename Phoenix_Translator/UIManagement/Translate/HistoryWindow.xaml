@@ -349,18 +349,19 @@
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
 
-                            <DataGridTextColumn Header="File Key" Binding="{Binding FileUniqueKey}"
-                                                Width="80" IsReadOnly="True">
+                            <DataGridTextColumn Header="Key" Binding="{Binding Key}"
+                                                Width="130" IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="HorizontalAlignment" Value="Center" />
                                         <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
 
-                            <DataGridTextColumn Header="Key" Binding="{Binding Key}"
-                                                Width="130" IsReadOnly="True">
+                            <DataGridTextColumn Header="Original" Binding="{Binding Original}"
+                             Width="160" IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="HorizontalAlignment" Value="Center" />

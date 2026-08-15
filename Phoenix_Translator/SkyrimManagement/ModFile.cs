@@ -8,14 +8,12 @@ using PhoenixTranslator.FileManagement;
 using PhoenixTranslator.SkyrimManage;
 using PhoenixTranslator.TranslateManage;
 using PhoenixTranslator.UIManagement;
-using PexInterface;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine;
 using PhoenixEngine.Engine.ADO;
 using PhoenixEngine.Events;
 using PhoenixEngine.Memory;
-using PhoenixEngine.Platform.Request;
 using PhoenixEngine.Request;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
@@ -38,11 +36,11 @@ namespace PhoenixTranslator.SkyrimManagement
         public GameFileType Type = GameFileType.Null;
         public RamCacheReader RamCacheReader = null;
         public EspReader EspReader = null;
+        public PexReader PexReader = null;
         public MCMReader MCMReader = null;
-        public string PSCCode = "";
-        public PexHeuristicAnalysis PexReader = null;
+
         public R_XmlReader XmlReader = null;
-        public Dictionary<string, int> PexLinks = new Dictionary<string, int>();
+
         public Dictionary<string, ManagedDialContext> DialNodeCache = new Dictionary<string, ManagedDialContext>();
 
         public LexDictionary Lex_Dictionary = new LexDictionary();
@@ -85,7 +83,7 @@ namespace PhoenixTranslator.SkyrimManagement
                 if (Path.ToLower().EndsWith(".pex"))
                 {
                     this.Type = GameFileType.PEX;
-                    PexReader = new PexHeuristicAnalysis();
+                    PexReader = new PexReader();
                 }
                 else
                 if (Path.ToLower().EndsWith(".txt"))
@@ -224,14 +222,7 @@ namespace PhoenixTranslator.SkyrimManagement
                         break;
                     case GameFileType.PEX:
                         {
-                            CodeGenStyle AutoStyle = CodeGenStyle.Papyrus;
-
-                            if (DeFine.GlobalLocalSetting.GenCSharp)
-                            {
-                                AutoStyle = CodeGenStyle.CSharp;
-                            }
-
-                            PexReader.Core.LoadPex(this.Path).ReadStrings().GetPsc(out this.PSCCode, DeFine.GlobalLocalSetting.ShowAssembly, AutoStyle).AnalysisStrings();
+                            PexReader.LoadPex(this.Path);
                             State = GameFileState.Load;
                         }
                         break;
@@ -358,7 +349,7 @@ namespace PhoenixTranslator.SkyrimManagement
                         break;
                     case GameFileType.PEX:
                         {
-                            PexReader.Core.GetStrings(out List<PexStringItem> Strings);
+                            PexReader.Interface.Core.GetStrings(out List<PexStringItem> Strings);
 
                             int TranslateCount = 0;
 
@@ -374,7 +365,7 @@ namespace PhoenixTranslator.SkyrimManagement
 
                             if (TranslateCount > 0)
                             {
-                                PexReader.Core.SavePex(this.Path, out int SaveState).Close();
+                                PexReader.Interface.Core.SavePex(this.Path, out int SaveState).Close();
 
                                 if (SaveState > 0 == false)
                                 {
@@ -425,9 +416,6 @@ namespace PhoenixTranslator.SkyrimManagement
 
         public void Close()
         {
-            this.PSCCode = string.Empty;
-
-            PexLinks.Clear();
             DialNodeCache.Clear();
             Lex_Dictionary.Close();
 
@@ -450,8 +438,7 @@ namespace PhoenixTranslator.SkyrimManagement
                     break;
                 case GameFileType.PEX:
                     {
-                        PexReader.Core.Close();
-                        PexLinks.Clear();
+                        this.PexReader.Close();
                     }
                     break;
                 case GameFileType.MCM:

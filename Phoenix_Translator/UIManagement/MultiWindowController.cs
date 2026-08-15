@@ -317,13 +317,13 @@ namespace PhoenixTranslator.UIManagement
 
                                     var GetGrid = Mod.ListView.KeyToFakeGrid(SelectKey);
                                     string Text = GetGrid.RealSource;
-                                    if (Mod.PexLinks.ContainsKey(SelectKey) && Text == "")
+                                    if (Mod.PexReader.PexLinks.ContainsKey(SelectKey) && Text == "")
                                         Text = GetGrid.SourceText;
 
-                                    if (CodeWin.TextEditor.Text != Mod.PSCCode)
-                                        CodeWin.TextEditor.Text = Mod.PSCCode;
+                                    if (CodeWin.TextEditor.Text != Mod.PexReader.PSCCode)
+                                        CodeWin.TextEditor.Text = Mod.PexReader.PSCCode;
 
-                                    _ = CodeWin.SelectLineFromIDEAsync(Mod.PexLinks[SelectKey], Text);
+                                    _ = CodeWin.SelectLineFromIDEAsync(Mod.PexReader.PexLinks[SelectKey], Text);
 
                                     CurrentWin.Focus();
                                     break;
