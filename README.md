@@ -53,23 +53,22 @@ For conversational mods, **Sequential Text Mode** can also be used when preservi
 
 ---
 
-## 🛠️ Building from Source
+## Building from source
 
-### PhoenixEngine
+Phoenix Translator requires Visual Studio 2022 and the .NET Framework 4.8.1 Developer Pack.
 
-Phoenix Translator depends on **PhoenixEngine**, which provides several of the core components used by the application.
+Restore NuGet packages and the pinned project dependencies, then build the x64 Release configuration:
 
-1. Clone the PhoenixEngine repository:
+```powershell
+nuget restore .\PhoenixTranslator.sln -PackagesDirectory .\packages -NonInteractive
+.\scripts\Restore-Dependencies.ps1
+msbuild .\PhoenixTranslator.sln /m /p:Configuration=Release /p:Platform=x64
+```
 
-   https://github.com/YD525/PhoenixEngine
+Dependency versions are recorded in `dependencies.json`. Restored packages and release assets remain untracked.
 
-2. Open the solution in Visual Studio and build the project.
-
-3. After building, make sure to **reference the generated DLLs**, such as `PhoenixEngine.dll`, in the Phoenix Translator project.
-
-You can do this either by adding project references or by referencing the compiled DLLs directly.
-
-This step is **mandatory** — the Phoenix Translator project will not build correctly without the required PhoenixEngine assemblies.
+Push a version tag matching `v*` to create `PhoenixTranslator-win-x64.zip` and its SHA256 checksum as GitHub
+Release assets.
 
 ---
 

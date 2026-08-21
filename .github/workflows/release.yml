@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-2022
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Configure NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Configure MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore packages
+        shell: pwsh
+        run: nuget restore .\PhoenixTranslator.sln -PackagesDirectory .\packages -NonInteractive
+
+      - name: Restore project dependencies
+        shell: pwsh
+        run: .\scripts\Restore-Dependencies.ps1
+
+      - name: Build x64 release
+        shell: pwsh
+        run: msbuild .\PhoenixTranslator.sln /m /p:Configuration=Release /p:Platform=x64
+
+      - name: Package release
+        shell: pwsh
+        run: |
+          $outputDirectory = ".\Phoenix_Translator\bin\x64\Release"
+          $artifactDirectory = ".\artifacts"
+          $artifact = Join-Path $artifactDirectory "PhoenixTranslator-win-x64.zip"
+
+          if (-not (Test-Path -LiteralPath (Join-Path $outputDirectory "PhoenixTranslator.exe"))) {
+              throw "PhoenixTranslator.exe was not produced."
+          }
+
+          New-Item -ItemType Directory -Path $artifactDirectory | Out-Null
+          Compress-Archive -Path "$outputDirectory\*" -DestinationPath $artifact
+
+          $hash = (Get-FileHash -LiteralPath $artifact -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  PhoenixTranslator-win-x64.zip" | Set-Content "$artifact.sha256" -Encoding ascii
+
+      - name: Publish GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$env:GITHUB_REF_NAME" `
+            ".\artifacts\PhoenixTranslator-win-x64.zip" `
+            ".\artifacts\PhoenixTranslator-win-x64.zip.sha256" `
+            --generate-notes `
+            --verify-tag

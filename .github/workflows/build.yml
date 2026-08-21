@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - Remake
+  pull_request:
+    branches:
+      - Remake
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Configure NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Configure MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore packages
+        shell: pwsh
+        run: nuget restore .\PhoenixTranslator.sln -PackagesDirectory .\packages -NonInteractive
+
+      - name: Restore project dependencies
+        shell: pwsh
+        run: .\scripts\Restore-Dependencies.ps1
+
+      - name: Build x64 release
+        shell: pwsh
+        run: msbuild .\PhoenixTranslator.sln /m /p:Configuration=Release /p:Platform=x64
