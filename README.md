@@ -68,7 +68,11 @@ msbuild .\PhoenixTranslator.sln /m /p:Configuration=Release /p:Platform=x64
 Dependency versions are recorded in `dependencies.json`. Restored packages and release assets remain untracked.
 
 Push a version tag matching `v*` to create `PhoenixTranslator-win-x64.zip` and its SHA256 checksum as GitHub
-Release assets.
+Release assets. The same archive is uploaded to Nexus Mods when the tagged commit is contained in the default branch.
+
+Nexus Mods publishing requires the `NEXUSMODS_API_KEY` and `NEXUSMODS_FILE_ID` Actions secrets. Nexus Mods
+currently labels the file identifier as `Group ID` in the `API Info` dialog. Copy that value from the existing
+file that should receive the new version.
 
 ---
 

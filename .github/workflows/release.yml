@@ -15,6 +15,47 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate release context
+        id: release
+        shell: pwsh
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          NEXUSMODS_API_KEY: ${{ secrets.NEXUSMODS_API_KEY }}
+          NEXUSMODS_FILE_ID: ${{ secrets.NEXUSMODS_FILE_ID }}
+        run: |
+          git fetch --no-tags origin `
+            "+refs/heads/${env:DEFAULT_BRANCH}:refs/remotes/origin/${env:DEFAULT_BRANCH}"
+          if ($LASTEXITCODE -ne 0) {
+              throw "Failed to fetch the default branch '$env:DEFAULT_BRANCH'."
+          }
+
+          $taggedCommit = git rev-list -n 1 "$env:GITHUB_REF"
+          if ([string]::IsNullOrWhiteSpace($taggedCommit)) {
+              throw "The tagged commit could not be resolved."
+          }
+
+          git merge-base --is-ancestor $taggedCommit "refs/remotes/origin/$env:DEFAULT_BRANCH"
+          if ($LASTEXITCODE -ne 0) {
+              throw "The tag must point to a commit contained in '$env:DEFAULT_BRANCH'."
+          }
+
+          $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          if ([string]::IsNullOrWhiteSpace($version)) {
+              throw "The tag must contain a version after the 'v' prefix."
+          }
+
+          if ([string]::IsNullOrWhiteSpace($env:NEXUSMODS_API_KEY)) {
+              throw "The NEXUSMODS_API_KEY Actions secret is not configured."
+          }
+
+          if ([string]::IsNullOrWhiteSpace($env:NEXUSMODS_FILE_ID)) {
+              throw "The NEXUSMODS_FILE_ID Actions secret is not configured."
+          }
+
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Configure NuGet
         uses: NuGet/setup-nuget@v2
@@ -61,3 +102,14 @@ jobs:
             ".\artifacts\PhoenixTranslator-win-x64.zip.sha256" `
             --generate-notes `
             --verify-tag
+
+      - name: Publish Nexus Mods release
+        uses: Nexus-Mods/upload-action@c96019556046053aa26044b44396cd38929daf23 # v1.0.0-beta.10
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_id: ${{ secrets.NEXUSMODS_FILE_ID }}
+          filename: .\artifacts\PhoenixTranslator-win-x64.zip
+          version: ${{ steps.release.outputs.version }}
+          display_name: Phoenix Translator ${{ steps.release.outputs.version }}
+          category: main
+          update_mod_version: true
