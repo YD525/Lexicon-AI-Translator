@@ -152,13 +152,13 @@ namespace PhoenixTranslator
             }
         }
 
-      
+
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (this.ActiveTab != null)
             {
                 this.ActiveTab.SyncListView();
-            }  
+            }
         }
 
         private void Window_LocationChanged(object sender, EventArgs e)
@@ -492,7 +492,7 @@ namespace PhoenixTranslator
                 var Icons = InternalGrid.Children.OfType<Viewbox>().ToList();
                 var Grids = InternalGrid.Children.OfType<Grid>().ToList();
 
-                if (Grids.Count >= 2 && Icons.Count >0)
+                if (Grids.Count >= 2 && Icons.Count > 0)
                 {
                     var IndicatorBar = Grids[0];
                     var BGMask = Grids[1];
@@ -761,7 +761,7 @@ namespace PhoenixTranslator
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    MultiWindowController.AttachMod(ActiveTab.LastSetKey,this,ActiveTab.Mod);
+                    MultiWindowController.AttachMod(ActiveTab.LastSetKey, this, ActiveTab.Mod);
 
                     if (TranslateView.CurrentHistory != null)
                     {
@@ -1303,6 +1303,44 @@ namespace PhoenixTranslator
             else
             if (Name.Equals("Engine Configs"))
             {
+                Presets.Items.Clear();
+
+                foreach (GlobalPresets Preset in Enum.GetValues(typeof(GlobalPresets)))
+                {
+                    Presets.Items.Add(Preset.ToString());
+                }
+
+                Presets.SelectedValue = DeFine.GlobalLocalSetting.Preset.ToString();
+
+                BucketLengthLimit.Text = Phoenix.Config.BucketLengthLimit.ToString();
+
+                if (Phoenix.Config.PreserveConversationContext)
+                {
+                    PreserveConversationContext.IsChecked = true;
+                }
+                else
+                {
+                    PreserveConversationContext.IsChecked = false;
+                }
+
+                if (Phoenix.Config.ForceContextDeduplication)
+                {
+                    ForceContextDeduplication.IsChecked = true;
+                }
+                else
+                {
+                    ForceContextDeduplication.IsChecked = false;
+                }
+
+                if (Phoenix.Config.StrictLinkBucketPurity)
+                {
+                    StrictLinkBucketPurity.IsChecked = true;
+                }
+                else
+                {
+                    StrictLinkBucketPurity.IsChecked = false;
+                }
+
                 SContextLimit.Text = Phoenix.Config.ContextLimit.ToString();
 
                 if (Phoenix.Config.ContextEnable)
@@ -1656,6 +1694,134 @@ namespace PhoenixTranslator
             }
         }
 
+        private void Presets_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string GetPreset = P_Convert.ObjToStr(Presets.SelectedValue);
+            if (!Enum.TryParse<GlobalPresets>(GetPreset, out var Preset))
+                return;
+            switch (Preset)
+            {
+                case GlobalPresets.Custom:
+                    {
+                        RadarChart.TranslationQuality = 88;
+                        RadarChart.TranslationSpeed = 75;
+                    }
+                    break;
+                case GlobalPresets.QualityFirst:
+                    {
+                        StrictLinkBucketPurity.IsChecked = true;
+                        Phoenix.Config.StrictLinkBucketPurity = true;
+
+                        ForceContextDeduplication.IsChecked = false;
+                        Phoenix.Config.ForceContextDeduplication = false;
+
+                        PreserveConversationContext.IsChecked = true;
+                        Phoenix.Config.PreserveConversationContext = true;
+
+                        SContextLimit.Text = "1000";
+
+                        BucketLengthLimit.Text = "3900";
+
+                        RadarChart.TranslationQuality = 88 + 15;
+                        RadarChart.TranslationSpeed = 75 - 15;
+                    }
+                    break;
+                case GlobalPresets.Balanced:
+                    {
+                        StrictLinkBucketPurity.IsChecked = false;
+                        Phoenix.Config.StrictLinkBucketPurity = false;
+
+                        ForceContextDeduplication.IsChecked = false;
+                        Phoenix.Config.ForceContextDeduplication = false;
+
+                        PreserveConversationContext.IsChecked = false;
+                        Phoenix.Config.PreserveConversationContext = false;
+
+                        SContextLimit.Text = "200";
+
+                        BucketLengthLimit.Text = "3900";
+
+                        RadarChart.TranslationQuality = 88;
+                        RadarChart.TranslationSpeed = 75;
+                    }
+                    break;
+                case GlobalPresets.SpeedFirst:
+                    {
+                        StrictLinkBucketPurity.IsChecked = false;
+                        Phoenix.Config.StrictLinkBucketPurity = false;
+
+                        ForceContextDeduplication.IsChecked = true;
+                        Phoenix.Config.ForceContextDeduplication = true;
+
+                        PreserveConversationContext.IsChecked = false;
+                        Phoenix.Config.PreserveConversationContext = false;
+
+                        SContextLimit.Text = "200";
+
+                        BucketLengthLimit.Text = "5000";
+
+                        RadarChart.TranslationQuality = 88 - 20;
+                        RadarChart.TranslationSpeed = 75 + 20;
+                    }
+                    break;
+            }
+
+            if (DeFine.GlobalLocalSetting.Preset != Preset)
+            {
+                DeFine.GlobalLocalSetting.Preset = Preset;
+                Phoenix.SaveConfig();
+                DeFine.GlobalLocalSetting.SaveConfig();
+            }
+        }
+
+        private void BucketLengthLimit_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Phoenix.Config.BucketLengthLimit = P_Convert.ObjToInt(BucketLengthLimit.Text);
+        }
+
+        private void PreserveConversationContext_Click(object sender, RoutedEventArgs e)
+        {
+            if (PreserveConversationContext.IsChecked == true)
+            {
+                Phoenix.Config.PreserveConversationContext = true;
+            }
+            else
+            {
+                Phoenix.Config.PreserveConversationContext = false;
+            }
+
+            Phoenix.SaveConfig();
+        }
+
+        private void ForceContextDeduplication_Click(object sender, RoutedEventArgs e)
+        {
+            if (ForceContextDeduplication.IsChecked == true)
+            {
+                Phoenix.Config.ForceContextDeduplication = true;
+            }
+            else
+            {
+                Phoenix.Config.ForceContextDeduplication = false;
+            }
+
+            Phoenix.SaveConfig();
+        }
+
+        private void StrictLinkBucketPurity_Click(object sender, RoutedEventArgs e)
+        {
+            if (StrictLinkBucketPurity.IsChecked == true)
+            {
+                Phoenix.Config.StrictLinkBucketPurity = true;
+            }
+            else
+            {
+                Phoenix.Config.StrictLinkBucketPurity = false;
+            }
+
+            Phoenix.SaveConfig();
+        }
+
+
         private void RTLEnable_Click(object sender, RoutedEventArgs e)
         {
             if (RTLEnable.IsChecked == true)
@@ -1720,7 +1886,7 @@ namespace PhoenixTranslator
         {
             try
             {
-                EspReader TempEspReader = new EspReader(new Translator("",Languages.English,Languages.English,true));
+                EspReader TempEspReader = new EspReader(new Translator("", Languages.English, Languages.English, true));
 
                 var FilterDict = TempEspReader.ParseFilterString(EspFilterStr.Text);
 
@@ -1777,24 +1943,7 @@ namespace PhoenixTranslator
 
         #endregion
 
-        private void BucketLengthLimit_TextChanged(object sender, TextChangedEventArgs e)
-        {
 
-        }
-
-        private void PreserveConversationContext_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ForceContextDeduplication_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void StrictLinkBucketPurity_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+       
     }
 }

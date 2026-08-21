@@ -12,7 +12,6 @@ using System.Windows;
 
 namespace PhoenixTranslator.TranslateManage
 {
-    // Copyright 2026 YD525
     public class TranslatorInterface
     {
         public static void Init()

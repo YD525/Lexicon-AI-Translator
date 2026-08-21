@@ -159,9 +159,14 @@ namespace PhoenixTranslator
         }
     }
 
- 
+    public enum GlobalPresets
+    {
+        Custom = 0, Balanced = 1, QualityFirst = 2, SpeedFirst = 3
+    }
+
     public class LocalSetting
     {
+        public GlobalPresets Preset = GlobalPresets.Balanced;
         public int Style { get; set; } = 1;
         public double FormHeight { get; set; } = 850;
         public double FormWidth { get; set; } = 1200;
@@ -219,6 +224,7 @@ namespace PhoenixTranslator
                         var GetSetting = JsonConvert.DeserializeObject<LocalSetting>(GetStr);
                         if (GetSetting != null)
                         {
+                            this.Preset = GetSetting.Preset;
                             this.Style = GetSetting.Style;
                             this.FormHeight = GetSetting.FormHeight;
                             this.FormWidth = GetSetting.FormWidth;
