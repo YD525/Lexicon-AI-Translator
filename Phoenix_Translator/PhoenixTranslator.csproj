@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <DependencyRoot>$(MSBuildProjectDirectory)\..\dependencies</DependencyRoot>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -71,11 +72,13 @@
       <HintPath>..\packages\Newtonsoft.Json.4.5.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PexInterface">
-      <HintPath>..\..\PexInterface\PexInterface\bin\x64\Debug\PexInterface.dll</HintPath>
+      <HintPath>$(DependencyRoot)\PexInterface.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PhoenixEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\PhoenixEngine\PhoenixEngine\bin\x64\Debug\PhoenixEngine.dll</HintPath>
+      <HintPath>$(DependencyRoot)\PhoenixEngine\PhoenixEngine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -329,5 +332,30 @@
   <ItemGroup>
     <None Include="Interface\Translations\Lex_English.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(DependencyRoot)\EspReader.dll" Condition="Exists('$(DependencyRoot)\EspReader.dll')">
+      <Link>EspReader.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(DependencyRoot)\PEX.Interop.dll" Condition="Exists('$(DependencyRoot)\PEX.Interop.dll')">
+      <Link>PEX.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(DependencyRoot)\PhoenixEngine\**\*.*"
+             Exclude="$(DependencyRoot)\PhoenixEngine\PhoenixEngine.dll">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="EnsureReleaseDependencies" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('$(DependencyRoot)\EspReader.dll')"
+           Text="EspReader.dll is missing. Run scripts\Restore-Dependencies.ps1 before building." />
+    <Error Condition="!Exists('$(DependencyRoot)\PEX.Interop.dll')"
+           Text="PEX.Interop.dll is missing. Run scripts\Restore-Dependencies.ps1 before building." />
+    <Error Condition="!Exists('$(DependencyRoot)\PexInterface.dll')"
+           Text="PexInterface.dll is missing. Run scripts\Restore-Dependencies.ps1 before building." />
+    <Error Condition="!Exists('$(DependencyRoot)\PhoenixEngine\PhoenixEngine.dll')"
+           Text="PhoenixEngine.dll is missing. Run scripts\Restore-Dependencies.ps1 before building." />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
