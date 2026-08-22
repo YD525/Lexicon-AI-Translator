@@ -88,9 +88,7 @@ This project uses the following key open-source libraries and frameworks:
 
 I would like to give special thanks to everyone who has contributed to Phoenix Translator through development assistance, technical advice, testing, localization, and valuable suggestions.
 
-**YD525 & [Cutleast](https://github.com/cutleast)** — Interface improvements.
-
-**YD525, [Cutleast](https://github.com/cutleast), and [SSEAT](https://www.nexusmods.com/skyrimspecialedition/mods/111491)** — ESP and PEX file parsing.
+**YD525, [Wuerfelhusten](https://github.com/Wuerfelhusten), and [Cutleast](https://github.com/cutleast)** — Core builders of Phoenix Translator, contributing to its core architecture, interface, and ESP/PEX file parsing.
 
 **[繁化姬](https://zhconvert.org)** — Chinese character processing.
 
