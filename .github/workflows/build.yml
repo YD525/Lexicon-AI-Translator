@@ -36,3 +36,7 @@ jobs:
       - name: Build x64 release
         shell: pwsh
         run: msbuild .\PhoenixTranslator.sln /m /p:Configuration=Release /p:Platform=x64
+
+      - name: Test translation presets
+        shell: pwsh
+        run: .\PhoenixTranslator.PresetTests\bin\x64\Release\PhoenixTranslator.PresetTests.exe

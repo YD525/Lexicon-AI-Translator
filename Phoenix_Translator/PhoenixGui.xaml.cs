@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using PhoenixTranslator.FileManagement;
+using PhoenixTranslator.ApplicationLayer;
 using PhoenixTranslator.SkyrimManagement;
 using PhoenixTranslator.TranslateManage;
 using PhoenixTranslator.UIManage;
@@ -33,8 +34,14 @@ namespace PhoenixTranslator
     /// </summary>
     public partial class PhoenixGui : Window
     {
+        private readonly TranslationPresetCoordinator _translationPresetCoordinator;
+        private bool _isUpdatingTranslationPresetControls;
+
         public PhoenixGui()
         {
+            _translationPresetCoordinator = new TranslationPresetCoordinator(
+                new TranslationPresetService(),
+                new LegacyTranslationPresetStore());
             InitializeComponent();
         }
 
@@ -1303,45 +1310,7 @@ namespace PhoenixTranslator
             else
             if (Name.Equals("Engine Configs"))
             {
-                Presets.Items.Clear();
-
-                foreach (GlobalPresets Preset in Enum.GetValues(typeof(GlobalPresets)))
-                {
-                    Presets.Items.Add(Preset.ToString());
-                }
-
-                Presets.SelectedValue = DeFine.GlobalLocalSetting.Preset.ToString();
-
-                BucketLengthLimit.Text = Phoenix.Config.BucketLengthLimit.ToString();
-
-                if (Phoenix.Config.PreserveConversationContext)
-                {
-                    PreserveConversationContext.IsChecked = true;
-                }
-                else
-                {
-                    PreserveConversationContext.IsChecked = false;
-                }
-
-                if (Phoenix.Config.ForceContextDeduplication)
-                {
-                    ForceContextDeduplication.IsChecked = true;
-                }
-                else
-                {
-                    ForceContextDeduplication.IsChecked = false;
-                }
-
-                if (Phoenix.Config.StrictLinkBucketPurity)
-                {
-                    StrictLinkBucketPurity.IsChecked = true;
-                }
-                else
-                {
-                    StrictLinkBucketPurity.IsChecked = false;
-                }
-
-                SContextLimit.Text = Phoenix.Config.ContextLimit.ToString();
+                LoadTranslationPresetControls();
 
                 if (Phoenix.Config.ContextEnable)
                 {
@@ -1629,7 +1598,25 @@ namespace PhoenixTranslator
 
         private void SContextLimit_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ContextLimit = P_Convert.ObjToInt(SContextLimit.Text);
+            int value;
+            if (_isUpdatingTranslationPresetControls ||
+                !int.TryParse(SContextLimit.Text, out value))
+            {
+                return;
+            }
+
+            TranslationPresetSettings current = _translationPresetCoordinator.GetCurrentSettings();
+            var settings = new TranslationPresetSettings(
+                value,
+                current.BucketLengthLimit,
+                current.PreserveConversationContext,
+                current.ForceContextDeduplication,
+                current.StrictLinkBucketPurity);
+            TranslationPresetSelection selection;
+            if (_translationPresetCoordinator.TryApplyCustomSettings(settings, false, out selection))
+            {
+                ApplyTranslationPresetSelection(selection, false);
+            }
         }
 
         private void SAIKeyword_TextChanged(object sender, TextChangedEventArgs e)
@@ -1694,131 +1681,161 @@ namespace PhoenixTranslator
             }
         }
 
+        private void LoadTranslationPresetControls()
+        {
+            _isUpdatingTranslationPresetControls = true;
+            try
+            {
+                Presets.Items.Clear();
+                foreach (TranslationPreset preset in Enum.GetValues(typeof(TranslationPreset)))
+                {
+                    Presets.Items.Add(preset.ToString());
+                }
+
+                ApplyTranslationPresetSelection(_translationPresetCoordinator.Load(), true);
+            }
+            finally
+            {
+                _isUpdatingTranslationPresetControls = false;
+            }
+        }
+
+        private void ApplyTranslationPresetSelection(
+            TranslationPresetSelection selection,
+            bool applySettingsToControls)
+        {
+            bool wasUpdating = _isUpdatingTranslationPresetControls;
+            _isUpdatingTranslationPresetControls = true;
+            try
+            {
+                if (applySettingsToControls)
+                {
+                    SContextLimit.Text = selection.Settings.ContextLimit.ToString();
+                    BucketLengthLimit.Text = selection.Settings.BucketLengthLimit.ToString();
+                    PreserveConversationContext.IsChecked =
+                        selection.Settings.PreserveConversationContext;
+                    ForceContextDeduplication.IsChecked =
+                        selection.Settings.ForceContextDeduplication;
+                    StrictLinkBucketPurity.IsChecked = selection.Settings.StrictLinkBucketPurity;
+                }
+
+                Presets.SelectedValue = selection.Preset.ToString();
+                RadarChart.TranslationQuality = selection.Profile.TranslationQuality;
+                RadarChart.TranslationSpeed = selection.Profile.TranslationSpeed;
+            }
+            finally
+            {
+                _isUpdatingTranslationPresetControls = wasUpdating;
+            }
+        }
+
         private void Presets_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string GetPreset = P_Convert.ObjToStr(Presets.SelectedValue);
-            if (!Enum.TryParse<GlobalPresets>(GetPreset, out var Preset))
-                return;
-            switch (Preset)
+            if (_isUpdatingTranslationPresetControls)
             {
-                case GlobalPresets.Custom:
-                    {
-                        RadarChart.TranslationQuality = 88;
-                        RadarChart.TranslationSpeed = 75;
-                    }
-                    break;
-                case GlobalPresets.QualityFirst:
-                    {
-                        StrictLinkBucketPurity.IsChecked = true;
-                        Phoenix.Config.StrictLinkBucketPurity = true;
-
-                        ForceContextDeduplication.IsChecked = false;
-                        Phoenix.Config.ForceContextDeduplication = false;
-
-                        PreserveConversationContext.IsChecked = true;
-                        Phoenix.Config.PreserveConversationContext = true;
-
-                        SContextLimit.Text = "1000";
-
-                        BucketLengthLimit.Text = "3900";
-
-                        RadarChart.TranslationQuality = 88 + 15;
-                        RadarChart.TranslationSpeed = 75 - 15;
-                    }
-                    break;
-                case GlobalPresets.Balanced:
-                    {
-                        StrictLinkBucketPurity.IsChecked = false;
-                        Phoenix.Config.StrictLinkBucketPurity = false;
-
-                        ForceContextDeduplication.IsChecked = false;
-                        Phoenix.Config.ForceContextDeduplication = false;
-
-                        PreserveConversationContext.IsChecked = false;
-                        Phoenix.Config.PreserveConversationContext = false;
-
-                        SContextLimit.Text = "200";
-
-                        BucketLengthLimit.Text = "3900";
-
-                        RadarChart.TranslationQuality = 88;
-                        RadarChart.TranslationSpeed = 75;
-                    }
-                    break;
-                case GlobalPresets.SpeedFirst:
-                    {
-                        StrictLinkBucketPurity.IsChecked = false;
-                        Phoenix.Config.StrictLinkBucketPurity = false;
-
-                        ForceContextDeduplication.IsChecked = true;
-                        Phoenix.Config.ForceContextDeduplication = true;
-
-                        PreserveConversationContext.IsChecked = false;
-                        Phoenix.Config.PreserveConversationContext = false;
-
-                        SContextLimit.Text = "200";
-
-                        BucketLengthLimit.Text = "5000";
-
-                        RadarChart.TranslationQuality = 88 - 20;
-                        RadarChart.TranslationSpeed = 75 + 20;
-                    }
-                    break;
+                return;
             }
 
-            if (DeFine.GlobalLocalSetting.Preset != Preset)
+            TranslationPreset preset;
+            if (!Enum.TryParse(P_Convert.ObjToStr(Presets.SelectedValue), out preset))
             {
-                DeFine.GlobalLocalSetting.Preset = Preset;
-                Phoenix.SaveConfig();
-                DeFine.GlobalLocalSetting.SaveConfig();
+                return;
+            }
+
+            TranslationPresetSelection selection;
+            if (_translationPresetCoordinator.TrySelect(preset, out selection))
+            {
+                ApplyTranslationPresetSelection(
+                    selection,
+                    preset != TranslationPreset.Custom);
             }
         }
 
         private void BucketLengthLimit_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.BucketLengthLimit = P_Convert.ObjToInt(BucketLengthLimit.Text);
+            int value;
+            if (_isUpdatingTranslationPresetControls ||
+                !int.TryParse(BucketLengthLimit.Text, out value))
+            {
+                return;
+            }
+
+            TranslationPresetSettings current = _translationPresetCoordinator.GetCurrentSettings();
+            var settings = new TranslationPresetSettings(
+                current.ContextLimit,
+                value,
+                current.PreserveConversationContext,
+                current.ForceContextDeduplication,
+                current.StrictLinkBucketPurity);
+            ApplyCustomTranslationPresetSettings(settings, false);
         }
 
         private void PreserveConversationContext_Click(object sender, RoutedEventArgs e)
         {
-            if (PreserveConversationContext.IsChecked == true)
+            if (_isUpdatingTranslationPresetControls)
             {
-                Phoenix.Config.PreserveConversationContext = true;
-            }
-            else
-            {
-                Phoenix.Config.PreserveConversationContext = false;
+                return;
             }
 
-            Phoenix.SaveConfig();
+            TranslationPresetSettings current = _translationPresetCoordinator.GetCurrentSettings();
+            ApplyCustomTranslationPresetSettings(
+                new TranslationPresetSettings(
+                    current.ContextLimit,
+                    current.BucketLengthLimit,
+                    PreserveConversationContext.IsChecked == true,
+                    current.ForceContextDeduplication,
+                    current.StrictLinkBucketPurity),
+                true);
         }
 
         private void ForceContextDeduplication_Click(object sender, RoutedEventArgs e)
         {
-            if (ForceContextDeduplication.IsChecked == true)
+            if (_isUpdatingTranslationPresetControls)
             {
-                Phoenix.Config.ForceContextDeduplication = true;
-            }
-            else
-            {
-                Phoenix.Config.ForceContextDeduplication = false;
+                return;
             }
 
-            Phoenix.SaveConfig();
+            TranslationPresetSettings current = _translationPresetCoordinator.GetCurrentSettings();
+            ApplyCustomTranslationPresetSettings(
+                new TranslationPresetSettings(
+                    current.ContextLimit,
+                    current.BucketLengthLimit,
+                    current.PreserveConversationContext,
+                    ForceContextDeduplication.IsChecked == true,
+                    current.StrictLinkBucketPurity),
+                true);
         }
 
         private void StrictLinkBucketPurity_Click(object sender, RoutedEventArgs e)
         {
-            if (StrictLinkBucketPurity.IsChecked == true)
+            if (_isUpdatingTranslationPresetControls)
             {
-                Phoenix.Config.StrictLinkBucketPurity = true;
-            }
-            else
-            {
-                Phoenix.Config.StrictLinkBucketPurity = false;
+                return;
             }
 
-            Phoenix.SaveConfig();
+            TranslationPresetSettings current = _translationPresetCoordinator.GetCurrentSettings();
+            ApplyCustomTranslationPresetSettings(
+                new TranslationPresetSettings(
+                    current.ContextLimit,
+                    current.BucketLengthLimit,
+                    current.PreserveConversationContext,
+                    current.ForceContextDeduplication,
+                    StrictLinkBucketPurity.IsChecked == true),
+                true);
+        }
+
+        private void ApplyCustomTranslationPresetSettings(
+            TranslationPresetSettings settings,
+            bool persistImmediately)
+        {
+            TranslationPresetSelection selection;
+            if (_translationPresetCoordinator.TryApplyCustomSettings(
+                settings,
+                persistImmediately,
+                out selection))
+            {
+                ApplyTranslationPresetSelection(selection, false);
+            }
         }
 
 
