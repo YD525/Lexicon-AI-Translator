@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using PhoenixEngine;
+using PhoenixTranslator.UIManagement.Preview;
 
 namespace PhoenixTranslator
 {
@@ -53,7 +54,7 @@ namespace PhoenixTranslator
         }
 
         public Thread LoadingTrd = null;
-        public static PhoenixGui Main = null;
+        public static Window Main = null;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -145,7 +146,7 @@ namespace PhoenixTranslator
                
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    SplashWindow.Main = new PhoenixGui();
+                    SplashWindow.Main = new PreviewShellWindow();
                     SplashWindow.Main.Show();
                     CanExit = false;
 
