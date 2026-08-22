@@ -33,6 +33,10 @@ jobs:
         shell: pwsh
         run: .\scripts\Restore-Dependencies.ps1
 
+      - name: Verify preview message catalogue
+        shell: pwsh
+        run: .\scripts\Verify-PreviewMessages.ps1 -ProjectRoot .\Phoenix_Translator
+
       - name: Build x64 release
         shell: pwsh
         run: msbuild .\PhoenixTranslator.sln /m /p:Configuration=Release /p:Platform=x64

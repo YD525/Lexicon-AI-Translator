@@ -1,11 +1,16 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using PhoenixTranslator.ApplicationLayer;
+using PhoenixTranslator.Properties;
 
 namespace PhoenixTranslator.PresetTests
 {
@@ -23,7 +28,9 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(BuildsLanguageFilteredDatabaseQuery), BuildsLanguageFilteredDatabaseQuery },
                 { nameof(ValidatesReferenceCorpusManifest), ValidatesReferenceCorpusManifest },
                 { nameof(ValidatesMcmFixtures), ValidatesMcmFixtures },
-                { nameof(ValidatesXmlFixtures), ValidatesXmlFixtures }
+                { nameof(ValidatesXmlFixtures), ValidatesXmlFixtures },
+                { nameof(ValidatesPreviewMessageIdentifiers), ValidatesPreviewMessageIdentifiers },
+                { nameof(FormatsPreviewMessages), FormatsPreviewMessages }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -220,6 +227,72 @@ namespace PhoenixTranslator.PresetTests
             }
 
             return false;
+        }
+
+        private static void ValidatesPreviewMessageIdentifiers()
+        {
+            var entries = new Dictionary<string, string>();
+            ResourceSet resourceSet = Resources.ResourceManager.GetResourceSet(
+                CultureInfo.InvariantCulture,
+                true,
+                true);
+            foreach (DictionaryEntry entry in resourceSet)
+            {
+                entries.Add((string)entry.Key, (string)entry.Value);
+            }
+
+            AssertEqual(true, entries.Count >= 70, "The preview source catalogue must retain its baseline coverage.");
+            foreach (KeyValuePair<string, string> entry in entries)
+            {
+                AssertEqual(true,
+                    Regex.IsMatch(entry.Key, "^[A-Z][A-Za-z0-9]*(?:_[A-Z][A-Za-z0-9]*)+$"),
+                    entry.Key + " must use stable PascalCase segments separated by underscores.");
+                AssertEqual(false, string.IsNullOrWhiteSpace(entry.Value), entry.Key + " must have English source text.");
+
+                MatchCollection placeholders = Regex.Matches(entry.Value, "\\{(\\d+)(?:[^}]*)\\}");
+                if (placeholders.Count > 0)
+                {
+                    int[] indexes = placeholders.Cast<Match>()
+                        .Select(match => int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture))
+                        .Distinct()
+                        .OrderBy(index => index)
+                        .ToArray();
+                    AssertEqual(
+                        string.Join(",", Enumerable.Range(0, indexes[indexes.Length - 1] + 1)),
+                        string.Join(",", indexes),
+                        entry.Key + " placeholders must be contiguous from zero.");
+                }
+            }
+
+            foreach (string prefix in new[] { "Common_", "Shell_", "Workspace_", "Settings_", "Accessibility_" })
+            {
+                AssertEqual(true, entries.Keys.Any(id => id.StartsWith(prefix, StringComparison.Ordinal)),
+                    "The source catalogue must cover " + prefix.TrimEnd('_') + ".");
+            }
+        }
+
+        private static void FormatsPreviewMessages()
+        {
+            AssertEqual(
+                "Opening project: 42%",
+                PreviewMessageCatalog.Format("Shell_ProjectOpen_OpeningProgress", 42),
+                "Project progress must format with the current UI culture.");
+            AssertEqual(
+                "Translating 3 of 10 entries",
+                PreviewMessageCatalog.Format("Workspace_Operation_TranslatingProgress", 3, 10),
+                "Workspace progress must preserve both documented placeholders.");
+
+            bool rejected = false;
+            try
+            {
+                PreviewMessageCatalog.Get("Unknown_Message_Id");
+            }
+            catch (InvalidOperationException)
+            {
+                rejected = true;
+            }
+
+            AssertEqual(true, rejected, "Unknown preview message identifiers must fail explicitly.");
         }
 
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)

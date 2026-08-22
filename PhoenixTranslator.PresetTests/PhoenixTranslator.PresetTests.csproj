@@ -46,11 +46,23 @@
     <Compile Include="..\Phoenix_Translator\Application\AdvancedDictionaryQueryBuilder.cs">
       <Link>AdvancedDictionaryQueryBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewMessageCatalog.cs">
+      <Link>PreviewMessageCatalog.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\TranslationPresetService.cs">
       <Link>TranslationPresetService.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Phoenix_Translator\Properties\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+    </Compile>
+    <EmbeddedResource Include="..\Phoenix_Translator\Properties\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+      <LogicalName>PhoenixTranslator.Properties.Resources.resources</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestData\manifest.tsv">
