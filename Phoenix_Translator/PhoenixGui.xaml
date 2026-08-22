@@ -594,7 +594,7 @@ Chinese character processed by —
                             </Grid>
                         </Grid>
 
-                        <Grid Visibility="Hidden" Tag="Main">
+                        <Grid Visibility="Visible" Tag="Main">
 
                             <Grid Visibility="Visible" Panel.ZIndex="2" Name="EmptyTabView" Background="Transparent"     
                             PreviewDragEnter="Window_DragEnter"
@@ -660,7 +660,7 @@ SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch" Marg
                             </Grid>
                         </Grid>
 
-                        <Grid Visibility="Visible" Tag="Setting">
+                        <Grid Visibility="Hidden" Tag="Setting">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="5"/>
                                 <RowDefinition Height="50"/>

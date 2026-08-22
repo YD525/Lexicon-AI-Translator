@@ -8,14 +8,15 @@ namespace PhoenixTranslator.SkyrimManagement
 {
     public class SkyrimMod
     {
-        public string ModName = "";
         public string ModPath = "";
+        public string ModName = "";
+       
         public List<string> AvailableFiles = new List<string>();
 
-        public SkyrimMod(string ModName, string ModPath, List<string> AvailableFiles)
+        public SkyrimMod(string ModPath, string ModName,  List<string> AvailableFiles)
         {
-            this.ModName = ModName;
             this.ModPath = ModPath;
+            this.ModName = ModName;
             this.AvailableFiles = AvailableFiles;
         }
     }
@@ -130,13 +131,13 @@ namespace PhoenixTranslator.SkyrimManagement
                         //To ensure performance, only one level of the directory is scanned.
                         if (IsMod(GetChildPath, out string ModName, out List<string> AvailableFiles))
                         {
-                            Mods.Add(new SkyrimMod(ModName, GetChildPath, AvailableFiles));
+                            Mods.Add(new SkyrimMod(GetChildPath,ModName,AvailableFiles));
                         }
                     }
                 }
                 else
                 {
-                    Mods.Add(new SkyrimMod(CModName, TargetPath, CAvailableFiles));
+                    Mods.Add(new SkyrimMod(TargetPath,CModName,CAvailableFiles));
                 }
             }
 

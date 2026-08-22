@@ -1,0 +1,57 @@
+﻿<Window x:Class="PhoenixTranslator.UIManagement.Main.ModFileDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhoenixTranslator.UIManagement.Main"
+        Style="{DynamicResource DefWin}"
+        mc:Ignorable="d"
+        Title="ModFileDialog" Height="450" Width="800" WindowStartupLocation="CenterOwner">
+    <Border Background="#FF282828" CornerRadius="9">
+        <Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="45"/>
+                    <RowDefinition Height="45"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Background="Transparent" MouseDown="WinHead_MouseLeftButtonDown">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Foreground="White" VerticalAlignment="Center" Margin="5 0 0 0">
+                            Mod File Dialog
+                        </Label>
+                    </StackPanel>
+
+                    <Border Style="{DynamicResource BlockButton}" Grid.Column="7" PreviewMouseDown="Close_PreviewMouseDown" HorizontalAlignment="Right" Margin="0 0 5 0" Cursor="Hand">
+                        <ContentControl Style="{DynamicResource CloseIconStyle}" Grid.Column="3"/>
+                    </Border>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Margin="5" x:Name="PathBox"  Style="{StaticResource PathBox}"  KeyDown="SearchBox_KeyDown" Grid.Column="0">
+                    </TextBox>
+                   
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Margin="5" x:Name="SearchBox"  Style="{StaticResource LSearchTextBox}"  KeyDown="SearchBox_KeyDown" Grid.Column="0">
+                    </TextBox>
+                </Grid>
+
+                <ScrollViewer Grid.Row="3" Margin="5" Style="{DynamicResource for_scrollviewer}">
+                        
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
