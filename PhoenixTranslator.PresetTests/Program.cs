@@ -35,7 +35,8 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(TracksPreviewShellStatus), TracksPreviewShellStatus },
                 { nameof(FiltersPreviewTranslationWorkspace), FiltersPreviewTranslationWorkspace },
                 { nameof(HandlesPreviewTranslationFailures), HandlesPreviewTranslationFailures },
-                { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork }
+                { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork },
+                { nameof(FiltersLargePreviewTranslationProject), FiltersLargePreviewTranslationProject }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -467,6 +468,42 @@ namespace PhoenixTranslator.PresetTests
                 "Cancellation must not replace an entry with a partial provider result.");
             AssertEqual("Ready", shell.StatusText,
                 "Cooperative cancellation must restore persistent shell status.");
+            viewModel.Dispose();
+        }
+
+        private static void FiltersLargePreviewTranslationProject()
+        {
+            var entries = Enumerable.Range(0, 25000)
+                .Select(index => new PreviewTranslationEntry(
+                    index.ToString(CultureInfo.InvariantCulture),
+                    index % 2 == 0 ? "MCM" : "XML",
+                    "RECORD_" + index.ToString(CultureInfo.InvariantCulture),
+                    "Synthetic source " + index.ToString(CultureInfo.InvariantCulture),
+                    index % 3 == 0 ? "Synthetic target" : string.Empty,
+                    100))
+                .ToList();
+            var shell = new PreviewShellViewModel(() => { });
+            var project = new FakePreviewTranslationProject(entries);
+            var viewModel = new PreviewTranslationWorkspaceViewModel(
+                () => "fixture",
+                () => { },
+                shell,
+                path => project);
+
+            viewModel.OpenProjectAsync("fixture").GetAwaiter().GetResult();
+            AssertEqual(25000, viewModel.Entries.Count,
+                "A large project must load as one complete virtualized list snapshot.");
+
+            viewModel.SearchText = "source 24999";
+            AssertEqual(1, viewModel.Entries.Count,
+                "Search must isolate one record in a large synthetic project.");
+            AssertEqual("24999", viewModel.Entries[0].Key,
+                "Large-project filtering must retain stable record identity.");
+
+            viewModel.SearchText = string.Empty;
+            viewModel.SelectedTypeFilter = "MCM";
+            AssertEqual(12500, viewModel.Entries.Count,
+                "Large-project type filtering must retain every matching record.");
             viewModel.Dispose();
         }
 
