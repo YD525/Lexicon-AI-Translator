@@ -3,21 +3,21 @@
     {
       "name": "EspReader",
       "repository": "YD525/EspReader",
-      "tag": "v1.0.0",
+      "tag": "v1.0.0.6",
       "asset": "EspReader.dll",
       "checksumAsset": "EspReader.dll.sha256"
     },
     {
       "name": "PexReader",
       "repository": "YD525/PexReader",
-      "tag": "v1.0.0",
+      "tag": "v1.0.1.6",
       "asset": "PEX.Interop.dll",
       "checksumAsset": "PEX.Interop.dll.sha256"
     },
     {
       "name": "PexInterface",
       "repository": "YD525/PexInterface",
-      "tag": "v1.0.0",
+      "tag": "v1.0.0.5",
       "asset": "PexInterface.dll",
       "checksumAsset": "PexInterface.dll.sha256"
     }
@@ -26,7 +26,7 @@
     {
       "name": "PhoenixEngine",
       "repository": "YD525/Phoenix-Engine",
-      "tag": "v1.0.0",
+      "tag": "v1.0.0.8",
       "asset": "PhoenixEngine-win-x64.zip",
       "checksumAsset": "PhoenixEngine-win-x64.zip.sha256",
       "destination": "PhoenixEngine"
