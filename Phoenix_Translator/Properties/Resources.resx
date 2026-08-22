@@ -239,4 +239,68 @@
   <data name="Accessibility_Workspace_EntryList_Name" xml:space="preserve"><value>Translation entries</value><comment>Accessible name for the workspace entry list.</comment></data>
   <data name="Accessibility_Workspace_ContextInspector_Name" xml:space="preserve"><value>Entry context</value><comment>Accessible name for the workspace context inspector.</comment></data>
   <data name="Accessibility_Settings_Navigation_Name" xml:space="preserve"><value>Settings categories</value><comment>Accessible name for the settings navigation region.</comment></data>
+  <data name="ReviewQuality_Title" xml:space="preserve"><value>Review and quality assurance</value><comment>Accessible title for the combined preview review and validation workflow.</comment></data>
+  <data name="Review_Search_Placeholder" xml:space="preserve"><value>Search source, target, record, or finding</value><comment>Search field hint shared by review and quality modes.</comment></data>
+  <data name="Review_Filter_State_Name" xml:space="preserve"><value>Review state filter</value><comment>Accessible name for the review-state filter.</comment></data>
+  <data name="Review_Filter_AllStates" xml:space="preserve"><value>All review states</value><comment>Default review-state filter.</comment></data>
+  <data name="Review_State_Unreviewed" xml:space="preserve"><value>Unreviewed</value><comment>No human review decision has been recorded for the current target.</comment></data>
+  <data name="Review_State_Reviewed" xml:space="preserve"><value>Reviewed</value><comment>The target has been inspected but not approved or rejected.</comment></data>
+  <data name="Review_State_Approved" xml:space="preserve"><value>Approved</value><comment>The current target is accepted for export under the active policy.</comment></data>
+  <data name="Review_State_Rejected" xml:space="preserve"><value>Rejected</value><comment>The current target requires correction before approval.</comment></data>
+  <data name="Review_Provenance_None" xml:space="preserve"><value>No target</value><comment>Provenance label when an entry has no target text.</comment></data>
+  <data name="Review_Provenance_Imported" xml:space="preserve"><value>Imported project content</value><comment>Provenance label for a target loaded from the project.</comment></data>
+  <data name="Review_Provenance_Provider" xml:space="preserve"><value>Translation provider</value><comment>Provenance label for a generated target.</comment></data>
+  <data name="Review_Provenance_Edited" xml:space="preserve"><value>Manual edit</value><comment>Provenance label for a manually edited target.</comment></data>
+  <data name="Review_EntryCount" xml:space="preserve"><value>{0} entries in review queue</value><comment>Visible review queue count. Placeholders: {0}=non-negative integer.</comment></data>
+  <data name="Review_Context_Title" xml:space="preserve"><value>Review context</value><comment>Heading for the review context panel.</comment></data>
+  <data name="Review_State_Label" xml:space="preserve"><value>Review state</value><comment>Metadata label for the selected entry review state.</comment></data>
+  <data name="Review_Provenance_Label" xml:space="preserve"><value>Target provenance</value><comment>Metadata label for the selected entry target origin.</comment></data>
+  <data name="Review_MarkReviewed_Action" xml:space="preserve"><value>Mark reviewed</value><comment>Records that the selected target was inspected.</comment></data>
+  <data name="Review_Approve_Action" xml:space="preserve"><value>Approve</value><comment>Approves the selected target for export.</comment></data>
+  <data name="Review_Reject_Action" xml:space="preserve"><value>Reject</value><comment>Rejects the selected target for correction.</comment></data>
+  <data name="Review_ApproveScope_Action" xml:space="preserve"><value>Approve visible scope</value><comment>Bulk-approves every eligible entry in the filtered review queue.</comment></data>
+  <data name="Review_UndoBulk_Action" xml:space="preserve"><value>Undo bulk approval</value><comment>Restores review states changed by the most recent bulk approval.</comment></data>
+  <data name="Review_ApproveScope_ConfirmationTitle" xml:space="preserve"><value>Approve visible entries?</value><comment>Title for the bulk approval confirmation.</comment></data>
+  <data name="Review_ApproveScope_Confirmation" xml:space="preserve"><value>Approve {0} visible entries? Existing review decisions in this scope will be overwritten.</value><comment>Bulk approval confirmation. Placeholders: {0}=exact affected entry count.</comment></data>
+  <data name="Review_State_SaveFailed" xml:space="preserve"><value>Review metadata could not be saved. Translation content was not changed.</value><comment>Safe warning when private review metadata persistence fails.</comment></data>
+  <data name="Review_Empty_Title" xml:space="preserve"><value>Open a project to start review</value><comment>Empty-state heading for review and quality assurance.</comment></data>
+  <data name="Review_Empty_Hint" xml:space="preserve"><value>Review decisions, normalized findings, and export readiness will appear here.</value><comment>Empty-state guidance for review and quality assurance.</comment></data>
+  <data name="Quality_Filter_Severity_Name" xml:space="preserve"><value>Finding severity filter</value><comment>Accessible name for the finding severity filter.</comment></data>
+  <data name="Quality_Filter_Type_Name" xml:space="preserve"><value>Finding type filter</value><comment>Accessible name for the finding type filter.</comment></data>
+  <data name="Quality_Filter_AllSeverities" xml:space="preserve"><value>All severities</value><comment>Default finding severity filter.</comment></data>
+  <data name="Quality_Filter_AllFindings" xml:space="preserve"><value>All finding types</value><comment>Default finding type filter.</comment></data>
+  <data name="Quality_Severity_Information" xml:space="preserve"><value>Information</value><comment>Informational finding severity.</comment></data>
+  <data name="Quality_Severity_Warning" xml:space="preserve"><value>Warning</value><comment>Warning finding severity.</comment></data>
+  <data name="Quality_Severity_Error" xml:space="preserve"><value>Error</value><comment>Blocking finding severity.</comment></data>
+  <data name="Quality_Resolution_Open" xml:space="preserve"><value>Open</value><comment>Finding has not been resolved or acknowledged.</comment></data>
+  <data name="Quality_Resolution_Acknowledged" xml:space="preserve"><value>Acknowledged</value><comment>An intentional non-blocking finding was explicitly accepted.</comment></data>
+  <data name="Quality_Resolution_Resolved" xml:space="preserve"><value>Resolved</value><comment>The underlying condition no longer exists.</comment></data>
+  <data name="Quality_FindingCount" xml:space="preserve"><value>{0} findings</value><comment>Visible finding count. Placeholders: {0}=non-negative integer.</comment></data>
+  <data name="Quality_Revalidate_Action" xml:space="preserve"><value>Run validation</value><comment>Rebuilds normalized findings without changing translation content.</comment></data>
+  <data name="Quality_FindingDetails_Title" xml:space="preserve"><value>Finding details</value><comment>Heading for the selected finding metadata.</comment></data>
+  <data name="Quality_Source_Label" xml:space="preserve"><value>Diagnostic source</value><comment>Metadata label for the component that emitted a finding.</comment></data>
+  <data name="Quality_Resolution_Label" xml:space="preserve"><value>Resolution</value><comment>Metadata label for the finding resolution.</comment></data>
+  <data name="Quality_AffectedSource_Label" xml:space="preserve"><value>Affected source</value><comment>Label above the finding's source context.</comment></data>
+  <data name="Quality_AffectedTarget_Label" xml:space="preserve"><value>Affected target</value><comment>Label above the finding's target context.</comment></data>
+  <data name="Quality_GoToEntry_Action" xml:space="preserve"><value>Go to translation entry</value><comment>Navigates to the exact affected entry in the translation workspace.</comment></data>
+  <data name="Quality_Acknowledge_Action" xml:space="preserve"><value>Acknowledge warning</value><comment>Accepts an intentional non-blocking finding without changing its severity.</comment></data>
+  <data name="Quality_Readiness_Blocked" xml:space="preserve"><value>Export blocked by errors</value><comment>Export-readiness result when one or more blocking findings remain.</comment></data>
+  <data name="Quality_Readiness_WarningsRequireReview" xml:space="preserve"><value>Warnings require review before export</value><comment>Export-readiness result when warnings remain open.</comment></data>
+  <data name="Quality_Readiness_AcknowledgedWarnings" xml:space="preserve"><value>Ready with acknowledged warnings</value><comment>Export-readiness result when all remaining warnings were explicitly acknowledged.</comment></data>
+  <data name="Quality_Readiness_Ready" xml:space="preserve"><value>Ready for export</value><comment>Export-readiness result when no blocking or open warning findings remain.</comment></data>
+  <data name="Quality_Finding_Untranslated_Title" xml:space="preserve"><value>Target text is missing</value><comment>Finding title for an untranslated entry.</comment></data>
+  <data name="Quality_Finding_Untranslated_Guidance" xml:space="preserve"><value>Add a target translation before review and export.</value><comment>Remediation for an untranslated entry.</comment></data>
+  <data name="Quality_Finding_Encoding_Title" xml:space="preserve"><value>Text contains an invalid character</value><comment>Finding title for replacement or unsafe control characters.</comment></data>
+  <data name="Quality_Finding_Encoding_Guidance" xml:space="preserve"><value>Correct the affected text and validate the source encoding.</value><comment>Remediation for an encoding finding.</comment></data>
+  <data name="Quality_Finding_Placeholder_Title" xml:space="preserve"><value>Placeholders do not match</value><comment>Finding title when target placeholders differ from source placeholders.</comment></data>
+  <data name="Quality_Finding_Placeholder_Guidance" xml:space="preserve"><value>Preserve every source placeholder exactly once in the target.</value><comment>Remediation for a placeholder mismatch.</comment></data>
+  <data name="Quality_Finding_Duplicate_Title" xml:space="preserve"><value>Duplicate source has inconsistent targets</value><comment>Finding title for equal sources translated differently.</comment></data>
+  <data name="Quality_Finding_Duplicate_Guidance" xml:space="preserve"><value>Compare context and make the targets consistent unless the difference is intentional.</value><comment>Remediation for inconsistent duplicate translations.</comment></data>
+  <data name="Quality_Finding_Technical_Title" xml:space="preserve"><value>Target may be a technical string</value><comment>Finding title for identifier-like or path-like source text.</comment></data>
+  <data name="Quality_Finding_Technical_Guidance" xml:space="preserve"><value>Confirm that translating this identifier, path, or address is intentional.</value><comment>Remediation for a technical-string warning.</comment></data>
+  <data name="Quality_Finding_Confidence_Title" xml:space="preserve"><value>Parser confidence is low</value><comment>Finding title for format metadata below the review threshold.</comment></data>
+  <data name="Quality_Finding_Confidence_Guidance" xml:space="preserve"><value>Inspect the original record and context before approving this target.</value><comment>Remediation for a low-confidence parser finding.</comment></data>
+  <data name="ReviewQuality_Shortcuts_Hint" xml:space="preserve"><value>Ctrl+Enter Approve · Ctrl+Shift+Enter Approve scope · Ctrl+Z Undo · F8 Go to entry</value><comment>Keyboard command map for review and quality assurance.</comment></data>
+  <data name="Accessibility_Review_Queue_Name" xml:space="preserve"><value>Review queue</value><comment>Accessible name for the filtered review entry list.</comment></data>
+  <data name="Accessibility_Quality_Findings_Name" xml:space="preserve"><value>Quality findings</value><comment>Accessible name for the normalized finding list.</comment></data>
 </root>

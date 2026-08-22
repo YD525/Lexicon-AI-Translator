@@ -53,6 +53,18 @@
     <Compile Include="..\Phoenix_Translator\Application\PreviewMessageCatalog.cs">
       <Link>PreviewMessageCatalog.cs</Link>
     </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewQualityAnalyzer.cs">
+      <Link>PreviewQualityAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewQualityFinding.cs">
+      <Link>PreviewQualityFinding.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewReviewQualityViewModel.cs">
+      <Link>PreviewReviewQualityViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewReviewStateStore.cs">
+      <Link>PreviewReviewStateStore.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewShellCommand.cs">
       <Link>PreviewShellCommand.cs</Link>
     </Compile>
@@ -91,6 +103,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\Xml\malformed-translation.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Xml\mixed-review-quality.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\Xml\valid-translation.xml">

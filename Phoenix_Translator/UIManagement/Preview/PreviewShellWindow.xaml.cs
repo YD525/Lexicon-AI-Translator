@@ -13,6 +13,7 @@ namespace PhoenixTranslator.UIManagement.Preview
     {
         private PhoenixGui _legacyWorkspace;
         private readonly PreviewTranslationWorkspaceViewModel _translationWorkspaceViewModel;
+        private readonly PreviewReviewQualityViewModel _reviewQualityViewModel;
 
         /// <summary>
         /// Creates the preview application shell in its no-project state.
@@ -26,8 +27,27 @@ namespace PhoenixTranslator.UIManagement.Preview
                 OpenLegacyWorkspace,
                 shellViewModel,
                 PreviewTranslationProject.Open);
+            _reviewQualityViewModel = new PreviewReviewQualityViewModel(
+                shellViewModel,
+                _translationWorkspaceViewModel,
+                new PreviewQualityAnalyzer(),
+                new PreviewReviewStateStore(),
+                ConfirmBulkApproval,
+                OpenLegacyWorkspace);
             DataContext = shellViewModel;
             TranslationWorkspace.DataContext = _translationWorkspaceViewModel;
+            ReviewQualityWorkspace.DataContext = _reviewQualityViewModel;
+        }
+
+        private bool ConfirmBulkApproval(int entryCount)
+        {
+            return MessageBox.Show(
+                this,
+                PreviewMessageCatalog.Format("Review_ApproveScope_Confirmation", entryCount),
+                PreviewMessageCatalog.Get("Review_ApproveScope_ConfirmationTitle"),
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel) == MessageBoxResult.OK;
         }
 
         private static string SelectPreviewProject()
@@ -67,6 +87,7 @@ namespace PhoenixTranslator.UIManagement.Preview
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            _reviewQualityViewModel.Dispose();
             _translationWorkspaceViewModel.Dispose();
             DeFine.CloseAny();
         }

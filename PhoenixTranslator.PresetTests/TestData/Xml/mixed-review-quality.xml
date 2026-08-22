@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translation>
+  <String>
+    <EDID>PT_PLACEHOLDER</EDID>
+    <REC id="1">MESG</REC>
+    <Source>Welcome, {0}!</Source>
+    <Dest>Willkommen!</Dest>
+  </String>
+  <String>
+    <EDID>PT_TECHNICAL</EDID>
+    <REC id="2">MESG</REC>
+    <Source>MENU_FILE</Source>
+    <Dest>Dateimenü</Dest>
+  </String>
+  <String>
+    <EDID>PT_DUPLICATE_A</EDID>
+    <REC id="3">MESG</REC>
+    <Source>Continue</Source>
+    <Dest>Fortfahren</Dest>
+  </String>
+  <String>
+    <EDID>PT_DUPLICATE_B</EDID>
+    <REC id="4">MESG</REC>
+    <Source>Continue</Source>
+    <Dest>Weiter</Dest>
+  </String>
+  <String>
+    <EDID>PT_UNTRANSLATED</EDID>
+    <REC id="5">MESG</REC>
+    <Source>New game</Source>
+    <Dest>New game</Dest>
+  </String>
+</Translation>

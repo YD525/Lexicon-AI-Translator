@@ -139,9 +139,24 @@ namespace PhoenixTranslator.ApplicationLayer
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
+        /// Occurs after the normalized project entry set changes.
+        /// </summary>
+        internal event EventHandler ProjectChanged;
+
+        /// <summary>
         /// Gets the filtered entries presented by the virtualized list.
         /// </summary>
         public IReadOnlyList<PreviewTranslationEntry> Entries { get; private set; }
+
+        /// <summary>
+        /// Gets every normalized entry in the current project without workspace filtering.
+        /// </summary>
+        internal IReadOnlyList<PreviewTranslationEntry> ProjectEntries => _allEntries;
+
+        /// <summary>
+        /// Gets the current project path for project-scoped metadata storage.
+        /// </summary>
+        internal string ProjectPath => _project?.Path;
 
         /// <summary>
         /// Gets the localized stable entry-state filters.
@@ -438,7 +453,7 @@ namespace PhoenixTranslator.ApplicationLayer
                         string translatedText = await Task.Run(
                             () => _project.Translate(entry, cancellationToken),
                             cancellationToken);
-                        entry.TargetText = translatedText;
+                        entry.ApplyGeneratedTarget(translatedText);
                     }
                     catch (OperationCanceledException)
                     {
@@ -615,6 +630,29 @@ namespace PhoenixTranslator.ApplicationLayer
             RefreshFilter();
             OnPropertyChanged(nameof(HasProject));
             RaiseCommandAvailability();
+            ProjectChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Selects an entry in the translation workspace and clears filters that could hide it.
+        /// </summary>
+        /// <param name="entry">The project entry to reveal.</param>
+        internal void RevealEntry(PreviewTranslationEntry entry)
+        {
+            if (entry == null || !_allEntries.Contains(entry))
+            {
+                return;
+            }
+
+            _searchText = string.Empty;
+            _selectedStateFilter = StateFilters[0];
+            _selectedTypeFilter = TypeFilters[0];
+            OnPropertyChanged(nameof(SearchText));
+            OnPropertyChanged(nameof(SelectedStateFilter));
+            OnPropertyChanged(nameof(SelectedTypeFilter));
+            RefreshFilter();
+            SelectedEntry = entry;
+            _shell.CurrentDestination = PreviewShellDestination.Translate;
         }
 
         private bool MatchesFilter(PreviewTranslationEntry entry)

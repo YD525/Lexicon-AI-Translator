@@ -36,7 +36,11 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(FiltersPreviewTranslationWorkspace), FiltersPreviewTranslationWorkspace },
                 { nameof(HandlesPreviewTranslationFailures), HandlesPreviewTranslationFailures },
                 { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork },
-                { nameof(FiltersLargePreviewTranslationProject), FiltersLargePreviewTranslationProject }
+                { nameof(FiltersLargePreviewTranslationProject), FiltersLargePreviewTranslationProject },
+                { nameof(AnalyzesMixedQualityFindings), AnalyzesMixedQualityFindings },
+                { nameof(TracksReviewDecisionsAndBulkUndo), TracksReviewDecisionsAndBulkUndo },
+                { nameof(PersistsPrivateReviewMetadata), PersistsPrivateReviewMetadata },
+                { nameof(NavigatesFromFindingToTranslationEntry), NavigatesFromFindingToTranslationEntry }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -180,6 +184,10 @@ namespace PhoenixTranslator.PresetTests
             XDocument validDocument = XDocument.Load(Path.Combine(testDataDirectory, "Xml", "valid-translation.xml"));
             AssertEqual(2, validDocument.Descendants("String").Count(),
                 "The valid XML fixture must contain two translation records.");
+            XDocument reviewDocument = XDocument.Load(
+                Path.Combine(testDataDirectory, "Xml", "mixed-review-quality.xml"));
+            AssertEqual(5, reviewDocument.Descendants("String").Count(),
+                "The mixed review fixture must retain every deterministic finding scenario.");
 
             bool rejected = false;
             try
@@ -270,7 +278,10 @@ namespace PhoenixTranslator.PresetTests
                 }
             }
 
-            foreach (string prefix in new[] { "Common_", "Shell_", "Workspace_", "Settings_", "Accessibility_" })
+            foreach (string prefix in new[]
+            {
+                "Common_", "Shell_", "Workspace_", "Review_", "Quality_", "Settings_", "Accessibility_"
+            })
             {
                 AssertEqual(true, entries.Keys.Any(id => id.StartsWith(prefix, StringComparison.Ordinal)),
                     "The source catalogue must cover " + prefix.TrimEnd('_') + ".");
@@ -507,6 +518,149 @@ namespace PhoenixTranslator.PresetTests
             viewModel.Dispose();
         }
 
+        private static void AnalyzesMixedQualityFindings()
+        {
+            var entries = new[]
+            {
+                new PreviewTranslationEntry("1", "MCM", "GREETING", "Hello {0}", "Hallo", 100),
+                new PreviewTranslationEntry("2", "PEX", "IDENTIFIER", "MENU_FILE", "Menü", 100),
+                new PreviewTranslationEntry("3", "XML", "DUPLICATE_A", "Same source", "First", 100),
+                new PreviewTranslationEntry("4", "XML", "DUPLICATE_B", "Same source", "Second", 100),
+                new PreviewTranslationEntry("5", "ESP", "EMPTY", "Needs translation", "", 25)
+            };
+
+            IReadOnlyList<PreviewQualityFinding> findings = new PreviewQualityAnalyzer().Analyze(entries);
+
+            AssertEqual(true, findings.Any(finding => finding.RuleId == "placeholder-mismatch" && finding.IsBlocking),
+                "A missing source placeholder must block export.");
+            AssertEqual(true, findings.Any(finding => finding.RuleId == "technical-string" &&
+                finding.Severity == PreviewFindingSeverity.Warning),
+                "Identifier-like text must be exposed as an acknowledgeable warning.");
+            AssertEqual(2, findings.Count(finding => finding.RuleId == "duplicate-inconsistent"),
+                "Every affected duplicate must identify its exact entry.");
+            AssertEqual(true, findings.Any(finding => finding.RuleId == "untranslated" && finding.Entry.Key == "5"),
+                "An untranslated entry must remain an explicit blocking finding.");
+            AssertEqual(true, findings.Any(finding => finding.RuleId == "low-confidence" && finding.Source == "ESP"),
+                "Format confidence findings must retain their diagnostic source.");
+        }
+
+        private static void TracksReviewDecisionsAndBulkUndo()
+        {
+            string stateDirectory = Path.Combine(Path.GetTempPath(), "PhoenixReviewTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(stateDirectory);
+            try
+            {
+                var entries = new[]
+                {
+                    new PreviewTranslationEntry("1", "MCM", "ONE", "First", "Erste", 100),
+                    new PreviewTranslationEntry("2", "MCM", "TWO", "Second", "Zweite", 100)
+                };
+                var shell = new PreviewShellViewModel(() => { });
+                var project = new FakePreviewTranslationProject(entries, Path.Combine(stateDirectory, "project.xml"));
+                var workspace = new PreviewTranslationWorkspaceViewModel(() => project.Path, () => { }, shell, path => project);
+                workspace.OpenProjectAsync(project.Path).GetAwaiter().GetResult();
+                var cancelled = new PreviewReviewQualityViewModel(shell, workspace, new PreviewQualityAnalyzer(),
+                    new PreviewReviewStateStore(stateDirectory), count => false, () => { });
+
+                cancelled.ApproveScopeCommand.Execute(null);
+                AssertEqual(PreviewReviewState.Unreviewed, entries[0].ReviewState,
+                    "Cancelling bulk approval must preserve every review decision.");
+                cancelled.Dispose();
+
+                var review = new PreviewReviewQualityViewModel(shell, workspace, new PreviewQualityAnalyzer(),
+                    new PreviewReviewStateStore(stateDirectory), count => count == 2, () => { });
+                review.ApproveScopeCommand.Execute(null);
+                AssertEqual(PreviewReviewState.Approved, entries[0].ReviewState,
+                    "Confirmed bulk approval must update the visible eligible scope.");
+                AssertEqual(PreviewReviewState.Approved, entries[1].ReviewState,
+                    "Confirmed bulk approval must update every visible eligible entry.");
+
+                review.UndoBulkCommand.Execute(null);
+                AssertEqual(PreviewReviewState.Unreviewed, entries[0].ReviewState,
+                    "Undo must restore the review state captured before bulk approval.");
+                AssertEqual(PreviewReviewState.Unreviewed, entries[1].ReviewState,
+                    "Undo must restore the complete bulk scope.");
+                review.Dispose();
+                workspace.Dispose();
+            }
+            finally
+            {
+                Directory.Delete(stateDirectory, true);
+            }
+        }
+
+        private static void PersistsPrivateReviewMetadata()
+        {
+            string stateDirectory = Path.Combine(Path.GetTempPath(), "PhoenixReviewTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(stateDirectory);
+            try
+            {
+                string projectPath = Path.Combine(stateDirectory, "private-project.xml");
+                const string privateTarget = "Private translated content";
+                var store = new PreviewReviewStateStore(stateDirectory);
+                var entry = new PreviewTranslationEntry("entry-1", "XML", "RECORD", "Source", privateTarget, 100);
+                entry.SetReviewState(PreviewReviewState.Approved);
+                store.Save(projectPath, new[] { entry }, new[] { "technical-string:entry-1" });
+
+                string persistedText = File.ReadAllText(Directory.GetFiles(stateDirectory, "*.xml").Single());
+                AssertEqual(false, persistedText.Contains(projectPath),
+                    "Review metadata must not contain an absolute project path.");
+                AssertEqual(false, persistedText.Contains(privateTarget),
+                    "Review metadata must not contain private translated content.");
+
+                PreviewReviewStateSnapshot snapshot = store.Load(projectPath);
+                AssertEqual(PreviewReviewState.Approved, snapshot.Decisions["entry-1"].State,
+                    "A matching project and target fingerprint must restore its review decision.");
+                AssertEqual(true, snapshot.AcknowledgedFindingIds.Contains("technical-string:entry-1"),
+                    "Acknowledged warning identity must persist without warning content.");
+
+                entry.TargetText = "Changed target";
+                AssertEqual(PreviewReviewState.Unreviewed, entry.ReviewState,
+                    "Editing approved content must invalidate its human review decision.");
+            }
+            finally
+            {
+                Directory.Delete(stateDirectory, true);
+            }
+        }
+
+        private static void NavigatesFromFindingToTranslationEntry()
+        {
+            string stateDirectory = Path.Combine(Path.GetTempPath(), "PhoenixReviewTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(stateDirectory);
+            try
+            {
+                var entries = new[]
+                {
+                    new PreviewTranslationEntry("1", "PEX", "MENU_FILE", "MENU_FILE", "Menü", 100),
+                    new PreviewTranslationEntry("2", "XML", "OTHER", "Other", "Andere", 100)
+                };
+                var shell = new PreviewShellViewModel(() => { });
+                var project = new FakePreviewTranslationProject(entries, Path.Combine(stateDirectory, "project.xml"));
+                var workspace = new PreviewTranslationWorkspaceViewModel(() => project.Path, () => { }, shell, path => project);
+                workspace.OpenProjectAsync(project.Path).GetAwaiter().GetResult();
+                var review = new PreviewReviewQualityViewModel(shell, workspace, new PreviewQualityAnalyzer(),
+                    new PreviewReviewStateStore(stateDirectory), count => true, () => { });
+                shell.CurrentDestination = PreviewShellDestination.Quality;
+                review.SelectedFinding = review.Findings.Single(finding => finding.RuleId == "technical-string");
+
+                review.AcknowledgeFindingCommand.Execute(null);
+                AssertEqual("Ready with acknowledged warnings", review.ExportReadinessText,
+                    "Acknowledged non-blocking warnings must be distinguished from open warnings.");
+                review.GoToEntryCommand.Execute(null);
+                AssertEqual(PreviewShellDestination.Translate, shell.CurrentDestination,
+                    "Finding navigation must return to the translation workspace.");
+                AssertEqual(entries[0], workspace.SelectedEntry,
+                    "Finding navigation must reveal the exact affected entry.");
+                review.Dispose();
+                workspace.Dispose();
+            }
+            finally
+            {
+                Directory.Delete(stateDirectory, true);
+            }
+        }
+
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)
         {
             return new TranslationPresetCoordinator(new TranslationPresetService(), store);
@@ -556,12 +710,13 @@ namespace PhoenixTranslator.PresetTests
 
         private sealed class FakePreviewTranslationProject : IPreviewTranslationProject
         {
-            internal FakePreviewTranslationProject(IReadOnlyList<PreviewTranslationEntry> entries)
+            internal FakePreviewTranslationProject(IReadOnlyList<PreviewTranslationEntry> entries, string path = "fixture.xml")
             {
                 Entries = entries;
+                Path = path;
             }
 
-            public string Path => "fixture.xml";
+            public string Path { get; private set; }
 
             public string DisplayName => "fixture.xml";
 

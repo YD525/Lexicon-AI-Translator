@@ -130,6 +130,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 OnPropertyChanged(nameof(CurrentTitle));
                 OnPropertyChanged(nameof(CurrentDescription));
                 OnPropertyChanged(nameof(IsTranslationWorkspaceVisible));
+                OnPropertyChanged(nameof(IsReviewQualityWorkspaceVisible));
                 OnPropertyChanged(nameof(IsPreviewFallbackVisible));
             }
         }
@@ -150,9 +151,16 @@ namespace PhoenixTranslator.ApplicationLayer
         public bool IsTranslationWorkspaceVisible => _currentDestination == PreviewShellDestination.Translate;
 
         /// <summary>
+        /// Gets whether the combined review and quality workspace owns the current page.
+        /// </summary>
+        public bool IsReviewQualityWorkspaceVisible =>
+            _currentDestination == PreviewShellDestination.Review ||
+            _currentDestination == PreviewShellDestination.Quality;
+
+        /// <summary>
         /// Gets whether the selected destination still uses the shared preview fallback page.
         /// </summary>
-        public bool IsPreviewFallbackVisible => !IsTranslationWorkspaceVisible;
+        public bool IsPreviewFallbackVisible => !IsTranslationWorkspaceVisible && !IsReviewQualityWorkspaceVisible;
 
         /// <summary>
         /// Gets the product version shown independently from dependency versions.

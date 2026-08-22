@@ -193,6 +193,10 @@
                         Visibility="{Binding DataContext.IsTranslationWorkspaceVisible,
                             RelativeSource={RelativeSource AncestorType={x:Type Window}},
                             Converter={StaticResource BooleanToVisibility}}" />
+                <preview:PreviewReviewQualityView x:Name="ReviewQualityWorkspace" Grid.Row="2"
+                        Visibility="{Binding DataContext.IsReviewQualityWorkspaceVisible,
+                            RelativeSource={RelativeSource AncestorType={x:Type Window}},
+                            Converter={StaticResource BooleanToVisibility}}" />
             </Grid>
         </Grid>
 
