@@ -114,4 +114,85 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Common_Action_Apply" xml:space="preserve"><value>Apply</value><comment>Shared action that commits staged changes.</comment></data>
+  <data name="Common_Action_Back" xml:space="preserve"><value>Back</value><comment>Shared wizard or navigation action.</comment></data>
+  <data name="Common_Action_Browse" xml:space="preserve"><value>Browse</value><comment>Shared action that opens a file or folder picker.</comment></data>
+  <data name="Common_Action_Cancel" xml:space="preserve"><value>Cancel</value><comment>Shared action that cancels a dialog or operation.</comment></data>
+  <data name="Common_Action_Clear" xml:space="preserve"><value>Clear</value><comment>Shared action that clears user-controlled content or filters.</comment></data>
+  <data name="Common_Action_Close" xml:space="preserve"><value>Close</value><comment>Shared action that closes the current surface.</comment></data>
+  <data name="Common_Action_Discard" xml:space="preserve"><value>Discard</value><comment>Shared action that abandons staged or unsaved changes.</comment></data>
+  <data name="Common_Action_Next" xml:space="preserve"><value>Next</value><comment>Shared wizard or entry-navigation action.</comment></data>
+  <data name="Common_Action_Retry" xml:space="preserve"><value>Retry</value><comment>Shared action that repeats a failed operation.</comment></data>
+  <data name="Common_Action_Save" xml:space="preserve"><value>Save</value><comment>Shared action that persists project state.</comment></data>
+  <data name="Common_State_Available" xml:space="preserve"><value>Available</value><comment>Positive status for a reachable provider or feature.</comment></data>
+  <data name="Common_State_Modified" xml:space="preserve"><value>Modified</value><comment>State label for staged or unsaved changes.</comment></data>
+  <data name="Common_State_Ready" xml:space="preserve"><value>Ready</value><comment>State label for an idle surface that can accept work.</comment></data>
+  <data name="Shell_Product_Name" xml:space="preserve"><value>Phoenix Translator</value><comment>Product name in the preview shell title area.</comment></data>
+  <data name="Shell_Project_None" xml:space="preserve"><value>No project open</value><comment>Shell project-identity text when no project is loaded.</comment></data>
+  <data name="Shell_ProjectOpen_Title" xml:space="preserve"><value>Open a localization project</value><comment>Heading for the empty project picker.</comment></data>
+  <data name="Shell_ProjectOpen_SupportedFormats" xml:space="preserve"><value>ESP, ESM, PEX, MCM, XML, or an existing Phoenix project</value><comment>Supported-format hint below the project picker heading.</comment></data>
+  <data name="Shell_ProjectOpen_DropPrompt" xml:space="preserve"><value>Drop files here to start</value><comment>Drop-zone instruction in the empty project picker.</comment></data>
+  <data name="Shell_ProjectOpen_BrowseAction" xml:space="preserve"><value>Browse projects</value><comment>Primary action in the empty project picker.</comment></data>
+  <data name="Shell_ProjectOpen_OpeningProgress" xml:space="preserve"><value>Opening project: {0}%</value><comment>Project-loading progress. Placeholders: {0}=integer percentage from 0 through 100.</comment></data>
+  <data name="Shell_ProjectOpen_Failed" xml:space="preserve"><value>The project could not be opened.</value><comment>Safe heading for a project-open failure; technical details appear separately.</comment></data>
+  <data name="Shell_RecentProjects_Title" xml:space="preserve"><value>Recent projects</value><comment>Heading above the recent-project list.</comment></data>
+  <data name="Shell_RecentProjects_Empty" xml:space="preserve"><value>No recent projects</value><comment>Empty-state heading for the recent-project list.</comment></data>
+  <data name="Shell_RecentProjects_EmptyHint" xml:space="preserve"><value>Opened projects will appear here with their last status.</value><comment>Empty-state explanation for the recent-project list.</comment></data>
+  <data name="Shell_Navigation_Projects" xml:space="preserve"><value>Projects</value><comment>Primary shell navigation destination.</comment></data>
+  <data name="Shell_Navigation_Translate" xml:space="preserve"><value>Translate</value><comment>Primary shell navigation destination.</comment></data>
+  <data name="Shell_Navigation_Review" xml:space="preserve"><value>Review</value><comment>Primary shell navigation destination.</comment></data>
+  <data name="Shell_Navigation_Quality" xml:space="preserve"><value>Quality</value><comment>Primary shell navigation destination.</comment></data>
+  <data name="Shell_Navigation_History" xml:space="preserve"><value>History</value><comment>Primary shell navigation destination.</comment></data>
+  <data name="Shell_Navigation_ProjectUpdate" xml:space="preserve"><value>Project update</value><comment>Primary shell navigation destination for comparing a newer source revision.</comment></data>
+  <data name="Shell_Navigation_Settings" xml:space="preserve"><value>Settings</value><comment>Primary shell navigation destination.</comment></data>
+  <data name="Shell_Navigation_AdvancedTools" xml:space="preserve"><value>Advanced tools</value><comment>Shell navigation destination for progressively disclosed expert tools.</comment></data>
+  <data name="Shell_Unsaved_ClosePrompt_Title" xml:space="preserve"><value>Save changes before closing?</value><comment>Heading for the modified-project close confirmation.</comment></data>
+  <data name="Shell_Unsaved_ClosePrompt_Body" xml:space="preserve"><value>Your project contains changes that have not been saved.</value><comment>Body for the modified-project close confirmation.</comment></data>
+  <data name="Workspace_Title" xml:space="preserve"><value>Translation workspace</value><comment>Accessible workflow title for the translation workspace.</comment></data>
+  <data name="Workspace_Search_Placeholder" xml:space="preserve"><value>Search entries</value><comment>Placeholder in the workspace entry search field.</comment></data>
+  <data name="Workspace_Filter_AllStates" xml:space="preserve"><value>All states</value><comment>Default state-filter option in the workspace.</comment></data>
+  <data name="Workspace_Filter_AllTypes" xml:space="preserve"><value>All types</value><comment>Default record-type filter option in the workspace.</comment></data>
+  <data name="Workspace_TranslateScope_Action" xml:space="preserve"><value>Translate scope</value><comment>Starts translation for the currently selected or filtered scope.</comment></data>
+  <data name="Workspace_Entry_Count" xml:space="preserve"><value>{0} entries</value><comment>Workspace entry count. Placeholders: {0}=non-negative integer count.</comment></data>
+  <data name="Workspace_Entry_DraftCount" xml:space="preserve"><value>{0} draft</value><comment>Workspace draft count. Placeholders: {0}=non-negative integer count.</comment></data>
+  <data name="Workspace_Entry_SourceText_Label" xml:space="preserve"><value>Source text</value><comment>Label above the read-only source editor.</comment></data>
+  <data name="Workspace_Entry_TargetText_Label" xml:space="preserve"><value>Target text</value><comment>Label above the editable target editor.</comment></data>
+  <data name="Workspace_Entry_Previous_Action" xml:space="preserve"><value>Previous entry</value><comment>Moves to the previous entry without changing text.</comment></data>
+  <data name="Workspace_Entry_Apply_Action" xml:space="preserve"><value>Apply translation</value><comment>Applies the current target text to the selected entry.</comment></data>
+  <data name="Workspace_Context_Title" xml:space="preserve"><value>Context</value><comment>Heading for the workspace context inspector.</comment></data>
+  <data name="Workspace_Context_Record_Label" xml:space="preserve"><value>Record</value><comment>Metadata label in the workspace context inspector.</comment></data>
+  <data name="Workspace_Context_RelatedNpc_Label" xml:space="preserve"><value>Related NPC</value><comment>Metadata label in the workspace context inspector.</comment></data>
+  <data name="Workspace_Context_Provenance_Label" xml:space="preserve"><value>Provenance</value><comment>Metadata label for translation origin in the context inspector.</comment></data>
+  <data name="Workspace_Operation_TranslatingProgress" xml:space="preserve"><value>Translating {0} of {1} entries</value><comment>Batch progress. Placeholders: {0}=completed integer count; {1}=total integer count.</comment></data>
+  <data name="Workspace_Operation_Cancelling" xml:space="preserve"><value>Cancelling translation…</value><comment>Operation status while cooperative cancellation is pending.</comment></data>
+  <data name="Workspace_Operation_CompletedWithFailures" xml:space="preserve"><value>Translation completed with {0} failed entries.</value><comment>Batch completion summary. Placeholders: {0}=non-negative integer failure count.</comment></data>
+  <data name="Workspace_Save_Failed" xml:space="preserve"><value>The project could not be saved. Your changes are still available.</value><comment>Safe save-failure message that confirms recoverable user input.</comment></data>
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value><comment>Settings workflow title.</comment></data>
+  <data name="Settings_Navigation_Providers" xml:space="preserve"><value>Providers</value><comment>Settings navigation destination.</comment></data>
+  <data name="Settings_Navigation_TranslationBehavior" xml:space="preserve"><value>Translation behavior</value><comment>Settings navigation destination.</comment></data>
+  <data name="Settings_Navigation_ProjectFormats" xml:space="preserve"><value>Project formats</value><comment>Settings navigation destination.</comment></data>
+  <data name="Settings_Navigation_AppearanceAccessibility" xml:space="preserve"><value>Appearance &amp; accessibility</value><comment>Settings navigation destination.</comment></data>
+  <data name="Settings_Navigation_Advanced" xml:space="preserve"><value>Advanced</value><comment>Settings navigation destination for expert configuration.</comment></data>
+  <data name="Settings_Providers_Description" xml:space="preserve"><value>Choose translation services and test their configuration without saving changes.</value><comment>Description at the top of Provider settings.</comment></data>
+  <data name="Settings_Providers_Cloud_Title" xml:space="preserve"><value>Cloud provider</value><comment>Settings card heading.</comment></data>
+  <data name="Settings_Providers_Local_Title" xml:space="preserve"><value>Local provider</value><comment>Settings card heading.</comment></data>
+  <data name="Settings_Providers_Provider_Label" xml:space="preserve"><value>Provider</value><comment>Field label for provider selection.</comment></data>
+  <data name="Settings_Providers_Model_Label" xml:space="preserve"><value>Model</value><comment>Field label for provider model selection.</comment></data>
+  <data name="Settings_Providers_ApiKey_Label" xml:space="preserve"><value>API key</value><comment>Field label for a secret provider credential.</comment></data>
+  <data name="Settings_Providers_ApiKey_Stored" xml:space="preserve"><value>Stored securely</value><comment>Status shown instead of exposing a stored provider credential.</comment></data>
+  <data name="Settings_Providers_Endpoint_Label" xml:space="preserve"><value>Endpoint</value><comment>Field label for a local or custom provider endpoint.</comment></data>
+  <data name="Settings_Providers_Test_Action" xml:space="preserve"><value>Test provider</value><comment>Explicit action that tests staged provider settings without saving them.</comment></data>
+  <data name="Settings_Providers_Test_Running" xml:space="preserve"><value>Testing provider…</value><comment>Status while a provider test is running.</comment></data>
+  <data name="Settings_Providers_Test_Succeeded" xml:space="preserve"><value>The provider responded successfully.</value><comment>Provider-test success message; does not imply settings were saved.</comment></data>
+  <data name="Settings_Providers_Test_Failed" xml:space="preserve"><value>The provider test failed: {0}</value><comment>Safe provider-test failure. Placeholders: {0}=sanitized failure reason without credentials or private content.</comment></data>
+  <data name="Settings_ProviderPipeline_Title" xml:space="preserve"><value>Provider pipeline</value><comment>Settings card heading for the ordered provider pipeline.</comment></data>
+  <data name="Settings_ProviderPipeline_EditAdvanced_Action" xml:space="preserve"><value>Edit advanced pipeline</value><comment>Opens progressively disclosed provider-pipeline configuration.</comment></data>
+  <data name="Settings_Modified_Hint" xml:space="preserve"><value>Changes are not applied until you choose Apply.</value><comment>Persistent settings footer hint while staged changes exist.</comment></data>
+  <data name="Settings_Validation_Required" xml:space="preserve"><value>{0} is required.</value><comment>Required-field validation. Placeholders: {0}=localized field label.</comment></data>
+  <data name="Settings_Validation_InvalidEndpoint" xml:space="preserve"><value>Enter a valid HTTP or HTTPS endpoint.</value><comment>Provider endpoint validation message.</comment></data>
+  <data name="Accessibility_Shell_Navigation_Name" xml:space="preserve"><value>Primary workflows</value><comment>Accessible name for the shell navigation region.</comment></data>
+  <data name="Accessibility_Shell_ProjectStatus_Name" xml:space="preserve"><value>Project status</value><comment>Accessible name for the persistent shell status region.</comment></data>
+  <data name="Accessibility_Workspace_EntryList_Name" xml:space="preserve"><value>Translation entries</value><comment>Accessible name for the workspace entry list.</comment></data>
+  <data name="Accessibility_Workspace_ContextInspector_Name" xml:space="preserve"><value>Entry context</value><comment>Accessible name for the workspace context inspector.</comment></data>
+  <data name="Accessibility_Settings_Navigation_Name" xml:space="preserve"><value>Settings categories</value><comment>Accessible name for the settings navigation region.</comment></data>
 </root>
