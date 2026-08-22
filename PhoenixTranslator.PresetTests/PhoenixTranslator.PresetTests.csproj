@@ -47,6 +47,9 @@
     <Compile Include="..\Phoenix_Translator\Application\AdvancedDictionaryQueryBuilder.cs">
       <Link>AdvancedDictionaryQueryBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\IPreviewTranslationProject.cs">
+      <Link>IPreviewTranslationProject.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewMessageCatalog.cs">
       <Link>PreviewMessageCatalog.cs</Link>
     </Compile>
@@ -55,6 +58,12 @@
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewShellViewModel.cs">
       <Link>PreviewShellViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewTranslationEntry.cs">
+      <Link>PreviewTranslationEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewTranslationWorkspaceViewModel.cs">
+      <Link>PreviewTranslationWorkspaceViewModel.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\TranslationPresetService.cs">
       <Link>TranslationPresetService.cs</Link>

@@ -106,23 +106,29 @@ namespace PhoenixTranslator.SkyrimManagement
                     int ID = 0;
                     if (Previous == null)
                     {
-                        bool IsCloud = false;
-
-                        FakeGrid GetRow = this.ListView.KeyToFakeGrid(Key);
-                        GetRow.SyncData(this,ref IsCloud);
-
-                        ID = HistoryDBCache.AddHistory(
-                        new HistoryItem(this.P_Translator.GetFileUniqueKey(),Key, (int)this.P_Translator.To,
-                        GetRow.TransText,
-                        0,
-                        DateTime.Now,
-                        ""
-                        ));
-
-                        HistoryDBCache.CheckPreviousHistoryItem(ID, this.P_Translator.GetFileUniqueKey(), (int)this.P_Translator.To, Key, GetRow.TransText, out int TargetID);
-                        if (TargetID > 0)
+                        if (this.ListView != null)
                         {
-                            HistoryDBCache.DeleteHistory(this.P_Translator.GetFileUniqueKey(), TargetID);
+                            bool IsCloud = false;
+                            FakeGrid GetRow = this.ListView.KeyToFakeGrid(Key);
+                            if (GetRow != null)
+                            {
+                                GetRow.SyncData(this, ref IsCloud);
+
+                                ID = HistoryDBCache.AddHistory(
+                                new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
+                                GetRow.TransText,
+                                0,
+                                DateTime.Now,
+                                ""
+                                ));
+
+                                HistoryDBCache.CheckPreviousHistoryItem(ID, this.P_Translator.GetFileUniqueKey(),
+                                    (int)this.P_Translator.To, Key, GetRow.TransText, out int TargetID);
+                                if (TargetID > 0)
+                                {
+                                    HistoryDBCache.DeleteHistory(this.P_Translator.GetFileUniqueKey(), TargetID);
+                                }
+                            }
                         }
                     }
                     else
@@ -396,21 +402,27 @@ namespace PhoenixTranslator.SkyrimManagement
                     }
                 }
 
-                Lex_Dictionary.WriteDictionary(this.ListView);
+                if (this.ListView != null)
+                {
+                    Lex_Dictionary.WriteDictionary(this.ListView);
+                }
                 Lex_Dictionary.CreateDictionary();
 
-                this.Win.Dispatcher.Invoke(new Action(() =>
+                if (this.Win != null)
                 {
-                    this.Win._Parent?.RemoveTab(this.Path);
-                    MessageBoxExtend.Show(
-                    this.Win._Parent,
-                    "File saved successfully:\r\n" +
-                    this.Path +
-                    "\r\n\r\nRollback backup file created:\r\n" +
-                    BackupManagePath
-                    );
-                    this.Win._Parent?.LoadFile(this.Path);
-                }));
+                    this.Win.Dispatcher.Invoke(new Action(() =>
+                    {
+                        this.Win._Parent?.RemoveTab(this.Path);
+                        MessageBoxExtend.Show(
+                        this.Win._Parent,
+                        "File saved successfully:\r\n" +
+                        this.Path +
+                        "\r\n\r\nRollback backup file created:\r\n" +
+                        BackupManagePath
+                        );
+                        this.Win._Parent?.LoadFile(this.Path);
+                    }));
+                }
             }
         }
 

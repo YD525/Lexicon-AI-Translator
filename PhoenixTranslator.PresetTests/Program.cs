@@ -32,7 +32,11 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(ValidatesPreviewMessageIdentifiers), ValidatesPreviewMessageIdentifiers },
                 { nameof(FormatsPreviewMessages), FormatsPreviewMessages },
                 { nameof(NavigatesPreviewShell), NavigatesPreviewShell },
-                { nameof(TracksPreviewShellStatus), TracksPreviewShellStatus }
+                { nameof(TracksPreviewShellStatus), TracksPreviewShellStatus },
+                { nameof(FiltersPreviewTranslationWorkspace), FiltersPreviewTranslationWorkspace },
+                { nameof(HandlesPreviewTranslationFailures), HandlesPreviewTranslationFailures },
+                { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork },
+                { nameof(FiltersLargePreviewTranslationProject), FiltersLargePreviewTranslationProject }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -363,6 +367,146 @@ namespace PhoenixTranslator.PresetTests
                 "Completing an operation must clear stale progress.");
         }
 
+        private static void FiltersPreviewTranslationWorkspace()
+        {
+            var shell = new PreviewShellViewModel(() => { });
+            var project = new FakePreviewTranslationProject(new[]
+            {
+                new PreviewTranslationEntry("1", "MCM", "GREETING", "Hello Dragonborn", "", 100),
+                new PreviewTranslationEntry("2", "MCM", "FAREWELL", "Goodbye", "Auf Wiedersehen", 100),
+                new PreviewTranslationEntry("3", "XML", "NOTICE", "Read this", "", 100)
+            });
+            var viewModel = new PreviewTranslationWorkspaceViewModel(
+                () => "fixture",
+                () => { },
+                shell,
+                path => project);
+
+            viewModel.OpenProjectAsync("fixture").GetAwaiter().GetResult();
+
+            AssertEqual(3, viewModel.Entries.Count,
+                "Opening a project must expose every normalized entry.");
+            AssertEqual("fixture.xml", shell.ProjectIdentity,
+                "The shell must receive only the safe project display name.");
+            AssertEqual(false, viewModel.SaveCommand.CanExecute(null),
+                "An unchanged project must not offer a redundant save.");
+
+            viewModel.SearchText = "dragonborn";
+            AssertEqual(1, viewModel.Entries.Count,
+                "Search must filter source text without changing project data.");
+
+            viewModel.SearchText = string.Empty;
+            viewModel.SelectedTypeFilter = "MCM";
+            AssertEqual(2, viewModel.Entries.Count,
+                "The type filter must retain matching normalized entries.");
+
+            viewModel.SelectedEntry.TargetText = "Willkommen";
+            AssertEqual(true, shell.IsModified,
+                "Editing a target must update persistent shell unsaved state.");
+            AssertEqual(true, viewModel.SaveCommand.CanExecute(null),
+                "A staged target edit must enable persistence.");
+            viewModel.Dispose();
+        }
+
+        private static void HandlesPreviewTranslationFailures()
+        {
+            var shell = new PreviewShellViewModel(() => { });
+            var project = new FakePreviewTranslationProject(new[]
+            {
+                new PreviewTranslationEntry("1", "MCM", "ONE", "First", "", 100),
+                new PreviewTranslationEntry("2", "MCM", "TWO", "Second", "", 100)
+            })
+            {
+                FailedKey = "2"
+            };
+            var viewModel = new PreviewTranslationWorkspaceViewModel(
+                () => "fixture",
+                () => { },
+                shell,
+                path => project);
+            viewModel.OpenProjectAsync("fixture").GetAwaiter().GetResult();
+
+            viewModel.TranslateEntriesAsync(viewModel.Entries.ToList()).GetAwaiter().GetResult();
+
+            AssertEqual("Translated First", project.Entries[0].TargetText,
+                "A successful provider result must remain staged.");
+            AssertEqual(string.Empty, project.Entries[1].TargetText,
+                "A failed entry must preserve its previous target.");
+            AssertEqual(PreviewShellNotificationSeverity.Warning, shell.NotificationSeverity,
+                "Partial provider failure must use a warning rather than discard successful edits.");
+            AssertEqual("Translation completed with 1 failed entries.", shell.NotificationMessage,
+                "Partial failure must expose a user-safe bounded summary.");
+            viewModel.Dispose();
+        }
+
+        private static void CancelsPreviewTranslationWork()
+        {
+            var shell = new PreviewShellViewModel(() => { });
+            var project = new FakePreviewTranslationProject(new[]
+            {
+                new PreviewTranslationEntry("1", "MCM", "ONE", "First", "", 100)
+            })
+            {
+                BlockUntilCancelled = true
+            };
+            var viewModel = new PreviewTranslationWorkspaceViewModel(
+                () => "fixture",
+                () => { },
+                shell,
+                path => project);
+            viewModel.OpenProjectAsync("fixture").GetAwaiter().GetResult();
+
+            System.Threading.Tasks.Task operation = viewModel.TranslateEntriesAsync(viewModel.Entries.ToList());
+            AssertEqual(true, System.Threading.SpinWait.SpinUntil(() => project.TranslateStarted, 2000),
+                "The synthetic provider must start before cancellation is requested.");
+            viewModel.CancelOperationCommand.Execute(null);
+            operation.GetAwaiter().GetResult();
+
+            AssertEqual(false, viewModel.IsBusy,
+                "Cooperative cancellation must return the workspace to its idle state.");
+            AssertEqual(string.Empty, project.Entries[0].TargetText,
+                "Cancellation must not replace an entry with a partial provider result.");
+            AssertEqual("Ready", shell.StatusText,
+                "Cooperative cancellation must restore persistent shell status.");
+            viewModel.Dispose();
+        }
+
+        private static void FiltersLargePreviewTranslationProject()
+        {
+            var entries = Enumerable.Range(0, 25000)
+                .Select(index => new PreviewTranslationEntry(
+                    index.ToString(CultureInfo.InvariantCulture),
+                    index % 2 == 0 ? "MCM" : "XML",
+                    "RECORD_" + index.ToString(CultureInfo.InvariantCulture),
+                    "Synthetic source " + index.ToString(CultureInfo.InvariantCulture),
+                    index % 3 == 0 ? "Synthetic target" : string.Empty,
+                    100))
+                .ToList();
+            var shell = new PreviewShellViewModel(() => { });
+            var project = new FakePreviewTranslationProject(entries);
+            var viewModel = new PreviewTranslationWorkspaceViewModel(
+                () => "fixture",
+                () => { },
+                shell,
+                path => project);
+
+            viewModel.OpenProjectAsync("fixture").GetAwaiter().GetResult();
+            AssertEqual(25000, viewModel.Entries.Count,
+                "A large project must load as one complete virtualized list snapshot.");
+
+            viewModel.SearchText = "source 24999";
+            AssertEqual(1, viewModel.Entries.Count,
+                "Search must isolate one record in a large synthetic project.");
+            AssertEqual("24999", viewModel.Entries[0].Key,
+                "Large-project filtering must retain stable record identity.");
+
+            viewModel.SearchText = string.Empty;
+            viewModel.SelectedTypeFilter = "MCM";
+            AssertEqual(12500, viewModel.Entries.Count,
+                "Large-project type filtering must retain every matching record.");
+            viewModel.Dispose();
+        }
+
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)
         {
             return new TranslationPresetCoordinator(new TranslationPresetService(), store);
@@ -407,6 +551,55 @@ namespace PhoenixTranslator.PresetTests
             public void Save()
             {
                 SaveCalls++;
+            }
+        }
+
+        private sealed class FakePreviewTranslationProject : IPreviewTranslationProject
+        {
+            internal FakePreviewTranslationProject(IReadOnlyList<PreviewTranslationEntry> entries)
+            {
+                Entries = entries;
+            }
+
+            public string Path => "fixture.xml";
+
+            public string DisplayName => "fixture.xml";
+
+            public IReadOnlyList<PreviewTranslationEntry> Entries { get; private set; }
+
+            internal string FailedKey { get; set; }
+
+            internal bool BlockUntilCancelled { get; set; }
+
+            internal bool TranslateStarted { get; private set; }
+
+            public string Translate(PreviewTranslationEntry entry, System.Threading.CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                TranslateStarted = true;
+                if (BlockUntilCancelled)
+                {
+                    while (true)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        System.Threading.Thread.Sleep(5);
+                    }
+                }
+
+                if (string.Equals(entry.Key, FailedKey, StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException("Synthetic provider failure.");
+                }
+
+                return "Translated " + entry.SourceText;
+            }
+
+            public void Save()
+            {
+            }
+
+            public void Dispose()
+            {
             }
         }
     }

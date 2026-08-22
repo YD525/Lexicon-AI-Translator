@@ -83,6 +83,11 @@ namespace PhoenixTranslator.SkyrimManagement
 
     public class R_XmlReader
     {
+        /// <summary>
+        /// Gets or sets whether invalid XML is reported to the caller instead of the legacy modal boundary.
+        /// </summary>
+        public bool ThrowOnInvalidFormat { get; set; }
+
         public Translator TranslatorRef = null;
         public R_XmlReader(Translator TranslatorRef)
         {
@@ -123,8 +128,15 @@ namespace PhoenixTranslator.SkyrimManagement
                     }
                 }
             }
-            catch 
+            catch (System.Exception exception)
             {
+                if (ThrowOnInvalidFormat)
+                {
+                    throw new System.IO.InvalidDataException(
+                        "The XML translation format is unsupported.",
+                        exception);
+                }
+
                 MessageBoxExtend.Show(DeFine.WorkWin, "This XML file format is not supported.");
             }
         }
