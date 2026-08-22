@@ -88,4 +88,3 @@ jobs:
             ".\artifacts\PhoenixTranslator-win-x64.zip.sha256" `
             --generate-notes `
             --verify-tag
-
