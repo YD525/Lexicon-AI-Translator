@@ -4,6 +4,7 @@
 dependencies/
 packages/
 artifacts/
+.test-results/
 *.pdb
 *.suo
 *.user

@@ -11,6 +11,7 @@ using PhoenixEngine;
 using PhoenixEngine.Language;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine.ADO;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator
 {
@@ -159,14 +160,11 @@ namespace PhoenixTranslator
         }
     }
 
-    public enum GlobalPresets
-    {
-        Custom = 0, Balanced = 1, QualityFirst = 2, SpeedFirst = 3
-    }
-
     public class LocalSetting
     {
-        public GlobalPresets Preset = GlobalPresets.Balanced;
+        /// <summary>Provides the explicitly selected translation configuration preset.</summary>
+        /// <remarks>Settings created before presets existed migrate safely to <c>Custom</c>.</remarks>
+        public TranslationPreset Preset { get; set; } = TranslationPreset.Custom;
         public int Style { get; set; } = 1;
         public double FormHeight { get; set; } = 850;
         public double FormWidth { get; set; } = 1200;
