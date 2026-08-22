@@ -173,6 +173,27 @@
   <data name="Shell_Page_AdvancedTools_Description" xml:space="preserve"><value>Access terminology data, provider pipelines, context inspectors, and diagnostics.</value><comment>Preview shell description for the Advanced tools destination.</comment></data>
   <data name="Workspace_Title" xml:space="preserve"><value>Translation workspace</value><comment>Accessible workflow title for the translation workspace.</comment></data>
   <data name="Workspace_Search_Placeholder" xml:space="preserve"><value>Search entries</value><comment>Placeholder in the workspace entry search field.</comment></data>
+  <data name="Workspace_Open_Title" xml:space="preserve"><value>Open translation project</value><comment>Title of the supported-project file picker.</comment></data>
+  <data name="Workspace_Project_Filter" xml:space="preserve"><value>Supported projects|*.esp;*.esm;*.esl;*.pex;*.txt;*.xml;*.json|All files|*.*</value><comment>File picker filter. Keep pipe separators and supported extensions unchanged.</comment></data>
+  <data name="Workspace_Open_Action" xml:space="preserve"><value>Open project</value><comment>Opens a supported project in the preview workspace.</comment></data>
+  <data name="Workspace_Save_Action" xml:space="preserve"><value>Save project</value><comment>Persists confirmed translation changes through the format writer.</comment></data>
+  <data name="Workspace_TranslateEntry_Action" xml:space="preserve"><value>Translate entry</value><comment>Translates the selected entry through the configured provider pipeline.</comment></data>
+  <data name="Workspace_Cancel_Action" xml:space="preserve"><value>Cancel</value><comment>Requests cooperative cancellation of the active workspace operation.</comment></data>
+  <data name="Workspace_Empty_Title" xml:space="preserve"><value>Open a project to start translating</value><comment>Preview workspace empty-state heading.</comment></data>
+  <data name="Workspace_Empty_Hint" xml:space="preserve"><value>ESP, ESM, ESL, PEX, MCM TXT, XML, and Phoenix RamCache JSON projects are supported.</value><comment>Preview workspace empty-state format summary.</comment></data>
+  <data name="Workspace_Filter_State_Name" xml:space="preserve"><value>Entry state filter</value><comment>Accessible name for the workspace state filter.</comment></data>
+  <data name="Workspace_Filter_Type_Name" xml:space="preserve"><value>Record type filter</value><comment>Accessible name for the workspace record-type filter.</comment></data>
+  <data name="Workspace_State_Draft" xml:space="preserve"><value>Draft</value><comment>Entry state for an empty target translation.</comment></data>
+  <data name="Workspace_State_Translated" xml:space="preserve"><value>Translated</value><comment>Entry state for a populated persisted target translation.</comment></data>
+  <data name="Workspace_State_Modified" xml:space="preserve"><value>Modified</value><comment>Entry state for a staged target that differs from the persisted value.</comment></data>
+  <data name="Workspace_Context_Type_Label" xml:space="preserve"><value>Type</value><comment>Metadata label for the selected parser or record type.</comment></data>
+  <data name="Workspace_Context_Key_Label" xml:space="preserve"><value>Technical key</value><comment>Metadata label for the project-local technical record key.</comment></data>
+  <data name="Workspace_Context_Score_Label" xml:space="preserve"><value>Confidence score</value><comment>Metadata label for the parser or heuristic confidence score.</comment></data>
+  <data name="Workspace_Project_Opening" xml:space="preserve"><value>Opening project…</value><comment>Status while a selected project is parsed and normalized.</comment></data>
+  <data name="Workspace_Project_Saving" xml:space="preserve"><value>Saving project…</value><comment>Status while staged translations are persisted.</comment></data>
+  <data name="Workspace_Project_OpenFailed" xml:space="preserve"><value>The project could not be opened. The selected format may be invalid or unsupported.</value><comment>User-safe project-open failure without paths or parser details.</comment></data>
+  <data name="Workspace_Save_Succeeded" xml:space="preserve"><value>The project was saved and reloaded successfully.</value><comment>Non-blocking confirmation after a successful preview save.</comment></data>
+  <data name="Workspace_Shortcuts_Hint" xml:space="preserve"><value>Ctrl+O Open · Ctrl+S Save · F6 Translate entry · Ctrl+Shift+T Translate scope · Esc Cancel</value><comment>Compact keyboard command map for the preview translation workspace.</comment></data>
   <data name="Workspace_Filter_AllStates" xml:space="preserve"><value>All states</value><comment>Default state-filter option in the workspace.</comment></data>
   <data name="Workspace_Filter_AllTypes" xml:space="preserve"><value>All types</value><comment>Default record-type filter option in the workspace.</comment></data>
   <data name="Workspace_TranslateScope_Action" xml:space="preserve"><value>Translate scope</value><comment>Starts translation for the currently selected or filtered scope.</comment></data>

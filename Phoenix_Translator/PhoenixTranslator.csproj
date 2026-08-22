@@ -107,9 +107,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Application\AdvancedDictionaryQueryBuilder.cs" />
+    <Compile Include="Application\IPreviewTranslationProject.cs" />
     <Compile Include="Application\PreviewMessageCatalog.cs" />
     <Compile Include="Application\PreviewShellCommand.cs" />
     <Compile Include="Application\PreviewShellViewModel.cs" />
+    <Compile Include="Application\PreviewTranslationEntry.cs" />
+    <Compile Include="Application\PreviewTranslationProject.cs" />
+    <Compile Include="Application\PreviewTranslationWorkspaceViewModel.cs" />
     <Compile Include="Application\LegacyTranslationPresetStore.cs" />
     <Compile Include="Application\TranslationPresetService.cs" />
     <Compile Include="FileManagement\ZipHelper.cs" />
@@ -198,6 +202,9 @@
     <Compile Include="UIManagement\Localization\PreviewMessageExtension.cs" />
     <Compile Include="UIManagement\Preview\PreviewShellWindow.xaml.cs">
       <DependentUpon>PreviewShellWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIManagement\Preview\PreviewTranslationWorkspaceView.xaml.cs">
+      <DependentUpon>PreviewTranslationWorkspaceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\YDListView.cs" />
     <Compile Include="UIManagement\Setting\LexTranslatorRadarChart.xaml.cs">
@@ -311,6 +318,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIManagement\Preview\PreviewShellWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\Preview\PreviewTranslationWorkspaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using Microsoft.Win32;
 using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator.UIManagement.Preview
@@ -11,6 +12,7 @@ namespace PhoenixTranslator.UIManagement.Preview
     public partial class PreviewShellWindow : Window
     {
         private PhoenixGui _legacyWorkspace;
+        private readonly PreviewTranslationWorkspaceViewModel _translationWorkspaceViewModel;
 
         /// <summary>
         /// Creates the preview application shell in its no-project state.
@@ -18,7 +20,26 @@ namespace PhoenixTranslator.UIManagement.Preview
         public PreviewShellWindow()
         {
             InitializeComponent();
-            DataContext = new PreviewShellViewModel(OpenLegacyWorkspace);
+            var shellViewModel = new PreviewShellViewModel(OpenLegacyWorkspace);
+            _translationWorkspaceViewModel = new PreviewTranslationWorkspaceViewModel(
+                SelectPreviewProject,
+                OpenLegacyWorkspace,
+                shellViewModel,
+                PreviewTranslationProject.Open);
+            DataContext = shellViewModel;
+            TranslationWorkspace.DataContext = _translationWorkspaceViewModel;
+        }
+
+        private static string SelectPreviewProject()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = PreviewMessageCatalog.Get("Workspace_Open_Title"),
+                Filter = PreviewMessageCatalog.Get("Workspace_Project_Filter"),
+                CheckFileExists = true,
+                Multiselect = false
+            };
+            return dialog.ShowDialog() == true ? dialog.FileName : string.Empty;
         }
 
         private void OpenLegacyWorkspace()
@@ -46,6 +67,7 @@ namespace PhoenixTranslator.UIManagement.Preview
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            _translationWorkspaceViewModel.Dispose();
             DeFine.CloseAny();
         }
     }

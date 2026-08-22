@@ -129,6 +129,8 @@ namespace PhoenixTranslator.ApplicationLayer
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CurrentTitle));
                 OnPropertyChanged(nameof(CurrentDescription));
+                OnPropertyChanged(nameof(IsTranslationWorkspaceVisible));
+                OnPropertyChanged(nameof(IsPreviewFallbackVisible));
             }
         }
 
@@ -141,6 +143,16 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Gets the localized rollout description for the selected destination.
         /// </summary>
         public string CurrentDescription => PreviewMessageCatalog.Get(GetDestinationMessageId("Description"));
+
+        /// <summary>
+        /// Gets whether the preview translation workspace owns the current page.
+        /// </summary>
+        public bool IsTranslationWorkspaceVisible => _currentDestination == PreviewShellDestination.Translate;
+
+        /// <summary>
+        /// Gets whether the selected destination still uses the shared preview fallback page.
+        /// </summary>
+        public bool IsPreviewFallbackVisible => !IsTranslationWorkspaceVisible;
 
         /// <summary>
         /// Gets the product version shown independently from dependency versions.
@@ -279,6 +291,28 @@ namespace PhoenixTranslator.ApplicationLayer
             _operationText = arguments == null || arguments.Length == 0
                 ? PreviewMessageCatalog.Get(messageId)
                 : PreviewMessageCatalog.Format(messageId, arguments);
+            _operationProgress = progress;
+            _isOperationRunning = true;
+            OnPropertyChanged(nameof(IsOperationRunning));
+            OnPropertyChanged(nameof(OperationText));
+            OnPropertyChanged(nameof(OperationProgress));
+            OnPropertyChanged(nameof(StatusText));
+        }
+
+        /// <summary>
+        /// Starts or updates a long-running operation with already localized user-safe text.
+        /// </summary>
+        /// <param name="message">The localized user-safe operation message.</param>
+        /// <param name="progress">Progress from zero through one hundred.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="progress"/> is outside zero through one hundred.</exception>
+        internal void SetOperationText(string message, double progress)
+        {
+            if (progress < 0 || progress > 100)
+            {
+                throw new ArgumentOutOfRangeException(nameof(progress));
+            }
+
+            _operationText = message ?? string.Empty;
             _operationProgress = progress;
             _isOperationRunning = true;
             OnPropertyChanged(nameof(IsOperationRunning));
