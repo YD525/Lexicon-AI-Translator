@@ -17,6 +17,7 @@ using PhoenixEngine.Language;
 using PhoenixEngine;
 using PhoenixEngine.P_Delegate;
 using PhoenixEngine.Common;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator
 {
@@ -910,7 +911,13 @@ namespace PhoenixTranslator
 
             //Results are capped at 100,000 rows via LIMIT to prevent memory exhaustion, as databases may scale to GB/TB levels. This tool is intended for SQL-proficient users to manually execute conditional queries for specific records or perform bulk modifications across multiple entries using custom SQL logic.
             //Select * From AdvancedDictionary Where Source Like '%[pagebreak]%' or  Source Like '%<font' (I just threw this together to match the content of all the books.) - > Compared to using regular expressions for pattern matching, utilizing the `LIKE` and `GLOB` commands in SQL operates directly at the database engine level, enabling millisecond-level query performance.
-            DeFine.OpenDataBaseView(this,$"Select * From AdvancedDictionary Where [From] = {(int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.From} And [To] = {(int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.To} Limit 100000");
+            var translator = _Owner?.ActiveTab?.Mod?.P_Translator;
+            int? sourceLanguage = translator == null ? (int?)null : (int)translator.From;
+            int? targetLanguage = translator == null ? (int?)null : (int)translator.To;
+
+            DeFine.OpenDataBaseView(
+                this,
+                AdvancedDictionaryQueryBuilder.Build(sourceLanguage, targetLanguage));
         }
 
         private void DetectFrom(object sender, MouseButtonEventArgs e)

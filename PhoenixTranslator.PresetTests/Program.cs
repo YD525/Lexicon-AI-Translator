@@ -13,7 +13,9 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(PreservesCustomSettingsOnLoad), PreservesCustomSettingsOnLoad },
                 { nameof(AppliesNamedPresetOnce), AppliesNamedPresetOnce },
                 { nameof(MarksManualEditsAsCustom), MarksManualEditsAsCustom },
-                { nameof(BoundsAndValidatesPresetValues), BoundsAndValidatesPresetValues }
+                { nameof(BoundsAndValidatesPresetValues), BoundsAndValidatesPresetValues },
+                { nameof(BuildsProjectIndependentDatabaseQuery), BuildsProjectIndependentDatabaseQuery },
+                { nameof(BuildsLanguageFilteredDatabaseQuery), BuildsLanguageFilteredDatabaseQuery }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -102,6 +104,22 @@ namespace PhoenixTranslator.PresetTests
             AssertEqual(false, service.IsValid(
                 new TranslationPresetSettings(0, 3900, false, false, false)),
                 "Zero context length must be rejected.");
+        }
+
+        private static void BuildsProjectIndependentDatabaseQuery()
+        {
+            AssertEqual(
+                "Select * From AdvancedDictionary Limit 100000",
+                AdvancedDictionaryQueryBuilder.Build(null, null),
+                "Opening the database without a project must use a bounded query.");
+        }
+
+        private static void BuildsLanguageFilteredDatabaseQuery()
+        {
+            AssertEqual(
+                "Select * From AdvancedDictionary Where [From] = 1 And [To] = 2 Limit 100000",
+                AdvancedDictionaryQueryBuilder.Build(1, 2),
+                "Opening the database with a project must retain its language filter.");
         }
 
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)

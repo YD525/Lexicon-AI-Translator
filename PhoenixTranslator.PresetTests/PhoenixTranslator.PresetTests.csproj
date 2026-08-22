@@ -40,6 +40,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Phoenix_Translator\Application\AdvancedDictionaryQueryBuilder.cs">
+      <Link>AdvancedDictionaryQueryBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\TranslationPresetService.cs">
       <Link>TranslationPresetService.cs</Link>
     </Compile>
