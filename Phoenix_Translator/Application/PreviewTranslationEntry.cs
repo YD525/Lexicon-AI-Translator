@@ -5,12 +5,25 @@ using System.Runtime.CompilerServices;
 namespace PhoenixTranslator.ApplicationLayer
 {
     /// <summary>
+    /// Identifies the human review decision recorded for a translation entry.
+    /// </summary>
+    internal enum PreviewReviewState
+    {
+        Unreviewed,
+        Reviewed,
+        Approved,
+        Rejected
+    }
+
+    /// <summary>
     /// Represents one editable translation record independently from WPF controls and parser implementations.
     /// </summary>
     internal sealed class PreviewTranslationEntry : INotifyPropertyChanged
     {
         private string _targetText;
         private string _savedTargetText;
+        private PreviewReviewState _reviewState;
+        private string _provenance;
 
         /// <summary>
         /// Creates an entry from a normalized project record.
@@ -35,6 +48,8 @@ namespace PhoenixTranslator.ApplicationLayer
             SourceText = sourceText ?? string.Empty;
             _targetText = targetText ?? string.Empty;
             _savedTargetText = _targetText;
+            _reviewState = PreviewReviewState.Unreviewed;
+            _provenance = string.IsNullOrWhiteSpace(_targetText) ? "None" : "Imported";
             Score = score;
         }
 
@@ -76,10 +91,15 @@ namespace PhoenixTranslator.ApplicationLayer
                 }
 
                 _targetText = normalizedValue;
+                _reviewState = PreviewReviewState.Unreviewed;
+                _provenance = "Edited";
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsDraft));
                 OnPropertyChanged(nameof(IsModified));
                 OnPropertyChanged(nameof(StateText));
+                OnPropertyChanged(nameof(ReviewState));
+                OnPropertyChanged(nameof(ReviewStateText));
+                OnPropertyChanged(nameof(Provenance));
             }
         }
 
@@ -105,6 +125,48 @@ namespace PhoenixTranslator.ApplicationLayer
             IsModified
                 ? "Workspace_State_Modified"
                 : IsDraft ? "Workspace_State_Draft" : "Workspace_State_Translated");
+
+        /// <summary>
+        /// Gets the current human review decision.
+        /// </summary>
+        public PreviewReviewState ReviewState => _reviewState;
+
+        /// <summary>
+        /// Gets the localized review-state label.
+        /// </summary>
+        public string ReviewStateText => PreviewMessageCatalog.Get("Review_State_" + _reviewState);
+
+        /// <summary>
+        /// Gets the user-safe origin of the current target text.
+        /// </summary>
+        public string Provenance => PreviewMessageCatalog.Get("Review_Provenance_" + _provenance);
+
+        /// <summary>
+        /// Applies a provider-generated target and records its provenance.
+        /// </summary>
+        /// <param name="targetText">The generated target text.</param>
+        internal void ApplyGeneratedTarget(string targetText)
+        {
+            TargetText = targetText;
+            _provenance = "Provider";
+            OnPropertyChanged(nameof(Provenance));
+        }
+
+        /// <summary>
+        /// Records a human review decision for the current target text.
+        /// </summary>
+        /// <param name="state">The decision to record.</param>
+        internal void SetReviewState(PreviewReviewState state)
+        {
+            if (_reviewState == state)
+            {
+                return;
+            }
+
+            _reviewState = state;
+            OnPropertyChanged(nameof(ReviewState));
+            OnPropertyChanged(nameof(ReviewStateText));
+        }
 
         /// <summary>
         /// Marks the current target text as persisted.
