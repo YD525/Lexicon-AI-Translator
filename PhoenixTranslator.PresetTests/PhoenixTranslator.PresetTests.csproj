@@ -41,6 +41,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Phoenix_Translator\Application\AdvancedDictionaryQueryBuilder.cs">
@@ -48,6 +49,12 @@
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewMessageCatalog.cs">
       <Link>PreviewMessageCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewShellCommand.cs">
+      <Link>PreviewShellCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewShellViewModel.cs">
+      <Link>PreviewShellViewModel.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\TranslationPresetService.cs">
       <Link>TranslationPresetService.cs</Link>

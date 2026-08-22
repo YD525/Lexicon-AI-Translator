@@ -30,7 +30,9 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(ValidatesMcmFixtures), ValidatesMcmFixtures },
                 { nameof(ValidatesXmlFixtures), ValidatesXmlFixtures },
                 { nameof(ValidatesPreviewMessageIdentifiers), ValidatesPreviewMessageIdentifiers },
-                { nameof(FormatsPreviewMessages), FormatsPreviewMessages }
+                { nameof(FormatsPreviewMessages), FormatsPreviewMessages },
+                { nameof(NavigatesPreviewShell), NavigatesPreviewShell },
+                { nameof(TracksPreviewShellStatus), TracksPreviewShellStatus }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -293,6 +295,72 @@ namespace PhoenixTranslator.PresetTests
             }
 
             AssertEqual(true, rejected, "Unknown preview message identifiers must fail explicitly.");
+        }
+
+        private static void NavigatesPreviewShell()
+        {
+            int legacyOpenCalls = 0;
+            var viewModel = new PreviewShellViewModel(() => legacyOpenCalls++);
+
+            AssertEqual(PreviewShellDestination.Projects, viewModel.CurrentDestination,
+                "The preview shell must start at Projects.");
+            AssertEqual("Projects", viewModel.CurrentTitle,
+                "The initial destination must expose its localized title.");
+
+            viewModel.NavigateCommand.Execute("Review");
+
+            AssertEqual(PreviewShellDestination.Review, viewModel.CurrentDestination,
+                "A keyboard command parameter must select the matching destination.");
+            AssertEqual("Review", viewModel.CurrentTitle,
+                "Navigation must update the localized destination title.");
+
+            viewModel.OpenLegacyWorkspaceCommand.Execute(null);
+            AssertEqual(1, legacyOpenCalls,
+                "The fallback command must delegate to the legacy workspace integration exactly once.");
+        }
+
+        private static void TracksPreviewShellStatus()
+        {
+            var viewModel = new PreviewShellViewModel(() => { });
+
+            AssertEqual("No project open", viewModel.ProjectIdentity,
+                "The shell must expose an explicit no-project state.");
+            AssertEqual("Ready", viewModel.StatusText,
+                "The shell must start with an explicit idle status.");
+
+            viewModel.SetProject("Example.esp", true);
+            viewModel.SetWarningCount(3);
+            viewModel.SetOperation("Shell_ProjectOpen_OpeningProgress", 42, 42);
+
+            AssertEqual("Example.esp", viewModel.ProjectIdentity,
+                "The shell must retain the safe project display name.");
+            AssertEqual(true, viewModel.IsModified,
+                "The shell must retain the unsaved project state.");
+            AssertEqual("3 warnings", viewModel.WarningText,
+                "The shell must format the persistent warning count.");
+            AssertEqual("Opening project: 42%", viewModel.StatusText,
+                "An active operation must replace the idle status.");
+            AssertEqual(42d, viewModel.OperationProgress,
+                "The shell must retain bounded operation progress.");
+
+            viewModel.ShowNotification(
+                PreviewShellNotificationSeverity.Error,
+                "Shell_ProjectOpen_Failed");
+            AssertEqual(true, viewModel.HasNotification,
+                "The shell must expose a persistent error boundary.");
+            AssertEqual(PreviewShellNotificationSeverity.Error, viewModel.NotificationSeverity,
+                "The shell must retain notification severity independently from its text.");
+            AssertEqual("The project could not be opened.", viewModel.NotificationMessage,
+                "The error boundary must expose registered user-safe text.");
+            viewModel.DismissNotificationCommand.Execute(null);
+            AssertEqual(false, viewModel.HasNotification,
+                "A non-blocking notification must be dismissible by command.");
+
+            viewModel.CompleteOperation();
+            AssertEqual("Ready", viewModel.StatusText,
+                "Completing an operation must restore the idle status.");
+            AssertEqual(0d, viewModel.OperationProgress,
+                "Completing an operation must clear stale progress.");
         }
 
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)

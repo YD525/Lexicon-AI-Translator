@@ -36,7 +36,7 @@ namespace PhoenixTranslator
 
         public static string BackupPath = @"\BackUpData\";
 
-        public static string CurrentVersion = "5.1.5.9";
+        public static string CurrentVersion = typeof(DeFine).Assembly.GetName().Version.ToString();
         public static LocalSetting GlobalLocalSetting = new LocalSetting();
 
         public static RowStyleWin RowStyleWin = new RowStyleWin();

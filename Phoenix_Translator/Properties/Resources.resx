@@ -118,6 +118,7 @@
   <data name="Common_Action_Back" xml:space="preserve"><value>Back</value><comment>Shared wizard or navigation action.</comment></data>
   <data name="Common_Action_Browse" xml:space="preserve"><value>Browse</value><comment>Shared action that opens a file or folder picker.</comment></data>
   <data name="Common_Action_Cancel" xml:space="preserve"><value>Cancel</value><comment>Shared action that cancels a dialog or operation.</comment></data>
+  <data name="Common_Action_Dismiss" xml:space="preserve"><value>Dismiss</value><comment>Closes a non-blocking notification without changing project state.</comment></data>
   <data name="Common_Action_Clear" xml:space="preserve"><value>Clear</value><comment>Shared action that clears user-controlled content or filters.</comment></data>
   <data name="Common_Action_Close" xml:space="preserve"><value>Close</value><comment>Shared action that closes the current surface.</comment></data>
   <data name="Common_Action_Discard" xml:space="preserve"><value>Discard</value><comment>Shared action that abandons staged or unsaved changes.</comment></data>
@@ -148,6 +149,28 @@
   <data name="Shell_Navigation_AdvancedTools" xml:space="preserve"><value>Advanced tools</value><comment>Shell navigation destination for progressively disclosed expert tools.</comment></data>
   <data name="Shell_Unsaved_ClosePrompt_Title" xml:space="preserve"><value>Save changes before closing?</value><comment>Heading for the modified-project close confirmation.</comment></data>
   <data name="Shell_Unsaved_ClosePrompt_Body" xml:space="preserve"><value>Your project contains changes that have not been saved.</value><comment>Body for the modified-project close confirmation.</comment></data>
+  <data name="Shell_Preview_Badge" xml:space="preserve"><value>Preview</value><comment>Badge that distinguishes the incremental preview shell from the legacy workspace.</comment></data>
+  <data name="Shell_Legacy_Open_Action" xml:space="preserve"><value>Open legacy workspace</value><comment>Global fallback action that opens the complete legacy PhoenixGui window.</comment></data>
+  <data name="Shell_Legacy_Shortcut_Hint" xml:space="preserve"><value>Ctrl+L opens the legacy workspace.</value><comment>Keyboard hint below the workflow fallback action.</comment></data>
+  <data name="Shell_Navigation_Shortcuts_Hint" xml:space="preserve"><value>Ctrl+1–8 navigate</value><comment>Compact shell footer hint for direct workflow navigation.</comment></data>
+  <data name="Shell_Status_WarningCount" xml:space="preserve"><value>{0} warnings</value><comment>Persistent shell warning summary. Placeholders: {0}=non-negative integer warning count.</comment></data>
+  <data name="Shell_Page_PreviewFallback_Description" xml:space="preserve"><value>This workflow is still provided by the legacy workspace while its preview replacement is developed and validated.</value><comment>Shared explanation in a preview destination that still delegates its workflow to PhoenixGui.</comment></data>
+  <data name="Shell_Page_Projects_Title" xml:space="preserve"><value>Projects</value><comment>Preview shell heading for project selection and recent projects.</comment></data>
+  <data name="Shell_Page_Projects_Description" xml:space="preserve"><value>Open a supported file, return to a recent project, or continue in the legacy workspace.</value><comment>Preview shell description for the Projects destination.</comment></data>
+  <data name="Shell_Page_Translate_Title" xml:space="preserve"><value>Translate</value><comment>Preview shell heading for the translation workspace.</comment></data>
+  <data name="Shell_Page_Translate_Description" xml:space="preserve"><value>Work through source and target entries with persistent project context and operation status.</value><comment>Preview shell description for the Translate destination.</comment></data>
+  <data name="Shell_Page_Review_Title" xml:space="preserve"><value>Review</value><comment>Preview shell heading for the review workflow.</comment></data>
+  <data name="Shell_Page_Review_Description" xml:space="preserve"><value>Inspect translation context and provenance before recording a durable review decision.</value><comment>Preview shell description for the Review destination.</comment></data>
+  <data name="Shell_Page_Quality_Title" xml:space="preserve"><value>Quality</value><comment>Preview shell heading for quality validation.</comment></data>
+  <data name="Shell_Page_Quality_Description" xml:space="preserve"><value>Run project checks, inspect findings, and determine export readiness.</value><comment>Preview shell description for the Quality destination.</comment></data>
+  <data name="Shell_Page_History_Title" xml:space="preserve"><value>History</value><comment>Preview shell heading for project and entry history.</comment></data>
+  <data name="Shell_Page_History_Description" xml:space="preserve"><value>Compare revisions, understand their origin, and restore without discarding provenance.</value><comment>Preview shell description for the History destination.</comment></data>
+  <data name="Shell_Page_ProjectUpdate_Title" xml:space="preserve"><value>Project update</value><comment>Preview shell heading for comparing a newer source revision.</comment></data>
+  <data name="Shell_Page_ProjectUpdate_Description" xml:space="preserve"><value>Compare source revisions, resolve ambiguous identities, and apply updates safely.</value><comment>Preview shell description for the Project update destination.</comment></data>
+  <data name="Shell_Page_Settings_Title" xml:space="preserve"><value>Settings</value><comment>Preview shell heading for intent-based settings.</comment></data>
+  <data name="Shell_Page_Settings_Description" xml:space="preserve"><value>Configure providers, translation behavior, formats, appearance, and accessibility with staged changes.</value><comment>Preview shell description for the Settings destination.</comment></data>
+  <data name="Shell_Page_AdvancedTools_Title" xml:space="preserve"><value>Advanced tools</value><comment>Preview shell heading for progressively disclosed expert capabilities.</comment></data>
+  <data name="Shell_Page_AdvancedTools_Description" xml:space="preserve"><value>Access terminology data, provider pipelines, context inspectors, and diagnostics.</value><comment>Preview shell description for the Advanced tools destination.</comment></data>
   <data name="Workspace_Title" xml:space="preserve"><value>Translation workspace</value><comment>Accessible workflow title for the translation workspace.</comment></data>
   <data name="Workspace_Search_Placeholder" xml:space="preserve"><value>Search entries</value><comment>Placeholder in the workspace entry search field.</comment></data>
   <data name="Workspace_Filter_AllStates" xml:space="preserve"><value>All states</value><comment>Default state-filter option in the workspace.</comment></data>
