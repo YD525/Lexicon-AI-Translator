@@ -26,6 +26,7 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
 using System.Windows.Threading;
+using PhoenixTranslator.UIManagement.Main;
 
 namespace PhoenixTranslator
 {
@@ -50,6 +51,8 @@ namespace PhoenixTranslator
         public TranslateConfig TranslateConfigView = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            new ModFileDialog().Show();
+
             DeFine.Init(this);
 
             DeFine.GlobalLocalSetting.ReadConfig();

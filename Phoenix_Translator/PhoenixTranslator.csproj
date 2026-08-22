@@ -120,6 +120,9 @@
     <Compile Include="UIManagement\Main\CGView.xaml.cs">
       <DependentUpon>CGView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIManagement\Main\ModFileDialog.xaml.cs">
+      <DependentUpon>ModFileDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIManagement\Translate\CodeView.xaml.cs">
       <DependentUpon>CodeView.xaml</DependentUpon>
     </Compile>
@@ -208,6 +211,10 @@
     </Compile>
     <Compile Include="YDControls\RealtimeLineChart.cs" />
     <Page Include="UIManagement\Main\CGView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\Main\ModFileDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

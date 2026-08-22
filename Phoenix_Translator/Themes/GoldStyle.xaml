@@ -1319,11 +1319,152 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderBrush" Value="#FF4D8CF7"/>
+                            <Setter Property="BorderBrush" Value="#FFFAE306"/>
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="#FF4D8CF7"/>
-                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="BorderBrush" Value="#FFFAE306"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LSearchTextBox" TargetType="TextBox">
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Background" Value="#FF3D3D3D"/>
+        <Setter Property="BorderBrush" Value="#FF555555"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CaretBrush" Value="White"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="35,0,65,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                        <Grid>
+                            <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Canvas Width="1024" Height="1024">
+                                    <Path Data="M426.666667,128 C261.12,128 128,261.12 128,426.666667 C128,592.213333 261.12,725.333333 426.666667,725.333333 C502.613333,725.333333 573.013333,701.44 630.613333,660.906667 L850.346667,880.64 C862.293333,892.586667 881.066667,892.586667 893.013333,880.64 C904.96,868.693333 904.96,849.92 893.013333,838.4 L673.706667,619.093333 C714.666667,561.066667 725.333333,490.666667 725.333333,426.666667 C725.333333,261.12 592.213333,128 426.666667,128 Z M426.666667,661.333333 C296.96,661.333333 192,556.373333 192,426.666667 C192,296.96 296.96,192 426.666667,192 C556.373333,192 661.333333,296.96 661.333333,426.666667 C661.333333,556.373333 556.373333,661.333333 426.666667,661.333333 Z" Fill="#A0A0A0" IsHitTestVisible="False"/>
+                                </Canvas>
+                            </Viewbox>
+
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="0" VerticalAlignment="Center"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0">
+                                <StackPanel.Resources>
+                                    <Style TargetType="ToggleButton">
+                                        <Setter Property="Width" Value="50"/>
+                                        <Setter Property="Height" Value="24"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ToggleButton">
+                                                    <Border x:Name="btnBorder" Background="{TemplateBinding Background}" CornerRadius="3">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="btnBorder" Property="Background" Value="#50FFFFFF"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </StackPanel.Resources>
+
+                                <ToggleButton x:Name="IsSearchBtn" ToolTip="SearchBtn" Margin="0,0,2,0">
+                                    <Border CornerRadius="5" BorderThickness="0.5" BorderBrush="White">
+                                        <TextBlock Padding="5 5 5 5" Text="Search" Foreground="White" FontSize="12" FontWeight="DemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType"/>
+                                    </Border>
+                                </ToggleButton>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="#FFFAE306"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="BorderBrush" Value="#FFFAE306"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style x:Key="PathBox" TargetType="TextBox">
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Background" Value="#FF3D3D3D"/>
+        <Setter Property="BorderBrush" Value="#FF555555"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CaretBrush" Value="White"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="35,0,65,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                        <Grid>
+                            <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Canvas Width="1024" Height="1024">
+                                    <Path Data="M1024 336v512c0 70.7-57.3 128-128 128H128C57.3 976 0 918.7 0 848V112c0-35.4 28.7-64 64-64h287.1c20.7 0 40.1 10 52.1 26.8l76 106.4c12 16.8 31.4 26.8 52.1 26.8H896c70.7 0 128 57.3 128 128z" Fill="#A0A0A0" IsHitTestVisible="False"/>
+                                </Canvas>
+                            </Viewbox>
+
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="0" VerticalAlignment="Center"/>
+
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0">
+                                <StackPanel.Resources>
+                                    <Style TargetType="ToggleButton">
+                                        <Setter Property="Width" Value="50"/>
+                                        <Setter Property="Height" Value="24"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ToggleButton">
+                                                    <Border x:Name="btnBorder" Background="{TemplateBinding Background}" CornerRadius="3">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="btnBorder" Property="Background" Value="#50FFFFFF"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </StackPanel.Resources>
+
+                                <ToggleButton x:Name="IsSelectPathBtn" ToolTip="SelectPathBtn" Margin="0,0,2,0">
+                                    <Border CornerRadius="5" BorderThickness="0.5" BorderBrush="White">
+                                        <TextBlock Padding="5 5 5 5" Text="Select" Foreground="White" FontSize="12" FontWeight="DemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType"/>
+                                    </Border>
+                                </ToggleButton>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="#FFFAE306"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="BorderBrush" Value="#FFFAE306"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
