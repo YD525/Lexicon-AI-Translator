@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1240" viewBox="0 0 1600 1240">
+  <defs>
+    <style>
+      .bg{fill:#f4f4f4}.frame{fill:#fff;stroke:#555;stroke-width:2}.bar{fill:#ddd}.nav{fill:#e8e8e8}
+      .box{fill:#fafafa;stroke:#888;stroke-width:1.5}.action{fill:#d5d5d5;stroke:#666}.line{stroke:#aaa;stroke-width:2}
+      .title{font:700 22px Segoe UI;fill:#222}.label{font:14px Segoe UI;fill:#333}.small{font:12px Segoe UI;fill:#555}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="1240"/>
+  <text class="title" x="40" y="38">Phoenix Translator target workflow wireframes</text>
+
+  <g transform="translate(40 65)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="92" height="191"/>
+    <text class="title" x="110" y="67">Open</text><text class="small" x="550" y="22">No project</text>
+    <rect class="box" x="210" y="82" width="410" height="92" rx="4"/><text class="label" x="285" y="112">Drop files or choose a recent project</text>
+    <rect class="action" x="335" y="132" width="160" height="28" rx="3"/><text class="small" x="374" y="151">Browse projects</text>
+    <line class="line" x1="110" y1="196" x2="700" y2="196"/><text class="small" x="110" y="218">Opening 42% · Cancel</text>
+  </g>
+  <g transform="translate(820 65)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="92" height="191"/>
+    <text class="title" x="110" y="67">Translate</text><text class="small" x="520" y="22">Project · Modified</text>
+    <rect class="box" x="110" y="82" width="180" height="130"/><text class="small" x="122" y="103">Entry list + filters</text>
+    <rect class="box" x="305" y="82" width="250" height="58"/><text class="small" x="317" y="104">Source text</text>
+    <rect class="box" x="305" y="151" width="250" height="61"/><text class="small" x="317" y="173">Target editor</text>
+    <rect class="box" x="570" y="82" width="145" height="130"/><text class="small" x="582" y="104">Context</text>
+    <rect class="action" x="585" y="217" width="130" height="25"/><text class="small" x="606" y="234">Translate scope</text>
+  </g>
+
+  <g transform="translate(40 350)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="92" height="191"/>
+    <text class="title" x="110" y="67">Review</text><rect class="box" x="110" y="82" width="175" height="130"/><text class="small" x="122" y="104">Review queue</text>
+    <rect class="box" x="300" y="82" width="270" height="58"/><text class="small" x="312" y="104">Source / target comparison</text>
+    <rect class="box" x="300" y="151" width="270" height="61"/><text class="small" x="312" y="173">Provenance + edit history</text>
+    <rect class="box" x="585" y="82" width="130" height="80"/><text class="small" x="597" y="104">Context</text>
+    <rect class="action" x="585" y="173" width="60" height="28"/><rect class="action" x="655" y="173" width="60" height="28"/><text class="small" x="595" y="191">Approve</text><text class="small" x="667" y="191">Reject</text>
+  </g>
+  <g transform="translate(820 350)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="92" height="191"/>
+    <text class="title" x="110" y="67">Quality</text><rect class="action" x="585" y="47" width="130" height="28"/><text class="small" x="617" y="65">Run validation</text>
+    <rect class="box" x="110" y="85" width="155" height="120"/><text class="small" x="122" y="107">Severity + rule filters</text>
+    <rect class="box" x="280" y="85" width="280" height="120"/><text class="small" x="292" y="107">Findings table</text>
+    <rect class="box" x="575" y="85" width="140" height="120"/><text class="small" x="587" y="107">Finding details</text><text class="small" x="587" y="190">Go to entry</text>
+  </g>
+
+  <g transform="translate(40 635)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="92" height="191"/>
+    <text class="title" x="110" y="67">Export</text><rect class="box" x="140" y="88" width="210" height="118"/><text class="small" x="155" y="110">Readiness</text><text class="small" x="155" y="140">0 errors · 3 warnings</text>
+    <rect class="box" x="370" y="88" width="260" height="118"/><text class="small" x="385" y="110">Format · scope · destination</text>
+    <rect class="action" x="485" y="166" width="125" height="27"/><text class="small" x="520" y="184">Export</text>
+  </g>
+  <g transform="translate(820 635)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="92" height="191"/>
+    <text class="title" x="110" y="67">History</text><rect class="box" x="110" y="84" width="180" height="125"/><text class="small" x="122" y="106">Revision timeline</text>
+    <rect class="box" x="305" y="84" width="260" height="125"/><text class="small" x="317" y="106">Diff: previous / selected</text>
+    <rect class="box" x="580" y="84" width="135" height="82"/><text class="small" x="592" y="106">Origin + decision</text>
+    <rect class="action" x="580" y="178" width="135" height="28"/><text class="small" x="606" y="196">Restore revision</text>
+  </g>
+
+  <g transform="translate(40 920)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="92" height="191"/>
+    <text class="title" x="110" y="67">Project update</text><rect class="box" x="110" y="84" width="180" height="125"/><text class="small" x="122" y="106">Added / removed / changed</text>
+    <rect class="box" x="305" y="84" width="250" height="125"/><text class="small" x="317" y="106">Identity comparison</text>
+    <rect class="box" x="570" y="84" width="145" height="80"/><text class="small" x="582" y="106">Ambiguities</text>
+    <rect class="action" x="570" y="178" width="145" height="28"/><text class="small" x="603" y="196">Apply update</text>
+  </g>
+  <g transform="translate(820 920)">
+    <rect class="frame" width="740" height="255" rx="4"/><rect class="bar" width="740" height="34"/><rect class="nav" y="34" width="170" height="191"/>
+    <text class="title" x="190" y="67">Settings</text><text class="small" x="18" y="65">Providers</text><text class="small" x="18" y="90">Translation</text><text class="small" x="18" y="115">Formats</text><text class="small" x="18" y="140">Appearance</text><text class="small" x="18" y="165">Advanced</text>
+    <rect class="box" x="190" y="84" width="525" height="118"/><text class="small" x="205" y="106">Staged settings cards with inline validation</text>
+    <rect class="action" x="550" y="214" width="75" height="27"/><rect class="action" x="640" y="214" width="75" height="27"/><text class="small" x="569" y="232">Cancel</text><text class="small" x="663" y="232">Apply</text>
+  </g>
+</svg>
