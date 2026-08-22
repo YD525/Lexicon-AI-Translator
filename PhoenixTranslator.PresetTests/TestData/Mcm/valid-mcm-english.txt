@@ -1,0 +1,2 @@
+$PT_GREETING	Hello world
+$PT_MULTILINE	First line\nSecond line

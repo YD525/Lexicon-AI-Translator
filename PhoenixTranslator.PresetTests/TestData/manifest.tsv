@@ -1,0 +1,5 @@
+relative_path	sha256	rights	origin
+Mcm/valid-mcm-english.txt	4a916697504c21348c927f379e805cea733341f0d23e3b42ef490d92d23a20f2	Project-owned	Synthetic
+Mcm/malformed-mcm.txt	3c611957ee690e3cae4c4485db54729409d02224fab6c37cbdca84183ac802f4	Project-owned	Synthetic
+Xml/valid-translation.xml	585f2d24120878c273a89eeb974142e14cddd89bfaa0bc6e7cfbf01966cacb2e	Project-owned	Synthetic
+Xml/malformed-translation.xml	d174f589de49fd47b843a402bf959fe7e33594760e2f708fc3f8c8c27af8f01d	Project-owned	Synthetic
