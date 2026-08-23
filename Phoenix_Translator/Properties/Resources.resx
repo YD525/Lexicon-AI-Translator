@@ -532,6 +532,7 @@
   <data name="Common_Action_Refresh" xml:space="preserve"><value>Refresh</value><comment>Shared action that refreshes the current bounded snapshot.</comment></data>
   <data name="Common_Action_OK" xml:space="preserve"><value>OK</value><comment>Accepts an informational modal interaction.</comment></data>
   <data name="Common_Action_Confirm" xml:space="preserve"><value>Confirm</value><comment>Explicitly accepts a confirmation interaction.</comment></data>
+  <data name="Common_Action_CloseDialog_Accessibility" xml:space="preserve"><value>Close dialog</value><comment>Accessible name for the title-bar close action in a modal dialog.</comment></data>
   <data name="ShellServices_Open_Action" xml:space="preserve"><value>About &amp; diagnostics</value><comment>Opens cross-cutting shell services.</comment></data>
   <data name="ShellServices_Title" xml:space="preserve"><value>About and diagnostics</value><comment>Title for cross-cutting shell services.</comment></data>
   <data name="ShellServices_Description" xml:space="preserve"><value>Inspect authoritative versions, safe diagnostics, credits, and license routes.</value><comment>Description for cross-cutting shell services.</comment></data>

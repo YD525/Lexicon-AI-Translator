@@ -25,7 +25,9 @@
                            Foreground="{StaticResource PreviewBrushTextPrimary}" TextWrapping="Wrap" />
                 <Button Grid.Column="1" Width="34" Height="30" Margin="12,0,0,0"
                         Style="{StaticResource PreviewButtonSecondary}" IsCancel="True"
-                        Content="×" AutomationProperties.Name="Close dialog" />
+                        Content="×"
+                        AutomationProperties.Name="{localization:PreviewMessage Common_Action_CloseDialog_Accessibility}"
+                        xmlns:localization="clr-namespace:PhoenixTranslator.UIManagement.Localization" />
             </Grid>
             <Border x:Name="SeverityBorder" Grid.Row="1" Margin="20,18,20,0" Padding="10,6"
                     Background="{StaticResource PreviewBrushSurfaceInteractive}"
