@@ -129,6 +129,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CurrentTitle));
                 OnPropertyChanged(nameof(CurrentDescription));
+                OnPropertyChanged(nameof(IsProjectHubVisible));
                 OnPropertyChanged(nameof(IsTranslationWorkspaceVisible));
                 OnPropertyChanged(nameof(IsReviewQualityWorkspaceVisible));
                 OnPropertyChanged(nameof(IsHistoryUpdateWorkspaceVisible));
@@ -146,6 +147,11 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Gets the localized rollout description for the selected destination.
         /// </summary>
         public string CurrentDescription => PreviewMessageCatalog.Get(GetDestinationMessageId("Description"));
+
+        /// <summary>
+        /// Gets whether the preview Project Hub owns the current page.
+        /// </summary>
+        public bool IsProjectHubVisible => _currentDestination == PreviewShellDestination.Projects;
 
         /// <summary>
         /// Gets whether the preview translation workspace owns the current page.
@@ -175,6 +181,7 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Gets whether the selected destination still uses the shared preview fallback page.
         /// </summary>
         public bool IsPreviewFallbackVisible =>
+            !IsProjectHubVisible &&
             !IsTranslationWorkspaceVisible &&
             !IsReviewQualityWorkspaceVisible &&
             !IsHistoryUpdateWorkspaceVisible &&

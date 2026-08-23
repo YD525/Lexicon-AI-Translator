@@ -35,6 +35,9 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(FormatsPreviewMessages), FormatsPreviewMessages },
                 { nameof(NavigatesPreviewShell), NavigatesPreviewShell },
                 { nameof(TracksPreviewShellStatus), TracksPreviewShellStatus },
+                { nameof(OpensProjectThroughHubAndPersistsRecent), OpensProjectThroughHubAndPersistsRecent },
+                { nameof(ProtectsUnsavedProjectReplacement), ProtectsUnsavedProjectReplacement },
+                { nameof(PersistsBoundedRecentProjects), PersistsBoundedRecentProjects },
                 { nameof(FiltersPreviewTranslationWorkspace), FiltersPreviewTranslationWorkspace },
                 { nameof(HandlesPreviewTranslationFailures), HandlesPreviewTranslationFailures },
                 { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork },
@@ -390,6 +393,130 @@ namespace PhoenixTranslator.PresetTests
                 "Completing an operation must restore the idle status.");
             AssertEqual(0d, viewModel.OperationProgress,
                 "Completing an operation must clear stale progress.");
+        }
+
+        private static void OpensProjectThroughHubAndPersistsRecent()
+        {
+            string projectPath = Path.Combine(Path.GetTempPath(), "PhoenixProjectHubTests", Guid.NewGuid().ToString("N"), "project.xml");
+            Directory.CreateDirectory(Path.GetDirectoryName(projectPath));
+            File.WriteAllText(projectPath, "fixture");
+            try
+            {
+                var project = new FakePreviewTranslationProject(
+                    new[] { new PreviewTranslationEntry("1", "XML", "ENTRY", "Source", string.Empty, 100) },
+                    projectPath);
+                var shell = new PreviewShellViewModel(() => { });
+                var workspace = new PreviewTranslationWorkspaceViewModel(
+                    () => projectPath, () => { }, shell, path => project);
+                var store = new RecordingRecentProjectStore();
+                var hub = new PreviewProjectHubViewModel(
+                    workspace, shell, () => projectPath, () => true, store, () => { });
+
+                bool opened = hub.OpenProjectAsync(projectPath).GetAwaiter().GetResult();
+
+                AssertEqual(true, opened,
+                    "The Project Hub must report a successful normalized project open.");
+                AssertEqual(PreviewShellDestination.Translate, shell.CurrentDestination,
+                    "A successful project open must enter the translation workflow.");
+                AssertEqual(1, hub.RecentProjects.Count,
+                    "A successful project open must create one bounded recent reference.");
+                AssertEqual("project.xml", hub.RecentProjects[0].DisplayName,
+                    "Recent project UI metadata must expose only the safe file name.");
+                AssertEqual(1, store.SaveCalls,
+                    "A successful open must persist recent references exactly once.");
+                hub.Dispose();
+                workspace.Dispose();
+            }
+            finally
+            {
+                Directory.Delete(Path.GetDirectoryName(projectPath), true);
+            }
+        }
+
+        private static void ProtectsUnsavedProjectReplacement()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixProjectHubTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            string firstPath = Path.Combine(directory, "first.xml");
+            string secondPath = Path.Combine(directory, "second.xml");
+            File.WriteAllText(firstPath, "first");
+            File.WriteAllText(secondPath, "second");
+            try
+            {
+                var firstProject = new FakePreviewTranslationProject(
+                    new[] { new PreviewTranslationEntry("1", "XML", "ENTRY", "First", string.Empty, 100) },
+                    firstPath);
+                var secondProject = new FakePreviewTranslationProject(
+                    new[] { new PreviewTranslationEntry("2", "XML", "ENTRY", "Second", string.Empty, 100) },
+                    secondPath);
+                var shell = new PreviewShellViewModel(() => { });
+                var workspace = new PreviewTranslationWorkspaceViewModel(
+                    () => firstPath,
+                    () => { },
+                    shell,
+                    path => string.Equals(path, firstPath, StringComparison.Ordinal) ? firstProject : secondProject);
+                var hub = new PreviewProjectHubViewModel(
+                    workspace,
+                    shell,
+                    () => secondPath,
+                    () => false,
+                    new RecordingRecentProjectStore(),
+                    () => { });
+
+                AssertEqual(true, hub.OpenProjectAsync(firstPath).GetAwaiter().GetResult(),
+                    "The initial project must open without an unsaved-state prompt.");
+                workspace.SelectedEntry.TargetText = "Unsaved target";
+                AssertEqual(false, hub.OpenProjectAsync(secondPath).GetAwaiter().GetResult(),
+                    "Cancelling project replacement must reject the new project.");
+                AssertEqual(firstPath, workspace.ProjectPath,
+                    "Cancelling replacement must preserve the previous usable project.");
+                AssertEqual("First", workspace.SelectedEntry.SourceText,
+                    "Cancelling replacement must preserve normalized project content.");
+                hub.Dispose();
+                workspace.Dispose();
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+
+        private static void PersistsBoundedRecentProjects()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixProjectHubStoreTests", Guid.NewGuid().ToString("N"));
+            string storePath = Path.Combine(directory, "recent.xml");
+            Directory.CreateDirectory(directory);
+            try
+            {
+                var store = new PreviewRecentProjectStore(storePath);
+                var projects = Enumerable.Range(0, 15)
+                    .Select(index => new PreviewRecentProject(
+                        Path.Combine(directory, "project-" + index + ".xml"),
+                        DateTime.UtcNow.AddMinutes(-index)))
+                    .ToArray();
+
+                store.Save(projects);
+                IReadOnlyList<PreviewRecentProject> loaded = store.Load();
+
+                AssertEqual(12, loaded.Count,
+                    "Recent-project persistence must enforce its documented bound.");
+                AssertEqual("project-0.xml", loaded[0].DisplayName,
+                    "Recent projects must retain newest-first ordering.");
+                AssertEqual(false, File.ReadAllText(storePath).Contains("Source"),
+                    "Recent-project persistence must not contain translation content.");
+
+                store.Save(loaded);
+                AssertEqual(12, store.Load().Count,
+                    "Atomic replacement must preserve the bounded recent-project list.");
+
+                File.WriteAllText(storePath, "<!DOCTYPE recentProjects [<!ENTITY probe SYSTEM 'file:///missing'>]><recentProjects>&probe;</recentProjects>");
+                AssertEqual(0, store.Load().Count,
+                    "Recent-project parsing must reject DTD-backed content without resolving it.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
         }
 
         private static void FiltersPreviewTranslationWorkspace()
@@ -1068,6 +1195,24 @@ namespace PhoenixTranslator.PresetTests
 
             public void Dispose()
             {
+            }
+        }
+
+        private sealed class RecordingRecentProjectStore : IPreviewRecentProjectStore
+        {
+            private IReadOnlyList<PreviewRecentProject> _projects = new PreviewRecentProject[0];
+
+            internal int SaveCalls { get; private set; }
+
+            public IReadOnlyList<PreviewRecentProject> Load()
+            {
+                return _projects;
+            }
+
+            public void Save(IReadOnlyList<PreviewRecentProject> projects)
+            {
+                SaveCalls++;
+                _projects = projects.ToArray();
             }
         }
 
