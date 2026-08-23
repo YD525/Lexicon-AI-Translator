@@ -59,11 +59,20 @@
     <Compile Include="..\Phoenix_Translator\Application\PreviewQualityFinding.cs">
       <Link>PreviewQualityFinding.cs</Link>
     </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewProjectComparison.cs">
+      <Link>PreviewProjectComparison.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewHistoryUpdateViewModel.cs">
+      <Link>PreviewHistoryUpdateViewModel.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewReviewQualityViewModel.cs">
       <Link>PreviewReviewQualityViewModel.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewReviewStateStore.cs">
       <Link>PreviewReviewStateStore.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewRevisionHistoryStore.cs">
+      <Link>PreviewRevisionHistoryStore.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewShellCommand.cs">
       <Link>PreviewShellCommand.cs</Link>

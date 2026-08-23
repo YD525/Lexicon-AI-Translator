@@ -153,6 +153,17 @@ namespace PhoenixTranslator.ApplicationLayer
         }
 
         /// <summary>
+        /// Applies a target explicitly reused from a compatible project revision.
+        /// </summary>
+        /// <param name="targetText">The prior revision target selected by the user.</param>
+        internal void ApplyReusedTarget(string targetText)
+        {
+            TargetText = targetText;
+            _provenance = "Revision";
+            OnPropertyChanged(nameof(Provenance));
+        }
+
+        /// <summary>
         /// Records a human review decision for the current target text.
         /// </summary>
         /// <param name="state">The decision to record.</param>

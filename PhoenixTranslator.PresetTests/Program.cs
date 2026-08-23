@@ -40,7 +40,11 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(AnalyzesMixedQualityFindings), AnalyzesMixedQualityFindings },
                 { nameof(TracksReviewDecisionsAndBulkUndo), TracksReviewDecisionsAndBulkUndo },
                 { nameof(PersistsPrivateReviewMetadata), PersistsPrivateReviewMetadata },
-                { nameof(NavigatesFromFindingToTranslationEntry), NavigatesFromFindingToTranslationEntry }
+                { nameof(NavigatesFromFindingToTranslationEntry), NavigatesFromFindingToTranslationEntry },
+                { nameof(ClassifiesProjectRevisionChanges), ClassifiesProjectRevisionChanges },
+                { nameof(PreservesReviewedTargetsAsConflicts), PreservesReviewedTargetsAsConflicts },
+                { nameof(PersistsPrivateRevisionHistory), PersistsPrivateRevisionHistory },
+                { nameof(AppliesAndUndoesExplicitRevisionReuse), AppliesAndUndoesExplicitRevisionReuse }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -653,6 +657,177 @@ namespace PhoenixTranslator.PresetTests
                 AssertEqual(entries[0], workspace.SelectedEntry,
                     "Finding navigation must reveal the exact affected entry.");
                 review.Dispose();
+                workspace.Dispose();
+            }
+            finally
+            {
+                Directory.Delete(stateDirectory, true);
+            }
+        }
+
+        private static void ClassifiesProjectRevisionChanges()
+        {
+            var current = new[]
+            {
+                new PreviewTranslationEntry("added", "XML", "ADDED", "New", string.Empty, 100),
+                new PreviewTranslationEntry("reusable", "XML", "REUSABLE", "Same", string.Empty, 100),
+                new PreviewTranslationEntry("changed", "XML", "CHANGED", "New source", string.Empty, 100),
+                new PreviewTranslationEntry("unchanged", "XML", "UNCHANGED", "Stable", "Stabil", 100)
+            };
+            var previous = new[]
+            {
+                new PreviewTranslationEntry("unchanged", "XML", "UNCHANGED", "Stable", "Stabil", 100),
+                new PreviewTranslationEntry("removed", "XML", "REMOVED", "Old", "Alt", 100),
+                new PreviewTranslationEntry("changed", "XML", "CHANGED", "Old source", "Alte Quelle", 100),
+                new PreviewTranslationEntry("reusable", "XML", "REUSABLE", "Same", "Gleich", 100)
+            };
+
+            IReadOnlyList<PreviewProjectComparisonItem> result =
+                new PreviewProjectComparisonService().Compare(current, previous);
+
+            AssertEqual(PreviewRevisionComparisonState.Added,
+                result.Single(item => item.Key == "added").State,
+                "A current-only stable identity must be classified as added.");
+            AssertEqual(PreviewRevisionComparisonState.Removed,
+                result.Single(item => item.Key == "removed").State,
+                "A previous-only stable identity must be classified as removed.");
+            AssertEqual(PreviewRevisionComparisonState.Reusable,
+                result.Single(item => item.Key == "reusable").State,
+                "An untranslated equal source must expose the prior target as reusable.");
+            AssertEqual(PreviewRevisionComparisonState.Changed,
+                result.Single(item => item.Key == "changed").State,
+                "A changed source without a current target must require fresh translation.");
+            AssertEqual(PreviewRevisionComparisonState.Unchanged,
+                result.Single(item => item.Key == "unchanged").State,
+                "Equal source and target content must remain unchanged regardless of source order.");
+
+            PreviewProjectComparisonItem ambiguous = new PreviewProjectComparisonService().Compare(
+                new[]
+                {
+                    new PreviewTranslationEntry("duplicate", "XML", "ONE", "First", string.Empty, 100),
+                    new PreviewTranslationEntry("duplicate", "XML", "TWO", "Second", string.Empty, 100)
+                },
+                new[] { new PreviewTranslationEntry("duplicate", "XML", "OLD", "First", "Erste", 100) })
+                .Single();
+            AssertEqual(PreviewRevisionComparisonState.Conflict, ambiguous.State,
+                "Ambiguous stable identities must be exposed as conflicts instead of being silently discarded.");
+        }
+
+        private static void PreservesReviewedTargetsAsConflicts()
+        {
+            var current = new PreviewTranslationEntry("entry", "PEX", "ENTRY", "Source", "Current", 100);
+            current.SetReviewState(PreviewReviewState.Approved);
+            var previous = new PreviewTranslationEntry("entry", "PEX", "ENTRY", "Source", "Previous", 100);
+
+            PreviewProjectComparisonItem result = new PreviewProjectComparisonService()
+                .Compare(new[] { current }, new[] { previous }).Single();
+
+            AssertEqual(PreviewRevisionComparisonState.Conflict, result.State,
+                "Different populated targets must never be silently reusable.");
+            AssertEqual(true, result.CanReuse,
+                "A conflicting prior target may remain available for an explicit confirmed decision.");
+            AssertEqual("Current", current.TargetText,
+                "Classification must not alter a reviewed current target.");
+
+            current.ApplyReusedTarget(previous.TargetText);
+            AssertEqual(PreviewReviewState.Unreviewed, current.ReviewState,
+                "Explicit target reuse must invalidate the previous review decision.");
+            AssertEqual("Previous project revision", current.Provenance,
+                "Explicit target reuse must expose revision provenance.");
+        }
+
+        private static void PersistsPrivateRevisionHistory()
+        {
+            string stateDirectory = Path.Combine(Path.GetTempPath(), "PhoenixHistoryTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(stateDirectory);
+            try
+            {
+                string projectPath = Path.Combine(stateDirectory, "private-project.xml");
+                const string privateSource = "Private source content";
+                const string privateTarget = "Private target content";
+                var entry = new PreviewTranslationEntry("entry", "XML", "RECORD", privateSource, privateTarget, 100);
+                var store = new PreviewRevisionHistoryStore(stateDirectory);
+                store.Append(projectPath, PreviewRevisionHistoryStore.Create("Reused", entry, DateTime.UtcNow));
+
+                string persistedText = File.ReadAllText(Directory.GetFiles(stateDirectory, "*.xml").Single());
+                AssertEqual(false, persistedText.Contains(projectPath),
+                    "Revision history must not contain an absolute project path.");
+                AssertEqual(false, persistedText.Contains(privateSource),
+                    "Revision history must not contain private source content.");
+                AssertEqual(false, persistedText.Contains(privateTarget),
+                    "Revision history must not contain private target content.");
+                AssertEqual(1, store.Load(projectPath).Count,
+                    "A valid privacy-preserving history event must round-trip.");
+            }
+            finally
+            {
+                Directory.Delete(stateDirectory, true);
+            }
+        }
+
+        private static void AppliesAndUndoesExplicitRevisionReuse()
+        {
+            string stateDirectory = Path.Combine(Path.GetTempPath(), "PhoenixUpdateTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(stateDirectory);
+            try
+            {
+                string currentPath = Path.Combine(stateDirectory, "current.xml");
+                string previousPath = Path.Combine(stateDirectory, "previous.xml");
+                var reusable = new PreviewTranslationEntry("reusable", "XML", "REUSABLE", "Same", string.Empty, 100);
+                var conflict = new PreviewTranslationEntry("conflict", "XML", "CONFLICT", "Stable", "Current", 100);
+                conflict.SetReviewState(PreviewReviewState.Approved);
+                var currentProject = new FakePreviewTranslationProject(new[] { reusable, conflict }, currentPath);
+                var previousProject = new FakePreviewTranslationProject(new[]
+                {
+                    new PreviewTranslationEntry("conflict", "XML", "CONFLICT", "Stable", "Previous", 100),
+                    new PreviewTranslationEntry("reusable", "XML", "REUSABLE", "Same", "Reusable target", 100)
+                }, previousPath);
+                var shell = new PreviewShellViewModel(() => { });
+                var workspace = new PreviewTranslationWorkspaceViewModel(
+                    () => currentPath, () => { }, shell, path => currentProject);
+                workspace.OpenProjectAsync(currentPath).GetAwaiter().GetResult();
+                var update = new PreviewHistoryUpdateViewModel(
+                    shell,
+                    workspace,
+                    new PreviewProjectComparisonService(),
+                    new PreviewRevisionHistoryStore(stateDirectory),
+                    () => previousPath,
+                    path => previousProject,
+                    count => false,
+                    count => true,
+                    () => { });
+
+                update.CompareRevisionCommand.Execute(null);
+                DateTime timeout = DateTime.UtcNow.AddSeconds(5);
+                while (!update.HasComparison && DateTime.UtcNow < timeout)
+                {
+                    System.Threading.Thread.Sleep(10);
+                }
+
+                AssertEqual(true, update.HasComparison,
+                    "A compatible selected revision must produce comparison results.");
+                update.SelectedComparisonItem = update.ComparisonItems.Single(item => item.Key == "conflict");
+                update.ReuseSelectedCommand.Execute(null);
+                AssertEqual("Current", conflict.TargetText,
+                    "Cancelling conflict confirmation must preserve the reviewed current target.");
+                AssertEqual(PreviewReviewState.Approved, conflict.ReviewState,
+                    "Cancelling conflict confirmation must preserve its review decision.");
+
+                update.SelectedComparisonItem = update.ComparisonItems.Single(item => item.Key == "reusable");
+                update.ReuseSelectedCommand.Execute(null);
+                AssertEqual("Reusable target", reusable.TargetText,
+                    "Explicit safe reuse must stage the selected prior target.");
+                AssertEqual(PreviewReviewState.Unreviewed, reusable.ReviewState,
+                    "Reused content must enter review as unreviewed.");
+
+                update.UndoCommand.Execute(null);
+                AssertEqual(string.Empty, reusable.TargetText,
+                    "Undo must restore the target captured before explicit reuse.");
+                AssertEqual(true, update.HistoryEntries.Any(entry => entry.ActionId == "Reused"),
+                    "Explicit reuse must create a project history event.");
+                AssertEqual(true, update.HistoryEntries.Any(entry => entry.ActionId == "Undone"),
+                    "Undo must create a project history event.");
+                update.Dispose();
                 workspace.Dispose();
             }
             finally
