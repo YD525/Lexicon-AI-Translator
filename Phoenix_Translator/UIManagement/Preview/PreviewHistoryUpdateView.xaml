@@ -22,6 +22,7 @@
                 <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextSecondary}" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="FocusVisualStyle" Value="{StaticResource PreviewFocusVisual}" />
+                <Setter Property="AutomationProperties.Name" Value="{Binding Record}" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="{StaticResource PreviewBrushSurfaceInteractive}" />
@@ -77,7 +78,7 @@
                         <TextBlock DockPanel.Dock="Top" Margin="14,11" FontWeight="SemiBold"
                                    Foreground="{StaticResource PreviewBrushTextPrimary}"
                                    Text="{localization:PreviewMessage History_Timeline_Title}" />
-                        <ListBox ItemsSource="{Binding HistoryEntries}" SelectedItem="{Binding SelectedHistoryEntry}"
+                        <ListBox x:Name="HistoryTimeline" ItemsSource="{Binding HistoryEntries}" SelectedItem="{Binding SelectedHistoryEntry}"
                                  ItemContainerStyle="{StaticResource HistoryListItem}" Background="Transparent"
                                  BorderThickness="0" VirtualizingPanel.IsVirtualizing="True"
                                  VirtualizingPanel.VirtualizationMode="Recycling"
@@ -134,7 +135,7 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBox Style="{StaticResource PreviewTextBox}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox x:Name="SearchBox" Style="{StaticResource PreviewTextBox}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="{localization:PreviewMessage Update_Search_Placeholder}"
                              AutomationProperties.Name="{localization:PreviewMessage Update_Search_Placeholder}" />
                     <ComboBox Grid.Column="2" Style="{StaticResource PreviewComboBox}" ItemsSource="{Binding Filters}"

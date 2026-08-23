@@ -34,6 +34,7 @@
                 <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextSecondary}" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="FocusVisualStyle" Value="{StaticResource PreviewFocusVisual}" />
+                <Setter Property="AutomationProperties.Name" Value="{Binding Label}" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource PreviewBrushSurfaceInteractive}" /></Trigger>
                     <Trigger Property="IsSelected" Value="True">
@@ -69,7 +70,7 @@
         <Border Padding="10" Style="{StaticResource SettingsCard}" Margin="0">
             <Grid>
                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="12" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                <TextBox Style="{StaticResource PreviewTextBox}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox x:Name="SearchBox" Style="{StaticResource PreviewTextBox}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="{localization:PreviewMessage Settings_Search_Placeholder}"
                          AutomationProperties.Name="{localization:PreviewMessage Settings_Search_Placeholder}" />
                 <Button Grid.Column="2" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding OpenLegacyWorkspaceCommand}"
@@ -329,7 +330,8 @@
             <Grid>
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                 <StackPanel>
-                    <TextBlock FontWeight="SemiBold" Foreground="{StaticResource PreviewBrushTextPrimary}" Text="{Binding StateText}" />
+                    <TextBlock FontWeight="SemiBold" Foreground="{StaticResource PreviewBrushTextPrimary}"
+                               AutomationProperties.LiveSetting="Polite" Text="{Binding StateText}" />
                     <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding ValidationMessages}"
                                   AutomationProperties.Name="{localization:PreviewMessage Accessibility_Settings_Validation_Name}">
                         <ItemsControl.ItemTemplate><DataTemplate><TextBlock Foreground="{StaticResource PreviewBrushError}" Text="{Binding}" TextWrapping="Wrap" /></DataTemplate></ItemsControl.ItemTemplate>

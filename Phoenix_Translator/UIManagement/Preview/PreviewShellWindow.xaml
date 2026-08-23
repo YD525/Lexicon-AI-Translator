@@ -6,7 +6,7 @@
         Title="{localization:PreviewMessage Shell_Product_Name}"
         Width="1280" Height="800" MinWidth="1100" MinHeight="700"
         WindowStartupLocation="CenterScreen" Background="#FF1A1A1A"
-        Closing="Window_Closing"
+        Closing="Window_Closing" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"
         TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType">
     <Window.Resources>
         <ResourceDictionary>
@@ -23,6 +23,7 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="FocusVisualStyle" Value="{StaticResource PreviewFocusVisual}" />
+                <Setter Property="AutomationProperties.Name" Value="{Binding Label}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
@@ -112,7 +113,7 @@
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" Background="{StaticResource PreviewBrushSurfaceRaised}"
                     BorderBrush="{StaticResource PreviewBrushBorder}" BorderThickness="0,0,1,0">
-                <ListBox Margin="0,14" ItemsSource="{Binding NavigationItems}"
+                <ListBox x:Name="PrimaryNavigation" Margin="0,14" ItemsSource="{Binding NavigationItems}"
                          SelectedValuePath="Destination" SelectedValue="{Binding CurrentDestination}"
                          ItemContainerStyle="{StaticResource PreviewNavigationItem}"
                          AutomationProperties.Name="{localization:PreviewMessage Accessibility_Shell_Navigation_Name}"
@@ -158,14 +159,19 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    <DockPanel>
+                    <DockPanel AutomationProperties.Name="{Binding NotificationMessage}">
                         <Button DockPanel.Dock="Right" Margin="16,0,0,0"
                                 Style="{StaticResource PreviewButtonSecondary}"
                                 Command="{Binding DismissNotificationCommand}"
                                 Content="{localization:PreviewMessage Common_Action_Dismiss}" />
-                        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap"
-                                   Foreground="{StaticResource PreviewBrushTextPrimary}"
-                                   Text="{Binding NotificationMessage}" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontWeight="Bold"
+                                       Foreground="{StaticResource PreviewBrushTextPrimary}"
+                                       Text="{Binding NotificationSeverityText, StringFormat={}{0}:}" />
+                            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap"
+                                       Foreground="{StaticResource PreviewBrushTextPrimary}"
+                                       Text="{Binding NotificationMessage}" />
+                        </StackPanel>
                     </DockPanel>
                 </Border>
                 <Border Grid.Row="2" Background="{StaticResource PreviewBrushSurfacePrimary}"
@@ -220,6 +226,8 @@
                     <ColumnDefinition Width="220" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Ellipse Width="8" Height="8" VerticalAlignment="Center" Fill="{StaticResource PreviewBrushSuccess}" />
                 <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource PreviewBrushTextSecondary}"
@@ -230,7 +238,11 @@
                 <TextBlock Grid.Column="5" Margin="16,0,0,0" VerticalAlignment="Center"
                            Foreground="{StaticResource PreviewBrushWarning}" Text="{Binding WarningText}"
                            Visibility="{Binding HasWarnings, Converter={StaticResource BooleanToVisibility}}" />
-                <TextBlock Grid.Column="6" VerticalAlignment="Center" Foreground="{StaticResource PreviewBrushTextMuted}"
+                <Button x:Name="KeyboardHelpButton" Grid.Column="6" Padding="8,2"
+                        Style="{StaticResource PreviewButtonSecondary}" Click="KeyboardHelpButton_Click"
+                        Content="{localization:PreviewMessage Accessibility_KeyboardHelp_Action}"
+                        AutomationProperties.HelpText="{localization:PreviewMessage Accessibility_KeyboardHelp_HelpText}" />
+                <TextBlock Grid.Column="8" VerticalAlignment="Center" Foreground="{StaticResource PreviewBrushTextMuted}"
                            Text="{localization:PreviewMessage Shell_Navigation_Shortcuts_Hint}" />
             </Grid>
         </Border>

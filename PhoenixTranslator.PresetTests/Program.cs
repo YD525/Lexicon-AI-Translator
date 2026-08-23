@@ -377,6 +377,8 @@ namespace PhoenixTranslator.PresetTests
                 "The shell must expose a persistent error boundary.");
             AssertEqual(PreviewShellNotificationSeverity.Error, viewModel.NotificationSeverity,
                 "The shell must retain notification severity independently from its text.");
+            AssertEqual("Error", viewModel.NotificationSeverityText,
+                "A notification must expose a non-color semantic severity label.");
             AssertEqual("The project could not be opened.", viewModel.NotificationMessage,
                 "The error boundary must expose registered user-safe text.");
             viewModel.DismissNotificationCommand.Execute(null);

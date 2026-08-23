@@ -18,6 +18,14 @@ namespace PhoenixTranslator.UIManagement.Preview
             DataContextChanged += PreviewSettingsViewDataContextChanged;
         }
 
+        /// <summary>
+        /// Moves keyboard focus to the global settings search field after shell navigation.
+        /// </summary>
+        internal void FocusInitialControl()
+        {
+            SearchBox.Focus();
+        }
+
         private void PreviewSettingsViewDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var previous = e.OldValue as PreviewSettingsViewModel;

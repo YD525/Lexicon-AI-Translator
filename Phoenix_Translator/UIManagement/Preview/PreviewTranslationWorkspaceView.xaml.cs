@@ -14,5 +14,13 @@ namespace PhoenixTranslator.UIManagement.Preview
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Moves keyboard focus to the workflow search field after shell navigation.
+        /// </summary>
+        internal void FocusInitialControl()
+        {
+            SearchBox.Focus();
+        }
     }
 }
