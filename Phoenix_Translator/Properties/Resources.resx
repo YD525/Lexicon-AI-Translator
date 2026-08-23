@@ -212,6 +212,30 @@
   <data name="Workspace_Operation_CompletedWithFailures" xml:space="preserve"><value>Translation completed with {0} failed entries.</value><comment>Batch completion summary. Placeholders: {0}=non-negative integer failure count.</comment></data>
   <data name="Workspace_Save_Failed" xml:space="preserve"><value>The project could not be saved. Your changes are still available.</value><comment>Safe save-failure message that confirms recoverable user input.</comment></data>
   <data name="Workspace_Tools_Title" xml:space="preserve"><value>Tools</value><comment>Workspace inspector tab for editing and delivery tools.</comment></data>
+  <data name="Workspace_Inspector_Title" xml:space="preserve"><value>Inspectors</value><comment>Workspace tab for docked technical context.</comment></data>
+  <data name="Workspace_Inspector_Code_Tab" xml:space="preserve"><value>Code</value><comment>Inspector tab for decompiled PEX code.</comment></data>
+  <data name="Workspace_Inspector_Record_Tab" xml:space="preserve"><value>Record</value><comment>Inspector tab for parser-owned record metadata.</comment></data>
+  <data name="Workspace_Inspector_Related_Tab" xml:space="preserve"><value>Related</value><comment>Inspector tab for stable record relationships.</comment></data>
+  <data name="Workspace_Inspector_Npc_Tab" xml:space="preserve"><value>NPC</value><comment>Inspector tab for NPC dialogue ownership.</comment></data>
+  <data name="Workspace_Inspector_Asset_Tab" xml:space="preserve"><value>Asset</value><comment>Inspector tab for bounded visual assets.</comment></data>
+  <data name="Workspace_Inspector_Empty" xml:space="preserve"><value>Select an entry to inspect its technical context.</value><comment>Inspector state without a selected entry.</comment></data>
+  <data name="Workspace_Inspector_Loading" xml:space="preserve"><value>Loading bounded context…</value><comment>Inspector state while parser context loads.</comment></data>
+  <data name="Workspace_Inspector_Ready" xml:space="preserve"><value>Context follows the selected stable entry.</value><comment>Inspector state after supported context loads.</comment></data>
+  <data name="Workspace_Inspector_NoContext" xml:space="preserve"><value>No supported context is available for this entry.</value><comment>Inspector empty state distinguished from a loading failure.</comment></data>
+  <data name="Workspace_Inspector_Failed" xml:space="preserve"><value>Context could not be loaded. Project content was not changed.</value><comment>Inspector parser or asset failure state.</comment></data>
+  <data name="Workspace_Inspector_Cancelled" xml:space="preserve"><value>Context loading was cancelled.</value><comment>Inspector cancellation state.</comment></data>
+  <data name="Workspace_Inspector_Retry_Action" xml:space="preserve"><value>Retry</value><comment>Retries bounded context loading for the selected entry.</comment></data>
+  <data name="Workspace_Inspector_Code_Search" xml:space="preserve"><value>Search decompiled code</value><comment>Code inspector search field hint.</comment></data>
+  <data name="Workspace_Inspector_Code_Search_Action" xml:space="preserve"><value>Search</value><comment>Starts bounded exact code search.</comment></data>
+  <data name="Workspace_Inspector_Code_ResultCount" xml:space="preserve"><value>{0} code matches</value><comment>Bounded code result count. Placeholder: {0}=match count.</comment></data>
+  <data name="Workspace_Inspector_Code_Results_Name" xml:space="preserve"><value>Code search results</value><comment>Accessible name for exact code search results.</comment></data>
+  <data name="Workspace_Inspector_Code_Editor_Name" xml:space="preserve"><value>Decompiler output</value><comment>Accessible name for the read-only decompiled code editor.</comment></data>
+  <data name="Workspace_Inspector_Navigate_Action" xml:space="preserve"><value>Go to entry</value><comment>Navigates to the selected stable related entry.</comment></data>
+  <data name="Workspace_Inspector_Code_Empty" xml:space="preserve"><value>No decompiled code is available for this entry.</value><comment>Empty state within the code inspector tab.</comment></data>
+  <data name="Workspace_Inspector_Record_Empty" xml:space="preserve"><value>No parser-owned record metadata is available.</value><comment>Empty state within the record inspector tab.</comment></data>
+  <data name="Workspace_Inspector_Related_Empty" xml:space="preserve"><value>No related translation entries were found.</value><comment>Empty state within the relationship inspector tab.</comment></data>
+  <data name="Workspace_Inspector_Npc_Empty" xml:space="preserve"><value>No NPC ownership context is available.</value><comment>Empty state within the NPC inspector tab.</comment></data>
+  <data name="Workspace_Inspector_Asset_Empty" xml:space="preserve"><value>No supported visual asset is referenced by this entry.</value><comment>Empty state within the asset inspector tab.</comment></data>
   <data name="Workspace_Tools_Edit_Tab" xml:space="preserve"><value>Edit</value><comment>Workspace tool category for scoped text changes.</comment></data>
   <data name="Workspace_Tools_Terms_Tab" xml:space="preserve"><value>Terms</value><comment>Workspace tool category for project terminology.</comment></data>
   <data name="Workspace_Tools_Deliver_Tab" xml:space="preserve"><value>Deliver</value><comment>Workspace tool category for tables and project export.</comment></data>

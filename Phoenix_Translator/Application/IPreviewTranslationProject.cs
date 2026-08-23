@@ -33,6 +33,14 @@ namespace PhoenixTranslator.ApplicationLayer
         string Translate(PreviewTranslationEntry entry, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Loads bounded code, record, NPC, relationship, and asset context for one stable entry.
+        /// </summary>
+        /// <param name="entry">The selected normalized entry.</param>
+        /// <param name="cancellationToken">Cancels parser and asset work cooperatively.</param>
+        /// <returns>The supported context snapshot, which may be empty.</returns>
+        PreviewEntryContext LoadContext(PreviewTranslationEntry entry, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Persists staged targets through the format-specific writer and backup boundary.
         /// </summary>
         void Save();
