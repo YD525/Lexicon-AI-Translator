@@ -12,7 +12,10 @@ namespace PhoenixTranslator.SkyrimManagement
         public string ModName = "";
        
         public List<string> AvailableFiles = new List<string>();
-
+        public SkyrimMod()
+        { 
+        
+        }
         public SkyrimMod(string ModPath, string ModName,  List<string> AvailableFiles)
         {
             this.ModPath = ModPath;

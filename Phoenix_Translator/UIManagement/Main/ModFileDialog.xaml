@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PhoenixTranslator.UIManagement.Main"
         Style="{DynamicResource DefWin}"
         mc:Ignorable="d"
-        Title="ModFileDialog" Height="450" Width="800" WindowStartupLocation="CenterOwner">
+        Title="ModFileDialog" Height="450" Width="800" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
     <Border Background="#FF282828" CornerRadius="9">
         <Grid>
             <Grid>
@@ -49,7 +49,8 @@
                 </Grid>
 
                 <ScrollViewer Grid.Row="3" Margin="5" Style="{DynamicResource for_scrollviewer}">
-                        
+                    <Grid Name="CModView">
+                    </Grid>
                 </ScrollViewer>
             </Grid>
         </Grid>
