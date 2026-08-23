@@ -87,12 +87,24 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <param name="shell">The persistent shell status owner.</param>
         /// <param name="openProject">Opens the selected path through the parser boundary.</param>
         /// <param name="requestProjectOpen">Optionally routes user-initiated opens through the Project Hub.</param>
+        /// <param name="chooseTableImportPath">Selects a bounded translation table for import.</param>
+        /// <param name="chooseTableExportPath">Selects a new translation-table destination.</param>
+        /// <param name="chooseProjectExportPath">Selects a new translated-project destination.</param>
+        /// <param name="convertToTraditional">
+        /// Converts one target through the configured writing-variant boundary.
+        /// </param>
+        /// <param name="copyText">Copies an interactive-provider request without exposing it to diagnostics.</param>
         internal PreviewTranslationWorkspaceViewModel(
             Func<string> chooseProjectPath,
             Action openLegacyWorkspace,
             PreviewShellViewModel shell,
             Func<string, IPreviewTranslationProject> openProject,
-            Func<string, Task<bool>> requestProjectOpen = null)
+            Func<string, Task<bool>> requestProjectOpen = null,
+            Func<string> chooseTableImportPath = null,
+            Func<string> chooseTableExportPath = null,
+            Func<string> chooseProjectExportPath = null,
+            Func<string, CancellationToken, string> convertToTraditional = null,
+            Action<string> copyText = null)
         {
             _chooseProjectPath = chooseProjectPath ?? throw new ArgumentNullException(nameof(chooseProjectPath));
             _openLegacyWorkspace = openLegacyWorkspace ?? throw new ArgumentNullException(nameof(openLegacyWorkspace));
@@ -116,17 +128,31 @@ namespace PhoenixTranslator.ApplicationLayer
             };
             _selectedTypeFilter = TypeFilters[0];
             Entries = new List<PreviewTranslationEntry>();
+            Tools = new PreviewWorkspaceToolsViewModel(
+                () => _allEntries,
+                () => Entries,
+                () => SelectedEntry,
+                OnEntryStateChanged,
+                chooseTableImportPath,
+                chooseTableExportPath,
+                chooseProjectExportPath,
+                ExportProjectAsync,
+                convertToTraditional,
+                copyText,
+                OnToolsBusyChanged);
 
-            OpenProjectCommand = new PreviewShellCommand(parameter => OpenSelectedProject());
+            OpenProjectCommand = new PreviewShellCommand(
+                parameter => OpenSelectedProject(),
+                parameter => !IsBusy && !Tools.IsBusy);
             SaveCommand = new PreviewShellCommand(
                 parameter => SaveProject(),
-                parameter => HasProject && IsModified && !IsBusy);
+                parameter => HasProject && IsModified && !IsBusy && !Tools.IsBusy);
             TranslateEntryCommand = new PreviewShellCommand(
                 parameter => TranslateSelectedEntry(),
-                parameter => SelectedEntry != null && !IsBusy);
+                parameter => SelectedEntry != null && !IsBusy && !Tools.IsBusy);
             TranslateScopeCommand = new PreviewShellCommand(
                 parameter => TranslateScope(),
-                parameter => Entries.Count > 0 && !IsBusy);
+                parameter => Entries.Count > 0 && !IsBusy && !Tools.IsBusy);
             CancelOperationCommand = new PreviewShellCommand(
                 parameter => CancelOperation(),
                 parameter => CanCancelOperation);
@@ -171,6 +197,11 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Gets the record types available in the current project.
         /// </summary>
         public ObservableCollection<string> TypeFilters { get; private set; }
+
+        /// <summary>
+        /// Gets the cohesive editing, table, export, conversion, and interactive-provider tools.
+        /// </summary>
+        public PreviewWorkspaceToolsViewModel Tools { get; private set; }
 
         /// <summary>
         /// Gets the command that selects and opens a supported project.
@@ -228,6 +259,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 _selectedEntry = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasSelection));
+                Tools?.RefreshPreview();
                 RaiseCommandAvailability();
             }
         }
@@ -373,7 +405,7 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <param name="path">The selected private project path.</param>
         internal async Task<bool> OpenProjectAsync(string path)
         {
-            if (string.IsNullOrWhiteSpace(path) || IsBusy)
+            if (string.IsNullOrWhiteSpace(path) || IsBusy || Tools.IsBusy)
             {
                 return false;
             }
@@ -402,7 +434,7 @@ namespace PhoenixTranslator.ApplicationLayer
         /// </summary>
         internal async Task SaveProjectAsync()
         {
-            if (_project == null || IsBusy)
+            if (_project == null || IsBusy || Tools.IsBusy)
             {
                 return;
             }
@@ -430,13 +462,24 @@ namespace PhoenixTranslator.ApplicationLayer
             }
         }
 
+        private Task ExportProjectAsync(string path, CancellationToken cancellationToken)
+        {
+            IPreviewTranslationProject project = _project;
+            if (project == null)
+            {
+                throw new InvalidOperationException("A project must be open before export.");
+            }
+
+            return Task.Run(() => project.Export(path, cancellationToken), cancellationToken);
+        }
+
         /// <summary>
         /// Translates a stable entry snapshot sequentially with cooperative cancellation and bounded progress.
         /// </summary>
         /// <param name="entries">The selected or filtered entry snapshot.</param>
         internal async Task TranslateEntriesAsync(IReadOnlyList<PreviewTranslationEntry> entries)
         {
-            if (_project == null || entries == null || entries.Count == 0 || IsBusy)
+            if (_project == null || entries == null || entries.Count == 0 || IsBusy || Tools.IsBusy)
             {
                 return;
             }
@@ -531,6 +574,7 @@ namespace PhoenixTranslator.ApplicationLayer
             OnPropertyChanged(nameof(EntryCountText));
             OnPropertyChanged(nameof(DraftCountText));
             RaiseCommandAvailability();
+            Tools?.RefreshPreview();
         }
 
         /// <inheritdoc />
@@ -641,8 +685,10 @@ namespace PhoenixTranslator.ApplicationLayer
 
             SelectedTypeFilter = TypeFilters[0];
             RefreshFilter();
+            Tools.RefreshProjectState();
             OnPropertyChanged(nameof(HasProject));
             RaiseCommandAvailability();
+            Tools?.RefreshPreview();
             ProjectChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -705,6 +751,10 @@ namespace PhoenixTranslator.ApplicationLayer
             {
                 UpdateTrackedState((PreviewTranslationEntry)sender);
                 OnEntryStateChanged();
+            }
+            else if (e.PropertyName == nameof(PreviewTranslationEntry.ReviewState))
+            {
+                Tools.RefreshReadiness();
             }
         }
 
@@ -785,6 +835,11 @@ namespace PhoenixTranslator.ApplicationLayer
             RaiseCanExecuteChanged(CancelOperationCommand);
             RaiseCanExecuteChanged(PreviousEntryCommand);
             RaiseCanExecuteChanged(ApplyEntryCommand);
+        }
+
+        private void OnToolsBusyChanged(bool isBusy)
+        {
+            RaiseCommandAvailability();
         }
 
         private static void RaiseCanExecuteChanged(ICommand command)

@@ -42,6 +42,10 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(HandlesPreviewTranslationFailures), HandlesPreviewTranslationFailures },
                 { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork },
                 { nameof(FiltersLargePreviewTranslationProject), FiltersLargePreviewTranslationProject },
+                { nameof(PreviewsAppliesAndUndoesWorkspaceReplacement), PreviewsAppliesAndUndoesWorkspaceReplacement },
+                { nameof(RoundTripsBoundedTranslationTable), RoundTripsBoundedTranslationTable },
+                { nameof(ValidatesInteractiveProviderRequestIdentity), ValidatesInteractiveProviderRequestIdentity },
+                { nameof(StagesWritingVariantAndTracksExportReadiness), StagesWritingVariantAndTracksExportReadiness },
                 { nameof(AnalyzesMixedQualityFindings), AnalyzesMixedQualityFindings },
                 { nameof(TracksReviewDecisionsAndBulkUndo), TracksReviewDecisionsAndBulkUndo },
                 { nameof(PersistsPrivateReviewMetadata), PersistsPrivateReviewMetadata },
@@ -659,6 +663,115 @@ namespace PhoenixTranslator.PresetTests
             viewModel.Dispose();
         }
 
+        private static void PreviewsAppliesAndUndoesWorkspaceReplacement()
+        {
+            var entries = new[]
+            {
+                CreateEntry("one", "Source one", "old value"),
+                CreateEntry("two", "Source two", "another old value")
+            };
+            PreviewWorkspaceToolsViewModel tools = CreateWorkspaceTools(entries, entries);
+            tools.SelectedScope = tools.ScopeOptions.Single(option => option.Value == PreviewWorkspaceToolScope.All);
+            tools.FindText = "old";
+            tools.ReplacementText = "new";
+
+            AssertEqual(2, tools.PreviewCount, "Replacement preview must report the exact affected entry count.");
+            AssertEqual(2, tools.ApplyReplace(), "Replacement must affect the previewed scope.");
+            AssertEqual("new value", entries[0].TargetText, "Replacement must stage normalized target text.");
+            AssertEqual(true, tools.CanUndo, "A staged workspace tool must expose undo.");
+
+            tools.UndoCommand.Execute(null);
+            AssertEqual("old value", entries[0].TargetText, "Undo must restore the exact prior target.");
+            AssertEqual("another old value", entries[1].TargetText, "Undo must restore every affected target.");
+        }
+
+        private static void RoundTripsBoundedTranslationTable()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixTranslatorTools-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            try
+            {
+                string path = Path.Combine(directory, "translations.tsv");
+                var entries = new[] { CreateEntry("key-1", "Line\nOne", "Target\tOne") };
+                PreviewWorkspaceToolsViewModel tools = CreateWorkspaceTools(entries, entries);
+                tools.ExportTable(path);
+                entries[0].TargetText = string.Empty;
+
+                tools.ImportTable(path);
+
+                AssertEqual("Target\tOne", entries[0].TargetText, "Table import must restore escaped target content by stable key.");
+                AssertEqual(true, tools.CanUndo, "Imported table changes must remain undoable before save.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+
+        private static void ValidatesInteractiveProviderRequestIdentity()
+        {
+            var entries = new[] { CreateEntry("key-1", "Translate me", string.Empty) };
+            PreviewWorkspaceToolsViewModel tools = CreateWorkspaceTools(entries, entries);
+            tools.PrepareInteractiveCommand.Execute(null);
+            Match requestId = Regex.Match(tools.InteractiveRequest, @"<!-- Request ID: ([a-z0-9]+) -->");
+            AssertEqual(true, requestId.Success, "Interactive requests must contain a stable correlation identifier.");
+
+            tools.InteractiveResponse = "Translated\r\n<!-- Request ID: wrong -->";
+            AssertEqual(false, tools.CanApplyInteractive, "A mismatched provider response must remain blocked.");
+            tools.InteractiveResponse = "Translated\r\n<!-- Request ID: " + requestId.Groups[1].Value + " -->";
+            AssertEqual(true, tools.CanApplyInteractive, "A matching provider response must be applicable.");
+            tools.ApplyInteractiveCommand.Execute(null);
+            AssertEqual("Translated", entries[0].TargetText, "The request marker must not enter project content.");
+        }
+
+        private static PreviewWorkspaceToolsViewModel CreateWorkspaceTools(
+            IReadOnlyList<PreviewTranslationEntry> allEntries,
+            IReadOnlyList<PreviewTranslationEntry> visibleEntries,
+            Func<string, CancellationToken, string> converter = null)
+        {
+            return new PreviewWorkspaceToolsViewModel(
+                () => allEntries,
+                () => visibleEntries,
+                () => allEntries.FirstOrDefault(),
+                () => { },
+                null,
+                null,
+                null,
+                null,
+                converter,
+                null,
+                null);
+        }
+
+        private static PreviewTranslationEntry CreateEntry(string key, string source, string target)
+        {
+            return new PreviewTranslationEntry(key, "XML", key, source, target, 100);
+        }
+
+        private static void StagesWritingVariantAndTracksExportReadiness()
+        {
+            PreviewTranslationEntry entry = CreateEntry("one", "Source", string.Empty);
+            PreviewWorkspaceToolsViewModel tools = CreateWorkspaceTools(
+                new[] { entry },
+                new[] { entry },
+                (value, cancellationToken) => "Converted");
+            AssertEqual(true, tools.IsExportBlocked, "Draft entries must block project export.");
+
+            tools.ConvertCommand.Execute(null);
+            SpinWait.SpinUntil(() => !tools.IsBusy, 2000);
+            AssertEqual(string.Empty, entry.TargetText, "Writing conversion must not change content before explicit apply.");
+            AssertEqual(true, tools.CanApplyConversion, "A completed conversion preview must be explicitly applicable.");
+            tools.ApplyConversionCommand.Execute(null);
+            AssertEqual("Converted", entry.TargetText, "Applying a conversion preview must stage the converted target.");
+            AssertEqual(false, tools.IsExportBlocked, "A complete non-rejected project must pass the blocking readiness gate.");
+            entry.SetReviewState(PreviewReviewState.Approved);
+            tools.RefreshReadiness();
+            AssertEqual(
+                PreviewMessageCatalog.Get("Workspace_Tools_Export_Ready"),
+                tools.ExportReadinessText,
+                "Approved content must report ready export state.");
+        }
+
         private static void AnalyzesMixedQualityFindings()
         {
             var entries = new[]
@@ -1192,6 +1305,14 @@ namespace PhoenixTranslator.PresetTests
             public void Save()
             {
             }
+
+            public void Export(string path, CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                ExportPath = path;
+            }
+
+            public string ExportPath { get; private set; }
 
             public void Dispose()
             {

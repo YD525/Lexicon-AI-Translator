@@ -155,6 +155,80 @@ namespace PhoenixTranslator.ApplicationLayer
             _modFile.Save();
         }
 
+        /// <summary>
+        /// Writes staged targets to a validated new destination and leaves the source project unchanged.
+        /// </summary>
+        /// <param name="path">The destination path, which must not already exist.</param>
+        /// <param name="cancellationToken">Cancels work before the destination becomes visible.</param>
+        public void Export(string path, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("An export path is required.", nameof(path));
+            }
+
+            string destination = System.IO.Path.GetFullPath(path);
+            string source = System.IO.Path.GetFullPath(Path);
+            if (string.Equals(destination, source, StringComparison.OrdinalIgnoreCase) || File.Exists(destination))
+            {
+                throw new IOException("Export requires a new destination file.");
+            }
+
+            string sourceExtension = System.IO.Path.GetExtension(source);
+            if (!string.Equals(
+                System.IO.Path.GetExtension(destination),
+                sourceExtension,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException("The export destination must preserve the project format.");
+            }
+
+            string directory = System.IO.Path.GetDirectoryName(destination);
+            Directory.CreateDirectory(directory);
+            string temporaryPath = System.IO.Path.Combine(
+                directory,
+                "." + System.IO.Path.GetFileNameWithoutExtension(destination) + "." +
+                Guid.NewGuid().ToString("N") + sourceExtension);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                File.Copy(source, temporaryPath, false);
+                using (PreviewTranslationProject exportedProject = Open(temporaryPath))
+                {
+                    Dictionary<string, PreviewTranslationEntry> stagedTargets = Entries
+                        .GroupBy(entry => entry.Key, StringComparer.Ordinal)
+                        .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+                    foreach (PreviewTranslationEntry exportedEntry in exportedProject.Entries)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        PreviewTranslationEntry stagedEntry;
+                        if (stagedTargets.TryGetValue(exportedEntry.Key, out stagedEntry))
+                        {
+                            exportedEntry.TargetText = stagedEntry.TargetText;
+                        }
+                    }
+
+                    exportedProject.Save();
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!File.Exists(temporaryPath) || new FileInfo(temporaryPath).Length == 0)
+                {
+                    throw new InvalidDataException("The exported project failed output validation.");
+                }
+
+                File.Move(temporaryPath, destination);
+            }
+            finally
+            {
+                if (File.Exists(temporaryPath))
+                {
+                    File.Delete(temporaryPath);
+                }
+            }
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {

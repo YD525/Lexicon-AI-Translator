@@ -36,5 +36,12 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Persists staged targets through the format-specific writer and backup boundary.
         /// </summary>
         void Save();
+
+        /// <summary>
+        /// Writes the staged project to a new destination without replacing an existing file.
+        /// </summary>
+        /// <param name="path">The new project destination.</param>
+        /// <param name="cancellationToken">Cancels work before the atomic final move.</param>
+        void Export(string path, CancellationToken cancellationToken);
     }
 }
