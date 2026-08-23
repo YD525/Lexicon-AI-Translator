@@ -116,6 +116,9 @@
     <Compile Include="Application\PreviewReviewQualityViewModel.cs" />
     <Compile Include="Application\PreviewReviewStateStore.cs" />
     <Compile Include="Application\PreviewRevisionHistoryStore.cs" />
+    <Compile Include="Application\PreviewSettingsModel.cs" />
+    <Compile Include="Application\PreviewSettingsViewModel.cs" />
+    <Compile Include="Application\LegacyPreviewSettingsStore.cs" />
     <Compile Include="Application\PreviewShellCommand.cs" />
     <Compile Include="Application\PreviewShellViewModel.cs" />
     <Compile Include="Application\PreviewTranslationEntry.cs" />
@@ -219,6 +222,9 @@
     </Compile>
     <Compile Include="UIManagement\Preview\PreviewHistoryUpdateView.xaml.cs">
       <DependentUpon>PreviewHistoryUpdateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIManagement\Preview\PreviewSettingsView.xaml.cs">
+      <DependentUpon>PreviewSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\Preview\PreviewTranslationWorkspaceView.xaml.cs">
       <DependentUpon>PreviewTranslationWorkspaceView.xaml</DependentUpon>
@@ -347,6 +353,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIManagement\Preview\PreviewHistoryUpdateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\Preview\PreviewSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

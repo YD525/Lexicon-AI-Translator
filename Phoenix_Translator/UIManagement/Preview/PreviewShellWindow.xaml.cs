@@ -15,6 +15,7 @@ namespace PhoenixTranslator.UIManagement.Preview
         private readonly PreviewTranslationWorkspaceViewModel _translationWorkspaceViewModel;
         private readonly PreviewReviewQualityViewModel _reviewQualityViewModel;
         private readonly PreviewHistoryUpdateViewModel _historyUpdateViewModel;
+        private readonly PreviewSettingsViewModel _settingsViewModel;
 
         /// <summary>
         /// Creates the preview application shell in its no-project state.
@@ -45,10 +46,17 @@ namespace PhoenixTranslator.UIManagement.Preview
                 ConfirmConflictReuse,
                 ConfirmBulkReuse,
                 OpenLegacyWorkspace);
+            _settingsViewModel = new PreviewSettingsViewModel(
+                shellViewModel,
+                new LegacyPreviewSettingsStore(),
+                ConfirmSettingsReset,
+                ConfirmSettingsDiscard,
+                OpenLegacyWorkspace);
             DataContext = shellViewModel;
             TranslationWorkspace.DataContext = _translationWorkspaceViewModel;
             ReviewQualityWorkspace.DataContext = _reviewQualityViewModel;
             HistoryUpdateWorkspace.DataContext = _historyUpdateViewModel;
+            SettingsWorkspace.DataContext = _settingsViewModel;
         }
 
         private bool ConfirmBulkApproval(int entryCount)
@@ -108,6 +116,28 @@ namespace PhoenixTranslator.UIManagement.Preview
                 MessageBoxResult.Cancel) == MessageBoxResult.OK;
         }
 
+        private bool ConfirmSettingsReset()
+        {
+            return MessageBox.Show(
+                this,
+                PreviewMessageCatalog.Get("Settings_Reset_Confirmation"),
+                PreviewMessageCatalog.Get("Settings_Reset_ConfirmationTitle"),
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+        }
+
+        private bool ConfirmSettingsDiscard()
+        {
+            return MessageBox.Show(
+                this,
+                PreviewMessageCatalog.Get("Settings_Discard_Confirmation"),
+                PreviewMessageCatalog.Get("Settings_Discard_ConfirmationTitle"),
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+        }
+
         private void OpenLegacyWorkspace()
         {
             if (_legacyWorkspace == null)
@@ -133,6 +163,13 @@ namespace PhoenixTranslator.UIManagement.Preview
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            if (!_settingsViewModel.TryDiscardForClose())
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            _settingsViewModel.Dispose();
             _historyUpdateViewModel.Dispose();
             _reviewQualityViewModel.Dispose();
             _translationWorkspaceViewModel.Dispose();

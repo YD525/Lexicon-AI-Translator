@@ -132,6 +132,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 OnPropertyChanged(nameof(IsTranslationWorkspaceVisible));
                 OnPropertyChanged(nameof(IsReviewQualityWorkspaceVisible));
                 OnPropertyChanged(nameof(IsHistoryUpdateWorkspaceVisible));
+                OnPropertyChanged(nameof(IsSettingsWorkspaceVisible));
                 OnPropertyChanged(nameof(IsPreviewFallbackVisible));
             }
         }
@@ -166,12 +167,18 @@ namespace PhoenixTranslator.ApplicationLayer
             _currentDestination == PreviewShellDestination.ProjectUpdate;
 
         /// <summary>
+        /// Gets whether the unified Settings Center owns the current page.
+        /// </summary>
+        public bool IsSettingsWorkspaceVisible => _currentDestination == PreviewShellDestination.Settings;
+
+        /// <summary>
         /// Gets whether the selected destination still uses the shared preview fallback page.
         /// </summary>
         public bool IsPreviewFallbackVisible =>
             !IsTranslationWorkspaceVisible &&
             !IsReviewQualityWorkspaceVisible &&
-            !IsHistoryUpdateWorkspaceVisible;
+            !IsHistoryUpdateWorkspaceVisible &&
+            !IsSettingsWorkspaceVisible;
 
         /// <summary>
         /// Gets the product version shown independently from dependency versions.

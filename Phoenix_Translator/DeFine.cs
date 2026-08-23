@@ -175,6 +175,9 @@ namespace PhoenixTranslator
         public double WritingAreaHeight { get; set; } = 0;
         public string ViewMode { get; set; } = "Normal";
 
+        /// <summary>Gets or sets the preview control density preference.</summary>
+        public string UiDensity { get; set; } = "Compact";
+
         public Languages SourceLanguage { get; set; } = Languages.English;
         public Languages TargetLanguage { get; set; } = Languages.English;
 
@@ -231,6 +234,9 @@ namespace PhoenixTranslator
                             this.GameType = GetSetting.GameType;
                             this.WritingAreaHeight = GetSetting.WritingAreaHeight;
                             this.ViewMode = GetSetting.ViewMode;
+                            this.UiDensity = string.IsNullOrWhiteSpace(GetSetting.UiDensity)
+                                ? "Compact"
+                                : GetSetting.UiDensity;
                             this.SourceLanguage = GetSetting.SourceLanguage;
                             this.TargetLanguage = GetSetting.TargetLanguage;
                             this.CanClearCloudTranslationCache = GetSetting.CanClearCloudTranslationCache;
