@@ -16,6 +16,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextSecondary}" />
             <Setter Property="FocusVisualStyle" Value="{StaticResource PreviewFocusVisual}" />
+            <Setter Property="AutomationProperties.Name" Value="{Binding Record}" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="{StaticResource PreviewBrushSurfaceInteractive}" />

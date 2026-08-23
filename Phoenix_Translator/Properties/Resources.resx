@@ -150,7 +150,7 @@
   <data name="Shell_Unsaved_ClosePrompt_Title" xml:space="preserve"><value>Save changes before closing?</value><comment>Heading for the modified-project close confirmation.</comment></data>
   <data name="Shell_Unsaved_ClosePrompt_Body" xml:space="preserve"><value>Your project contains changes that have not been saved.</value><comment>Body for the modified-project close confirmation.</comment></data>
   <data name="Shell_Preview_Badge" xml:space="preserve"><value>Preview</value><comment>Badge that distinguishes the incremental preview shell from the legacy workspace.</comment></data>
-  <data name="Shell_Legacy_Open_Action" xml:space="preserve"><value>Open legacy workspace</value><comment>Global fallback action that opens the complete legacy PhoenixGui window.</comment></data>
+  <data name="Shell_Legacy_Open_Action" xml:space="preserve"><value>Open _legacy workspace</value><comment>Global fallback action with an access key that opens the complete legacy PhoenixGui window.</comment></data>
   <data name="Shell_Legacy_Shortcut_Hint" xml:space="preserve"><value>Ctrl+L opens the legacy workspace.</value><comment>Keyboard hint below the workflow fallback action.</comment></data>
   <data name="Shell_Navigation_Shortcuts_Hint" xml:space="preserve"><value>Ctrl+1–8 navigate</value><comment>Compact shell footer hint for direct workflow navigation.</comment></data>
   <data name="Shell_Status_WarningCount" xml:space="preserve"><value>{0} warnings</value><comment>Persistent shell warning summary. Placeholders: {0}=non-negative integer warning count.</comment></data>
@@ -175,8 +175,8 @@
   <data name="Workspace_Search_Placeholder" xml:space="preserve"><value>Search entries</value><comment>Placeholder in the workspace entry search field.</comment></data>
   <data name="Workspace_Open_Title" xml:space="preserve"><value>Open translation project</value><comment>Title of the supported-project file picker.</comment></data>
   <data name="Workspace_Project_Filter" xml:space="preserve"><value>Supported projects|*.esp;*.esm;*.esl;*.pex;*.txt;*.xml;*.json|All files|*.*</value><comment>File picker filter. Keep pipe separators and supported extensions unchanged.</comment></data>
-  <data name="Workspace_Open_Action" xml:space="preserve"><value>Open project</value><comment>Opens a supported project in the preview workspace.</comment></data>
-  <data name="Workspace_Save_Action" xml:space="preserve"><value>Save project</value><comment>Persists confirmed translation changes through the format writer.</comment></data>
+  <data name="Workspace_Open_Action" xml:space="preserve"><value>_Open project</value><comment>Opens a supported project in the preview workspace and defines its access key.</comment></data>
+  <data name="Workspace_Save_Action" xml:space="preserve"><value>_Save project</value><comment>Persists confirmed translation changes through the format writer and defines its access key.</comment></data>
   <data name="Workspace_TranslateEntry_Action" xml:space="preserve"><value>Translate entry</value><comment>Translates the selected entry through the configured provider pipeline.</comment></data>
   <data name="Workspace_Cancel_Action" xml:space="preserve"><value>Cancel</value><comment>Requests cooperative cancellation of the active workspace operation.</comment></data>
   <data name="Workspace_Empty_Title" xml:space="preserve"><value>Open a project to start translating</value><comment>Preview workspace empty-state heading.</comment></data>
@@ -196,7 +196,7 @@
   <data name="Workspace_Shortcuts_Hint" xml:space="preserve"><value>Ctrl+O Open · Ctrl+S Save · F6 Translate entry · Ctrl+Shift+T Translate scope · Esc Cancel</value><comment>Compact keyboard command map for the preview translation workspace.</comment></data>
   <data name="Workspace_Filter_AllStates" xml:space="preserve"><value>All states</value><comment>Default state-filter option in the workspace.</comment></data>
   <data name="Workspace_Filter_AllTypes" xml:space="preserve"><value>All types</value><comment>Default record-type filter option in the workspace.</comment></data>
-  <data name="Workspace_TranslateScope_Action" xml:space="preserve"><value>Translate scope</value><comment>Starts translation for the currently selected or filtered scope.</comment></data>
+  <data name="Workspace_TranslateScope_Action" xml:space="preserve"><value>_Translate scope</value><comment>Starts translation for the currently selected or filtered scope and defines its access key.</comment></data>
   <data name="Workspace_Entry_Count" xml:space="preserve"><value>{0} entries</value><comment>Workspace entry count. Placeholders: {0}=non-negative integer count.</comment></data>
   <data name="Workspace_Entry_DraftCount" xml:space="preserve"><value>{0} draft</value><comment>Workspace draft count. Placeholders: {0}=non-negative integer count.</comment></data>
   <data name="Workspace_Entry_SourceText_Label" xml:space="preserve"><value>Source text</value><comment>Label above the read-only source editor.</comment></data>
@@ -284,7 +284,7 @@
   <data name="Quality_Resolution_Acknowledged" xml:space="preserve"><value>Acknowledged</value><comment>An intentional non-blocking finding was explicitly accepted.</comment></data>
   <data name="Quality_Resolution_Resolved" xml:space="preserve"><value>Resolved</value><comment>The underlying condition no longer exists.</comment></data>
   <data name="Quality_FindingCount" xml:space="preserve"><value>{0} findings</value><comment>Visible finding count. Placeholders: {0}=non-negative integer.</comment></data>
-  <data name="Quality_Revalidate_Action" xml:space="preserve"><value>Run validation</value><comment>Rebuilds normalized findings without changing translation content.</comment></data>
+  <data name="Quality_Revalidate_Action" xml:space="preserve"><value>_Run validation</value><comment>Rebuilds normalized findings without changing translation content and defines its access key.</comment></data>
   <data name="Quality_FindingDetails_Title" xml:space="preserve"><value>Finding details</value><comment>Heading for the selected finding metadata.</comment></data>
   <data name="Quality_Source_Label" xml:space="preserve"><value>Diagnostic source</value><comment>Metadata label for the component that emitted a finding.</comment></data>
   <data name="Quality_Resolution_Label" xml:space="preserve"><value>Resolution</value><comment>Metadata label for the finding resolution.</comment></data>
@@ -340,7 +340,7 @@
   <data name="Update_State_Reusable" xml:space="preserve"><value>Reusable</value><comment>Revision state for a safe prior target candidate.</comment></data>
   <data name="Update_State_Conflict" xml:space="preserve"><value>Conflict</value><comment>Revision state requiring an explicit target decision.</comment></data>
   <data name="Update_Search_Placeholder" xml:space="preserve"><value>Search revisions, records, source, or target</value><comment>Project comparison search hint.</comment></data>
-  <data name="Update_Compare_Action" xml:space="preserve"><value>Compare revision</value><comment>Selects and compares a previous compatible project revision.</comment></data>
+  <data name="Update_Compare_Action" xml:space="preserve"><value>_Compare revision</value><comment>Selects and compares a previous compatible project revision and defines its access key.</comment></data>
   <data name="Update_Compare_Title" xml:space="preserve"><value>Select previous project revision</value><comment>Title of the previous-revision file picker.</comment></data>
   <data name="Update_Comparison_Progress" xml:space="preserve"><value>Comparing project revisions…</value><comment>Progress message while opening and comparing a previous revision.</comment></data>
   <data name="Update_Comparison_Completed" xml:space="preserve"><value>Revision comparison completed. Review reuse candidates and conflicts before applying changes.</value><comment>Successful comparison notification.</comment></data>
@@ -416,9 +416,9 @@
   <data name="Settings_Field_ThrottleRatio_Label" xml:space="preserve"><value>Throttling ratio</value><comment>Engine throttling ratio field label.</comment></data>
   <data name="Settings_Field_ThrottleDelay_Label" xml:space="preserve"><value>Throttling delay in milliseconds</value><comment>Engine throttling delay field label.</comment></data>
   <data name="Settings_Advanced_OpenPipeline_Action" xml:space="preserve"><value>Open provider pipeline and custom providers</value><comment>Opens advanced legacy provider tools during preview.</comment></data>
-  <data name="Settings_Action_Apply" xml:space="preserve"><value>Apply settings</value><comment>Persists every valid staged setting.</comment></data>
-  <data name="Settings_Action_Cancel" xml:space="preserve"><value>Cancel changes</value><comment>Discards every staged setting change.</comment></data>
-  <data name="Settings_Action_Reset" xml:space="preserve"><value>Reset to defaults</value><comment>Stages safe default values after confirmation.</comment></data>
+  <data name="Settings_Action_Apply" xml:space="preserve"><value>_Apply settings</value><comment>Persists every valid staged setting and defines its access key.</comment></data>
+  <data name="Settings_Action_Cancel" xml:space="preserve"><value>_Cancel changes</value><comment>Discards every staged setting change and defines its access key.</comment></data>
+  <data name="Settings_Action_Reset" xml:space="preserve"><value>_Reset to defaults</value><comment>Stages safe default values after confirmation and defines its access key.</comment></data>
   <data name="Settings_Action_OpenLegacy" xml:space="preserve"><value>Open legacy settings</value><comment>Opens the complete legacy settings fallback.</comment></data>
   <data name="Settings_State_Clean" xml:space="preserve"><value>All settings are applied</value><comment>Persistent clean settings state.</comment></data>
   <data name="Settings_State_Modified" xml:space="preserve"><value>Settings have unapplied changes</value><comment>Persistent modified settings state.</comment></data>
@@ -442,4 +442,12 @@
   <data name="Settings_Validation_PlaceholderPattern" xml:space="preserve"><value>The protected placeholder pattern is not a valid regular expression.</value><comment>Placeholder regular expression validation.</comment></data>
   <data name="Accessibility_Settings_CategoryList_Name" xml:space="preserve"><value>Settings categories</value><comment>Accessible name for central category navigation.</comment></data>
   <data name="Accessibility_Settings_Validation_Name" xml:space="preserve"><value>Settings validation messages</value><comment>Accessible name for the validation message list.</comment></data>
+  <data name="Common_Severity_Information" xml:space="preserve"><value>Information</value><comment>Visible and accessible semantic prefix for informational notifications.</comment></data>
+  <data name="Common_Severity_Success" xml:space="preserve"><value>Success</value><comment>Visible and accessible semantic prefix for successful notifications.</comment></data>
+  <data name="Common_Severity_Warning" xml:space="preserve"><value>Warning</value><comment>Visible and accessible semantic prefix for warning notifications.</comment></data>
+  <data name="Common_Severity_Error" xml:space="preserve"><value>Error</value><comment>Visible and accessible semantic prefix for error notifications.</comment></data>
+  <data name="Accessibility_KeyboardHelp_Action" xml:space="preserve"><value>Keyboard help (F1)</value><comment>Shell action that opens the keyboard command reference.</comment></data>
+  <data name="Accessibility_KeyboardHelp_HelpText" xml:space="preserve"><value>Open the complete keyboard command reference. Press F1 from anywhere in the preview.</value><comment>Automation help text for the keyboard reference action.</comment></data>
+  <data name="Accessibility_KeyboardHelp_Title" xml:space="preserve"><value>Keyboard commands</value><comment>Title of the preview keyboard command reference.</comment></data>
+  <data name="Accessibility_KeyboardHelp_Content" xml:space="preserve"><value>Navigation&#x0A;Ctrl+1–8: Open a workflow&#x0A;Ctrl+L: Open the legacy workspace&#x0A;F1: Open this command reference&#x0A;&#x0A;Projects and translation&#x0A;Ctrl+O: Open project&#x0A;Ctrl+S: Save project or apply settings&#x0A;F6: Translate selected entry&#x0A;Ctrl+Shift+T: Translate visible scope&#x0A;Esc: Cancel the active operation or discard staged settings&#x0A;&#x0A;Review and quality&#x0A;Ctrl+Enter: Approve selected entry&#x0A;Ctrl+Shift+Enter: Approve visible scope&#x0A;Ctrl+Z: Undo the last bulk action&#x0A;F8: Go to the selected entry&#x0A;&#x0A;History and project updates&#x0A;Ctrl+Shift+O: Compare a previous revision&#x0A;Ctrl+Enter: Reuse selected translation&#x0A;Ctrl+Shift+Enter: Reuse visible translations&#x0A;Ctrl+Z: Undo reuse&#x0A;F8: Go to the selected entry&#x0A;&#x0A;Use Tab and Shift+Tab to move between controls. Dialogs return focus to the control that opened them.</value><comment>Complete keyboard reference for the preview shell and workflows.</comment></data>
 </root>

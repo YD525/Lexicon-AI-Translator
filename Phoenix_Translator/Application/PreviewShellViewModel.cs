@@ -270,6 +270,27 @@ namespace PhoenixTranslator.ApplicationLayer
         public PreviewShellNotificationSeverity NotificationSeverity => _notificationSeverity;
 
         /// <summary>
+        /// Gets the localized semantic label for the current notification severity.
+        /// </summary>
+        public string NotificationSeverityText
+        {
+            get
+            {
+                switch (_notificationSeverity)
+                {
+                    case PreviewShellNotificationSeverity.Success:
+                        return PreviewMessageCatalog.Get("Common_Severity_Success");
+                    case PreviewShellNotificationSeverity.Warning:
+                        return PreviewMessageCatalog.Get("Common_Severity_Warning");
+                    case PreviewShellNotificationSeverity.Error:
+                        return PreviewMessageCatalog.Get("Common_Severity_Error");
+                    default:
+                        return PreviewMessageCatalog.Get("Common_Severity_Information");
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates the project identity and unsaved state visible throughout the shell.
         /// </summary>
         /// <param name="projectName">The safe display name, or <see langword="null"/> to clear the project.</param>
@@ -378,6 +399,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 : PreviewMessageCatalog.Format(messageId, arguments);
             OnPropertyChanged(nameof(HasNotification));
             OnPropertyChanged(nameof(NotificationMessage));
+            OnPropertyChanged(nameof(NotificationSeverityText));
             OnPropertyChanged(nameof(NotificationSeverity));
         }
 

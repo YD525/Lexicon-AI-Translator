@@ -14,5 +14,19 @@ namespace PhoenixTranslator.UIManagement.Preview
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Moves keyboard focus to the first control for the visible history or update workflow.
+        /// </summary>
+        internal void FocusInitialControl()
+        {
+            if (SearchBox.IsVisible)
+            {
+                SearchBox.Focus();
+                return;
+            }
+
+            HistoryTimeline.Focus();
+        }
     }
 }
