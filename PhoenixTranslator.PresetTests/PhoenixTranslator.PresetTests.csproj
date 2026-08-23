@@ -108,6 +108,12 @@
     <Compile Include="..\Phoenix_Translator\Application\PreviewShellServicesViewModel.cs">
       <Link>PreviewShellServicesViewModel.cs</Link>
     </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewAdvancedToolsModel.cs">
+      <Link>PreviewAdvancedToolsModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewAdvancedToolsViewModel.cs">
+      <Link>PreviewAdvancedToolsViewModel.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewShellViewModel.cs">
       <Link>PreviewShellViewModel.cs</Link>
     </Compile>

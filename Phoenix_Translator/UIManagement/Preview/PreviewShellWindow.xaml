@@ -215,9 +215,15 @@
                         Visibility="{Binding DataContext.IsSettingsWorkspaceVisible,
                             RelativeSource={RelativeSource AncestorType={x:Type Window}},
                             Converter={StaticResource BooleanToVisibility}}" />
+                <preview:PreviewAdvancedToolsView x:Name="AdvancedToolsWorkspace" Grid.Row="2"
+                        Visibility="{Binding DataContext.IsAdvancedToolsWorkspaceVisible,
+                            RelativeSource={RelativeSource AncestorType={x:Type Window}},
+                            Converter={StaticResource BooleanToVisibility}}" />
                 <preview:PreviewShellServicesView x:Name="ShellServicesWorkspace" Grid.Row="2"
                         Panel.ZIndex="20"
-                        Visibility="{Binding IsShellServicesVisible, Converter={StaticResource BooleanToVisibility}}" />
+                        Visibility="{Binding DataContext.IsShellServicesVisible,
+                            RelativeSource={RelativeSource AncestorType={x:Type Window}},
+                            Converter={StaticResource BooleanToVisibility}}" />
             </Grid>
         </Grid>
 

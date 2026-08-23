@@ -591,4 +591,69 @@
   <data name="Common_Action_Remove" xml:space="preserve"><value>_Remove</value><comment>Access-key action that removes a reference without deleting underlying content.</comment></data>
   <data name="Accessibility_Projects_Recent_Name" xml:space="preserve"><value>Recent projects</value><comment>Accessible name for the recent-project list.</comment></data>
   <data name="Accessibility_Projects_Active_Name" xml:space="preserve"><value>Active project summary</value><comment>Accessible name for the active project region.</comment></data>
+  <data name="Advanced_Title" xml:space="preserve"><value>Advanced tools</value><comment>Accessible title for the Advanced Tools workspace.</comment></data>
+  <data name="Accessibility_Advanced_Tabs_Name" xml:space="preserve"><value>Advanced tool categories</value><comment>Accessible name for Advanced Tools category tabs.</comment></data>
+  <data name="Accessibility_Advanced_Pipeline_Name" xml:space="preserve"><value>Provider pipeline</value><comment>Accessible name for the provider pipeline list.</comment></data>
+  <data name="Advanced_Tab_Pipeline" xml:space="preserve"><value>Provider pipeline</value><comment>Advanced Tools pipeline tab.</comment></data>
+  <data name="Advanced_Tab_CustomProvider" xml:space="preserve"><value>Custom provider</value><comment>Advanced Tools custom provider tab.</comment></data>
+  <data name="Advanced_Tab_Database" xml:space="preserve"><value>Terminology database</value><comment>Advanced Tools database tab.</comment></data>
+  <data name="Advanced_Tab_Telemetry" xml:space="preserve"><value>Token telemetry</value><comment>Advanced Tools telemetry tab.</comment></data>
+  <data name="Advanced_Tab_Presets" xml:space="preserve"><value>Preset guide</value><comment>Advanced Tools preset explanation tab.</comment></data>
+  <data name="Advanced_Diagnostics_Action" xml:space="preserve"><value>_Diagnostics</value><comment>Opens safe application diagnostics from Advanced Tools.</comment></data>
+  <data name="Advanced_Legacy_Action" xml:space="preserve"><value>Legacy provider _tools</value><comment>Opens the workflow-specific legacy provider fallback.</comment></data>
+  <data name="Advanced_Pipeline_Title" xml:space="preserve"><value>Provider execution pipeline</value><comment>Provider pipeline card title.</comment></data>
+  <data name="Advanced_Pipeline_Description" xml:space="preserve"><value>Enable providers and arrange their execution order. Changes remain staged until you apply them.</value><comment>Provider pipeline staged editing explanation.</comment></data>
+  <data name="Advanced_Pipeline_Applied_Status" xml:space="preserve"><value>The provider pipeline was validated and applied.</value><comment>Provider pipeline apply success status.</comment></data>
+  <data name="Advanced_Pipeline_Cancelled_Status" xml:space="preserve"><value>The provider pipeline matches the saved configuration.</value><comment>Provider pipeline reload status.</comment></data>
+  <data name="Common_Action_MoveUp" xml:space="preserve"><value>Move _up</value><comment>Moves a selected item earlier.</comment></data>
+  <data name="Common_Action_MoveDown" xml:space="preserve"><value>Move _down</value><comment>Moves a selected item later.</comment></data>
+  <data name="Common_Action_Cancel" xml:space="preserve"><value>_Cancel</value><comment>Cancels or discards a staged operation.</comment></data>
+  <data name="Common_Action_Apply" xml:space="preserve"><value>_Apply</value><comment>Applies staged changes.</comment></data>
+  <data name="Common_Action_Refresh" xml:space="preserve"><value>_Refresh</value><comment>Refreshes current values.</comment></data>
+  <data name="Advanced_Custom_Title" xml:space="preserve"><value>Custom provider editor</value><comment>Custom provider editor title.</comment></data>
+  <data name="Advanced_Custom_Description" xml:space="preserve"><value>Define the provider identity and response mapping, validate connectivity without translation content, then save it disabled for deliberate pipeline placement.</value><comment>Staged custom provider workflow explanation.</comment></data>
+  <data name="Advanced_Custom_Name_Label" xml:space="preserve"><value>Provider name</value><comment>Custom provider name field label.</comment></data>
+  <data name="Advanced_Custom_Group_Label" xml:space="preserve"><value>Provider group</value><comment>Custom provider group field label.</comment></data>
+  <data name="Advanced_Custom_Endpoint_Label" xml:space="preserve"><value>HTTPS or local endpoint</value><comment>Custom provider endpoint field label.</comment></data>
+  <data name="Advanced_Custom_Model_Label" xml:space="preserve"><value>Model (optional)</value><comment>Custom provider model field label.</comment></data>
+  <data name="Advanced_Custom_ResponseField_Label" xml:space="preserve"><value>JSON response field</value><comment>Custom provider response mapping field label.</comment></data>
+  <data name="Advanced_Custom_Headers_Label" xml:space="preserve"><value>Request headers</value><comment>Custom provider request headers field label.</comment></data>
+  <data name="Advanced_Custom_Payload_Label" xml:space="preserve"><value>Request payload</value><comment>Custom provider request payload field label.</comment></data>
+  <data name="Advanced_Custom_Placeholders_Hint" xml:space="preserve"><value>Use existing Phoenix placeholders as values: {API_KEY}, {AI_Prompt}, {AI_Model}, {SourceStr}, {P_From}, and {P_To}.</value><comment>Custom provider request mapping guidance.</comment></data>
+  <data name="Advanced_Custom_UsePost_Label" xml:space="preserve"><value>Use POST for provider requests</value><comment>Custom provider request method option.</comment></data>
+  <data name="Advanced_Custom_Privacy" xml:space="preserve"><value>The connectivity test sends no credential, prompt, translation text, payload, or response body to diagnostics.</value><comment>Custom provider test privacy explanation.</comment></data>
+  <data name="Advanced_Custom_Test_Action" xml:space="preserve"><value>_Test connectivity</value><comment>Starts a bounded custom provider connectivity test.</comment></data>
+  <data name="Advanced_Custom_Save_Action" xml:space="preserve"><value>_Save provider</value><comment>Saves the validated custom provider.</comment></data>
+  <data name="Advanced_Custom_Validation_Name" xml:space="preserve"><value>Enter a provider name with no more than 80 characters.</value><comment>Safe custom provider name validation.</comment></data>
+  <data name="Advanced_Custom_Validation_Endpoint" xml:space="preserve"><value>Enter an absolute HTTPS endpoint or a local HTTP endpoint.</value><comment>Safe custom provider endpoint validation.</comment></data>
+  <data name="Advanced_Custom_Validation_Response" xml:space="preserve"><value>Enter the JSON field that contains the translated response.</value><comment>Safe custom provider response mapping validation.</comment></data>
+  <data name="Advanced_Custom_Test_Running" xml:space="preserve"><value>Testing provider connectivity…</value><comment>Custom provider test running status.</comment></data>
+  <data name="Advanced_Custom_Test_Succeeded" xml:space="preserve"><value>The endpoint accepted a bounded connectivity probe.</value><comment>Custom provider connectivity success.</comment></data>
+  <data name="Advanced_Custom_Test_Failed" xml:space="preserve"><value>The endpoint rejected or could not complete the bounded connectivity probe.</value><comment>Custom provider connectivity failure.</comment></data>
+  <data name="Advanced_Custom_Test_Cancelled" xml:space="preserve"><value>The provider connectivity test was cancelled.</value><comment>Custom provider connectivity cancellation.</comment></data>
+  <data name="Advanced_Custom_Saved_Status" xml:space="preserve"><value>The custom provider was saved disabled and added to the pipeline.</value><comment>Custom provider save success.</comment></data>
+  <data name="Advanced_Operation_Failed_Status" xml:space="preserve"><value>The advanced operation could not be completed. The saved configuration was not intentionally changed.</value><comment>Safe generic Advanced Tools operation failure.</comment></data>
+  <data name="Advanced_Database_Title" xml:space="preserve"><value>Guarded terminology database</value><comment>Advanced terminology database title.</comment></data>
+  <data name="Advanced_Database_Description" xml:space="preserve"><value>Browse terminology data in read-only mode. Enter mutation mode only for deliberate maintenance operations.</value><comment>Database access boundary explanation.</comment></data>
+  <data name="Advanced_Database_MutationWarning" xml:space="preserve"><value>Mutation mode can permanently update or delete terminology records. It is separate from ordinary terminology editing and requires confirmation.</value><comment>Database mutation warning.</comment></data>
+  <data name="Advanced_Database_ReadOnly_Action" xml:space="preserve"><value>Open _read-only</value><comment>Opens database tool with mutations blocked.</comment></data>
+  <data name="Advanced_Database_Mutation_Action" xml:space="preserve"><value>Enter _mutation mode</value><comment>Requests guarded database mutation access.</comment></data>
+  <data name="Advanced_Database_Mutation_ConfirmationTitle" xml:space="preserve"><value>Enter database mutation mode?</value><comment>Database mutation confirmation title.</comment></data>
+  <data name="Advanced_Database_Mutation_Confirmation" xml:space="preserve"><value>Mutation mode can permanently change terminology data. Continue only if you intend to maintain the database directly.</value><comment>Database mutation confirmation message.</comment></data>
+  <data name="Advanced_Telemetry_Title" xml:space="preserve"><value>Token telemetry</value><comment>Token telemetry title.</comment></data>
+  <data name="Advanced_Telemetry_Description" xml:space="preserve"><value>Inspect provider token totals without prompts, translations, credentials, endpoints, or response payloads.</value><comment>Privacy-safe token telemetry explanation.</comment></data>
+  <data name="Advanced_Telemetry_Pause_Action" xml:space="preserve"><value>_Pause updates</value><comment>Pauses token telemetry refresh.</comment></data>
+  <data name="Advanced_Telemetry_Resume_Action" xml:space="preserve"><value>_Resume updates</value><comment>Resumes token telemetry refresh.</comment></data>
+  <data name="Advanced_Telemetry_Clear_Action" xml:space="preserve"><value>_Clear totals</value><comment>Clears persisted token totals.</comment></data>
+  <data name="Advanced_Telemetry_Cleared_Status" xml:space="preserve"><value>Token totals were cleared.</value><comment>Token telemetry clear success.</comment></data>
+  <data name="Advanced_Presets_Title" xml:space="preserve"><value>Translation preset trade-offs</value><comment>Textual preset guide title.</comment></data>
+  <data name="Advanced_Presets_Description" xml:space="preserve"><value>Use these descriptions with the numeric settings. Color and chart shape are never required to understand the trade-offs.</value><comment>Accessible preset guide explanation.</comment></data>
+  <data name="Advanced_Preset_Balanced_Title" xml:space="preserve"><value>Balanced — recommended default</value><comment>Balanced preset title.</comment></data>
+  <data name="Advanced_Preset_Balanced_Description" xml:space="preserve"><value>High quality with good throughput. Uses moderate context and standard bucket sizes for everyday projects.</value><comment>Balanced preset text explanation.</comment></data>
+  <data name="Advanced_Preset_Quality_Title" xml:space="preserve"><value>Quality first — more context, lower throughput</value><comment>Quality preset title.</comment></data>
+  <data name="Advanced_Preset_Quality_Description" xml:space="preserve"><value>Preserves more conversational context and stricter link grouping. Best for nuanced content, but uses more time and provider capacity.</value><comment>Quality preset text explanation.</comment></data>
+  <data name="Advanced_Preset_Speed_Title" xml:space="preserve"><value>Speed first — less context, higher throughput</value><comment>Speed preset title.</comment></data>
+  <data name="Advanced_Preset_Speed_Description" xml:space="preserve"><value>Uses larger batches and aggressive deduplication. Best for broad first passes, with less contextual nuance.</value><comment>Speed preset text explanation.</comment></data>
+  <data name="Advanced_Preset_Custom_Title" xml:space="preserve"><value>Custom — explicit expert control</value><comment>Custom preset title.</comment></data>
+  <data name="Advanced_Preset_Custom_Description" xml:space="preserve"><value>Preserves individually chosen engine values. Review context, bucket, concurrency, and throttling settings together before large runs.</value><comment>Custom preset text explanation.</comment></data>
 </root>
