@@ -44,6 +44,10 @@
     <sys:Double x:Key="PreviewFontSizeBodyStrong">14</sys:Double>
     <sys:Double x:Key="PreviewFontSizeSection">18</sys:Double>
     <sys:Double x:Key="PreviewFontSizeTitle">24</sys:Double>
+    <sys:Double x:Key="PreviewIconSizeSmall">14</sys:Double>
+    <sys:Double x:Key="PreviewIconSizeCompact">16</sys:Double>
+    <sys:Double x:Key="PreviewIconSizeMedium">20</sys:Double>
+    <sys:Double x:Key="PreviewIconSizeLarge">24</sys:Double>
 
     <sys:Double x:Key="PreviewSpace1">4</sys:Double>
     <sys:Double x:Key="PreviewSpace2">8</sys:Double>
@@ -56,6 +60,7 @@
     <CornerRadius x:Key="PreviewRadiusLarge">8</CornerRadius>
     <Thickness x:Key="PreviewControlPaddingCompact">10,5</Thickness>
     <Thickness x:Key="PreviewControlPaddingComfortable">12,8</Thickness>
+    <Thickness x:Key="PreviewIconLabelSpacing">0,0,8,0</Thickness>
     <sys:Double x:Key="PreviewControlHeightCompact">30</sys:Double>
     <sys:Double x:Key="PreviewControlHeightComfortable">38</sys:Double>
     <sys:Double x:Key="PreviewInputHeight">34</sys:Double>
