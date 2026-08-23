@@ -13,6 +13,7 @@ using System.Xml;
 using System.Xml.Linq;
 using PhoenixTranslator.ApplicationLayer;
 using PhoenixTranslator.Properties;
+using PhoenixTranslator.UIManagement.Preview;
 
 namespace PhoenixTranslator.PresetTests
 {
@@ -71,7 +72,8 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(StagesAndAppliesProviderPipeline), StagesAndAppliesProviderPipeline },
                 { nameof(ValidatesCustomProviderDrafts), ValidatesCustomProviderDrafts },
                 { nameof(CancelsCustomProviderConnectivityTest), CancelsCustomProviderConnectivityTest },
-                { nameof(GuardsReadOnlyDatabaseStatements), GuardsReadOnlyDatabaseStatements }
+                { nameof(GuardsReadOnlyDatabaseStatements), GuardsReadOnlyDatabaseStatements },
+                { nameof(ValidatesSemanticIconRegistry), ValidatesSemanticIconRegistry }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -1543,6 +1545,21 @@ namespace PhoenixTranslator.PresetTests
                 "A mutation must be rejected in read-only mode.");
             AssertEqual(false, PreviewDatabaseStatementGuard.IsReadOnly("SELECT * FROM Dictionary; DELETE FROM Dictionary"),
                 "A second statement must be rejected in read-only mode.");
+        }
+
+        private static void ValidatesSemanticIconRegistry()
+        {
+            IReadOnlyList<PreviewIconDefinition> definitions = PreviewIconRegistry.GetDefinitions();
+            int enumCount = Enum.GetValues(typeof(PreviewIconName)).Length;
+            AssertEqual(enumCount, definitions.Count, "Every semantic icon must have exactly one generated mapping.");
+            AssertEqual(enumCount, definitions.Select(definition => definition.Codepoint).Distinct().Count(),
+                "The subset must not register duplicate glyphs.");
+            AssertEqual(enumCount, definitions.Select(definition => definition.SemanticName).Distinct().Count(),
+                "Semantic icon names must be unique.");
+            AssertEqual(true, definitions.All(definition => !string.IsNullOrWhiteSpace(definition.Fallback)),
+                "Every semantic icon must have a text fallback.");
+            AssertEqual("?", PreviewIconRegistry.Resolve((PreviewIconName)999, false),
+                "Unknown semantic identifiers must resolve to a safe text fallback.");
         }
 
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)

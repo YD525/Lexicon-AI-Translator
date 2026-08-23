@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:localization="clr-namespace:PhoenixTranslator.UIManagement.Localization"
+             xmlns:preview="clr-namespace:PhoenixTranslator.UIManagement.Preview"
              AutomationProperties.Name="{localization:PreviewMessage Advanced_Title}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -41,23 +42,30 @@
     <Grid>
         <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="12" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
         <Border Style="{StaticResource AdvancedCard}" Margin="0" Padding="6">
-            <Grid><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="12" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="8" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+            <Grid><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="8" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                 <ListBox x:Name="PageTabs" ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}" ItemContainerStyle="{StaticResource AdvancedTab}"
                          Background="Transparent" BorderThickness="0" AutomationProperties.Name="{localization:PreviewMessage Accessibility_Advanced_Tabs_Name}">
                     <ListBox.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate></ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate><DataTemplate><TextBlock FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock">
+                    <ListBox.ItemTemplate><DataTemplate><StackPanel Orientation="Horizontal"><preview:PreviewIcon Width="{StaticResource PreviewIconSizeCompact}" Margin="{StaticResource PreviewIconLabelSpacing}" FontSize="{StaticResource PreviewIconSizeCompact}"><preview:PreviewIcon.Style><Style TargetType="preview:PreviewIcon">
+                        <Setter Property="Icon" Value="Provider" /><Style.Triggers>
+                            <DataTrigger Binding="{Binding}" Value="TerminologyDatabase"><Setter Property="Icon" Value="Database" /></DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="Telemetry"><Setter Property="Icon" Value="Telemetry" /></DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="Presets"><Setter Property="Icon" Value="Preset" /></DataTrigger>
+                        </Style.Triggers></Style></preview:PreviewIcon.Style></preview:PreviewIcon><TextBlock FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock">
                         <Setter Property="Text" Value="{localization:PreviewMessage Advanced_Tab_Pipeline}" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding}" Value="CustomProvider"><Setter Property="Text" Value="{localization:PreviewMessage Advanced_Tab_CustomProvider}" /></DataTrigger>
                             <DataTrigger Binding="{Binding}" Value="TerminologyDatabase"><Setter Property="Text" Value="{localization:PreviewMessage Advanced_Tab_Database}" /></DataTrigger>
                             <DataTrigger Binding="{Binding}" Value="Telemetry"><Setter Property="Text" Value="{localization:PreviewMessage Advanced_Tab_Telemetry}" /></DataTrigger>
                             <DataTrigger Binding="{Binding}" Value="Presets"><Setter Property="Text" Value="{localization:PreviewMessage Advanced_Tab_Presets}" /></DataTrigger>
-                        </Style.Triggers></Style></TextBlock.Style></TextBlock></DataTemplate></ListBox.ItemTemplate>
+                        </Style.Triggers></Style></TextBlock.Style></TextBlock></StackPanel></DataTemplate></ListBox.ItemTemplate>
                 </ListBox>
             </ScrollViewer>
-            <Button Grid.Column="2" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding OpenDiagnosticsCommand}" Content="{localization:PreviewMessage Advanced_Diagnostics_Action}" />
-            <Button Grid.Column="4" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding OpenLegacyProviderToolsCommand}" Content="{localization:PreviewMessage Advanced_Legacy_Action}" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Margin="0,0,8,0" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding OpenDiagnosticsCommand}" Content="{localization:PreviewMessage Advanced_Diagnostics_Action}" />
+                <Button Style="{StaticResource PreviewButtonSecondary}" Command="{Binding OpenLegacyProviderToolsCommand}" Content="{localization:PreviewMessage Advanced_Legacy_Action}" />
+            </StackPanel>
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

@@ -37,6 +37,10 @@ jobs:
         shell: pwsh
         run: .\scripts\Verify-PreviewMessages.ps1 -ProjectRoot .\Phoenix_Translator
 
+      - name: Verify preview icon catalogue
+        shell: pwsh
+        run: .\scripts\Verify-PreviewIcons.ps1 -ProjectRoot .\Phoenix_Translator
+
       - name: Build x64 release
         shell: pwsh
         run: msbuild .\PhoenixTranslator.sln /m /p:Configuration=Release /p:Platform=x64

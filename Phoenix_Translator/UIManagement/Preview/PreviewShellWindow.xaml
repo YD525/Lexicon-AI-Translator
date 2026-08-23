@@ -120,7 +120,26 @@
                          Background="Transparent" BorderThickness="0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Label}" />
+                            <DockPanel>
+                                <preview:PreviewIcon Width="{StaticResource PreviewIconSizeMedium}" Margin="{StaticResource PreviewIconLabelSpacing}"
+                                                     FontSize="{StaticResource PreviewIconSizeMedium}" Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=Foreground}">
+                                    <preview:PreviewIcon.Style>
+                                        <Style TargetType="preview:PreviewIcon">
+                                            <Setter Property="Icon" Value="Projects" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Destination}" Value="Translate"><Setter Property="Icon" Value="Translate" /></DataTrigger>
+                                                <DataTrigger Binding="{Binding Destination}" Value="Review"><Setter Property="Icon" Value="Review" /></DataTrigger>
+                                                <DataTrigger Binding="{Binding Destination}" Value="Quality"><Setter Property="Icon" Value="Quality" /></DataTrigger>
+                                                <DataTrigger Binding="{Binding Destination}" Value="History"><Setter Property="Icon" Value="History" /></DataTrigger>
+                                                <DataTrigger Binding="{Binding Destination}" Value="ProjectUpdate"><Setter Property="Icon" Value="ProjectUpdate" /></DataTrigger>
+                                                <DataTrigger Binding="{Binding Destination}" Value="Settings"><Setter Property="Icon" Value="Settings" /></DataTrigger>
+                                                <DataTrigger Binding="{Binding Destination}" Value="AdvancedTools"><Setter Property="Icon" Value="AdvancedTools" /></DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </preview:PreviewIcon.Style>
+                                </preview:PreviewIcon>
+                                <TextBlock VerticalAlignment="Center" Text="{Binding Label}" />
+                            </DockPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -244,7 +263,8 @@
                     <ColumnDefinition Width="16" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Ellipse Width="8" Height="8" VerticalAlignment="Center" Fill="{StaticResource PreviewBrushSuccess}" />
+                <preview:PreviewIcon Width="{StaticResource PreviewIconSizeCompact}" FontSize="{StaticResource PreviewIconSizeSmall}"
+                                     Icon="Success" Foreground="{StaticResource PreviewBrushSuccess}" />
                 <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource PreviewBrushTextSecondary}"
                            Text="{Binding StatusText}" />
                 <ProgressBar Grid.Column="4" Height="5" VerticalAlignment="Center" Minimum="0" Maximum="100"

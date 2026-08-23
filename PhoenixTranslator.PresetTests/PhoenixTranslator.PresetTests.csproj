@@ -42,6 +42,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +109,12 @@
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewShellServicesViewModel.cs">
       <Link>PreviewShellServicesViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\Generated\PreviewIconRegistry.g.cs">
+      <Link>PreviewIconRegistry.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\UIManagement\Preview\PreviewIcon.cs">
+      <Link>PreviewIcon.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewAdvancedToolsModel.cs">
       <Link>PreviewAdvancedToolsModel.cs</Link>
