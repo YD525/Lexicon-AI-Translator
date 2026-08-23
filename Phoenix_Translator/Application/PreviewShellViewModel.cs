@@ -137,6 +137,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 OnPropertyChanged(nameof(IsReviewQualityWorkspaceVisible));
                 OnPropertyChanged(nameof(IsHistoryUpdateWorkspaceVisible));
                 OnPropertyChanged(nameof(IsSettingsWorkspaceVisible));
+                OnPropertyChanged(nameof(IsAdvancedToolsWorkspaceVisible));
                 OnPropertyChanged(nameof(IsPreviewFallbackVisible));
             }
         }
@@ -180,6 +181,9 @@ namespace PhoenixTranslator.ApplicationLayer
         /// </summary>
         public bool IsSettingsWorkspaceVisible => _currentDestination == PreviewShellDestination.Settings;
 
+        /// <summary>Gets whether the categorized Advanced Tools workspace owns the current page.</summary>
+        public bool IsAdvancedToolsWorkspaceVisible => _currentDestination == PreviewShellDestination.AdvancedTools;
+
         /// <summary>
         /// Gets whether the selected destination still uses the shared preview fallback page.
         /// </summary>
@@ -188,7 +192,8 @@ namespace PhoenixTranslator.ApplicationLayer
             !IsTranslationWorkspaceVisible &&
             !IsReviewQualityWorkspaceVisible &&
             !IsHistoryUpdateWorkspaceVisible &&
-            !IsSettingsWorkspaceVisible;
+            !IsSettingsWorkspaceVisible &&
+            !IsAdvancedToolsWorkspaceVisible;
 
         /// <summary>
         /// Gets the product version shown independently from dependency versions.

@@ -23,6 +23,7 @@ namespace PhoenixTranslator.UIManagement.Preview
         private readonly PreviewReviewQualityViewModel _reviewQualityViewModel;
         private readonly PreviewHistoryUpdateViewModel _historyUpdateViewModel;
         private readonly PreviewSettingsViewModel _settingsViewModel;
+        private readonly PreviewAdvancedToolsViewModel _advancedToolsViewModel;
         private readonly PreviewDiagnosticService _diagnostics;
         private readonly IPreviewDialogService _dialogService;
         private readonly PreviewShellServicesViewModel _shellServicesViewModel;
@@ -91,12 +92,18 @@ namespace PhoenixTranslator.UIManagement.Preview
                 ConfirmSettingsReset,
                 ConfirmSettingsDiscard,
                 OpenLegacyWorkspace);
+            _advancedToolsViewModel = new PreviewAdvancedToolsViewModel(
+                new LegacyPreviewAdvancedToolsStore(),
+                _shellViewModel,
+                ConfirmDatabaseMutation,
+                OpenDatabase);
             DataContext = _shellViewModel;
             ProjectHub.DataContext = _projectHubViewModel;
             TranslationWorkspace.DataContext = _translationWorkspaceViewModel;
             ReviewQualityWorkspace.DataContext = _reviewQualityViewModel;
             HistoryUpdateWorkspace.DataContext = _historyUpdateViewModel;
             SettingsWorkspace.DataContext = _settingsViewModel;
+            AdvancedToolsWorkspace.DataContext = _advancedToolsViewModel;
             ShellServicesWorkspace.DataContext = _shellServicesViewModel;
             ShellServicesWorkspace.CloseRequested += ShellServicesCloseRequested;
             _shellViewModel.PropertyChanged += ShellViewModelPropertyChanged;
@@ -269,6 +276,23 @@ namespace PhoenixTranslator.UIManagement.Preview
                 PreviewDialogSeverity.Warning);
         }
 
+        private bool ConfirmDatabaseMutation()
+        {
+            return ShowConfirmation(
+                PreviewMessageCatalog.Get("Advanced_Database_Mutation_Confirmation"),
+                PreviewMessageCatalog.Get("Advanced_Database_Mutation_ConfirmationTitle"),
+                PreviewDialogSeverity.Destructive);
+        }
+
+        private void OpenDatabase(bool isReadOnly)
+        {
+            DeFine.CloseDataBaseView();
+            DeFine.DataBaseView = new DataBaseView();
+            DeFine.DataBaseView.SetReadOnlyMode(isReadOnly);
+            DeFine.DataBaseView.Owner = this;
+            DeFine.DataBaseView.Show();
+        }
+
         private void OpenLegacyWorkspace()
         {
             if (_legacyWorkspace == null)
@@ -355,6 +379,9 @@ namespace PhoenixTranslator.UIManagement.Preview
                 case PreviewShellDestination.Settings:
                     SettingsWorkspace.FocusInitialControl();
                     break;
+                case PreviewShellDestination.AdvancedTools:
+                    AdvancedToolsWorkspace.FocusInitialControl();
+                    break;
                 default:
                     PrimaryNavigation.Focus();
                     break;
@@ -406,6 +433,7 @@ namespace PhoenixTranslator.UIManagement.Preview
             }
 
             _settingsViewModel.Dispose();
+            _advancedToolsViewModel.Dispose();
             ShellServicesWorkspace.CloseRequested -= ShellServicesCloseRequested;
             _shellViewModel.PropertyChanged -= ShellViewModelPropertyChanged;
             _projectHubViewModel.Dispose();

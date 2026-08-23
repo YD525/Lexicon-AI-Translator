@@ -21,6 +21,18 @@ namespace PhoenixTranslator
 {
     public partial class DataBaseView : Window
     {
+        private bool _isReadOnlyMode;
+
+        /// <summary>Restricts the database tool to read-only statements and disables mutation controls.</summary>
+        /// <param name="isReadOnly">Whether database mutations must be blocked.</param>
+        public void SetReadOnlyMode(bool isReadOnly)
+        {
+            _isReadOnlyMode = isReadOnly;
+            DeleteBtn.IsEnabled = !isReadOnly;
+            DeleteBtn.Visibility = isReadOnly ? Visibility.Collapsed : Visibility.Visible;
+            MainGrid.IsReadOnly = isReadOnly;
+            Title = isReadOnly ? "Database Viewer (read-only)" : "Database Viewer";
+        }
         private string _TableName;
 
         private Dictionary<int, long> _RowIds = new Dictionary<int, long>();
@@ -91,6 +103,11 @@ namespace PhoenixTranslator
         private string LastQuery = "";
         private void RunQuery(string UserSql)
         {
+            if (_isReadOnlyMode && !ApplicationLayer.PreviewDatabaseStatementGuard.IsReadOnly(UserSql))
+            {
+                SetStatus("Read-only mode accepts SELECT statements only.", false);
+                return;
+            }
             try
             {
                 LastQuery = UserSql;

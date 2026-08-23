@@ -128,6 +128,9 @@
     <Compile Include="Application\PreviewDialogService.cs" />
     <Compile Include="Application\PreviewDiagnosticService.cs" />
     <Compile Include="Application\PreviewShellServicesViewModel.cs" />
+    <Compile Include="Application\PreviewAdvancedToolsModel.cs" />
+    <Compile Include="Application\PreviewAdvancedToolsViewModel.cs" />
+    <Compile Include="Application\LegacyPreviewAdvancedToolsStore.cs" />
     <Compile Include="Application\PreviewShellViewModel.cs" />
     <Compile Include="Application\PreviewTranslationEntry.cs" />
     <Compile Include="Application\PreviewTranslationProject.cs" />
@@ -245,6 +248,9 @@
     </Compile>
     <Compile Include="UIManagement\Preview\PreviewSettingsView.xaml.cs">
       <DependentUpon>PreviewSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIManagement\Preview\PreviewAdvancedToolsView.xaml.cs">
+      <DependentUpon>PreviewAdvancedToolsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\Preview\PreviewTranslationWorkspaceView.xaml.cs">
       <DependentUpon>PreviewTranslationWorkspaceView.xaml</DependentUpon>
@@ -391,6 +397,10 @@
     <Page Include="UIManagement\Preview\PreviewSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\Preview\PreviewAdvancedToolsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UIManagement\Preview\PreviewTranslationWorkspaceView.xaml">
       <SubType>Designer</SubType>

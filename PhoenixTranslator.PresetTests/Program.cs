@@ -67,7 +67,11 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(SearchesSettingsByLegacyTerminology), SearchesSettingsByLegacyTerminology },
                 { nameof(ProtectsSettingsSecrets), ProtectsSettingsSecrets },
                 { nameof(TestsProviderWithoutSavingSettings), TestsProviderWithoutSavingSettings },
-                { nameof(ClearsStagedCredentialWhenProviderChanges), ClearsStagedCredentialWhenProviderChanges }
+                { nameof(ClearsStagedCredentialWhenProviderChanges), ClearsStagedCredentialWhenProviderChanges },
+                { nameof(StagesAndAppliesProviderPipeline), StagesAndAppliesProviderPipeline },
+                { nameof(ValidatesCustomProviderDrafts), ValidatesCustomProviderDrafts },
+                { nameof(CancelsCustomProviderConnectivityTest), CancelsCustomProviderConnectivityTest },
+                { nameof(GuardsReadOnlyDatabaseStatements), GuardsReadOnlyDatabaseStatements }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -1480,6 +1484,67 @@ namespace PhoenixTranslator.PresetTests
             settings.Dispose();
         }
 
+        private static void StagesAndAppliesProviderPipeline()
+        {
+            var store = new RecordingAdvancedToolsStore();
+            var tools = new PreviewAdvancedToolsViewModel(store, new PreviewShellViewModel(() => { }), () => true, readOnly => { });
+            PreviewPipelineEntry second = tools.PipelineEntries[1];
+            tools.SelectedPipelineEntry = second;
+            tools.MoveUpCommand.Execute(null);
+            second.IsEnabled = true;
+
+            AssertEqual(0, store.SavePipelineCalls, "Pipeline editing must remain staged before apply.");
+            tools.ApplyPipelineCommand.Execute(null);
+            AssertEqual(1, store.SavePipelineCalls, "Applying must cross the persistence boundary exactly once.");
+            AssertEqual(2, store.SavedPipeline[0].Key, "Applying must preserve the staged provider order.");
+            AssertEqual(true, store.SavedPipeline[0].IsEnabled, "Applying must preserve staged enablement.");
+            tools.Dispose();
+        }
+
+        private static void ValidatesCustomProviderDrafts()
+        {
+            var valid = new PreviewCustomProviderDraft
+            {
+                Name = "Fixture provider",
+                Endpoint = "https://provider.invalid/v1",
+                ResponseField = "choices[0].message.content"
+            };
+            AssertEqual(null, PreviewAdvancedToolsViewModel.ValidateCustomProvider(valid),
+                "A complete HTTPS provider draft must be valid.");
+            valid.Endpoint = "http://provider.invalid/v1";
+            AssertEqual("Advanced_Custom_Validation_Endpoint", PreviewAdvancedToolsViewModel.ValidateCustomProvider(valid),
+                "Plain HTTP must be limited to local endpoints.");
+            valid.Endpoint = "http://127.0.0.1:1234/v1";
+            AssertEqual(null, PreviewAdvancedToolsViewModel.ValidateCustomProvider(valid),
+                "A loopback HTTP provider must remain supported.");
+        }
+
+        private static void CancelsCustomProviderConnectivityTest()
+        {
+            var store = new RecordingAdvancedToolsStore { BlockProviderTest = true };
+            var tools = new PreviewAdvancedToolsViewModel(store, new PreviewShellViewModel(() => { }), () => true, readOnly => { });
+            tools.CustomProvider.Name = "Fixture provider";
+            tools.CustomProvider.Endpoint = "https://provider.invalid/v1";
+            tools.CustomProvider.ResponseField = "translation";
+            tools.TestCustomProviderCommand.Execute(null);
+            AssertEqual(true, SpinWait.SpinUntil(() => tools.IsTesting, 1000), "The provider test must start asynchronously.");
+            tools.CancelCustomProviderTestCommand.Execute(null);
+            AssertEqual(true, SpinWait.SpinUntil(() => !tools.IsTesting, 1000), "Cancellation must complete the provider test.");
+            AssertEqual(PreviewMessageCatalog.Get("Advanced_Custom_Test_Cancelled"), tools.StatusText,
+                "Cancellation must expose a sanitized status.");
+            tools.Dispose();
+        }
+
+        private static void GuardsReadOnlyDatabaseStatements()
+        {
+            AssertEqual(true, PreviewDatabaseStatementGuard.IsReadOnly(" SELECT * FROM Dictionary"),
+                "A SELECT query must be allowed in read-only mode.");
+            AssertEqual(false, PreviewDatabaseStatementGuard.IsReadOnly("DELETE FROM Dictionary"),
+                "A mutation must be rejected in read-only mode.");
+            AssertEqual(false, PreviewDatabaseStatementGuard.IsReadOnly("SELECT * FROM Dictionary; DELETE FROM Dictionary"),
+                "A second statement must be rejected in read-only mode.");
+        }
+
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)
         {
             return new TranslationPresetCoordinator(new TranslationPresetService(), store);
@@ -1713,6 +1778,43 @@ namespace PhoenixTranslator.PresetTests
                 LastTestCredential = providerCredential;
                 return Task.FromResult(new PreviewProviderTestResult(PreviewProviderTestStatus.Succeeded));
             }
+        }
+
+        private sealed class RecordingAdvancedToolsStore : IPreviewAdvancedToolsStore
+        {
+            internal int SavePipelineCalls { get; private set; }
+            internal IReadOnlyList<PreviewPipelineEntry> SavedPipeline { get; private set; }
+            internal bool BlockProviderTest { get; set; }
+
+            public IReadOnlyList<PreviewPipelineEntry> LoadPipeline()
+            {
+                return new[]
+                {
+                    new PreviewPipelineEntry(1, "First", "Cloud AI", true, false),
+                    new PreviewPipelineEntry(2, "Second", "Local AI", false, false)
+                };
+            }
+
+            public void SavePipeline(IReadOnlyList<PreviewPipelineEntry> entries)
+            {
+                SavePipelineCalls++;
+                SavedPipeline = entries.Select(entry => entry.Clone()).ToArray();
+            }
+
+            public async Task<PreviewProviderTestResult> TestCustomProviderAsync(
+                PreviewCustomProviderDraft draft,
+                CancellationToken cancellationToken)
+            {
+                if (BlockProviderTest)
+                {
+                    await Task.Delay(Timeout.Infinite, cancellationToken);
+                }
+                return new PreviewProviderTestResult(PreviewProviderTestStatus.Succeeded);
+            }
+
+            public void SaveCustomProvider(PreviewCustomProviderDraft draft) { }
+            public IReadOnlyList<KeyValuePair<string, long>> ReadTokenUsage() { return new[] { new KeyValuePair<string, long>("Fixture", 12) }; }
+            public void ClearTokenUsage() { }
         }
     }
 }
