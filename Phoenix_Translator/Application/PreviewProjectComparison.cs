@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace PhoenixTranslator.ApplicationLayer
 {
@@ -109,10 +110,12 @@ namespace PhoenixTranslator.ApplicationLayer
         /// </summary>
         /// <param name="currentEntries">The active project entries.</param>
         /// <param name="previousEntries">The selected previous revision entries.</param>
+        /// <param name="cancellationToken">Cancels comparison between stable entry identities.</param>
         /// <returns>Stable ordered comparison results.</returns>
         internal IReadOnlyList<PreviewProjectComparisonItem> Compare(
             IReadOnlyList<PreviewTranslationEntry> currentEntries,
-            IReadOnlyList<PreviewTranslationEntry> previousEntries)
+            IReadOnlyList<PreviewTranslationEntry> previousEntries,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (currentEntries == null)
             {
@@ -125,10 +128,13 @@ namespace PhoenixTranslator.ApplicationLayer
             }
 
             var ambiguousKeys = new HashSet<string>(StringComparer.Ordinal);
-            Dictionary<string, PreviewTranslationEntry> current = IndexEntries(currentEntries, ambiguousKeys);
-            Dictionary<string, PreviewTranslationEntry> previous = IndexEntries(previousEntries, ambiguousKeys);
+            Dictionary<string, PreviewTranslationEntry> current = IndexEntries(
+                currentEntries, ambiguousKeys, cancellationToken);
+            Dictionary<string, PreviewTranslationEntry> previous = IndexEntries(
+                previousEntries, ambiguousKeys, cancellationToken);
             return current.Keys.Union(previous.Keys, StringComparer.Ordinal)
                 .OrderBy(key => key, StringComparer.Ordinal)
+                .Select(key => ThrowIfCancelled(key, cancellationToken))
                 .Select(key => ambiguousKeys.Contains(key)
                     ? new PreviewProjectComparisonItem(
                         key, PreviewRevisionComparisonState.Conflict, Get(current, key), Get(previous, key))
@@ -138,11 +144,13 @@ namespace PhoenixTranslator.ApplicationLayer
 
         private static Dictionary<string, PreviewTranslationEntry> IndexEntries(
             IEnumerable<PreviewTranslationEntry> entries,
-            ISet<string> ambiguousKeys)
+            ISet<string> ambiguousKeys,
+            CancellationToken cancellationToken)
         {
             var indexed = new Dictionary<string, PreviewTranslationEntry>(StringComparer.Ordinal);
             foreach (PreviewTranslationEntry entry in entries)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (entry == null || string.IsNullOrEmpty(entry.Key))
                 {
                     continue;
@@ -159,6 +167,12 @@ namespace PhoenixTranslator.ApplicationLayer
             }
 
             return indexed;
+        }
+
+        private static string ThrowIfCancelled(string key, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return key;
         }
 
         private static PreviewTranslationEntry Get(

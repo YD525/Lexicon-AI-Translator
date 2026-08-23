@@ -363,6 +363,7 @@
   <data name="Quality_Resolution_Resolved" xml:space="preserve"><value>Resolved</value><comment>The underlying condition no longer exists.</comment></data>
   <data name="Quality_FindingCount" xml:space="preserve"><value>{0} findings</value><comment>Visible finding count. Placeholders: {0}=non-negative integer.</comment></data>
   <data name="Quality_Revalidate_Action" xml:space="preserve"><value>_Run validation</value><comment>Rebuilds normalized findings without changing translation content and defines its access key.</comment></data>
+  <data name="Quality_Validation_Progress" xml:space="preserve"><value>Validating…</value><comment>Visible progress state while quality validation runs outside the UI thread.</comment></data>
   <data name="Quality_FindingDetails_Title" xml:space="preserve"><value>Finding details</value><comment>Heading for the selected finding metadata.</comment></data>
   <data name="Quality_Source_Label" xml:space="preserve"><value>Diagnostic source</value><comment>Metadata label for the component that emitted a finding.</comment></data>
   <data name="Quality_Resolution_Label" xml:space="preserve"><value>Resolution</value><comment>Metadata label for the finding resolution.</comment></data>

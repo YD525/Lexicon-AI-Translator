@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,8 +20,14 @@ namespace PhoenixTranslator.PresetTests
 {
     internal static class Program
     {
-        private static int Main()
+        private static int Main(string[] args)
         {
+            if (args != null && args.Any(argument =>
+                string.Equals(argument, "--performance", StringComparison.OrdinalIgnoreCase)))
+            {
+                return RunPerformanceValidation();
+            }
+
             var tests = new Dictionary<string, Action>
             {
                 { nameof(PreservesCustomSettingsOnLoad), PreservesCustomSettingsOnLoad },
@@ -47,6 +54,8 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(HandlesPreviewTranslationFailures), HandlesPreviewTranslationFailures },
                 { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork },
                 { nameof(FiltersLargePreviewTranslationProject), FiltersLargePreviewTranslationProject },
+                { nameof(CancelsLargeQualityValidation), CancelsLargeQualityValidation },
+                { nameof(CancelsLargeRevisionComparison), CancelsLargeRevisionComparison },
                 { nameof(LoadsAndNavigatesPreviewContext), LoadsAndNavigatesPreviewContext },
                 { nameof(DiscardsStalePreviewContext), DiscardsStalePreviewContext },
                 { nameof(DistinguishesEmptyAndFailedPreviewContext), DistinguishesEmptyAndFailedPreviewContext },
@@ -778,6 +787,175 @@ namespace PhoenixTranslator.PresetTests
             viewModel.Dispose();
         }
 
+        private static void CancelsLargeQualityValidation()
+        {
+            var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+            bool cancelled = false;
+            try
+            {
+                new PreviewQualityAnalyzer().Analyze(CreatePerformanceEntries(10000), cancellation.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                cancelled = true;
+            }
+
+            AssertEqual(true, cancelled,
+                "Large-project quality validation must honor cooperative cancellation.");
+        }
+
+        private static void CancelsLargeRevisionComparison()
+        {
+            var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+            bool cancelled = false;
+            try
+            {
+                new PreviewProjectComparisonService().Compare(
+                    CreatePerformanceEntries(10000),
+                    CreatePerformanceEntries(10000),
+                    cancellation.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                cancelled = true;
+            }
+
+            AssertEqual(true, cancelled,
+                "Large-project revision comparison must honor cooperative cancellation.");
+        }
+
+        private static int RunPerformanceValidation()
+        {
+            Console.WriteLine("Phoenix Translator preview performance validation");
+            Console.WriteLine("Runtime,{0}", Environment.Version);
+            Console.WriteLine("LogicalProcessors,{0}", Environment.ProcessorCount);
+            Console.WriteLine("Profile,Entries,OpenMs,FilterMs,ValidationMs,ComparisonMs,Result");
+
+            int failures = 0;
+            failures += RunPerformanceProfile("small", 1000, 500, 100, 500, 500) ? 0 : 1;
+            failures += RunPerformanceProfile("medium", 25000, 1500, 250, 2000, 1500) ? 0 : 1;
+            failures += RunPerformanceProfile("large", 100000, 5000, 750, 7000, 5000) ? 0 : 1;
+            failures += ValidateRepeatedLifecycle() ? 0 : 1;
+            return failures == 0 ? 0 : 1;
+        }
+
+        private static bool RunPerformanceProfile(
+            string name,
+            int entryCount,
+            long openBudget,
+            long filterBudget,
+            long validationBudget,
+            long comparisonBudget)
+        {
+            IReadOnlyList<PreviewTranslationEntry> entries = CreatePerformanceEntries(entryCount);
+            var project = new FakePreviewTranslationProject(entries);
+            var shell = new PreviewShellViewModel(() => { });
+            var workspace = new PreviewTranslationWorkspaceViewModel(
+                () => project.Path,
+                () => { },
+                shell,
+                path => project);
+
+            long openMilliseconds = MeasureMilliseconds(
+                () => workspace.OpenProjectAsync(project.Path).GetAwaiter().GetResult());
+            long filterMilliseconds = MeasureMilliseconds(() => workspace.SearchText = "source " + (entryCount - 1));
+            workspace.SearchText = string.Empty;
+            long validationMilliseconds = MeasureMilliseconds(
+                () => new PreviewQualityAnalyzer().Analyze(entries));
+            long comparisonMilliseconds = MeasureMilliseconds(
+                () => new PreviewProjectComparisonService().Compare(entries, entries));
+            workspace.Dispose();
+
+            bool passed = openMilliseconds <= openBudget && filterMilliseconds <= filterBudget &&
+                validationMilliseconds <= validationBudget && comparisonMilliseconds <= comparisonBudget;
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0},{1},{2},{3},{4},{5},{6}",
+                name,
+                entryCount,
+                openMilliseconds,
+                filterMilliseconds,
+                validationMilliseconds,
+                comparisonMilliseconds,
+                passed ? "PASS" : "FAIL"));
+            return passed;
+        }
+
+        private static IReadOnlyList<PreviewTranslationEntry> CreatePerformanceEntries(int count)
+        {
+            return Enumerable.Range(0, count)
+                .Select(index => new PreviewTranslationEntry(
+                    index.ToString(CultureInfo.InvariantCulture),
+                    index % 4 == 0 ? "MCM" : index % 4 == 1 ? "XML" : index % 4 == 2 ? "PEX" : "ESP",
+                    "RECORD_" + index.ToString(CultureInfo.InvariantCulture),
+                    "Synthetic source " + index.ToString(CultureInfo.InvariantCulture) + " {0}",
+                    index % 5 == 0 ? string.Empty : "Synthetic target " + index.ToString(CultureInfo.InvariantCulture) + " {0}",
+                    index % 7 == 0 ? 40 : 100))
+                .ToList();
+        }
+
+        private static long MeasureMilliseconds(Action action)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            action();
+            stopwatch.Stop();
+            return stopwatch.ElapsedMilliseconds;
+        }
+
+        private static bool ValidateRepeatedLifecycle()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            long managedBefore = GC.GetTotalMemory(true);
+            using (Process process = Process.GetCurrentProcess())
+            {
+                process.Refresh();
+                long privateBefore = process.PrivateMemorySize64;
+                int handlesBefore = process.HandleCount;
+                RunLifecycleCycles(5, 100000);
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                process.Refresh();
+                long managedDelta = Math.Max(0, GC.GetTotalMemory(true) - managedBefore);
+                long privateDelta = Math.Max(0, process.PrivateMemorySize64 - privateBefore);
+                int handleDelta = Math.Max(0, process.HandleCount - handlesBefore);
+                bool passed = managedDelta <= 64L * 1024 * 1024 &&
+                    privateDelta <= 64L * 1024 * 1024 && handleDelta <= 16;
+                Console.WriteLine(
+                    "Lifecycle,5x100000,ManagedDeltaBytes={0},PrivateDeltaBytes={1},HandleDelta={2},{3}",
+                    managedDelta,
+                    privateDelta,
+                    handleDelta,
+                    passed ? "PASS" : "FAIL");
+                return passed;
+            }
+        }
+
+        private static void RunLifecycleCycles(int cycles, int entryCount)
+        {
+            for (int cycle = 0; cycle < cycles; cycle++)
+            {
+                IReadOnlyList<PreviewTranslationEntry> entries = CreatePerformanceEntries(entryCount);
+                var project = new FakePreviewTranslationProject(entries);
+                var shell = new PreviewShellViewModel(() => { });
+                var workspace = new PreviewTranslationWorkspaceViewModel(
+                    () => project.Path,
+                    () => { },
+                    shell,
+                    path => project);
+                workspace.OpenProjectAsync(project.Path).GetAwaiter().GetResult();
+                project.Translate(entries[cycle % entries.Count], CancellationToken.None);
+                new PreviewQualityAnalyzer().Analyze(entries);
+                new PreviewProjectComparisonService().Compare(entries, entries);
+                project.Export("synthetic-output", CancellationToken.None);
+                workspace.Dispose();
+            }
+        }
+
         private static void LoadsAndNavigatesPreviewContext()
         {
             var first = CreateEntry("first", "needle", string.Empty);
@@ -1087,6 +1265,7 @@ namespace PhoenixTranslator.PresetTests
                 workspace.OpenProjectAsync(project.Path).GetAwaiter().GetResult();
                 var cancelled = new PreviewReviewQualityViewModel(shell, workspace, new PreviewQualityAnalyzer(),
                     new PreviewReviewStateStore(stateDirectory), count => false, () => { });
+                cancelled.RevalidateAsync().GetAwaiter().GetResult();
 
                 cancelled.ApproveScopeCommand.Execute(null);
                 AssertEqual(PreviewReviewState.Unreviewed, entries[0].ReviewState,
@@ -1095,6 +1274,7 @@ namespace PhoenixTranslator.PresetTests
 
                 var review = new PreviewReviewQualityViewModel(shell, workspace, new PreviewQualityAnalyzer(),
                     new PreviewReviewStateStore(stateDirectory), count => count == 2, () => { });
+                review.RevalidateAsync().GetAwaiter().GetResult();
                 review.ApproveScopeCommand.Execute(null);
                 AssertEqual(PreviewReviewState.Approved, entries[0].ReviewState,
                     "Confirmed bulk approval must update the visible eligible scope.");
@@ -1167,6 +1347,7 @@ namespace PhoenixTranslator.PresetTests
                 workspace.OpenProjectAsync(project.Path).GetAwaiter().GetResult();
                 var review = new PreviewReviewQualityViewModel(shell, workspace, new PreviewQualityAnalyzer(),
                     new PreviewReviewStateStore(stateDirectory), count => true, () => { });
+                review.RevalidateAsync().GetAwaiter().GetResult();
                 shell.CurrentDestination = PreviewShellDestination.Quality;
                 review.SelectedFinding = review.Findings.Single(finding => finding.RuleId == "technical-string");
 
