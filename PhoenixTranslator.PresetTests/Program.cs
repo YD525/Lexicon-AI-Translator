@@ -35,6 +35,10 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(FormatsPreviewMessages), FormatsPreviewMessages },
                 { nameof(NavigatesPreviewShell), NavigatesPreviewShell },
                 { nameof(TracksPreviewShellStatus), TracksPreviewShellStatus },
+                { nameof(OpensAndClosesPreviewShellServices), OpensAndClosesPreviewShellServices },
+                { nameof(RedactsAndBoundsPreviewDiagnostics), RedactsAndBoundsPreviewDiagnostics },
+                { nameof(ExportsSafePreviewDiagnostics), ExportsSafePreviewDiagnostics },
+                { nameof(PresentsPreviewShellServiceVersions), PresentsPreviewShellServiceVersions },
                 { nameof(OpensProjectThroughHubAndPersistsRecent), OpensProjectThroughHubAndPersistsRecent },
                 { nameof(ProtectsUnsavedProjectReplacement), ProtectsUnsavedProjectReplacement },
                 { nameof(PersistsBoundedRecentProjects), PersistsBoundedRecentProjects },
@@ -401,6 +405,107 @@ namespace PhoenixTranslator.PresetTests
                 "Completing an operation must restore the idle status.");
             AssertEqual(0d, viewModel.OperationProgress,
                 "Completing an operation must clear stale progress.");
+        }
+
+        private static void OpensAndClosesPreviewShellServices()
+        {
+            var viewModel = new PreviewShellViewModel(() => { });
+
+            AssertEqual(false, viewModel.IsShellServicesVisible,
+                "Cross-cutting shell services must not cover the initial workflow.");
+            viewModel.OpenShellServicesCommand.Execute(null);
+            AssertEqual(true, viewModel.IsShellServicesVisible,
+                "The shell command must open About and diagnostics without changing workflow identity.");
+            AssertEqual(PreviewShellDestination.Projects, viewModel.CurrentDestination,
+                "Opening shell services must preserve the active workflow destination.");
+            viewModel.CloseShellServicesCommand.Execute(null);
+            AssertEqual(false, viewModel.IsShellServicesVisible,
+                "The close command must return to the preserved workflow.");
+        }
+
+        private static void RedactsAndBoundsPreviewDiagnostics()
+        {
+            var diagnostics = new PreviewDiagnosticService();
+            for (int index = 0; index < 205; index++)
+            {
+                diagnostics.Record(
+                    PreviewDiagnosticSeverity.Warning,
+                    "test.event." + index.ToString(CultureInfo.InvariantCulture),
+                    "token=private-value C:\\Users\\Example\\private-project.xml");
+            }
+
+            IReadOnlyList<PreviewDiagnosticEntry> entries = diagnostics.GetEntries();
+            AssertEqual(200, entries.Count,
+                "Diagnostic retention must discard the oldest events beyond its documented bound.");
+            AssertEqual("test.event.204", entries[0].EventId,
+                "Diagnostic snapshots must expose the newest retained event first.");
+            AssertEqual(false, entries.Any(entry => entry.Detail.Contains("private-value")),
+                "Diagnostic retention must redact secret-like values.");
+            AssertEqual(false, entries.Any(entry => entry.Detail.Contains("Example")),
+                "Diagnostic retention must redact absolute machine-specific paths.");
+        }
+
+        private static void ExportsSafePreviewDiagnostics()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixDiagnosticTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            try
+            {
+                string path = Path.Combine(directory, "diagnostics.txt");
+                var diagnostics = new PreviewDiagnosticService();
+                diagnostics.Record(
+                    PreviewDiagnosticSeverity.Error,
+                    "test.export",
+                    "password=hunter2 C:\\Private\\project.esp");
+                diagnostics.Export(path);
+
+                string report = File.ReadAllText(path);
+                AssertEqual(true, report.Contains("test.export"),
+                    "Diagnostic export must retain stable event identity.");
+                AssertEqual(false, report.Contains("hunter2"),
+                    "Diagnostic export must exclude secret-like values.");
+                AssertEqual(false, report.Contains("C:\\Private"),
+                    "Diagnostic export must exclude absolute paths.");
+                AssertEqual(false, report.Contains(directory),
+                    "Diagnostic export must not include its private destination.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+
+        private static void PresentsPreviewShellServiceVersions()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixShellServiceTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            try
+            {
+                string path = Path.Combine(directory, "diagnostics.txt");
+                var diagnostics = new PreviewDiagnosticService();
+                diagnostics.Record(PreviewDiagnosticSeverity.Information, "test.ready");
+                var dialogs = new RecordingPreviewDialogService();
+                var viewModel = new PreviewShellServicesViewModel(diagnostics, () => path, dialogs);
+
+                AssertEqual(5, viewModel.Components.Count,
+                    "About must distinguish Translator from all four supporting component boundaries.");
+                AssertEqual("Phoenix Translator", viewModel.Components[0].Component,
+                    "About must present the product version independently from dependencies.");
+                AssertEqual(true, viewModel.Components.All(component => !string.IsNullOrWhiteSpace(component.Status)),
+                    "Every dependency must expose a safe loaded, available, or unavailable state.");
+
+                viewModel.ExportDiagnosticsCommand.Execute(null);
+                AssertEqual(true, File.Exists(path),
+                    "The shell-services export command must create the selected report.");
+                AssertEqual(1, dialogs.Requests.Count,
+                    "The shell-services export command must report completion through the shared modal boundary.");
+                AssertEqual(false, dialogs.Requests[0].RequiresConfirmation,
+                    "A successful export notification must not masquerade as destructive confirmation.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
         }
 
         private static void OpensProjectThroughHubAndPersistsRecent()
@@ -1493,6 +1598,22 @@ namespace PhoenixTranslator.PresetTests
 
             public void Dispose()
             {
+            }
+        }
+
+        private sealed class RecordingPreviewDialogService : IPreviewDialogService
+        {
+            internal RecordingPreviewDialogService()
+            {
+                Requests = new List<PreviewDialogRequest>();
+            }
+
+            internal IList<PreviewDialogRequest> Requests { get; private set; }
+
+            public bool Show(PreviewDialogRequest request)
+            {
+                Requests.Add(request);
+                return true;
             }
         }
 

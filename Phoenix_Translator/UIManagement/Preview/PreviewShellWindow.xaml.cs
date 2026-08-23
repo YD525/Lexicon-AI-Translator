@@ -23,13 +23,28 @@ namespace PhoenixTranslator.UIManagement.Preview
         private readonly PreviewReviewQualityViewModel _reviewQualityViewModel;
         private readonly PreviewHistoryUpdateViewModel _historyUpdateViewModel;
         private readonly PreviewSettingsViewModel _settingsViewModel;
+        private readonly PreviewDiagnosticService _diagnostics;
+        private readonly IPreviewDialogService _dialogService;
+        private readonly PreviewShellServicesViewModel _shellServicesViewModel;
 
         /// <summary>
         /// Creates the preview application shell in its no-project state.
         /// </summary>
         public PreviewShellWindow()
+            : this(new PreviewDiagnosticService())
+        {
+        }
+
+        /// <summary>
+        /// Creates the preview application shell over an existing startup diagnostic lifetime.
+        /// </summary>
+        /// <param name="diagnostics">The bounded startup and shell diagnostic service.</param>
+        internal PreviewShellWindow(PreviewDiagnosticService diagnostics)
         {
             InitializeComponent();
+            _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
+            _diagnostics.Record(PreviewDiagnosticSeverity.Information, "shell.opened");
+            _dialogService = new WpfPreviewDialogService(() => this);
             _shellViewModel = new PreviewShellViewModel(OpenLegacyWorkspace);
             _translationWorkspaceViewModel = new PreviewTranslationWorkspaceViewModel(
                 SelectPreviewProject,
@@ -49,6 +64,10 @@ namespace PhoenixTranslator.UIManagement.Preview
                 ConfirmProjectReplacement,
                 new PreviewRecentProjectStore(),
                 OpenLegacyWorkspace);
+            _shellServicesViewModel = new PreviewShellServicesViewModel(
+                _diagnostics,
+                SelectDiagnosticExport,
+                _dialogService);
             _reviewQualityViewModel = new PreviewReviewQualityViewModel(
                 _shellViewModel,
                 _translationWorkspaceViewModel,
@@ -78,29 +97,25 @@ namespace PhoenixTranslator.UIManagement.Preview
             ReviewQualityWorkspace.DataContext = _reviewQualityViewModel;
             HistoryUpdateWorkspace.DataContext = _historyUpdateViewModel;
             SettingsWorkspace.DataContext = _settingsViewModel;
+            ShellServicesWorkspace.DataContext = _shellServicesViewModel;
+            ShellServicesWorkspace.CloseRequested += ShellServicesCloseRequested;
             _shellViewModel.PropertyChanged += ShellViewModelPropertyChanged;
         }
 
         private bool ConfirmBulkApproval(int entryCount)
         {
             return ShowConfirmation(
-                this,
                 PreviewMessageCatalog.Format("Review_ApproveScope_Confirmation", entryCount),
                 PreviewMessageCatalog.Get("Review_ApproveScope_ConfirmationTitle"),
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning,
-                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+                PreviewDialogSeverity.Destructive);
         }
 
         private bool ConfirmProjectReplacement()
         {
             return ShowConfirmation(
-                this,
                 PreviewMessageCatalog.Get("Projects_Replace_Confirmation"),
                 PreviewMessageCatalog.Get("Projects_Replace_ConfirmationTitle"),
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning,
-                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+                PreviewDialogSeverity.Warning);
         }
 
         private System.Threading.Tasks.Task<bool> OpenProjectFromWorkflowAsync(string path)
@@ -167,6 +182,14 @@ namespace PhoenixTranslator.UIManagement.Preview
             return ShowSaveDialog(PreviewMessageCatalog.Get("Workspace_Tools_ExportProject_Title"), filter, fileName);
         }
 
+        private string SelectDiagnosticExport()
+        {
+            return ShowSaveDialog(
+                PreviewMessageCatalog.Get("ShellServices_Diagnostics_ExportTitle"),
+                PreviewMessageCatalog.Get("ShellServices_Diagnostics_Filter"),
+                "phoenix-diagnostics.txt");
+        }
+
         private string ShowOpenDialog(string title, string filter)
         {
             IInputElement previousFocus = Keyboard.FocusedElement;
@@ -217,45 +240,33 @@ namespace PhoenixTranslator.UIManagement.Preview
         private bool ConfirmConflictReuse(int entryCount)
         {
             return ShowConfirmation(
-                this,
                 PreviewMessageCatalog.Format("Update_Conflict_Confirmation", entryCount),
                 PreviewMessageCatalog.Get("Update_Conflict_ConfirmationTitle"),
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning,
-                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+                PreviewDialogSeverity.Destructive);
         }
 
         private bool ConfirmBulkReuse(int entryCount)
         {
             return ShowConfirmation(
-                this,
                 PreviewMessageCatalog.Format("Update_ReuseVisible_Confirmation", entryCount),
                 PreviewMessageCatalog.Get("Update_ReuseVisible_ConfirmationTitle"),
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Information,
-                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+                PreviewDialogSeverity.Information);
         }
 
         private bool ConfirmSettingsReset()
         {
             return ShowConfirmation(
-                this,
                 PreviewMessageCatalog.Get("Settings_Reset_Confirmation"),
                 PreviewMessageCatalog.Get("Settings_Reset_ConfirmationTitle"),
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning,
-                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+                PreviewDialogSeverity.Destructive);
         }
 
         private bool ConfirmSettingsDiscard()
         {
             return ShowConfirmation(
-                this,
                 PreviewMessageCatalog.Get("Settings_Discard_Confirmation"),
                 PreviewMessageCatalog.Get("Settings_Discard_ConfirmationTitle"),
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning,
-                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+                PreviewDialogSeverity.Warning);
         }
 
         private void OpenLegacyWorkspace()
@@ -281,18 +292,12 @@ namespace PhoenixTranslator.UIManagement.Preview
             _legacyWorkspace = null;
         }
 
-        private MessageBoxResult ShowConfirmation(
-            Window owner,
+        private bool ShowConfirmation(
             string message,
             string title,
-            MessageBoxButton buttons,
-            MessageBoxImage image,
-            MessageBoxResult defaultResult)
+            PreviewDialogSeverity severity)
         {
-            IInputElement previousFocus = Keyboard.FocusedElement;
-            MessageBoxResult result = MessageBox.Show(owner, message, title, buttons, image, defaultResult);
-            RestoreFocus(previousFocus);
-            return result;
+            return _dialogService.Show(new PreviewDialogRequest(title, message, severity, true));
         }
 
         private void RestoreFocus(IInputElement previousFocus)
@@ -304,6 +309,17 @@ namespace PhoenixTranslator.UIManagement.Preview
 
         private void ShellViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(PreviewShellViewModel.IsShellServicesVisible))
+            {
+                if (_shellViewModel.IsShellServicesVisible)
+                {
+                    _shellServicesViewModel.Refresh();
+                }
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(FocusCurrentWorkflow));
+                return;
+            }
+
             if (e.PropertyName != nameof(PreviewShellViewModel.CurrentDestination))
             {
                 return;
@@ -314,6 +330,12 @@ namespace PhoenixTranslator.UIManagement.Preview
 
         private void FocusCurrentWorkflow()
         {
+            if (_shellViewModel.IsShellServicesVisible)
+            {
+                ShellServicesWorkspace.FocusInitialControl();
+                return;
+            }
+
             switch (_shellViewModel.CurrentDestination)
             {
                 case PreviewShellDestination.Projects:
@@ -362,15 +384,17 @@ namespace PhoenixTranslator.UIManagement.Preview
 
         private void ShowKeyboardHelp()
         {
-            IInputElement previousFocus = Keyboard.FocusedElement;
-            MessageBox.Show(
-                this,
-                PreviewMessageCatalog.Get("Accessibility_KeyboardHelp_Content"),
+            _dialogService.Show(new PreviewDialogRequest(
                 PreviewMessageCatalog.Get("Accessibility_KeyboardHelp_Title"),
-                MessageBoxButton.OK,
-                MessageBoxImage.Information,
-                MessageBoxResult.OK);
-            RestoreFocus(previousFocus);
+                PreviewMessageCatalog.Get("Accessibility_KeyboardHelp_Content"),
+                PreviewDialogSeverity.Information,
+                false));
+        }
+
+        private void ShellServicesCloseRequested(object sender, EventArgs e)
+        {
+            _shellViewModel.IsShellServicesVisible = false;
+            FocusCurrentWorkflow();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -382,6 +406,7 @@ namespace PhoenixTranslator.UIManagement.Preview
             }
 
             _settingsViewModel.Dispose();
+            ShellServicesWorkspace.CloseRequested -= ShellServicesCloseRequested;
             _shellViewModel.PropertyChanged -= ShellViewModelPropertyChanged;
             _projectHubViewModel.Dispose();
             _historyUpdateViewModel.Dispose();

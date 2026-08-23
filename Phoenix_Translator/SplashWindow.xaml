@@ -4,8 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhoenixTranslator"
+        xmlns:localization="clr-namespace:PhoenixTranslator.UIManagement.Localization"
         mc:Ignorable="d"
         Title="Lex" Height="230" Width="340" WindowStyle="None" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="Window_Closing" Loaded="Window_Loaded">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/PreviewControlStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Border Margin="5" CornerRadius="8" Background="#FF282828" PreviewMouseLeftButtonDown="WinHead_MouseLeftButtonDown">
         <Grid>
@@ -19,7 +27,7 @@
                 <ContentControl Style="{DynamicResource CloseIconStyle}" Grid.Column="3"/>
             </Border>
 
-            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Row="0" Grid.RowSpan="2">
+            <StackPanel x:Name="LoadingPanel" Orientation="Vertical" VerticalAlignment="Center" Grid.Row="0" Grid.RowSpan="2">
 
                 <Grid Margin="0 5 0 5">
                     <Grid.Resources>
@@ -89,6 +97,24 @@
                 <Label Name="Log" Foreground="White" Opacity="0.6" HorizontalAlignment="Center">
                     Initializing...
                 </Label>
+            </StackPanel>
+
+            <StackPanel x:Name="FailurePanel" Grid.Row="0" Grid.RowSpan="2" Margin="28,34,28,18"
+                        VerticalAlignment="Center" Visibility="Collapsed">
+                <TextBlock FontSize="17" FontWeight="SemiBold" TextAlignment="Center" TextWrapping="Wrap"
+                           Foreground="{StaticResource PreviewBrushTextPrimary}"
+                           Text="{localization:PreviewMessage Startup_Failed_Title}" />
+                <TextBlock Margin="0,10,0,16" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"
+                           Foreground="{StaticResource PreviewBrushTextSecondary}"
+                           Text="{localization:PreviewMessage Startup_Failed_Message}" />
+                <TextBlock x:Name="FailureDetail" Margin="0,0,0,12" FontSize="10" TextAlignment="Center"
+                           Foreground="{StaticResource PreviewBrushTextMuted}" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button MinWidth="90" Style="{StaticResource PreviewButtonPrimary}" Click="Retry_Click"
+                            Content="{localization:PreviewMessage Startup_Retry_Action}" />
+                    <Button MinWidth="90" Margin="8,0,0,0" Style="{StaticResource PreviewButtonSecondary}" Click="Exit_Click"
+                            Content="{localization:PreviewMessage Startup_Exit_Action}" />
+                </StackPanel>
             </StackPanel>
 
             <Border Grid.Row="2" Background="#FFFAE306" CornerRadius="0 0 8 8">

@@ -1,167 +1,151 @@
-﻿using System;
-using System.Threading;
+using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using PhoenixEngine;
+using PhoenixTranslator.ApplicationLayer;
 using PhoenixTranslator.UIManagement.Preview;
 
 namespace PhoenixTranslator
 {
     /// <summary>
-    /// Interaction logic for SplashWindow.xaml
+    /// Hosts startup progress and recoverable initialization failures before the main shell opens.
     /// </summary>
     public partial class SplashWindow : Window
     {
+        private readonly PreviewDiagnosticService _diagnostics = new PreviewDiagnosticService();
+        private bool _isInitializing;
+        private bool _startupSucceeded;
+        private bool _isLeftMouseDown;
+
+        /// <summary>Creates the startup and recovery surface.</summary>
         public SplashWindow()
         {
             InitializeComponent();
         }
 
-        public bool CanExit = true;
+        /// <summary>Gets the main shell after successful initialization.</summary>
+        public static Window Main { get; private set; }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(CanExit)
-            DeFine.CloseAny();
+            if (!_startupSucceeded)
+            {
+                DeFine.CloseAny();
+            }
         }
 
         private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DeFine.CloseAny();
+            Application.Current.Shutdown();
         }
-
-        public bool IsLeftMouseDown = false;
 
         private void WinHead_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                IsLeftMouseDown = true;
+                _isLeftMouseDown = true;
             }
 
-            if (IsLeftMouseDown)
+            if (!_isLeftMouseDown)
             {
-                try
-                {
-                    this.Dispatcher.Invoke(new Action(() =>
-                    {
-                        this.DragMove();
-                    }));
+                return;
+            }
 
-                    IsLeftMouseDown = false;
-                }
-                catch { }
+            try
+            {
+                DragMove();
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                _isLeftMouseDown = false;
             }
         }
 
-        public Thread LoadingTrd = null;
-        public static Window Main = null;
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Version.Content = DeFine.CurrentVersion;
-            string GetSelfPath = DeFine.GetFullPath(@"\");
-
-            LoadingTrd = new Thread(() =>
-            {
-                SetLog("Initializing...");
-
-                int SleepMs = 0;
-
-                DeFine.PrepareFileDirectory();
-
-                Phoenix.Init(GetSelfPath, new Action<int>((Step) =>
-                {
-                    switch (Step)
-                    {
-                        case 1:
-                            {
-                                SetLog("Loading master database...");
-                                if(SleepMs>0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 2:
-                            {
-                                SetLog("Loading advanced dictionary...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 3:
-                            {
-                                SetLog("Loading cache system...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 5:
-                            {
-                                SetLog("Loading records for Simplified-Traditional conversion...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 6:
-                            {
-                                SetLog("Loading file primary key...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 7:
-                            {
-                                SetLog("Loading global configuration file...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 8:
-                            {
-                                SetLog("Applying proxy settings...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 9:
-                            {
-                                SetLog("Loading vocabulary database...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                        case 10:
-                            {
-                                SetLog("Loading API Key management...");
-                                if (SleepMs > 0)
-                                Thread.Sleep(SleepMs);
-                            }
-                            break;
-                    }
-                }));
-
-                SetLog("Launching main program...");
-
-                if (SleepMs > 0)
-                Thread.Sleep(SleepMs);
-               
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    SplashWindow.Main = new PreviewShellWindow();
-                    SplashWindow.Main.Show();
-                    CanExit = false;
-
-                    this.Close();
-                }));
-               
-            });
-            LoadingTrd.Start();
+            await InitializeAsync();
         }
 
-        public void SetLog(string Msg)
+        private async Task InitializeAsync()
         {
-            this.Dispatcher.Invoke(new Action(() => { 
-                Log.Content = Msg;
-            }));
+            if (_isInitializing)
+            {
+                return;
+            }
+
+            _isInitializing = true;
+            LoadingPanel.Visibility = Visibility.Visible;
+            FailurePanel.Visibility = Visibility.Collapsed;
+            SetLogMessage("Startup_Initializing");
+            _diagnostics.Record(PreviewDiagnosticSeverity.Information, "startup.initialization.started");
+            try
+            {
+                string applicationPath = DeFine.GetFullPath(@"\");
+                await Task.Run(() =>
+                {
+                    DeFine.PrepareFileDirectory();
+                    Phoenix.Init(applicationPath, step => SetLogMessage(GetStartupMessageId(step)));
+                });
+                SetLogMessage("Startup_Launching");
+                _diagnostics.Record(PreviewDiagnosticSeverity.Information, "startup.initialization.succeeded");
+                Main = new PreviewShellWindow(_diagnostics);
+                Main.Show();
+                _startupSucceeded = true;
+                Close();
+            }
+            catch (Exception exception)
+            {
+                _diagnostics.Record(
+                    PreviewDiagnosticSeverity.Error,
+                    "startup.initialization.failed",
+                    exception.GetType().Name);
+                FailureDetail.Text = PreviewMessageCatalog.Format(
+                    "Startup_Failed_Detail",
+                    exception.GetType().Name);
+                LoadingPanel.Visibility = Visibility.Collapsed;
+                FailurePanel.Visibility = Visibility.Visible;
+            }
+            finally
+            {
+                _isInitializing = false;
+            }
+        }
+
+        private static string GetStartupMessageId(int step)
+        {
+            switch (step)
+            {
+                case 1: return "Startup_Loading_MasterDatabase";
+                case 2: return "Startup_Loading_AdvancedDictionary";
+                case 3: return "Startup_Loading_Cache";
+                case 5: return "Startup_Loading_Conversion";
+                case 6: return "Startup_Loading_FileKeys";
+                case 7: return "Startup_Loading_Settings";
+                case 8: return "Startup_Loading_Proxy";
+                case 9: return "Startup_Loading_Vocabulary";
+                case 10: return "Startup_Loading_Providers";
+                default: return "Startup_Initializing";
+            }
+        }
+
+        private void SetLogMessage(string messageId)
+        {
+            Dispatcher.Invoke(new Action(() => Log.Content = PreviewMessageCatalog.Get(messageId)));
+        }
+
+        private async void Retry_Click(object sender, RoutedEventArgs e)
+        {
+            await InitializeAsync();
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
