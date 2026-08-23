@@ -80,7 +80,8 @@
                                    Text="{localization:PreviewMessage History_Timeline_Title}" />
                         <ListBox x:Name="HistoryTimeline" ItemsSource="{Binding HistoryEntries}" SelectedItem="{Binding SelectedHistoryEntry}"
                                  ItemContainerStyle="{StaticResource HistoryListItem}" Background="Transparent"
-                                 BorderThickness="0" VirtualizingPanel.IsVirtualizing="True"
+                                 BorderThickness="0" ScrollViewer.CanContentScroll="True"
+                                 VirtualizingPanel.IsVirtualizing="True"
                                  VirtualizingPanel.VirtualizationMode="Recycling"
                                  AutomationProperties.Name="{localization:PreviewMessage Accessibility_History_Timeline_Name}">
                             <ListBox.ItemTemplate>
@@ -146,6 +147,10 @@
                                 Command="{Binding OpenProjectCommand}" Content="{localization:PreviewMessage Workspace_Open_Action}" />
                         <Button Style="{StaticResource PreviewButtonPrimary}" Command="{Binding CompareRevisionCommand}"
                                 Content="{localization:PreviewMessage Update_Compare_Action}" />
+                        <Button Margin="8,0,0,0" Style="{StaticResource PreviewButtonSecondary}"
+                                Command="{Binding CancelComparisonCommand}"
+                                Content="{localization:PreviewMessage Common_Action_Cancel}"
+                                Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibility}}" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -165,6 +170,7 @@
                         </StackPanel>
                         <ListBox ItemsSource="{Binding ComparisonItems}" SelectedItem="{Binding SelectedComparisonItem}"
                                  ItemContainerStyle="{StaticResource HistoryListItem}" Background="Transparent" BorderThickness="0"
+                                 ScrollViewer.CanContentScroll="True"
                                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                                  AutomationProperties.Name="{localization:PreviewMessage Accessibility_Update_Comparison_Name}">
                             <ListBox.ItemTemplate>

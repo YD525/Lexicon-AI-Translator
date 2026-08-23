@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -61,6 +62,7 @@ namespace PhoenixTranslator.ApplicationLayer
         private string _previousRevisionName;
         private bool _isBusy;
         private List<UpdateSnapshot> _undoSnapshots;
+        private CancellationTokenSource _comparisonCancellation;
 
         /// <summary>
         /// Creates the combined history and project-update workflow.
@@ -113,6 +115,9 @@ namespace PhoenixTranslator.ApplicationLayer
 
             OpenProjectCommand = workspace.OpenProjectCommand;
             CompareRevisionCommand = new PreviewShellCommand(parameter => CompareSelectedRevision(), parameter => HasProject && !IsBusy);
+            CancelComparisonCommand = new PreviewShellCommand(
+                parameter => CancelComparison(),
+                parameter => IsBusy && _comparisonCancellation != null);
             ReuseSelectedCommand = new PreviewShellCommand(parameter => ReuseSelected(), parameter => CanReuseSelected && !IsBusy);
             ReuseVisibleCommand = new PreviewShellCommand(parameter => ReuseVisible(), parameter => ReusableVisibleCount > 0 && !IsBusy);
             KeepCurrentCommand = new PreviewShellCommand(parameter => KeepCurrent(), parameter => IsSelectedConflict && !IsBusy);
@@ -142,6 +147,9 @@ namespace PhoenixTranslator.ApplicationLayer
 
         /// <summary>Gets the command that selects and compares a previous revision.</summary>
         public ICommand CompareRevisionCommand { get; private set; }
+
+        /// <summary>Gets the command that cooperatively cancels an active revision comparison.</summary>
+        public ICommand CancelComparisonCommand { get; private set; }
 
         /// <summary>Gets the command that explicitly reuses the selected prior target.</summary>
         public ICommand ReuseSelectedCommand { get; private set; }
@@ -276,6 +284,7 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <inheritdoc />
         public void Dispose()
         {
+            _comparisonCancellation?.Cancel();
             _workspace.ProjectChanged -= WorkspaceProjectChanged;
             _shell.PropertyChanged -= ShellPropertyChanged;
             _previousProject?.Dispose();
@@ -295,15 +304,20 @@ namespace PhoenixTranslator.ApplicationLayer
                 return;
             }
 
+            var cancellation = new CancellationTokenSource();
+            _comparisonCancellation = cancellation;
             SetBusy(true);
             _shell.SetOperation("Update_Comparison_Progress", 20);
             IPreviewTranslationProject previousProject = null;
             try
             {
-                previousProject = await Task.Run(() => _openProject(path));
+                previousProject = await Task.Run(() => _openProject(path), cancellation.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
                 IReadOnlyList<PreviewTranslationEntry> currentEntries = _workspace.ProjectEntries;
                 IReadOnlyList<PreviewProjectComparisonItem> comparison = await Task.Run(
-                    () => _comparisonService.Compare(currentEntries, previousProject.Entries));
+                    () => _comparisonService.Compare(currentEntries, previousProject.Entries, cancellation.Token),
+                    cancellation.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
                 _previousProject?.Dispose();
                 _previousProject = previousProject;
                 previousProject = null;
@@ -315,6 +329,9 @@ namespace PhoenixTranslator.ApplicationLayer
                 AppendProjectHistory("Compared", _previousRevisionName);
                 _shell.ShowNotification(PreviewShellNotificationSeverity.Success, "Update_Comparison_Completed");
             }
+            catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+            {
+            }
             catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException ||
                 exception is InvalidDataException || exception is InvalidOperationException)
             {
@@ -324,8 +341,18 @@ namespace PhoenixTranslator.ApplicationLayer
             {
                 previousProject?.Dispose();
                 _shell.CompleteOperation();
+                if (ReferenceEquals(_comparisonCancellation, cancellation))
+                {
+                    _comparisonCancellation = null;
+                }
+                cancellation.Dispose();
                 SetBusy(false);
             }
+        }
+
+        private void CancelComparison()
+        {
+            _comparisonCancellation?.Cancel();
         }
 
         private void ReuseSelected()
@@ -549,6 +576,7 @@ namespace PhoenixTranslator.ApplicationLayer
         private void RaiseCommandAvailability()
         {
             ((PreviewShellCommand)CompareRevisionCommand).RaiseCanExecuteChanged();
+            ((PreviewShellCommand)CancelComparisonCommand).RaiseCanExecuteChanged();
             ((PreviewShellCommand)ReuseSelectedCommand).RaiseCanExecuteChanged();
             ((PreviewShellCommand)ReuseVisibleCommand).RaiseCanExecuteChanged();
             ((PreviewShellCommand)KeepCurrentCommand).RaiseCanExecuteChanged();

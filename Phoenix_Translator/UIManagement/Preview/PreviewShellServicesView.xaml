@@ -103,7 +103,9 @@
                         </WrapPanel>
                         <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" Background="Transparent"
                                  BorderBrush="{StaticResource PreviewBrushBorder}" BorderThickness="1"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True"
+                                 VirtualizingPanel.VirtualizationMode="Recycling">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="8,6">

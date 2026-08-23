@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace PhoenixTranslator.ApplicationLayer
 {
@@ -22,8 +23,11 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Analyzes normalized entries without changing their content.
         /// </summary>
         /// <param name="entries">The project entries to inspect.</param>
+        /// <param name="cancellationToken">Cancels validation between normalized entries.</param>
         /// <returns>A stable ordered set of normalized findings.</returns>
-        internal IReadOnlyList<PreviewQualityFinding> Analyze(IReadOnlyList<PreviewTranslationEntry> entries)
+        internal IReadOnlyList<PreviewQualityFinding> Analyze(
+            IReadOnlyList<PreviewTranslationEntry> entries,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (entries == null)
             {
@@ -31,16 +35,34 @@ namespace PhoenixTranslator.ApplicationLayer
             }
 
             var findings = new List<PreviewQualityFinding>();
-            var inconsistentSources = new HashSet<string>(
-                entries.Where(entry => !string.IsNullOrWhiteSpace(entry.SourceText))
-                    .GroupBy(entry => entry.SourceText, StringComparer.Ordinal)
-                    .Where(group => group.Select(entry => entry.TargetText ?? string.Empty)
-                        .Distinct(StringComparer.Ordinal).Count() > 1)
-                    .Select(group => group.Key),
-                StringComparer.Ordinal);
+            var firstTargets = new Dictionary<string, string>(StringComparer.Ordinal);
+            var inconsistentSources = new HashSet<string>(StringComparer.Ordinal);
+            foreach (PreviewTranslationEntry entry in entries)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (string.IsNullOrWhiteSpace(entry.SourceText))
+                {
+                    continue;
+                }
+
+                string target = entry.TargetText ?? string.Empty;
+                string firstTarget;
+                if (firstTargets.TryGetValue(entry.SourceText, out firstTarget))
+                {
+                    if (!string.Equals(firstTarget, target, StringComparison.Ordinal))
+                    {
+                        inconsistentSources.Add(entry.SourceText);
+                    }
+                }
+                else
+                {
+                    firstTargets.Add(entry.SourceText, target);
+                }
+            }
 
             foreach (PreviewTranslationEntry entry in entries)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (string.IsNullOrWhiteSpace(entry.TargetText))
                 {
                     findings.Add(Create(entry, "untranslated", PreviewFindingSeverity.Error,
@@ -78,12 +100,33 @@ namespace PhoenixTranslator.ApplicationLayer
                 }
             }
 
-            return findings
-                .OrderByDescending(finding => finding.Severity)
-                .ThenBy(finding => finding.Entry.Type, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(finding => finding.Entry.Key, StringComparer.Ordinal)
-                .ThenBy(finding => finding.RuleId, StringComparer.Ordinal)
-                .ToList();
+            findings.Sort((left, right) => CompareFindings(left, right, cancellationToken));
+            cancellationToken.ThrowIfCancellationRequested();
+            return findings;
+        }
+
+        private static int CompareFindings(
+            PreviewQualityFinding left,
+            PreviewQualityFinding right,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int comparison = right.Severity.CompareTo(left.Severity);
+            if (comparison != 0)
+            {
+                return comparison;
+            }
+
+            comparison = StringComparer.OrdinalIgnoreCase.Compare(left.Entry.Type, right.Entry.Type);
+            if (comparison != 0)
+            {
+                return comparison;
+            }
+
+            comparison = StringComparer.Ordinal.Compare(left.Entry.Key, right.Entry.Key);
+            return comparison != 0
+                ? comparison
+                : StringComparer.Ordinal.Compare(left.RuleId, right.RuleId);
         }
 
         private static PreviewQualityFinding Create(

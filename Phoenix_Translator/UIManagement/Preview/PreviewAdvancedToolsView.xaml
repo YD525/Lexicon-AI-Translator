@@ -75,7 +75,10 @@
                         <StackPanel><TextBlock Style="{StaticResource AdvancedHeading}" Text="{localization:PreviewMessage Advanced_Pipeline_Title}" />
                             <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{localization:PreviewMessage Advanced_Pipeline_Description}" TextWrapping="Wrap" /></StackPanel>
                         <ListBox Grid.Row="1" Margin="0,16" MinHeight="260" ItemsSource="{Binding PipelineEntries}" SelectedItem="{Binding SelectedPipelineEntry}" ItemContainerStyle="{StaticResource AdvancedPipelineItem}"
-                                 Background="{StaticResource PreviewBrushSurfaceCanvas}" BorderBrush="{StaticResource PreviewBrushBorder}" AutomationProperties.Name="{localization:PreviewMessage Accessibility_Advanced_Pipeline_Name}">
+                                 Background="{StaticResource PreviewBrushSurfaceCanvas}" BorderBrush="{StaticResource PreviewBrushBorder}"
+                                 ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True"
+                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                 AutomationProperties.Name="{localization:PreviewMessage Accessibility_Advanced_Pipeline_Name}">
                             <ListBox.ItemTemplate><DataTemplate><Grid Margin="8,5"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /><ColumnDefinition Width="160" /></Grid.ColumnDefinitions>
                                 <CheckBox IsChecked="{Binding IsEnabled}" VerticalAlignment="Center" AutomationProperties.Name="{Binding Name}" />
                                 <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource PreviewBrushTextPrimary}" Text="{Binding Name}" />

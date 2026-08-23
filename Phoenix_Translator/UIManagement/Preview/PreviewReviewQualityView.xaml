@@ -85,12 +85,20 @@
                           Visibility="{Binding IsQualityMode, Converter={StaticResource BooleanToVisibility}}"
                           AutomationProperties.Name="{localization:PreviewMessage Quality_Filter_Type_Name}" />
                 <StackPanel Grid.Column="6" Orientation="Horizontal">
+                    <TextBlock Margin="0,0,10,0" VerticalAlignment="Center"
+                               Foreground="{StaticResource PreviewBrushTextMuted}"
+                               Text="{localization:PreviewMessage Quality_Validation_Progress}"
+                               Visibility="{Binding IsValidating, Converter={StaticResource BooleanToVisibility}}" />
                     <Button Margin="0,0,8,0" Style="{StaticResource PreviewButtonSecondary}"
                             Command="{Binding OpenProjectCommand}"
                             Content="{localization:PreviewMessage Workspace_Open_Action}" />
                     <Button Style="{StaticResource PreviewButtonSecondary}" Command="{Binding RevalidateCommand}"
                             Content="{localization:PreviewMessage Quality_Revalidate_Action}"
                             Visibility="{Binding IsQualityMode, Converter={StaticResource BooleanToVisibility}}" />
+                    <Button Margin="8,0,0,0" Style="{StaticResource PreviewButtonSecondary}"
+                            Command="{Binding CancelValidationCommand}"
+                            Content="{localization:PreviewMessage Common_Action_Cancel}"
+                            Visibility="{Binding IsValidating, Converter={StaticResource BooleanToVisibility}}" />
                 </StackPanel>
             </Grid>
         </Border>

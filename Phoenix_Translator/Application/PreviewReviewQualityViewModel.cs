@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PhoenixTranslator.ApplicationLayer
@@ -29,6 +31,8 @@ namespace PhoenixTranslator.ApplicationLayer
         private string _selectedReviewFilter;
         private string _selectedSeverityFilter;
         private string _selectedFindingTypeFilter;
+        private CancellationTokenSource _validationCancellation;
+        private bool _isValidating;
 
         /// <summary>
         /// Creates a review and quality workflow over the active translation workspace.
@@ -84,7 +88,12 @@ namespace PhoenixTranslator.ApplicationLayer
             UndoBulkCommand = new PreviewShellCommand(parameter => UndoBulk(), parameter => _lastBulkStates != null);
             AcknowledgeFindingCommand = new PreviewShellCommand(parameter => AcknowledgeFinding(), CanAcknowledgeFinding);
             GoToEntryCommand = new PreviewShellCommand(parameter => GoToEntry(), parameter => SelectedFinding != null);
-            RevalidateCommand = new PreviewShellCommand(parameter => RebuildFindings());
+            RevalidateCommand = new PreviewShellCommand(
+                parameter => StartValidation(0),
+                parameter => HasProject && !IsValidating);
+            CancelValidationCommand = new PreviewShellCommand(
+                parameter => CancelValidation(),
+                parameter => IsValidating);
             OpenProjectCommand = _translationWorkspace.OpenProjectCommand;
             OpenLegacyWorkspaceCommand = new PreviewShellCommand(parameter => _openLegacyWorkspace());
 
@@ -333,6 +342,11 @@ namespace PhoenixTranslator.ApplicationLayer
         public ICommand RevalidateCommand { get; private set; }
 
         /// <summary>
+        /// Gets the command that cooperatively cancels the active quality validation.
+        /// </summary>
+        public ICommand CancelValidationCommand { get; private set; }
+
+        /// <summary>
         /// Gets the shared command that opens a supported translation project.
         /// </summary>
         public ICommand OpenProjectCommand { get; private set; }
@@ -342,9 +356,30 @@ namespace PhoenixTranslator.ApplicationLayer
         /// </summary>
         public ICommand OpenLegacyWorkspaceCommand { get; private set; }
 
+        /// <summary>
+        /// Gets whether quality validation is running outside the UI thread.
+        /// </summary>
+        public bool IsValidating
+        {
+            get => _isValidating;
+            private set
+            {
+                if (_isValidating == value)
+                {
+                    return;
+                }
+
+                _isValidating = value;
+                OnPropertyChanged();
+                RaiseCommandAvailability();
+            }
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
+            _validationCancellation?.Cancel();
+            _validationCancellation = null;
             _shell.PropertyChanged -= ShellPropertyChanged;
             _translationWorkspace.ProjectChanged -= TranslationWorkspaceProjectChanged;
             UnsubscribeEntries();
@@ -388,7 +423,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 _acknowledgedFindingIds.UnionWith(snapshot.AcknowledgedFindingIds);
             }
 
-            RebuildFindings();
+            StartValidation(0);
             OnPropertyChanged(nameof(HasProject));
             RaiseCommandAvailability();
         }
@@ -407,7 +442,7 @@ namespace PhoenixTranslator.ApplicationLayer
         {
             if (e.PropertyName == nameof(PreviewTranslationEntry.TargetText))
             {
-                RebuildFindings();
+                StartValidation(150);
                 PersistState();
             }
             else if (e.PropertyName == nameof(PreviewTranslationEntry.ReviewState))
@@ -416,11 +451,62 @@ namespace PhoenixTranslator.ApplicationLayer
             }
         }
 
-        private void RebuildFindings()
+        /// <summary>
+        /// Rebuilds normalized findings on a worker thread and discards stale results.
+        /// </summary>
+        /// <param name="delayMilliseconds">The debounce delay before validation starts.</param>
+        /// <returns>A task that completes when this validation request is applied or superseded.</returns>
+        internal async Task RevalidateAsync(int delayMilliseconds = 0)
         {
-            _allFindings = HasProject
-                ? _analyzer.Analyze(_translationWorkspace.ProjectEntries)
-                : new List<PreviewQualityFinding>();
+            _validationCancellation?.Cancel();
+            var cancellation = new CancellationTokenSource();
+            _validationCancellation = cancellation;
+            IsValidating = true;
+
+            try
+            {
+                if (delayMilliseconds > 0)
+                {
+                    await Task.Delay(delayMilliseconds, cancellation.Token);
+                }
+
+                IReadOnlyList<PreviewTranslationEntry> entries = HasProject
+                    ? _translationWorkspace.ProjectEntries.ToList()
+                    : new List<PreviewTranslationEntry>();
+                IReadOnlyList<PreviewQualityFinding> findings = await Task.Run(
+                    () => _analyzer.Analyze(entries, cancellation.Token),
+                    cancellation.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
+                _allFindings = findings;
+                ApplyFindings();
+            }
+            catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+            {
+            }
+            finally
+            {
+                if (ReferenceEquals(_validationCancellation, cancellation))
+                {
+                    _validationCancellation = null;
+                    IsValidating = false;
+                }
+
+                cancellation.Dispose();
+            }
+        }
+
+        private async void StartValidation(int delayMilliseconds)
+        {
+            await RevalidateAsync(delayMilliseconds);
+        }
+
+        private void CancelValidation()
+        {
+            _validationCancellation?.Cancel();
+        }
+
+        private void ApplyFindings()
+        {
             foreach (PreviewQualityFinding finding in _allFindings.Where(finding =>
                 _acknowledgedFindingIds.Contains(finding.StableId)))
             {
@@ -621,6 +707,8 @@ namespace PhoenixTranslator.ApplicationLayer
             RaiseCanExecuteChanged(UndoBulkCommand);
             RaiseCanExecuteChanged(AcknowledgeFindingCommand);
             RaiseCanExecuteChanged(GoToEntryCommand);
+            RaiseCanExecuteChanged(RevalidateCommand);
+            RaiseCanExecuteChanged(CancelValidationCommand);
         }
 
         private static void RaiseCanExecuteChanged(ICommand command)
