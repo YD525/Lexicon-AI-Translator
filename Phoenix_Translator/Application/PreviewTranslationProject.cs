@@ -8,6 +8,7 @@ using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
 using PhoenixTranslator.SkyrimManagement;
+using static PexInterface.PexHeuristicAnalysis;
 
 namespace PhoenixTranslator.ApplicationLayer
 {
@@ -18,7 +19,10 @@ namespace PhoenixTranslator.ApplicationLayer
     {
         private const long MaximumProjectBytes = 512L * 1024L * 1024L;
         private const int MaximumEntryCount = 500000;
+        private const int MaximumContextRelations = 200;
+        private const int MaximumCodeCharacters = 2 * 1024 * 1024;
         private readonly ModFile _modFile;
+        private readonly object _contextSync = new object();
         private bool _disposed;
 
         private PreviewTranslationProject(string path, ModFile modFile, IReadOnlyList<PreviewTranslationEntry> entries)
@@ -135,6 +139,61 @@ namespace PhoenixTranslator.ApplicationLayer
         }
 
         /// <summary>
+        /// Loads bounded parser-owned context for one stable normalized entry.
+        /// </summary>
+        /// <param name="entry">The selected project entry.</param>
+        /// <param name="cancellationToken">Cancels relationship and asset work cooperatively.</param>
+        /// <returns>The supported context snapshot, which may be empty.</returns>
+        public PreviewEntryContext LoadContext(
+            PreviewTranslationEntry entry,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            if (entry == null)
+            {
+                throw new ArgumentNullException(nameof(entry));
+            }
+
+            lock (_contextSync)
+            {
+                ThrowIfDisposed();
+                cancellationToken.ThrowIfCancellationRequested();
+                return LoadContextCore(entry, cancellationToken);
+            }
+        }
+
+        private PreviewEntryContext LoadContextCore(
+            PreviewTranslationEntry entry,
+            CancellationToken cancellationToken)
+        {
+            var metadata = new List<PreviewContextMetadata>();
+            var relations = new List<PreviewContextRelation>();
+            var npcs = new List<PreviewNpcContext>();
+            string code = string.Empty;
+            string codeSource = string.Empty;
+
+            AddCommonMetadata(entry, metadata);
+            AddExactSourceRelations(entry, relations, cancellationToken);
+            if (_modFile.Type == GameFileType.PEX)
+            {
+                LoadPexContext(entry, metadata, ref code, ref codeSource);
+            }
+            else if (_modFile.Type == GameFileType.ESP)
+            {
+                LoadEspContext(entry, metadata, relations, npcs, cancellationToken);
+            }
+
+            PreviewAssetContext asset = PreviewAssetContextLoader.Load(Path, entry.SourceText, cancellationToken);
+            return new PreviewEntryContext(
+                code,
+                codeSource,
+                metadata,
+                relations.Take(MaximumContextRelations).ToList(),
+                npcs,
+                asset);
+        }
+
+        /// <summary>
         /// Persists all staged entry targets using the existing format writer and backup boundary.
         /// </summary>
         public void Save()
@@ -232,13 +291,16 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_disposed)
+            lock (_contextSync)
             {
-                return;
-            }
+                if (_disposed)
+                {
+                    return;
+                }
 
-            _disposed = true;
-            _modFile.Close();
+                _disposed = true;
+                _modFile.Close();
+            }
         }
 
         private static List<PreviewTranslationEntry> CreateEntries(ModFile modFile)
@@ -275,6 +337,184 @@ namespace PhoenixTranslator.ApplicationLayer
                 default:
                     throw new InvalidDataException("The selected project format is unsupported.");
             }
+        }
+
+        private static void AddCommonMetadata(
+            PreviewTranslationEntry entry,
+            ICollection<PreviewContextMetadata> metadata)
+        {
+            metadata.Add(new PreviewContextMetadata("Record", entry.Record, "Phoenix Translator"));
+            metadata.Add(new PreviewContextMetadata("Type", entry.Type, "Phoenix Translator"));
+            metadata.Add(new PreviewContextMetadata("Stable key", entry.Key, "Phoenix Translator"));
+            metadata.Add(new PreviewContextMetadata("Confidence", entry.Score.ToString("0.##"), "Phoenix Translator"));
+        }
+
+        private void AddExactSourceRelations(
+            PreviewTranslationEntry selectedEntry,
+            ICollection<PreviewContextRelation> relations,
+            CancellationToken cancellationToken)
+        {
+            foreach (PreviewTranslationEntry entry in Entries)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (relations.Count >= MaximumContextRelations)
+                {
+                    return;
+                }
+
+                if (!ReferenceEquals(entry, selectedEntry) &&
+                    string.Equals(entry.SourceText, selectedEntry.SourceText, StringComparison.Ordinal))
+                {
+                    relations.Add(CreateRelation(entry, "Exact source match", "Phoenix Translator"));
+                }
+            }
+        }
+
+        private void LoadPexContext(
+            PreviewTranslationEntry entry,
+            ICollection<PreviewContextMetadata> metadata,
+            ref string code,
+            ref string codeSource)
+        {
+            PexStringItem item;
+            if (!_modFile.PexReader.Records.TryGetValue(entry.Key, out item))
+            {
+                return;
+            }
+
+            metadata.Add(new PreviewContextMetadata(
+                "String table ID",
+                item.StringTableID.ToString(),
+                "PexInterface"));
+            if (item.FunctionRef != null)
+            {
+                metadata.Add(new PreviewContextMetadata(
+                    "Function",
+                    item.FunctionRef.FunctionName,
+                    "PexInterface"));
+            }
+
+            string decompiledCode = _modFile.PexReader.PSCCode ?? string.Empty;
+            code = decompiledCode.Length <= MaximumCodeCharacters
+                ? decompiledCode
+                : decompiledCode.Substring(0, MaximumCodeCharacters);
+            codeSource = "PexInterface";
+        }
+
+        private void LoadEspContext(
+            PreviewTranslationEntry entry,
+            ICollection<PreviewContextMetadata> metadata,
+            ICollection<PreviewContextRelation> relations,
+            ICollection<PreviewNpcContext> npcs,
+            CancellationToken cancellationToken)
+        {
+            RecordItem record;
+            if (!_modFile.EspReader.Records.TryGetValue(entry.Key, out record))
+            {
+                return;
+            }
+
+            metadata.Add(new PreviewContextMetadata("Form ID", record.FormID, "EspReader"));
+            metadata.Add(new PreviewContextMetadata("Editor ID", record.EditorID, "EspReader"));
+            metadata.Add(new PreviewContextMetadata("Record signature", record.ParentSig, "EspReader"));
+            metadata.Add(new PreviewContextMetadata("Field signature", record.ChildSig, "EspReader"));
+            metadata.Add(new PreviewContextMetadata(
+                "Occurrence",
+                record.OccurrenceIndex.ToString(),
+                "EspReader"));
+
+            List<Character> characters;
+            if (_modFile.EspReader.GameCharacters.TryGetValue(entry.Key, out characters))
+            {
+                foreach (Character character in characters.Take(50))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    npcs.Add(new PreviewNpcContext(
+                        entry.Key,
+                        character.Name,
+                        character.Gender.ToString(),
+                        character.VoiceType));
+                }
+            }
+
+            if (record.ParentSig == "INFO" || record.ParentSig == "DIAL")
+            {
+                ManagedDialContext dialogue = _modFile.EspReader.GetDialContext(record);
+                if (dialogue != null)
+                {
+                    var nodes = new List<ManagedDialNode>();
+                    if (dialogue.Head != null)
+                    {
+                        nodes.Add(dialogue.Head);
+                    }
+
+                    nodes.AddRange(dialogue.Links ?? new List<ManagedDialNode>());
+                    foreach (ManagedDialNode node in nodes)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        RecordItem related = _modFile.EspReader.GetRecordItemByOffsets(
+                            false,
+                            node.RecordOffset,
+                            node.SubOffset);
+                        AddEspRelation(relations, related, "Dialogue", node.EmotionType);
+                    }
+                }
+            }
+            else if (record.ParentSig == "BOOK")
+            {
+                EspReader.BookInFoItem book = _modFile.EspReader.GetBookInFo(record);
+                if (book != null)
+                {
+                    AddEspRelation(
+                        relations,
+                        _modFile.EspReader.GetRecordItemByOffsets(false, book.RecordOffset, book.TittleSubOffset),
+                        "Book title",
+                        999);
+                    AddEspRelation(
+                        relations,
+                        _modFile.EspReader.GetRecordItemByOffsets(false, book.RecordOffset, book.ContentSubOffset),
+                        "Book content",
+                        999);
+                }
+            }
+        }
+
+        private void AddEspRelation(
+            ICollection<PreviewContextRelation> relations,
+            RecordItem record,
+            string relationship,
+            uint emotionType)
+        {
+            if (record == null || relations.Count >= MaximumContextRelations ||
+                relations.Any(relation => relation.EntryKey == record.UniqueKey &&
+                    relation.Relationship == relationship))
+            {
+                return;
+            }
+
+            PreviewTranslationEntry entry = Entries.FirstOrDefault(candidate => candidate.Key == record.UniqueKey);
+            string detail = emotionType == 999
+                ? record.ParentSig + " / " + record.ChildSig
+                : EmotionTypeHelper.FromRaw(emotionType) + " · " + record.ParentSig + " / " + record.ChildSig;
+            relations.Add(new PreviewContextRelation(
+                record.UniqueKey,
+                entry == null ? record.String : entry.SourceText,
+                detail,
+                "EspReader",
+                relationship));
+        }
+
+        private static PreviewContextRelation CreateRelation(
+            PreviewTranslationEntry entry,
+            string relationship,
+            string source)
+        {
+            return new PreviewContextRelation(
+                entry.Key,
+                entry.SourceText,
+                entry.Record,
+                source,
+                relationship);
         }
 
         private static PreviewTranslationEntry CreateEntry(

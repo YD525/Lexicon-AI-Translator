@@ -109,6 +109,9 @@
     <Compile Include="Application\AdvancedDictionaryQueryBuilder.cs" />
     <Compile Include="Application\IPreviewTranslationProject.cs" />
     <Compile Include="Application\PreviewMessageCatalog.cs" />
+    <Compile Include="Application\PreviewContextInspectorModels.cs" />
+    <Compile Include="Application\PreviewAssetContextLoader.cs" />
+    <Compile Include="Application\PreviewContextInspectorViewModel.cs" />
     <Compile Include="Application\PreviewQualityAnalyzer.cs" />
     <Compile Include="Application\PreviewQualityFinding.cs" />
     <Compile Include="Application\PreviewProjectComparison.cs" />

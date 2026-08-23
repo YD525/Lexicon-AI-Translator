@@ -42,6 +42,10 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(HandlesPreviewTranslationFailures), HandlesPreviewTranslationFailures },
                 { nameof(CancelsPreviewTranslationWork), CancelsPreviewTranslationWork },
                 { nameof(FiltersLargePreviewTranslationProject), FiltersLargePreviewTranslationProject },
+                { nameof(LoadsAndNavigatesPreviewContext), LoadsAndNavigatesPreviewContext },
+                { nameof(DiscardsStalePreviewContext), DiscardsStalePreviewContext },
+                { nameof(DistinguishesEmptyAndFailedPreviewContext), DistinguishesEmptyAndFailedPreviewContext },
+                { nameof(ValidatesBoundedPreviewAssets), ValidatesBoundedPreviewAssets },
                 { nameof(PreviewsAppliesAndUndoesWorkspaceReplacement), PreviewsAppliesAndUndoesWorkspaceReplacement },
                 { nameof(RoundTripsBoundedTranslationTable), RoundTripsBoundedTranslationTable },
                 { nameof(ValidatesInteractiveProviderRequestIdentity), ValidatesInteractiveProviderRequestIdentity },
@@ -661,6 +665,163 @@ namespace PhoenixTranslator.PresetTests
             AssertEqual(12500, viewModel.Entries.Count,
                 "Large-project type filtering must retain every matching record.");
             viewModel.Dispose();
+        }
+
+        private static void LoadsAndNavigatesPreviewContext()
+        {
+            var first = CreateEntry("first", "needle", string.Empty);
+            var second = CreateEntry("second", "Related source", string.Empty);
+            string code = string.Join("\n", Enumerable.Repeat("needle call", 205));
+            var context = new PreviewEntryContext(
+                code,
+                "PexInterface",
+                new[] { new PreviewContextMetadata("Function", "OnInit", "PexInterface") },
+                new[] { new PreviewContextRelation("second", "Related source", "INFO", "EspReader", "Dialogue") },
+                new[] { new PreviewNpcContext("second", "Aela", "Female", "FemaleNord") },
+                null);
+            PreviewTranslationEntry navigatedEntry = null;
+            var inspector = new PreviewContextInspectorViewModel(
+                (entry, cancellationToken) => context,
+                key => string.Equals(key, second.Key, StringComparison.Ordinal) ? second : null,
+                entry => navigatedEntry = entry);
+
+            inspector.SelectEntry(first);
+            AssertEqual(true, SpinWait.SpinUntil(() => inspector.State == PreviewContextState.Ready, 2000),
+                "A supported context snapshot must reach the ready state.");
+            AssertEqual(true, SpinWait.SpinUntil(() => inspector.CodeResults.Count == 200, 2000),
+                "Automatic code search must finish with its documented result bound.");
+            AssertEqual(1, inspector.CodeResults[0].LineNumber,
+                "Code search must retain exact one-based source line identity.");
+
+            inspector.SelectedRelation = context.Relations[0];
+            inspector.NavigateRelationCommand.Execute(null);
+            AssertEqual(second, navigatedEntry,
+                "Relationship navigation must resolve the stable normalized entry key.");
+
+            navigatedEntry = null;
+            inspector.SelectedNpc = context.Npcs[0];
+            inspector.NavigateNpcCommand.Execute(null);
+            AssertEqual(second, navigatedEntry,
+                "NPC navigation must resolve the stable normalized entry key.");
+            inspector.Dispose();
+        }
+
+        private static void DiscardsStalePreviewContext()
+        {
+            var first = CreateEntry("first", "First", string.Empty);
+            var second = CreateEntry("second", "Second", string.Empty);
+            bool firstStarted = false;
+            var inspector = new PreviewContextInspectorViewModel(
+                (entry, cancellationToken) =>
+                {
+                    if (ReferenceEquals(entry, first))
+                    {
+                        firstStarted = true;
+                        while (true)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            Thread.Sleep(5);
+                        }
+                    }
+
+                    return new PreviewEntryContext(
+                        string.Empty,
+                        string.Empty,
+                        new[] { new PreviewContextMetadata("Stable key", entry.Key, "Phoenix Translator") },
+                        new PreviewContextRelation[0],
+                        new PreviewNpcContext[0],
+                        null);
+                },
+                key => null,
+                entry => { });
+
+            inspector.SelectEntry(first);
+            AssertEqual(true, SpinWait.SpinUntil(() => firstStarted, 2000),
+                "The first synthetic context request must begin before selection changes.");
+            inspector.SelectEntry(second);
+            AssertEqual(true, SpinWait.SpinUntil(() => inspector.State == PreviewContextState.Ready, 2000),
+                "The replacement selection must load after cancelling stale work.");
+            AssertEqual("second", inspector.Context.Metadata[0].Value,
+                "Cancelled stale work must never replace the current entry context.");
+            inspector.Dispose();
+        }
+
+        private static void DistinguishesEmptyAndFailedPreviewContext()
+        {
+            var entry = CreateEntry("entry", "Source", string.Empty);
+            var emptyInspector = new PreviewContextInspectorViewModel(
+                (selected, cancellationToken) => new PreviewEntryContext(
+                    string.Empty,
+                    string.Empty,
+                    new PreviewContextMetadata[0],
+                    new PreviewContextRelation[0],
+                    new PreviewNpcContext[0],
+                    null),
+                key => null,
+                selected => { });
+            emptyInspector.SelectEntry(entry);
+            AssertEqual(true, SpinWait.SpinUntil(() => emptyInspector.State == PreviewContextState.Empty, 2000),
+                "Unsupported context must remain an explicit empty state.");
+            AssertEqual("No supported context is available for this entry.", emptyInspector.StateText,
+                "Unsupported context must not be presented as a failure.");
+            emptyInspector.Dispose();
+
+            var failedInspector = new PreviewContextInspectorViewModel(
+                (selected, cancellationToken) => { throw new InvalidDataException("Synthetic parser failure."); },
+                key => null,
+                selected => { });
+            failedInspector.SelectEntry(entry);
+            AssertEqual(true, SpinWait.SpinUntil(() => failedInspector.State == PreviewContextState.Failed, 2000),
+                "Parser failures must reach a distinct failed state.");
+            AssertEqual(true, failedInspector.RetryCommand.CanExecute(null),
+                "A failed context load must remain explicitly retryable.");
+            failedInspector.Dispose();
+        }
+
+        private static void ValidatesBoundedPreviewAssets()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixAssetContextTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            string projectPath = Path.Combine(directory, "fixture.xml");
+            File.WriteAllText(projectPath, "fixture");
+            try
+            {
+                string imagePath = Path.Combine(directory, "preview.png");
+                File.WriteAllBytes(imagePath, Convert.FromBase64String(
+                    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="));
+                PreviewAssetContext asset = PreviewAssetContextLoader.Load(
+                    projectPath,
+                    "preview.png",
+                    CancellationToken.None);
+                AssertEqual("preview.png", asset.DisplayName,
+                    "Validated asset context must expose only a safe file name.");
+                AssertEqual("1 × 1", asset.Dimensions,
+                    "Validated asset context must retain decoded dimensions.");
+                AssertEqual(null, PreviewAssetContextLoader.Load(
+                    projectPath,
+                    "../outside.png",
+                    CancellationToken.None),
+                    "Asset context must reject traversal outside the project directory.");
+
+                string malformedPath = Path.Combine(directory, "malformed.png");
+                File.WriteAllText(malformedPath, "not an image");
+                bool malformedRejected = false;
+                try
+                {
+                    PreviewAssetContextLoader.Load(projectPath, "malformed.png", CancellationToken.None);
+                }
+                catch (InvalidDataException)
+                {
+                    malformedRejected = true;
+                }
+
+                AssertEqual(true, malformedRejected,
+                    "Malformed visual assets must fail at the bounded context boundary.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
         }
 
         private static void PreviewsAppliesAndUndoesWorkspaceReplacement()
@@ -1301,6 +1462,22 @@ namespace PhoenixTranslator.PresetTests
 
                 return "Translated " + entry.SourceText;
             }
+
+            public PreviewEntryContext LoadContext(
+                PreviewTranslationEntry entry,
+                CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                return Context ?? new PreviewEntryContext(
+                    string.Empty,
+                    string.Empty,
+                    new PreviewContextMetadata[0],
+                    new PreviewContextRelation[0],
+                    new PreviewNpcContext[0],
+                    null);
+            }
+
+            internal PreviewEntryContext Context { get; set; }
 
             public void Save()
             {

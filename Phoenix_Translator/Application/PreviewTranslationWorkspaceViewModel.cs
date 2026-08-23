@@ -140,6 +140,11 @@ namespace PhoenixTranslator.ApplicationLayer
                 convertToTraditional,
                 copyText,
                 OnToolsBusyChanged);
+            Inspectors = new PreviewContextInspectorViewModel(
+                LoadEntryContext,
+                key => _allEntries.FirstOrDefault(entry =>
+                    string.Equals(entry.Key, key, StringComparison.Ordinal)),
+                RevealEntry);
 
             OpenProjectCommand = new PreviewShellCommand(
                 parameter => OpenSelectedProject(),
@@ -204,6 +209,11 @@ namespace PhoenixTranslator.ApplicationLayer
         public PreviewWorkspaceToolsViewModel Tools { get; private set; }
 
         /// <summary>
+        /// Gets the docked code, record, NPC, relationship, and asset inspectors.
+        /// </summary>
+        public PreviewContextInspectorViewModel Inspectors { get; private set; }
+
+        /// <summary>
         /// Gets the command that selects and opens a supported project.
         /// </summary>
         public ICommand OpenProjectCommand { get; private set; }
@@ -260,6 +270,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasSelection));
                 Tools?.RefreshPreview();
+                Inspectors?.SelectEntry(value);
                 RaiseCommandAvailability();
             }
         }
@@ -415,8 +426,12 @@ namespace PhoenixTranslator.ApplicationLayer
             {
                 IPreviewTranslationProject openedProject = await Task.Run(() => _openProject(path));
                 IPreviewTranslationProject previousProject = _project;
+                Inspectors.SelectEntry(null);
                 _project = openedProject;
-                previousProject?.Dispose();
+                if (previousProject != null)
+                {
+                    await Task.Run(() => previousProject.Dispose());
+                }
                 ReplaceEntries(openedProject.Entries);
                 _shell.SetProject(openedProject.DisplayName, false);
                 CompleteOperation();
@@ -446,8 +461,9 @@ namespace PhoenixTranslator.ApplicationLayer
                 await Task.Run(() => _project.Save());
                 IPreviewTranslationProject reloadedProject = await Task.Run(() => _openProject(projectPath));
                 IPreviewTranslationProject savedProject = _project;
+                Inspectors.SelectEntry(null);
                 _project = reloadedProject;
-                savedProject.Dispose();
+                await Task.Run(() => savedProject.Dispose());
                 ReplaceEntries(reloadedProject.Entries);
 
                 _shell.SetProject(_project.DisplayName, false);
@@ -582,8 +598,28 @@ namespace PhoenixTranslator.ApplicationLayer
         {
             _operationCancellation?.Cancel();
             _operationCancellation?.Dispose();
+            Inspectors.Dispose();
             _project?.Dispose();
             _project = null;
+        }
+
+        private PreviewEntryContext LoadEntryContext(
+            PreviewTranslationEntry entry,
+            CancellationToken cancellationToken)
+        {
+            IPreviewTranslationProject project = _project;
+            if (project == null)
+            {
+                return new PreviewEntryContext(
+                    string.Empty,
+                    string.Empty,
+                    new PreviewContextMetadata[0],
+                    new PreviewContextRelation[0],
+                    new PreviewNpcContext[0],
+                    null);
+            }
+
+            return project.LoadContext(entry, cancellationToken);
         }
 
         private static PreviewTranslationStateFilterOption CreateStateFilter(

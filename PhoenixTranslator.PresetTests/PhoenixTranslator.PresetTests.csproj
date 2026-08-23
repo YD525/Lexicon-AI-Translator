@@ -39,6 +39,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
@@ -52,6 +53,15 @@
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewMessageCatalog.cs">
       <Link>PreviewMessageCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewContextInspectorModels.cs">
+      <Link>PreviewContextInspectorModels.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewAssetContextLoader.cs">
+      <Link>PreviewAssetContextLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewContextInspectorViewModel.cs">
+      <Link>PreviewContextInspectorViewModel.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewQualityAnalyzer.cs">
       <Link>PreviewQualityAnalyzer.cs</Link>
