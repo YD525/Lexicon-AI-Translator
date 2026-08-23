@@ -154,7 +154,7 @@
   <data name="Shell_Legacy_Shortcut_Hint" xml:space="preserve"><value>Ctrl+L opens the legacy workspace.</value><comment>Keyboard hint below the workflow fallback action.</comment></data>
   <data name="Shell_Navigation_Shortcuts_Hint" xml:space="preserve"><value>Ctrl+1–8 navigate</value><comment>Compact shell footer hint for direct workflow navigation.</comment></data>
   <data name="Shell_Status_WarningCount" xml:space="preserve"><value>{0} warnings</value><comment>Persistent shell warning summary. Placeholders: {0}=non-negative integer warning count.</comment></data>
-  <data name="Shell_Page_PreviewFallback_Description" xml:space="preserve"><value>This workflow is still provided by the legacy workspace while its preview replacement is developed and validated.</value><comment>Shared explanation in a preview destination that still delegates its workflow to PhoenixGui.</comment></data>
+  <data name="Shell_Page_PreviewFallback_Description" xml:space="preserve"><value>This preview workflow is disabled for controlled acceptance. Use the compatible legacy workspace, or enable the workflow in Settings when you are ready to validate it.</value><comment>Shared explanation for an independently reverted preview destination.</comment></data>
   <data name="Shell_Page_Projects_Title" xml:space="preserve"><value>Projects</value><comment>Preview shell heading for project selection and recent projects.</comment></data>
   <data name="Shell_Page_Projects_Description" xml:space="preserve"><value>Open a supported file, return to a recent project, or continue in the legacy workspace.</value><comment>Preview shell description for the Projects destination.</comment></data>
   <data name="Shell_Page_Translate_Title" xml:space="preserve"><value>Translate</value><comment>Preview shell heading for the translation workspace.</comment></data>
@@ -657,4 +657,58 @@
   <data name="Advanced_Preset_Speed_Description" xml:space="preserve"><value>Uses larger batches and aggressive deduplication. Best for broad first passes, with less contextual nuance.</value><comment>Speed preset text explanation.</comment></data>
   <data name="Advanced_Preset_Custom_Title" xml:space="preserve"><value>Custom — explicit expert control</value><comment>Custom preset title.</comment></data>
   <data name="Advanced_Preset_Custom_Description" xml:space="preserve"><value>Preserves individually chosen engine values. Review context, bucket, concurrency, and throttling settings together before large runs.</value><comment>Custom preset text explanation.</comment></data>
+  <data name="Rollout_Title" xml:space="preserve"><value>Preview workflow rollout</value><comment>Title for independently reversible preview workflow choices.</comment></data>
+  <data name="Rollout_Description" xml:space="preserve"><value>Enable each redesigned workflow independently. Disabled destinations open the compatible legacy workspace without changing other preview choices.</value><comment>Explains staged workflow rollout behavior.</comment></data>
+  <data name="Rollout_Fallback_Hint" xml:space="preserve"><value>Changes apply together with Settings. The legacy workspace remains available through Ctrl+L during acceptance.</value><comment>Explains rollout persistence and fallback.</comment></data>
+  <data name="Rollout_Workflow_ProjectHub" xml:space="preserve"><value>Project Hub</value><comment>Rollout label for the Project Hub.</comment></data>
+  <data name="Rollout_Workflow_Translation" xml:space="preserve"><value>Translation workspace</value><comment>Rollout label for translation.</comment></data>
+  <data name="Rollout_Workflow_Review" xml:space="preserve"><value>Review workflow</value><comment>Rollout label for review.</comment></data>
+  <data name="Rollout_Workflow_Quality" xml:space="preserve"><value>Quality workflow</value><comment>Rollout label for quality assurance.</comment></data>
+  <data name="Rollout_Workflow_History" xml:space="preserve"><value>History workflow</value><comment>Rollout label for history.</comment></data>
+  <data name="Rollout_Workflow_ProjectUpdate" xml:space="preserve"><value>Project update workflow</value><comment>Rollout label for project updates.</comment></data>
+  <data name="Rollout_Workflow_Settings" xml:space="preserve"><value>Settings Center</value><comment>Rollout label for settings.</comment></data>
+  <data name="Rollout_Workflow_AdvancedTools" xml:space="preserve"><value>Advanced Tools</value><comment>Rollout label for advanced tools.</comment></data>
+  <data name="Workspace_Tools_ImportRamCache_Action" xml:space="preserve"><value>Import _RamCache…</value><comment>Imports draft targets from a compatible RamCache JSON file.</comment></data>
+  <data name="Workspace_Tools_ExportRamCache_Action" xml:space="preserve"><value>Export R_amCache…</value><comment>Exports the project as a compatible RamCache JSON file.</comment></data>
+  <data name="Workspace_Tools_ImportRamCache_Title" xml:space="preserve"><value>Import Phoenix RamCache</value><comment>Title for selecting a RamCache JSON file.</comment></data>
+  <data name="Workspace_Tools_ExportRamCache_Title" xml:space="preserve"><value>Export Phoenix RamCache</value><comment>Title for selecting a RamCache JSON destination.</comment></data>
+  <data name="Workspace_Tools_RamCache_Filter" xml:space="preserve"><value>Phoenix RamCache (*.json)|*.json</value><comment>File filter for RamCache transfer.</comment></data>
+  <data name="Workspace_Tools_RamCacheImported" xml:space="preserve"><value>Imported RamCache targets into {0} draft entries.</value><comment>RamCache import completion count.</comment></data>
+  <data name="Workspace_Tools_RamCacheExported" xml:space="preserve"><value>The Phoenix RamCache file was exported.</value><comment>RamCache export completion.</comment></data>
+  <data name="Workspace_Tools_Cache_Title" xml:space="preserve"><value>Project translation caches</value><comment>Title for active-project cache maintenance.</comment></data>
+  <data name="Workspace_Tools_Cache_Provider" xml:space="preserve"><value>Provider translation cache</value><comment>Selects provider-produced cached targets.</comment></data>
+  <data name="Workspace_Tools_Cache_User" xml:space="preserve"><value>User-input translation cache</value><comment>Selects user-entered cached targets.</comment></data>
+  <data name="Workspace_Tools_CacheClear_Action" xml:space="preserve"><value>_Clear selected caches…</value><comment>Requests destructive cache clearing confirmation.</comment></data>
+  <data name="Workspace_Tools_CacheClear_Title" xml:space="preserve"><value>Clear project translation caches?</value><comment>Title for destructive cache confirmation.</comment></data>
+  <data name="Workspace_Tools_CacheClear_Confirmation" xml:space="preserve"><value>This permanently removes {0} for the active project. Staged workspace targets remain visible, but future lookup results can change. Continue?</value><comment>Explains the exact selected cache scope.</comment></data>
+  <data name="Workspace_Tools_CacheScope_All" xml:space="preserve"><value>provider and user-input cache entries</value><comment>Combined cache scope.</comment></data>
+  <data name="Workspace_Tools_CacheScope_Provider" xml:space="preserve"><value>provider cache entries</value><comment>Provider cache scope.</comment></data>
+  <data name="Workspace_Tools_CacheScope_User" xml:space="preserve"><value>user-input cache entries</value><comment>User cache scope.</comment></data>
+  <data name="Workspace_Tools_CacheClearing" xml:space="preserve"><value>Clearing selected project caches…</value><comment>Cache clearing progress.</comment></data>
+  <data name="Workspace_Tools_CacheCleared" xml:space="preserve"><value>The selected project caches were cleared.</value><comment>Cache clearing completion.</comment></data>
+  <data name="TranslationHistory_Tab" xml:space="preserve"><value>Translation history</value><comment>Tab containing persisted translation history records.</comment></data>
+  <data name="TranslationHistory_Audit_Tab" xml:space="preserve"><value>Activity</value><comment>Tab containing privacy-safe project activity records.</comment></data>
+  <data name="TranslationHistory_Search" xml:space="preserve"><value>Search translation history</value><comment>Search field accessible name and tooltip.</comment></data>
+  <data name="TranslationHistory_Restore_Action" xml:space="preserve"><value>_Restore target</value><comment>Restores the selected historical target to the workspace.</comment></data>
+  <data name="TranslationHistory_SetCurrent_Action" xml:space="preserve"><value>Set _current</value><comment>Marks the selected history record as current.</comment></data>
+  <data name="TranslationHistory_Delete_Action" xml:space="preserve"><value>_Delete record…</value><comment>Deletes one confirmed translation history record.</comment></data>
+  <data name="TranslationHistory_Clear_Action" xml:space="preserve"><value>_Clear history…</value><comment>Clears all confirmed translation history records for the project.</comment></data>
+  <data name="TranslationHistory_Delete_ConfirmationTitle" xml:space="preserve"><value>Delete translation history record?</value><comment>Title for one-record deletion confirmation.</comment></data>
+  <data name="TranslationHistory_Delete_Confirmation" xml:space="preserve"><value>This permanently deletes the selected history record. The current workspace target remains unchanged. Continue?</value><comment>Explains one-record history deletion.</comment></data>
+  <data name="TranslationHistory_Clear_ConfirmationTitle" xml:space="preserve"><value>Clear translation history?</value><comment>Title for project history clearing confirmation.</comment></data>
+  <data name="TranslationHistory_Clear_Confirmation" xml:space="preserve"><value>This permanently deletes all {0} translation history records for the active project. Current workspace targets remain unchanged. Continue?</value><comment>Explains project history clearing. Placeholder: record count.</comment></data>
+  <data name="TranslationHistory_Load_Failed" xml:space="preserve"><value>Translation history could not be loaded. Project work can continue.</value><comment>Safe non-blocking history load failure.</comment></data>
+  <data name="TranslationHistory_Restored" xml:space="preserve"><value>The historical target was restored to the workspace.</value><comment>History restore completion.</comment></data>
+  <data name="TranslationHistory_Current_Set" xml:space="preserve"><value>The selected history record is now current.</value><comment>History current-record completion.</comment></data>
+  <data name="TranslationHistory_Deleted" xml:space="preserve"><value>The selected history record was deleted.</value><comment>History deletion completion.</comment></data>
+  <data name="TranslationHistory_Cleared" xml:space="preserve"><value>Translation history was cleared for the active project.</value><comment>History clearing completion.</comment></data>
+  <data name="TranslationHistory_Operation_Failed" xml:space="preserve"><value>The translation history operation could not be completed.</value><comment>Safe history operation failure.</comment></data>
+  <data name="TranslationHistory_State_Current" xml:space="preserve"><value>Current</value><comment>State label for the selected current history record.</comment></data>
+  <data name="TranslationHistory_State_Historical" xml:space="preserve"><value>Historical</value><comment>State label for a non-current history record.</comment></data>
+  <data name="Advanced_Database_Query_Label" xml:space="preserve"><value>SQL statement</value><comment>Label for the guarded database query editor.</comment></data>
+  <data name="Advanced_Database_Mode_ReadOnly" xml:space="preserve"><value>Read-only mode</value><comment>Database mode that permits only one SELECT statement.</comment></data>
+  <data name="Advanced_Database_Mode_Mutation" xml:space="preserve"><value>Mutation mode confirmed</value><comment>Database mode after explicit destructive confirmation.</comment></data>
+  <data name="Advanced_Database_Execute_Action" xml:space="preserve"><value>_Execute</value><comment>Executes the staged database statement.</comment></data>
+  <data name="Advanced_Database_Result" xml:space="preserve"><value>Database statement completed with {0} result rows.</value><comment>Bounded database result count. Placeholder: row count.</comment></data>
+  <data name="Advanced_Database_Failed" xml:space="preserve"><value>The database statement was rejected or could not be completed.</value><comment>Safe database operation failure.</comment></data>
 </root>

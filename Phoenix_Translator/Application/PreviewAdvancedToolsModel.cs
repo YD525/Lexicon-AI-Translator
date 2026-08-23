@@ -23,6 +23,20 @@ namespace PhoenixTranslator.ApplicationLayer
         }
     }
 
+    /// <summary>Contains one bounded, display-ready database result row.</summary>
+    internal sealed class PreviewDatabaseResultRow
+    {
+        /// <summary>Creates a database result row without retaining mutable engine values.</summary>
+        /// <param name="displayText">The bounded column and value representation.</param>
+        internal PreviewDatabaseResultRow(string displayText)
+        {
+            DisplayText = displayText ?? string.Empty;
+        }
+
+        /// <summary>Gets the bounded column and value representation.</summary>
+        public string DisplayText { get; private set; }
+    }
+
     /// <summary>Identifies one intent-oriented Advanced Tools page.</summary>
     internal enum PreviewAdvancedToolsPage
     {
@@ -142,6 +156,7 @@ namespace PhoenixTranslator.ApplicationLayer
             PreviewCustomProviderDraft draft,
             CancellationToken cancellationToken);
         void SaveCustomProvider(PreviewCustomProviderDraft draft);
+        IReadOnlyList<PreviewDatabaseResultRow> ExecuteDatabaseQuery(string sql, bool allowMutation);
         IReadOnlyList<KeyValuePair<string, long>> ReadTokenUsage();
         void ClearTokenUsage();
     }

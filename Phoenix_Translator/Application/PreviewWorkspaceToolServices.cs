@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace PhoenixTranslator.ApplicationLayer
 {
@@ -162,6 +163,142 @@ namespace PhoenixTranslator.ApplicationLayer
             }
 
             return result.ToString();
+        }
+    }
+
+    /// <summary>Reads and writes bounded files compatible with the Phoenix RamCache exchange format.</summary>
+    internal sealed class PreviewRamCacheService
+    {
+        private const int MaximumRows = 500000;
+        private const int MaximumTextCharacters = 4 * 1024 * 1024;
+        private const long MaximumBytes = 64L * 1024L * 1024L;
+
+        /// <summary>Imports matching draft targets and returns their previous values for undo.</summary>
+        /// <param name="path">The selected bounded RamCache JSON file.</param>
+        /// <param name="entries">The active normalized project entries.</param>
+        /// <returns>The previous targets for entries changed by the import.</returns>
+        internal Dictionary<PreviewTranslationEntry, string> ImportDraftTargets(
+            string path,
+            IReadOnlyList<PreviewTranslationEntry> entries)
+        {
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path) ||
+                new FileInfo(path).Length > MaximumBytes)
+            {
+                throw new InvalidDataException("The RamCache file is unavailable or exceeds the supported limit.");
+            }
+
+            List<PreviewRamCacheRecord> records;
+            using (var stream = new StreamReader(path, Encoding.UTF8, true))
+            using (var reader = new JsonTextReader(stream))
+            {
+                records = new JsonSerializer().Deserialize<List<PreviewRamCacheRecord>>(reader) ??
+                    new List<PreviewRamCacheRecord>();
+            }
+
+            if (records.Count > MaximumRows || records.Any(record => !IsValid(record)) ||
+                records.GroupBy(record => record.Key, StringComparer.Ordinal).Any(group => group.Count() > 1))
+            {
+                throw new InvalidDataException("The RamCache file contains invalid or excessive records.");
+            }
+
+            Dictionary<string, PreviewTranslationEntry> byKey = entries
+                .GroupBy(entry => entry.Key, StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            var changes = new Dictionary<PreviewTranslationEntry, string>();
+            foreach (PreviewRamCacheRecord record in records)
+            {
+                PreviewTranslationEntry entry;
+                if (!byKey.TryGetValue(record.Key, out entry) || !entry.IsDraft ||
+                    !string.Equals(entry.SourceText, record.SourceText, StringComparison.Ordinal) ||
+                    string.Equals(record.SourceText, record.TransText, StringComparison.Ordinal) ||
+                    string.Equals(entry.TargetText, record.TransText, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                changes.Add(entry, entry.TargetText);
+                entry.TargetText = record.TransText;
+            }
+
+            return changes;
+        }
+
+        /// <summary>Exports normalized entries through an atomic, non-overwriting RamCache JSON write.</summary>
+        /// <param name="path">The new RamCache destination.</param>
+        /// <param name="entries">The active normalized project entries.</param>
+        internal void Export(string path, IReadOnlyList<PreviewTranslationEntry> entries)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("A RamCache export path is required.", nameof(path));
+            }
+
+            string destination = Path.GetFullPath(path);
+            if (File.Exists(destination))
+            {
+                throw new IOException("The selected RamCache export already exists.");
+            }
+
+            string directory = Path.GetDirectoryName(destination);
+            Directory.CreateDirectory(directory);
+            string temporaryPath = destination + "." + Guid.NewGuid().ToString("N") + ".tmp";
+            try
+            {
+                var records = entries.Select(entry => new PreviewRamCacheRecord
+                {
+                    Height = 50,
+                    Type = entry.Type,
+                    Key = entry.Key,
+                    SourceText = entry.SourceText,
+                    RealSource = string.Empty,
+                    TransText = entry.TargetText,
+                    Score = entry.Score
+                }).ToList();
+                File.WriteAllText(
+                    temporaryPath,
+                    JsonConvert.SerializeObject(records, Formatting.Indented),
+                    new UTF8Encoding(false));
+                File.Move(temporaryPath, destination);
+            }
+            finally
+            {
+                if (File.Exists(temporaryPath))
+                {
+                    File.Delete(temporaryPath);
+                }
+            }
+        }
+
+        private static bool IsValid(PreviewRamCacheRecord record)
+        {
+            return record != null && !string.IsNullOrEmpty(record.Key) &&
+                record.Key.Length <= 1024 && (record.Type ?? string.Empty).Length <= 128 &&
+                (record.SourceText ?? string.Empty).Length <= MaximumTextCharacters &&
+                (record.TransText ?? string.Empty).Length <= MaximumTextCharacters;
+        }
+
+        private sealed class PreviewRamCacheRecord
+        {
+            /// <summary>Gets or sets the legacy editor row height.</summary>
+            public double Height { get; set; }
+
+            /// <summary>Gets or sets the normalized record type.</summary>
+            public string Type { get; set; }
+
+            /// <summary>Gets or sets the stable translation entry key.</summary>
+            public string Key { get; set; }
+
+            /// <summary>Gets or sets the source text used to validate the import.</summary>
+            public string SourceText { get; set; }
+
+            /// <summary>Gets or sets the optional unnormalized source text.</summary>
+            public string RealSource { get; set; }
+
+            /// <summary>Gets or sets the translated target text.</summary>
+            public string TransText { get; set; }
+
+            /// <summary>Gets or sets the translation confidence score.</summary>
+            public double Score { get; set; }
         }
     }
 

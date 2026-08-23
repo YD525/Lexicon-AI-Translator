@@ -255,7 +255,7 @@
                                     <CheckBox Style="{StaticResource SettingsCheckBox}" IsChecked="{Binding Settings.EnableGlobalSearch}"
                                               Content="{localization:PreviewMessage Settings_Field_GlobalSearch_Label}" />
                                     <Button Margin="0,10,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonSecondary}"
-                                            Command="{Binding OpenLegacyWorkspaceCommand}" Content="{localization:PreviewMessage Settings_Data_OpenManager_Action}" />
+                                            Command="{Binding OpenAdvancedToolsCommand}" Content="{localization:PreviewMessage Settings_Data_OpenManager_Action}" />
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -317,7 +317,26 @@
                                         </StackPanel>
                                     </Grid>
                                     <Button Margin="0,16,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonSecondary}"
-                                            Command="{Binding OpenLegacyWorkspaceCommand}" Content="{localization:PreviewMessage Settings_Advanced_OpenPipeline_Action}" />
+                                            Command="{Binding OpenAdvancedToolsCommand}" Content="{localization:PreviewMessage Settings_Advanced_OpenPipeline_Action}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource SettingsCard}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource SettingsSectionTitle}"
+                                               Text="{localization:PreviewMessage Rollout_Title}" />
+                                    <TextBlock Margin="0,0,0,12" Foreground="{StaticResource PreviewBrushTextSecondary}"
+                                               TextWrapping="Wrap" Text="{localization:PreviewMessage Rollout_Description}" />
+                                    <ItemsControl ItemsSource="{Binding RolloutOptions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Margin="0,4" Foreground="{StaticResource PreviewBrushTextPrimary}"
+                                                          Content="{Binding Label}" IsChecked="{Binding IsEnabled}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Margin="0,10,0,0" FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PreviewBrushTextMuted}"
+                                               Text="{localization:PreviewMessage Rollout_Fallback_Hint}" />
                                 </StackPanel>
                             </Border>
                         </StackPanel>

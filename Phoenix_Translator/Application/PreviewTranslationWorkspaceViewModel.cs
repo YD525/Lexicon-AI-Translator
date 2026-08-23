@@ -94,6 +94,9 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Converts one target through the configured writing-variant boundary.
         /// </param>
         /// <param name="copyText">Copies an interactive-provider request without exposing it to diagnostics.</param>
+        /// <param name="chooseRamCacheImportPath">Selects a bounded RamCache JSON file.</param>
+        /// <param name="chooseRamCacheExportPath">Selects a new RamCache JSON destination.</param>
+        /// <param name="confirmCacheClear">Confirms the selected destructive project-cache scope.</param>
         internal PreviewTranslationWorkspaceViewModel(
             Func<string> chooseProjectPath,
             Action openLegacyWorkspace,
@@ -104,7 +107,10 @@ namespace PhoenixTranslator.ApplicationLayer
             Func<string> chooseTableExportPath = null,
             Func<string> chooseProjectExportPath = null,
             Func<string, CancellationToken, string> convertToTraditional = null,
-            Action<string> copyText = null)
+            Action<string> copyText = null,
+            Func<string> chooseRamCacheImportPath = null,
+            Func<string> chooseRamCacheExportPath = null,
+            Func<bool, bool, bool> confirmCacheClear = null)
         {
             _chooseProjectPath = chooseProjectPath ?? throw new ArgumentNullException(nameof(chooseProjectPath));
             _openLegacyWorkspace = openLegacyWorkspace ?? throw new ArgumentNullException(nameof(openLegacyWorkspace));
@@ -139,7 +145,11 @@ namespace PhoenixTranslator.ApplicationLayer
                 ExportProjectAsync,
                 convertToTraditional,
                 copyText,
-                OnToolsBusyChanged);
+                OnToolsBusyChanged,
+                chooseRamCacheImportPath,
+                chooseRamCacheExportPath,
+                ClearTranslationCachesAsync,
+                confirmCacheClear);
             Inspectors = new PreviewContextInspectorViewModel(
                 LoadEntryContext,
                 key => _allEntries.FirstOrDefault(entry =>
@@ -489,6 +499,22 @@ namespace PhoenixTranslator.ApplicationLayer
             return Task.Run(() => project.Export(path, cancellationToken), cancellationToken);
         }
 
+        private Task ClearTranslationCachesAsync(
+            bool clearProviderCache,
+            bool clearUserCache,
+            CancellationToken cancellationToken)
+        {
+            IPreviewTranslationProject project = _project;
+            if (project == null)
+            {
+                throw new InvalidOperationException("A project must be open before clearing caches.");
+            }
+
+            return Task.Run(
+                () => project.ClearTranslationCaches(clearProviderCache, clearUserCache, cancellationToken),
+                cancellationToken);
+        }
+
         /// <summary>
         /// Translates a stable entry snapshot sequentially with cooperative cancellation and bounded progress.
         /// </summary>
@@ -559,6 +585,76 @@ namespace PhoenixTranslator.ApplicationLayer
                 RaiseCommandAvailability();
                 OnEntryStateChanged();
             }
+        }
+
+        /// <summary>Loads bounded translation history away from the UI thread.</summary>
+        /// <param name="cancellationToken">Cancels the history read.</param>
+        /// <returns>The active project's history records, or an empty list without a project.</returns>
+        internal Task<IReadOnlyList<PreviewTranslationHistoryItem>> LoadTranslationHistoryAsync(
+            CancellationToken cancellationToken)
+        {
+            IPreviewTranslationProject project = _project;
+            return project == null
+                ? Task.FromResult<IReadOnlyList<PreviewTranslationHistoryItem>>(
+                    new List<PreviewTranslationHistoryItem>())
+                : Task.Run(() => project.LoadTranslationHistory(cancellationToken), cancellationToken);
+        }
+
+        /// <summary>Restores one historical target and reveals its workspace entry.</summary>
+        /// <param name="rowId">The persistent history row identifier.</param>
+        /// <param name="cancellationToken">Cancels restoration before it is applied.</param>
+        /// <returns>The restored entry, or <c>null</c> when no project is active.</returns>
+        internal async Task<PreviewTranslationEntry> RestoreTranslationHistoryAsync(
+            int rowId,
+            CancellationToken cancellationToken)
+        {
+            IPreviewTranslationProject project = _project;
+            if (project == null)
+            {
+                return null;
+            }
+
+            PreviewTranslationEntry entry = await Task.Run(
+                () => project.RestoreTranslationHistory(rowId, cancellationToken),
+                cancellationToken);
+            if (entry != null)
+            {
+                OnEntryStateChanged();
+                RevealEntry(entry);
+            }
+            return entry;
+        }
+
+        /// <summary>Marks one persisted history record as current.</summary>
+        /// <param name="rowId">The persistent history row identifier.</param>
+        /// <returns>A task representing the database operation.</returns>
+        internal Task SetCurrentTranslationHistoryAsync(int rowId)
+        {
+            IPreviewTranslationProject project = _project;
+            return project == null
+                ? Task.FromResult(0)
+                : Task.Run(() => project.SetCurrentTranslationHistory(rowId));
+        }
+
+        /// <summary>Deletes one persisted history record.</summary>
+        /// <param name="rowId">The persistent history row identifier.</param>
+        /// <returns>A task representing the database operation.</returns>
+        internal Task DeleteTranslationHistoryAsync(int rowId)
+        {
+            IPreviewTranslationProject project = _project;
+            return project == null
+                ? Task.FromResult(0)
+                : Task.Run(() => project.DeleteTranslationHistory(rowId));
+        }
+
+        /// <summary>Clears persisted translation history for the active project.</summary>
+        /// <returns>A task representing the database operation.</returns>
+        internal Task ClearTranslationHistoryAsync()
+        {
+            IPreviewTranslationProject project = _project;
+            return project == null
+                ? Task.FromResult(0)
+                : Task.Run(() => project.ClearTranslationHistory());
         }
 
         /// <summary>

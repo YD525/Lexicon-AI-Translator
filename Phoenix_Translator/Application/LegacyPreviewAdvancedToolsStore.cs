@@ -5,7 +5,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text;
 using PhoenixEngine;
+using PhoenixEngine.ADO;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
 
@@ -115,6 +117,29 @@ namespace PhoenixTranslator.ApplicationLayer
         }
 
         /// <inheritdoc />
+        public IReadOnlyList<PreviewDatabaseResultRow> ExecuteDatabaseQuery(string sql, bool allowMutation)
+        {
+            string statement = (sql ?? string.Empty).Trim();
+            if (statement.EndsWith(";", StringComparison.Ordinal))
+            {
+                statement = statement.Substring(0, statement.Length - 1).TrimEnd();
+            }
+
+            if (string.IsNullOrWhiteSpace(statement) || statement.IndexOf(';') >= 0 ||
+                (!allowMutation && !PreviewDatabaseStatementGuard.IsReadOnly(statement)))
+            {
+                throw new InvalidOperationException("The database statement is not allowed in the current mode.");
+            }
+
+            string query = PreviewDatabaseStatementGuard.IsReadOnly(statement)
+                ? "SELECT * FROM (" + statement + ") AS PreviewResult LIMIT 1000"
+                : statement;
+            List<Dictionary<string, object>> rows = Phoenix.LocalDB.P_ExecuteQuery(
+                SQLSafeCodec.EncodeSQLValues(query)) ?? new List<Dictionary<string, object>>();
+            return rows.Take(1000).Select(FormatDatabaseRow).ToList();
+        }
+
+        /// <inheritdoc />
         public IReadOnlyList<KeyValuePair<string, long>> ReadTokenUsage()
         {
             return new[]
@@ -145,6 +170,32 @@ namespace PhoenixTranslator.ApplicationLayer
                 Timeout = TimeSpan.FromSeconds(8),
                 MaxResponseContentBufferSize = 1024
             };
+        }
+
+        private static PreviewDatabaseResultRow FormatDatabaseRow(Dictionary<string, object> row)
+        {
+            var text = new StringBuilder();
+            foreach (KeyValuePair<string, object> column in row)
+            {
+                if (text.Length > 0)
+                {
+                    text.Append("  |  ");
+                }
+
+                string value = column.Value == null ? "(null)" : column.Value.ToString();
+                if (string.Equals(column.Key, "Source", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Key, "Result", StringComparison.OrdinalIgnoreCase))
+                {
+                    value = SQLSafeCodec.Decode(value);
+                }
+
+                if (value.Length > 4096)
+                {
+                    value = value.Substring(0, 4096) + "…";
+                }
+                text.Append(column.Key).Append(": ").Append(value);
+            }
+            return new PreviewDatabaseResultRow(text.ToString());
         }
 
         private static IPAddress ResolveAddress(string host)

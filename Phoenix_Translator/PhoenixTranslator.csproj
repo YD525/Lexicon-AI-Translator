@@ -109,6 +109,7 @@
     <Compile Include="Application\AdvancedDictionaryQueryBuilder.cs" />
     <Compile Include="Application\IPreviewTranslationProject.cs" />
     <Compile Include="Application\PreviewMessageCatalog.cs" />
+    <Compile Include="Application\PreviewWorkflowRollout.cs" />
     <Compile Include="Application\PreviewContextInspectorModels.cs" />
     <Compile Include="Application\PreviewAssetContextLoader.cs" />
     <Compile Include="Application\PreviewContextInspectorViewModel.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Application\LegacyPreviewAdvancedToolsStore.cs" />
     <Compile Include="Application\PreviewShellViewModel.cs" />
     <Compile Include="Application\PreviewTranslationEntry.cs" />
+    <Compile Include="Application\PreviewTranslationHistory.cs" />
     <Compile Include="Application\PreviewTranslationProject.cs" />
     <Compile Include="Application\PreviewTranslationWorkspaceViewModel.cs" />
     <Compile Include="Application\PreviewWorkspaceToolsViewModel.cs" />

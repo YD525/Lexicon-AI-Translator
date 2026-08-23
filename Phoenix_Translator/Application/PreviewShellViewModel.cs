@@ -66,6 +66,8 @@ namespace PhoenixTranslator.ApplicationLayer
     internal sealed class PreviewShellViewModel : INotifyPropertyChanged
     {
         private readonly Action _openLegacyWorkspace;
+        private readonly PreviewWorkflowRolloutViewModel _rollout;
+        private readonly PreviewDiagnosticService _diagnostics;
         private PreviewShellDestination _currentDestination;
         private string _projectName;
         private bool _isModified;
@@ -83,8 +85,22 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <param name="openLegacyWorkspace">The integration action that opens the legacy workspace.</param>
         /// <exception cref="ArgumentNullException"><paramref name="openLegacyWorkspace"/> is <see langword="null"/>.</exception>
         internal PreviewShellViewModel(Action openLegacyWorkspace)
+            : this(openLegacyWorkspace, null, null)
+        {
+        }
+
+        /// <summary>Creates shell routing with independently applied workflow rollout state.</summary>
+        /// <param name="openLegacyWorkspace">Opens the recoverable legacy workspace.</param>
+        /// <param name="rollout">The applied per-workflow routing state.</param>
+        /// <param name="diagnostics">Records privacy-safe fallback events.</param>
+        internal PreviewShellViewModel(
+            Action openLegacyWorkspace,
+            PreviewWorkflowRolloutViewModel rollout,
+            PreviewDiagnosticService diagnostics)
         {
             _openLegacyWorkspace = openLegacyWorkspace ?? throw new ArgumentNullException(nameof(openLegacyWorkspace));
+            _rollout = rollout;
+            _diagnostics = diagnostics;
             _currentDestination = PreviewShellDestination.Projects;
             _operationText = string.Empty;
 
@@ -105,6 +121,10 @@ namespace PhoenixTranslator.ApplicationLayer
             DismissNotificationCommand = new PreviewShellCommand(parameter => ClearNotification());
             OpenShellServicesCommand = new PreviewShellCommand(parameter => IsShellServicesVisible = true);
             CloseShellServicesCommand = new PreviewShellCommand(parameter => IsShellServicesVisible = false);
+            if (_rollout != null)
+            {
+                _rollout.Applied += RolloutApplied;
+            }
         }
 
         /// <inheritdoc />
@@ -123,6 +143,16 @@ namespace PhoenixTranslator.ApplicationLayer
             get => _currentDestination;
             set
             {
+                if (!IsWorkflowEnabled(value))
+                {
+                    _diagnostics?.Record(
+                        PreviewDiagnosticSeverity.Information,
+                        "rollout.legacy-fallback.opened",
+                        value.ToString());
+                    _openLegacyWorkspace();
+                    return;
+                }
+
                 if (_currentDestination == value)
                 {
                     return;
@@ -155,34 +185,38 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <summary>
         /// Gets whether the preview Project Hub owns the current page.
         /// </summary>
-        public bool IsProjectHubVisible => _currentDestination == PreviewShellDestination.Projects;
+        public bool IsProjectHubVisible => _currentDestination == PreviewShellDestination.Projects &&
+            IsWorkflowEnabled(_currentDestination);
 
         /// <summary>
         /// Gets whether the preview translation workspace owns the current page.
         /// </summary>
-        public bool IsTranslationWorkspaceVisible => _currentDestination == PreviewShellDestination.Translate;
+        public bool IsTranslationWorkspaceVisible => _currentDestination == PreviewShellDestination.Translate &&
+            IsWorkflowEnabled(_currentDestination);
 
         /// <summary>
         /// Gets whether the combined review and quality workspace owns the current page.
         /// </summary>
         public bool IsReviewQualityWorkspaceVisible =>
-            _currentDestination == PreviewShellDestination.Review ||
-            _currentDestination == PreviewShellDestination.Quality;
+            (_currentDestination == PreviewShellDestination.Review ||
+            _currentDestination == PreviewShellDestination.Quality) && IsWorkflowEnabled(_currentDestination);
 
         /// <summary>
         /// Gets whether the history and project-update workspace owns the current page.
         /// </summary>
         public bool IsHistoryUpdateWorkspaceVisible =>
-            _currentDestination == PreviewShellDestination.History ||
-            _currentDestination == PreviewShellDestination.ProjectUpdate;
+            (_currentDestination == PreviewShellDestination.History ||
+            _currentDestination == PreviewShellDestination.ProjectUpdate) && IsWorkflowEnabled(_currentDestination);
 
         /// <summary>
         /// Gets whether the unified Settings Center owns the current page.
         /// </summary>
-        public bool IsSettingsWorkspaceVisible => _currentDestination == PreviewShellDestination.Settings;
+        public bool IsSettingsWorkspaceVisible => _currentDestination == PreviewShellDestination.Settings &&
+            IsWorkflowEnabled(_currentDestination);
 
         /// <summary>Gets whether the categorized Advanced Tools workspace owns the current page.</summary>
-        public bool IsAdvancedToolsWorkspaceVisible => _currentDestination == PreviewShellDestination.AdvancedTools;
+        public bool IsAdvancedToolsWorkspaceVisible => _currentDestination == PreviewShellDestination.AdvancedTools &&
+            IsWorkflowEnabled(_currentDestination);
 
         /// <summary>
         /// Gets whether the selected destination still uses the shared preview fallback page.
@@ -479,6 +513,45 @@ namespace PhoenixTranslator.ApplicationLayer
                 "Shell_Page_{0}_{1}",
                 _currentDestination,
                 suffix);
+        }
+
+        private bool IsWorkflowEnabled(PreviewShellDestination destination)
+        {
+            return _rollout == null || _rollout.IsEnabled(ToWorkflow(destination));
+        }
+
+        private static PreviewWorkflow ToWorkflow(PreviewShellDestination destination)
+        {
+            switch (destination)
+            {
+                case PreviewShellDestination.Projects: return PreviewWorkflow.ProjectHub;
+                case PreviewShellDestination.Translate: return PreviewWorkflow.Translation;
+                case PreviewShellDestination.Review: return PreviewWorkflow.Review;
+                case PreviewShellDestination.Quality: return PreviewWorkflow.Quality;
+                case PreviewShellDestination.History: return PreviewWorkflow.History;
+                case PreviewShellDestination.ProjectUpdate: return PreviewWorkflow.ProjectUpdate;
+                case PreviewShellDestination.Settings: return PreviewWorkflow.Settings;
+                default: return PreviewWorkflow.AdvancedTools;
+            }
+        }
+
+        private void RolloutApplied(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsProjectHubVisible));
+            OnPropertyChanged(nameof(IsTranslationWorkspaceVisible));
+            OnPropertyChanged(nameof(IsReviewQualityWorkspaceVisible));
+            OnPropertyChanged(nameof(IsHistoryUpdateWorkspaceVisible));
+            OnPropertyChanged(nameof(IsSettingsWorkspaceVisible));
+            OnPropertyChanged(nameof(IsAdvancedToolsWorkspaceVisible));
+            OnPropertyChanged(nameof(IsPreviewFallbackVisible));
+            if (!IsWorkflowEnabled(_currentDestination))
+            {
+                _diagnostics?.Record(
+                    PreviewDiagnosticSeverity.Information,
+                    "rollout.workflow.reverted",
+                    _currentDestination.ToString());
+                _openLegacyWorkspace();
+            }
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
