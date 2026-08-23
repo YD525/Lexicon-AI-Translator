@@ -160,40 +160,53 @@ namespace PhoenixTranslator.SkyrimManagement
                 {
                     //Esp
                     AvailableFiles.Add(GetFile);
+                    IsMod = true;
                 }
-                IsMod = true;
             }
 
-            if (Directory.Exists(Path.Combine(ModPath, "scripts")))
+            string ScriptPath = Path.Combine(ModPath, "scripts");
+
+            if (Directory.Exists(ScriptPath))
             {
-                foreach (var GetFile in Directory.GetFiles(ModPath))
+                foreach (var GetFile in Directory.GetFiles(ScriptPath))
                 {
                     if (GetFile.EndsWith(".pex"))
                     {
                         //Script
                         AvailableFiles.Add(GetFile);
+                        IsMod = true;
                     }
                 }
-                IsMod = true;
             }
 
-            if (Directory.Exists(Path.Combine(ModPath, "SKSE", "Plugins")))
+            string SKSEPluginPath = Path.Combine(ModPath, "SKSE", "Plugins");
+
+            if (Directory.Exists(SKSEPluginPath))
             {
-                //DLL 
-                IsMod = true;
+                foreach (var GetFile in Directory.GetFiles(SKSEPluginPath))
+                {
+                    if (GetFile.EndsWith(".dll"))
+                    {
+                        //DLL 
+                        IsMod = true;
+                    }
+                }
             }
 
-            if (Directory.Exists(Path.Combine(ModPath, "Interface", "Translations")))
+            string InterfacePath = Path.Combine(ModPath, "Interface", "Translations");
+
+            if (Directory.Exists(InterfacePath))
             {
-                foreach (var GetFile in Directory.GetFiles(ModPath))
+                foreach (var GetFile in Directory.GetFiles(InterfacePath))
                 {
                     if (GetFile.EndsWith(".txt"))
                     {
                         //Script MCM
                         AvailableFiles.Add(GetFile);
+
+                        IsMod = true;
                     }
                 }
-                IsMod = true;
             }
 
             if (IsMod)

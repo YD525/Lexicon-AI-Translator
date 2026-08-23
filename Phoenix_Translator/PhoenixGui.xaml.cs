@@ -51,6 +51,8 @@ namespace PhoenixTranslator
         public TranslateConfig TranslateConfigView = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            new ModFileDialog().Show();
+
             DeFine.Init(this);
 
             DeFine.GlobalLocalSetting.ReadConfig();
