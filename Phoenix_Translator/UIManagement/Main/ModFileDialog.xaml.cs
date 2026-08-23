@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using PhoenixTranslator.SkyrimManagement;
 using PhoenixTranslator.UIManage;
@@ -33,6 +34,23 @@ namespace PhoenixTranslator.UIManagement.Main
                 ModView.ExColStyles.Add(new ExColStyle(1, GridUnitType.Star));
                 ModView.ExColStyles.Add(new ExColStyle(1, GridUnitType.Star));
             }
+
+            var Button = PathBox.Template.FindName("IsSelectPathBtn", PathBox) as ToggleButton;
+
+            if (Button != null)
+            {
+                Button.Click += SetPath_Click;
+            }
+        }
+
+        public ModStringSearcher StringSearcher = new ModStringSearcher();
+
+        public List<SkyrimMod> CurrentMods = null;
+        private void SetPath_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentMods = StringSearcher.ScanMods(PathBox.Text);
+
+            UPDateMods(CurrentMods);
         }
 
         public void UPDateMods(List<SkyrimMod> Mods)
@@ -122,6 +140,9 @@ namespace PhoenixTranslator.UIManagement.Main
             }
         }
 
-       
+        private void PathBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

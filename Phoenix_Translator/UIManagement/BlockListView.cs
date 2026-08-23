@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 
 namespace PhoenixTranslator.UIManagement
 {
@@ -18,6 +19,12 @@ namespace PhoenixTranslator.UIManagement
 
         public BlockListView(Grid Parent, double LineHeight = 50)
         {
+            Style ScrollBarStyle = new Style(typeof(ScrollBar))
+            {
+                BasedOn = (Style)Application.Current.FindResource("for_scrollbar")
+            };
+            Parent.Resources.Add(typeof(ScrollBar), ScrollBarStyle);
+
             this.LineHeight = LineHeight;
 
             this.MainGrid = new Grid();

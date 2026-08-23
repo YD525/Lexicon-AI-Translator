@@ -34,7 +34,7 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Margin="5" x:Name="PathBox"  Style="{StaticResource PathBox}"  KeyDown="SearchBox_KeyDown" Grid.Column="0">
+                    <TextBox Margin="5" x:Name="PathBox"  Style="{StaticResource PathBox}" KeyDown="SearchBox_KeyDown" Grid.Column="0">
                     </TextBox>
                    
                 </Grid>
@@ -47,11 +47,9 @@
                     <TextBox Margin="5" x:Name="SearchBox"  Style="{StaticResource LSearchTextBox}"  KeyDown="SearchBox_KeyDown" Grid.Column="0">
                     </TextBox>
                 </Grid>
-
-                <ScrollViewer Grid.Row="3" Margin="5" Style="{DynamicResource for_scrollviewer}">
-                    <Grid Name="CModView">
-                    </Grid>
-                </ScrollViewer>
+                
+                <Grid Name="CModView" Grid.Row="3" Margin="5">
+                </Grid>
             </Grid>
         </Grid>
     </Border>
