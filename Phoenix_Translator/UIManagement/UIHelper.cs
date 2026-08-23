@@ -91,6 +91,13 @@ namespace PhoenixTranslator.UIManage
 
     public class UIHelper
     {
+        #region ModFileDialog
+        public static List<Grid> CreateModLine(List<SkyrimMod>Items)
+        {
+            return new List<Grid>();
+        }
+
+        #endregion
         public static void ShowButton(Border NormalButton, bool Enable)
         {
             if (Enable)
