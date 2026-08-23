@@ -126,6 +126,8 @@
     <Compile Include="Application\PreviewTranslationEntry.cs" />
     <Compile Include="Application\PreviewTranslationProject.cs" />
     <Compile Include="Application\PreviewTranslationWorkspaceViewModel.cs" />
+    <Compile Include="Application\PreviewWorkspaceToolsViewModel.cs" />
+    <Compile Include="Application\PreviewWorkspaceToolServices.cs" />
     <Compile Include="Application\LegacyTranslationPresetStore.cs" />
     <Compile Include="Application\TranslationPresetService.cs" />
     <Compile Include="FileManagement\ZipHelper.cs" />

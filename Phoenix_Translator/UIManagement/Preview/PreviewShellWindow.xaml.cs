@@ -1,9 +1,12 @@
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using PhoenixEngine.Language;
 using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator.UIManagement.Preview
@@ -33,7 +36,12 @@ namespace PhoenixTranslator.UIManagement.Preview
                 OpenLegacyWorkspace,
                 _shellViewModel,
                 PreviewTranslationProject.Open,
-                OpenProjectFromWorkflowAsync);
+                OpenProjectFromWorkflowAsync,
+                SelectTranslationTableImport,
+                SelectTranslationTableExport,
+                SelectProjectExport,
+                ConvertToTraditional,
+                CopyWorkspaceText);
             _projectHubViewModel = new PreviewProjectHubViewModel(
                 _translationWorkspaceViewModel,
                 _shellViewModel,
@@ -128,6 +136,82 @@ namespace PhoenixTranslator.UIManagement.Preview
             bool? result = dialog.ShowDialog(this);
             RestoreFocus(previousFocus);
             return result == true ? dialog.FileName : string.Empty;
+        }
+
+        private string SelectTranslationTableImport()
+        {
+            return ShowOpenDialog(
+                PreviewMessageCatalog.Get("Workspace_Tools_ImportTable_Title"),
+                PreviewMessageCatalog.Get("Workspace_Tools_Table_Filter"));
+        }
+
+        private string SelectTranslationTableExport()
+        {
+            return ShowSaveDialog(
+                PreviewMessageCatalog.Get("Workspace_Tools_ExportTable_Title"),
+                PreviewMessageCatalog.Get("Workspace_Tools_Table_Filter"),
+                "translation-table.tsv");
+        }
+
+        private string SelectProjectExport()
+        {
+            string sourcePath = _translationWorkspaceViewModel.ProjectPath;
+            if (string.IsNullOrWhiteSpace(sourcePath))
+            {
+                return string.Empty;
+            }
+
+            string extension = Path.GetExtension(sourcePath);
+            string filter = string.Format("{0} project|*{0}", extension);
+            string fileName = Path.GetFileNameWithoutExtension(sourcePath) + "-export" + extension;
+            return ShowSaveDialog(PreviewMessageCatalog.Get("Workspace_Tools_ExportProject_Title"), filter, fileName);
+        }
+
+        private string ShowOpenDialog(string title, string filter)
+        {
+            IInputElement previousFocus = Keyboard.FocusedElement;
+            var dialog = new OpenFileDialog
+            {
+                Title = title,
+                Filter = filter,
+                CheckFileExists = true,
+                Multiselect = false
+            };
+            bool? result = dialog.ShowDialog(this);
+            RestoreFocus(previousFocus);
+            return result == true ? dialog.FileName : string.Empty;
+        }
+
+        private string ShowSaveDialog(string title, string filter, string fileName)
+        {
+            IInputElement previousFocus = Keyboard.FocusedElement;
+            var dialog = new SaveFileDialog
+            {
+                Title = title,
+                Filter = filter,
+                FileName = fileName,
+                AddExtension = true,
+                OverwritePrompt = true
+            };
+            bool? result = dialog.ShowDialog(this);
+            RestoreFocus(previousFocus);
+            return result == true ? dialog.FileName : string.Empty;
+        }
+
+        private static string ConvertToTraditional(string value, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            string converted = ChineseVariantMap.SimplifiedToTraditionalByReq(value ?? string.Empty);
+            cancellationToken.ThrowIfCancellationRequested();
+            return converted;
+        }
+
+        private static void CopyWorkspaceText(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                Clipboard.SetText(value);
+            }
         }
 
         private bool ConfirmConflictReuse(int entryCount)

@@ -29,6 +29,47 @@
                 </Trigger>
             </Style.Triggers>
             </Style>
+            <Style x:Key="WorkspaceToolTab" TargetType="TabItem">
+                <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextSecondary}" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0,0,0,2" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Padding" Value="8,6" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border x:Name="Chrome" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextPrimary}" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextPrimary}" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource PreviewBrushAccentGold}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="WorkspaceToolTabControl" TargetType="TabControl">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabControl">
+                            <Grid KeyboardNavigation.TabNavigation="Local">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                                <TabPanel IsItemsHost="True" Background="Transparent" />
+                                <ContentPresenter Grid.Row="1" Margin="0,14,0,0" ContentSource="SelectedContent" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -120,11 +161,11 @@
 
                 <Grid Visibility="{Binding HasProject, Converter={StaticResource BooleanToVisibility}}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280" MinWidth="220" />
+                        <ColumnDefinition Width="240" MinWidth="200" />
                         <ColumnDefinition Width="5" />
-                        <ColumnDefinition Width="*" MinWidth="300" />
+                        <ColumnDefinition Width="*" MinWidth="260" />
                         <ColumnDefinition Width="5" />
-                        <ColumnDefinition Width="220" MinWidth="190" />
+                        <ColumnDefinition Width="280" MinWidth="250" />
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0">
                         <Grid.RowDefinitions><RowDefinition Height="42" /><RowDefinition Height="*" /></Grid.RowDefinitions>
@@ -186,25 +227,103 @@
                     </Grid>
                     <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"
                                   Background="{StaticResource PreviewBrushBorder}" />
-                    <StackPanel Grid.Column="4" Margin="18"
+                    <TabControl Grid.Column="4" Margin="14" Style="{StaticResource WorkspaceToolTabControl}"
                                 AutomationProperties.Name="{localization:PreviewMessage Accessibility_Workspace_ContextInspector_Name}">
-                        <TextBlock FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PreviewBrushTextPrimary}"
-                                   Text="{localization:PreviewMessage Workspace_Context_Title}" />
-                        <TextBlock Margin="0,24,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
-                                   Text="{localization:PreviewMessage Workspace_Context_Record_Label}" />
-                        <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" TextWrapping="Wrap"
-                                   Text="{Binding SelectedEntry.Record}" />
-                        <TextBlock Margin="0,18,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
-                                   Text="{localization:PreviewMessage Workspace_Context_Type_Label}" />
-                        <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{Binding SelectedEntry.Type}" />
-                        <TextBlock Margin="0,18,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
-                                   Text="{localization:PreviewMessage Workspace_Context_Key_Label}" />
-                        <TextBox Padding="8" IsReadOnly="True" TextWrapping="Wrap" Style="{StaticResource PreviewTextBox}"
-                                 Text="{Binding SelectedEntry.Key, Mode=OneWay}" />
-                        <TextBlock Margin="0,18,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
-                                   Text="{localization:PreviewMessage Workspace_Context_Score_Label}" />
-                        <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{Binding SelectedEntry.Score}" />
-                    </StackPanel>
+                        <TabItem Style="{StaticResource WorkspaceToolTab}" Header="{localization:PreviewMessage Workspace_Context_Title}">
+                            <StackPanel>
+                                <TextBlock Margin="0,8,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
+                                           Text="{localization:PreviewMessage Workspace_Context_Record_Label}" />
+                                <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" TextWrapping="Wrap"
+                                           Text="{Binding SelectedEntry.Record}" />
+                                <TextBlock Margin="0,18,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
+                                           Text="{localization:PreviewMessage Workspace_Context_Type_Label}" />
+                                <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{Binding SelectedEntry.Type}" />
+                                <TextBlock Margin="0,18,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
+                                           Text="{localization:PreviewMessage Workspace_Context_Key_Label}" />
+                                <TextBox Padding="8" IsReadOnly="True" TextWrapping="Wrap" Style="{StaticResource PreviewTextBox}"
+                                         Text="{Binding SelectedEntry.Key, Mode=OneWay}" />
+                                <TextBlock Margin="0,18,0,4" FontSize="11" Foreground="{StaticResource PreviewBrushTextMuted}"
+                                           Text="{localization:PreviewMessage Workspace_Context_Score_Label}" />
+                                <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{Binding SelectedEntry.Score}" />
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Style="{StaticResource WorkspaceToolTab}" Header="{localization:PreviewMessage Workspace_Tools_Title}">
+                            <Grid DataContext="{Binding Tools}">
+                                <Grid.RowDefinitions><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                <TabControl Style="{StaticResource WorkspaceToolTabControl}">
+                                    <TabItem Style="{StaticResource WorkspaceToolTab}" Header="{localization:PreviewMessage Workspace_Tools_Edit_Tab}">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                            <StackPanel Margin="0,0,4,0">
+                                                <TextBlock Foreground="{StaticResource PreviewBrushTextMuted}" Text="{localization:PreviewMessage Workspace_Tools_Find_Label}" />
+                                                <TextBox Margin="0,5,0,10" Style="{StaticResource PreviewTextBox}" Text="{Binding FindText, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBlock Foreground="{StaticResource PreviewBrushTextMuted}" Text="{localization:PreviewMessage Workspace_Tools_Replace_Label}" />
+                                                <TextBox Margin="0,5,0,10" Style="{StaticResource PreviewTextBox}" Text="{Binding ReplacementText, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBlock Foreground="{StaticResource PreviewBrushTextMuted}" Text="{localization:PreviewMessage Workspace_Tools_Scope_Label}" />
+                                                <ComboBox Margin="0,5,0,8" Style="{StaticResource PreviewComboBox}" ItemsSource="{Binding ScopeOptions}" SelectedItem="{Binding SelectedScope}" />
+                                                <TextBlock Margin="0,0,0,8" Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{Binding PreviewText}" />
+                                                <WrapPanel>
+                                                    <Button Style="{StaticResource PreviewButtonSecondary}" Command="{Binding PreviewReplaceCommand}" Content="{localization:PreviewMessage Workspace_Tools_Preview_Action}" />
+                                                    <Button Margin="6,0,0,0" Style="{StaticResource PreviewButtonPrimary}" Command="{Binding ApplyReplaceCommand}" Content="{localization:PreviewMessage Workspace_Tools_Apply_Action}" />
+                                                </WrapPanel>
+                                                <Button Margin="0,16,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding ConvertCommand}" Content="{localization:PreviewMessage Workspace_Tools_Convert_Action}" />
+                                                <TextBlock Margin="0,6,0,0" Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{Binding ConversionPreviewText}" />
+                                                <Button Margin="0,6,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonPrimary}" Command="{Binding ApplyConversionCommand}" Content="{localization:PreviewMessage Workspace_Tools_ApplyConversion_Action}" />
+                                                <Button Margin="0,8,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding UndoCommand}" Content="{localization:PreviewMessage Workspace_Tools_Undo_Action}" />
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </TabItem>
+                                    <TabItem Style="{StaticResource WorkspaceToolTab}" Header="{localization:PreviewMessage Workspace_Tools_Terms_Tab}">
+                                        <Grid>
+                                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                            <TextBox Style="{StaticResource PreviewTextBox}" ToolTip="{localization:PreviewMessage Workspace_Tools_TermSearch}"
+                                                     Text="{Binding TerminologySearch, UpdateSourceTrigger=PropertyChanged}" />
+                                            <ListBox Grid.Row="1" Margin="0,8" ItemsSource="{Binding FilteredTerminology}" SelectedItem="{Binding SelectedTerm}"
+                                                     Background="Transparent" BorderBrush="{StaticResource PreviewBrushBorder}" BorderThickness="1">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Margin="4">
+                                                            <TextBox Style="{StaticResource PreviewTextBox}" Text="{Binding Source, UpdateSourceTrigger=PropertyChanged}" />
+                                                            <TextBox Margin="0,4,0,0" Style="{StaticResource PreviewTextBox}" Text="{Binding Target, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                            <WrapPanel Grid.Row="2">
+                                                <Button Style="{StaticResource PreviewButtonSecondary}" Command="{Binding AddSelectedTermCommand}" Content="{localization:PreviewMessage Workspace_Tools_AddTerm_Action}" />
+                                                <Button Margin="5,0,0,0" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding RemoveTermCommand}" Content="{localization:PreviewMessage Workspace_Tools_RemoveTerm_Action}" />
+                                                <Button Margin="0,6,0,0" Style="{StaticResource PreviewButtonPrimary}" Command="{Binding ApplyTerminologyCommand}" Content="{localization:PreviewMessage Workspace_Tools_ApplyTerms_Action}" />
+                                            </WrapPanel>
+                                        </Grid>
+                                    </TabItem>
+                                    <TabItem Style="{StaticResource WorkspaceToolTab}" Header="{localization:PreviewMessage Workspace_Tools_Deliver_Tab}">
+                                        <StackPanel>
+                                            <TextBlock Margin="0,0,0,14" Foreground="{StaticResource PreviewBrushTextSecondary}" TextWrapping="Wrap" Text="{Binding ExportReadinessText}" />
+                                            <Button HorizontalAlignment="Left" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding ImportTableCommand}" Content="{localization:PreviewMessage Workspace_Tools_ImportTable_Action}" />
+                                            <Button Margin="0,8,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding ExportTableCommand}" Content="{localization:PreviewMessage Workspace_Tools_ExportTable_Action}" />
+                                            <Button Margin="0,20,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonPrimary}" Command="{Binding ExportProjectCommand}" Content="{localization:PreviewMessage Workspace_Tools_ExportProject_Action}" />
+                                            <Button Margin="0,8,0,0" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonDanger}" Command="{Binding CancelCommand}" Content="{localization:PreviewMessage Workspace_Cancel_Action}" />
+                                        </StackPanel>
+                                    </TabItem>
+                                    <TabItem Style="{StaticResource WorkspaceToolTab}" Header="{localization:PreviewMessage Workspace_Tools_Interactive_Tab}">
+                                        <Grid>
+                                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                            <WrapPanel>
+                                                <Button Style="{StaticResource PreviewButtonSecondary}" Command="{Binding PrepareInteractiveCommand}" Content="{localization:PreviewMessage Workspace_Tools_PrepareInteractive_Action}" />
+                                                <Button Margin="5,0,0,0" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding CopyInteractiveCommand}" Content="{localization:PreviewMessage Workspace_Tools_CopyRequest_Action}" />
+                                            </WrapPanel>
+                                            <TextBox Grid.Row="1" Margin="0,8" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                                     Style="{StaticResource PreviewTextBox}" Text="{Binding InteractiveRequest, Mode=OneWay}" />
+                                            <TextBlock Grid.Row="2" Foreground="{StaticResource PreviewBrushTextMuted}" Text="{localization:PreviewMessage Workspace_Tools_Response_Label}" />
+                                            <TextBox Grid.Row="3" Margin="0,5,0,8" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                                     Style="{StaticResource PreviewTextBox}" Text="{Binding InteractiveResponse, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Button Grid.Row="4" HorizontalAlignment="Left" Style="{StaticResource PreviewButtonPrimary}" Command="{Binding ApplyInteractiveCommand}" Content="{localization:PreviewMessage Workspace_Tools_ApplyResponse_Action}" />
+                                        </Grid>
+                                    </TabItem>
+                                </TabControl>
+                                <TextBlock Grid.Row="1" Margin="0,10,0,0" Foreground="{StaticResource PreviewBrushTextMuted}" TextWrapping="Wrap" Text="{Binding StatusText}" />
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </Grid>
         </Border>

@@ -98,6 +98,12 @@
     <Compile Include="..\Phoenix_Translator\Application\PreviewTranslationWorkspaceViewModel.cs">
       <Link>PreviewTranslationWorkspaceViewModel.cs</Link>
     </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewWorkspaceToolsViewModel.cs">
+      <Link>PreviewWorkspaceToolsViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewWorkspaceToolServices.cs">
+      <Link>PreviewWorkspaceToolServices.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\TranslationPresetService.cs">
       <Link>TranslationPresetService.cs</Link>
     </Compile>
