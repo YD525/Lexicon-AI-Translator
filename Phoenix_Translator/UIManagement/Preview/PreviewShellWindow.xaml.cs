@@ -14,6 +14,7 @@ namespace PhoenixTranslator.UIManagement.Preview
         private PhoenixGui _legacyWorkspace;
         private readonly PreviewTranslationWorkspaceViewModel _translationWorkspaceViewModel;
         private readonly PreviewReviewQualityViewModel _reviewQualityViewModel;
+        private readonly PreviewHistoryUpdateViewModel _historyUpdateViewModel;
 
         /// <summary>
         /// Creates the preview application shell in its no-project state.
@@ -34,9 +35,20 @@ namespace PhoenixTranslator.UIManagement.Preview
                 new PreviewReviewStateStore(),
                 ConfirmBulkApproval,
                 OpenLegacyWorkspace);
+            _historyUpdateViewModel = new PreviewHistoryUpdateViewModel(
+                shellViewModel,
+                _translationWorkspaceViewModel,
+                new PreviewProjectComparisonService(),
+                new PreviewRevisionHistoryStore(),
+                SelectPreviousRevision,
+                PreviewTranslationProject.Open,
+                ConfirmConflictReuse,
+                ConfirmBulkReuse,
+                OpenLegacyWorkspace);
             DataContext = shellViewModel;
             TranslationWorkspace.DataContext = _translationWorkspaceViewModel;
             ReviewQualityWorkspace.DataContext = _reviewQualityViewModel;
+            HistoryUpdateWorkspace.DataContext = _historyUpdateViewModel;
         }
 
         private bool ConfirmBulkApproval(int entryCount)
@@ -60,6 +72,40 @@ namespace PhoenixTranslator.UIManagement.Preview
                 Multiselect = false
             };
             return dialog.ShowDialog() == true ? dialog.FileName : string.Empty;
+        }
+
+        private static string SelectPreviousRevision()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = PreviewMessageCatalog.Get("Update_Compare_Title"),
+                Filter = PreviewMessageCatalog.Get("Workspace_Project_Filter"),
+                CheckFileExists = true,
+                Multiselect = false
+            };
+            return dialog.ShowDialog() == true ? dialog.FileName : string.Empty;
+        }
+
+        private bool ConfirmConflictReuse(int entryCount)
+        {
+            return MessageBox.Show(
+                this,
+                PreviewMessageCatalog.Format("Update_Conflict_Confirmation", entryCount),
+                PreviewMessageCatalog.Get("Update_Conflict_ConfirmationTitle"),
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+        }
+
+        private bool ConfirmBulkReuse(int entryCount)
+        {
+            return MessageBox.Show(
+                this,
+                PreviewMessageCatalog.Format("Update_ReuseVisible_Confirmation", entryCount),
+                PreviewMessageCatalog.Get("Update_ReuseVisible_ConfirmationTitle"),
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Information,
+                MessageBoxResult.Cancel) == MessageBoxResult.OK;
         }
 
         private void OpenLegacyWorkspace()
@@ -87,6 +133,7 @@ namespace PhoenixTranslator.UIManagement.Preview
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            _historyUpdateViewModel.Dispose();
             _reviewQualityViewModel.Dispose();
             _translationWorkspaceViewModel.Dispose();
             DeFine.CloseAny();

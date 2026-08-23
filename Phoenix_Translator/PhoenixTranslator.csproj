@@ -111,8 +111,11 @@
     <Compile Include="Application\PreviewMessageCatalog.cs" />
     <Compile Include="Application\PreviewQualityAnalyzer.cs" />
     <Compile Include="Application\PreviewQualityFinding.cs" />
+    <Compile Include="Application\PreviewProjectComparison.cs" />
+    <Compile Include="Application\PreviewHistoryUpdateViewModel.cs" />
     <Compile Include="Application\PreviewReviewQualityViewModel.cs" />
     <Compile Include="Application\PreviewReviewStateStore.cs" />
+    <Compile Include="Application\PreviewRevisionHistoryStore.cs" />
     <Compile Include="Application\PreviewShellCommand.cs" />
     <Compile Include="Application\PreviewShellViewModel.cs" />
     <Compile Include="Application\PreviewTranslationEntry.cs" />
@@ -213,6 +216,9 @@
     </Compile>
     <Compile Include="UIManagement\Preview\PreviewReviewQualityView.xaml.cs">
       <DependentUpon>PreviewReviewQualityView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIManagement\Preview\PreviewHistoryUpdateView.xaml.cs">
+      <DependentUpon>PreviewHistoryUpdateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIManagement\Preview\PreviewTranslationWorkspaceView.xaml.cs">
       <DependentUpon>PreviewTranslationWorkspaceView.xaml</DependentUpon>
@@ -337,6 +343,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIManagement\Preview\PreviewReviewQualityView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\Preview\PreviewHistoryUpdateView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

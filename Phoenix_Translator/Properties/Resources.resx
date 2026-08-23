@@ -303,4 +303,58 @@
   <data name="ReviewQuality_Shortcuts_Hint" xml:space="preserve"><value>Ctrl+Enter Approve · Ctrl+Shift+Enter Approve scope · Ctrl+Z Undo · F8 Go to entry</value><comment>Keyboard command map for review and quality assurance.</comment></data>
   <data name="Accessibility_Review_Queue_Name" xml:space="preserve"><value>Review queue</value><comment>Accessible name for the filtered review entry list.</comment></data>
   <data name="Accessibility_Quality_Findings_Name" xml:space="preserve"><value>Quality findings</value><comment>Accessible name for the normalized finding list.</comment></data>
+  <data name="Review_Provenance_Revision" xml:space="preserve"><value>Previous project revision</value><comment>Provenance label for a target explicitly reused from a compatible revision.</comment></data>
+  <data name="HistoryUpdate_Title" xml:space="preserve"><value>History and project updates</value><comment>Accessible title for the combined revision workflow.</comment></data>
+  <data name="HistoryUpdate_Empty_Title" xml:space="preserve"><value>Open a project to inspect revisions</value><comment>Empty-state heading for revision workflows.</comment></data>
+  <data name="HistoryUpdate_Empty_Hint" xml:space="preserve"><value>Project history and explicit update decisions are scoped to the active translation project.</value><comment>Empty-state guidance for revision workflows.</comment></data>
+  <data name="History_Title" xml:space="preserve"><value>Project history</value><comment>History workflow heading.</comment></data>
+  <data name="History_Description" xml:space="preserve"><value>Review privacy-preserving actions recorded for this project. Translation text and absolute paths are never stored here.</value><comment>History workflow description.</comment></data>
+  <data name="History_Timeline_Title" xml:space="preserve"><value>Revision timeline</value><comment>Heading above recorded project events.</comment></data>
+  <data name="History_Details_Title" xml:space="preserve"><value>Event details</value><comment>Heading for selected history event details.</comment></data>
+  <data name="History_Details_Action_Label" xml:space="preserve"><value>Action</value><comment>History event action label.</comment></data>
+  <data name="History_Details_Record_Label" xml:space="preserve"><value>Record</value><comment>History event record label.</comment></data>
+  <data name="History_Details_Origin_Label" xml:space="preserve"><value>Target origin</value><comment>History event provenance label.</comment></data>
+  <data name="History_Privacy_Hint" xml:space="preserve"><value>History stores stable identities and content fingerprints only. It does not store source text, target text, or project paths.</value><comment>Privacy explanation in history details.</comment></data>
+  <data name="History_OpenLegacy_Action" xml:space="preserve"><value>Open legacy history</value><comment>Opens the complete legacy history workflow.</comment></data>
+  <data name="History_Load_Failed" xml:space="preserve"><value>Project history could not be loaded. Translation content was not changed.</value><comment>Safe history load failure.</comment></data>
+  <data name="History_Save_Failed" xml:space="preserve"><value>The history event could not be recorded. Translation content remains available.</value><comment>Safe history persistence failure.</comment></data>
+  <data name="History_Action_Compared" xml:space="preserve"><value>Compared revision</value><comment>History action label for a completed comparison.</comment></data>
+  <data name="History_Action_Reused" xml:space="preserve"><value>Reused prior target</value><comment>History action label for a safe target reuse.</comment></data>
+  <data name="History_Action_ConflictResolved" xml:space="preserve"><value>Resolved conflict with prior target</value><comment>History action label for an explicit conflicting-target reuse.</comment></data>
+  <data name="History_Action_KeptCurrent" xml:space="preserve"><value>Kept current target</value><comment>History action label for retaining a current conflicting target.</comment></data>
+  <data name="History_Action_Undone" xml:space="preserve"><value>Undid revision update</value><comment>History action label for restoring the pre-update target.</comment></data>
+  <data name="Update_Filter_All" xml:space="preserve"><value>All changes</value><comment>Default project comparison filter.</comment></data>
+  <data name="Update_Filter_Name" xml:space="preserve"><value>Revision change filter</value><comment>Accessible name for the comparison state filter.</comment></data>
+  <data name="Update_State_Unchanged" xml:space="preserve"><value>Unchanged</value><comment>Revision state for identical source and target content.</comment></data>
+  <data name="Update_State_Added" xml:space="preserve"><value>Added</value><comment>Revision state for a new current entry.</comment></data>
+  <data name="Update_State_Removed" xml:space="preserve"><value>Removed</value><comment>Revision state for an entry absent from the current project.</comment></data>
+  <data name="Update_State_Changed" xml:space="preserve"><value>Source changed</value><comment>Revision state for changed source content without a reviewed current target.</comment></data>
+  <data name="Update_State_Reusable" xml:space="preserve"><value>Reusable</value><comment>Revision state for a safe prior target candidate.</comment></data>
+  <data name="Update_State_Conflict" xml:space="preserve"><value>Conflict</value><comment>Revision state requiring an explicit target decision.</comment></data>
+  <data name="Update_Search_Placeholder" xml:space="preserve"><value>Search revisions, records, source, or target</value><comment>Project comparison search hint.</comment></data>
+  <data name="Update_Compare_Action" xml:space="preserve"><value>Compare revision</value><comment>Selects and compares a previous compatible project revision.</comment></data>
+  <data name="Update_Compare_Title" xml:space="preserve"><value>Select previous project revision</value><comment>Title of the previous-revision file picker.</comment></data>
+  <data name="Update_Comparison_Progress" xml:space="preserve"><value>Comparing project revisions…</value><comment>Progress message while opening and comparing a previous revision.</comment></data>
+  <data name="Update_Comparison_Completed" xml:space="preserve"><value>Revision comparison completed. Review reuse candidates and conflicts before applying changes.</value><comment>Successful comparison notification.</comment></data>
+  <data name="Update_Comparison_Failed" xml:space="preserve"><value>The selected revision could not be compared. The current project was not changed.</value><comment>Safe comparison failure notification.</comment></data>
+  <data name="Update_Comparison_Incompatible" xml:space="preserve"><value>Select a previous revision with the same project format.</value><comment>Incompatible revision warning.</comment></data>
+  <data name="Update_Comparison_Summary" xml:space="preserve"><value>{0} added · {1} removed · {2} changed · {3} reusable · {4} conflicts</value><comment>Comparison summary. Placeholders are state counts in displayed order.</comment></data>
+  <data name="Update_PreviousSource_Label" xml:space="preserve"><value>Previous source</value><comment>Label above previous revision source text.</comment></data>
+  <data name="Update_CurrentSource_Label" xml:space="preserve"><value>Current source</value><comment>Label above current revision source text.</comment></data>
+  <data name="Update_PreviousTarget_Label" xml:space="preserve"><value>Previous target</value><comment>Label above previous revision target text.</comment></data>
+  <data name="Update_CurrentTarget_Label" xml:space="preserve"><value>Current target</value><comment>Label above current revision target text.</comment></data>
+  <data name="Update_ReuseSelected_Action" xml:space="preserve"><value>Reuse previous target</value><comment>Stages the selected prior target in the current project.</comment></data>
+  <data name="Update_ReuseVisible_Action" xml:space="preserve"><value>Reuse visible safe targets</value><comment>Stages only visible targets classified as safely reusable.</comment></data>
+  <data name="Update_KeepCurrent_Action" xml:space="preserve"><value>Keep current target</value><comment>Explicitly records retention of a conflicting current target.</comment></data>
+  <data name="Update_Undo_Action" xml:space="preserve"><value>Undo last update</value><comment>Restores entries changed by the most recent reuse action.</comment></data>
+  <data name="Update_OpenLegacy_Action" xml:space="preserve"><value>Open legacy mod update</value><comment>Opens the complete legacy project-update workflow.</comment></data>
+  <data name="Update_Conflict_ConfirmationTitle" xml:space="preserve"><value>Replace current target?</value><comment>Conflict-reuse confirmation title.</comment></data>
+  <data name="Update_Conflict_Confirmation" xml:space="preserve"><value>Reuse the previous target for {0} conflicting entry? The current target and its review decision will be replaced.</value><comment>Conflict-reuse confirmation. Placeholder: exact affected entry count.</comment></data>
+  <data name="Update_ReuseVisible_ConfirmationTitle" xml:space="preserve"><value>Reuse safe targets?</value><comment>Safe bulk-reuse confirmation title.</comment></data>
+  <data name="Update_ReuseVisible_Confirmation" xml:space="preserve"><value>Reuse previous targets for {0} visible entries? Conflicts are excluded and review decisions will be reset.</value><comment>Safe bulk-reuse confirmation. Placeholder: exact affected entry count.</comment></data>
+  <data name="Update_Reuse_Completed" xml:space="preserve"><value>Reused targets for {0} entries. Review and quality results were refreshed.</value><comment>Reuse completion notification. Placeholder: exact affected entry count.</comment></data>
+  <data name="Update_KeepCurrent_Completed" xml:space="preserve"><value>The current target was kept and recorded in project history.</value><comment>Keep-current completion notification.</comment></data>
+  <data name="Update_Undo_Completed" xml:space="preserve"><value>Restored {0} entries from before the last revision update.</value><comment>Update undo notification. Placeholder: exact restored entry count.</comment></data>
+  <data name="Accessibility_History_Timeline_Name" xml:space="preserve"><value>Project revision timeline</value><comment>Accessible name for the history event list.</comment></data>
+  <data name="Accessibility_Update_Comparison_Name" xml:space="preserve"><value>Project revision comparison</value><comment>Accessible name for the comparison result list.</comment></data>
 </root>
