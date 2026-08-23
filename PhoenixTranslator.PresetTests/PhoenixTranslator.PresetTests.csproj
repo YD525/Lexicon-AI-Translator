@@ -37,6 +37,9 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -55,6 +58,9 @@
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewMessageCatalog.cs">
       <Link>PreviewMessageCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewWorkflowRollout.cs">
+      <Link>PreviewWorkflowRollout.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewContextInspectorModels.cs">
       <Link>PreviewContextInspectorModels.cs</Link>
@@ -127,6 +133,9 @@
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewTranslationEntry.cs">
       <Link>PreviewTranslationEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewTranslationHistory.cs">
+      <Link>PreviewTranslationHistory.cs</Link>
     </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewTranslationWorkspaceViewModel.cs">
       <Link>PreviewTranslationWorkspaceViewModel.cs</Link>

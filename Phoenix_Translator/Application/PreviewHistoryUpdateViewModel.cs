@@ -63,6 +63,13 @@ namespace PhoenixTranslator.ApplicationLayer
         private bool _isBusy;
         private List<UpdateSnapshot> _undoSnapshots;
         private CancellationTokenSource _comparisonCancellation;
+        private readonly Func<bool> _confirmHistoryDelete;
+        private readonly Func<int, bool> _confirmHistoryClear;
+        private IReadOnlyList<PreviewTranslationHistoryItem> _allTranslationHistory;
+        private PreviewTranslationHistoryItem _selectedTranslationHistoryItem;
+        private string _translationHistorySearchText;
+        private bool _isHistoryBusy;
+        private CancellationTokenSource _historyCancellation;
 
         /// <summary>
         /// Creates the combined history and project-update workflow.
@@ -76,6 +83,8 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <param name="confirmConflictReuse">Confirms replacement of conflicting targets.</param>
         /// <param name="confirmBulkReuse">Confirms reuse of a safe visible scope.</param>
         /// <param name="openLegacyWorkspace">Opens the complete legacy fallback.</param>
+        /// <param name="confirmHistoryDelete">Confirms deletion of one selected history record.</param>
+        /// <param name="confirmHistoryClear">Confirms clearing the exact number of history records.</param>
         internal PreviewHistoryUpdateViewModel(
             PreviewShellViewModel shell,
             PreviewTranslationWorkspaceViewModel workspace,
@@ -85,7 +94,9 @@ namespace PhoenixTranslator.ApplicationLayer
             Func<string, IPreviewTranslationProject> openProject,
             Func<int, bool> confirmConflictReuse,
             Func<int, bool> confirmBulkReuse,
-            Action openLegacyWorkspace)
+            Action openLegacyWorkspace,
+            Func<bool> confirmHistoryDelete = null,
+            Func<int, bool> confirmHistoryClear = null)
         {
             _shell = shell ?? throw new ArgumentNullException(nameof(shell));
             _workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
@@ -96,11 +107,16 @@ namespace PhoenixTranslator.ApplicationLayer
             _confirmConflictReuse = confirmConflictReuse ?? throw new ArgumentNullException(nameof(confirmConflictReuse));
             _confirmBulkReuse = confirmBulkReuse ?? throw new ArgumentNullException(nameof(confirmBulkReuse));
             _openLegacyWorkspace = openLegacyWorkspace ?? throw new ArgumentNullException(nameof(openLegacyWorkspace));
+            _confirmHistoryDelete = confirmHistoryDelete ?? (() => false);
+            _confirmHistoryClear = confirmHistoryClear ?? (count => false);
             _searchText = string.Empty;
+            _translationHistorySearchText = string.Empty;
             _previousRevisionName = string.Empty;
             _allComparisonItems = new List<PreviewProjectComparisonItem>();
             ComparisonItems = _allComparisonItems;
             HistoryEntries = new List<PreviewRevisionHistoryEntry>();
+            _allTranslationHistory = new List<PreviewTranslationHistoryItem>();
+            TranslationHistoryEntries = _allTranslationHistory;
             Filters = new[]
             {
                 CreateFilter(null, "Update_Filter_All"),
@@ -124,10 +140,21 @@ namespace PhoenixTranslator.ApplicationLayer
             UndoCommand = new PreviewShellCommand(parameter => UndoLastUpdate(), parameter => CanUndo && !IsBusy);
             GoToEntryCommand = new PreviewShellCommand(parameter => GoToSelectedEntry(), parameter => SelectedComparisonItem?.CurrentEntry != null);
             OpenLegacyWorkspaceCommand = new PreviewShellCommand(parameter => _openLegacyWorkspace());
+            RefreshTranslationHistoryCommand = new PreviewShellCommand(
+                parameter => ReloadTranslationHistory(), parameter => HasProject && !IsHistoryBusy);
+            RestoreTranslationHistoryCommand = new PreviewShellCommand(
+                parameter => RestoreTranslationHistory(), parameter => SelectedTranslationHistoryItem != null && !IsHistoryBusy);
+            SetCurrentTranslationHistoryCommand = new PreviewShellCommand(
+                parameter => SetCurrentTranslationHistory(), parameter => SelectedTranslationHistoryItem != null && !IsHistoryBusy);
+            DeleteTranslationHistoryCommand = new PreviewShellCommand(
+                parameter => DeleteTranslationHistory(), parameter => SelectedTranslationHistoryItem != null && !IsHistoryBusy);
+            ClearTranslationHistoryCommand = new PreviewShellCommand(
+                parameter => ClearTranslationHistory(), parameter => _allTranslationHistory.Count > 0 && !IsHistoryBusy);
 
             _workspace.ProjectChanged += WorkspaceProjectChanged;
             _shell.PropertyChanged += ShellPropertyChanged;
             ReloadHistory();
+            ReloadTranslationHistory();
         }
 
         /// <inheritdoc />
@@ -141,6 +168,9 @@ namespace PhoenixTranslator.ApplicationLayer
 
         /// <summary>Gets the newest-first project history events.</summary>
         public IReadOnlyList<PreviewRevisionHistoryEntry> HistoryEntries { get; private set; }
+
+        /// <summary>Gets filtered content-bearing engine translation history.</summary>
+        public IReadOnlyList<PreviewTranslationHistoryItem> TranslationHistoryEntries { get; private set; }
 
         /// <summary>Gets the command that opens an active project.</summary>
         public ICommand OpenProjectCommand { get; private set; }
@@ -169,6 +199,17 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <summary>Gets the command that opens the complete legacy workflow.</summary>
         public ICommand OpenLegacyWorkspaceCommand { get; private set; }
 
+        /// <summary>Gets the command that reloads engine translation history.</summary>
+        public ICommand RefreshTranslationHistoryCommand { get; private set; }
+        /// <summary>Gets the command that stages the selected historical target.</summary>
+        public ICommand RestoreTranslationHistoryCommand { get; private set; }
+        /// <summary>Gets the command that marks the selected history row current.</summary>
+        public ICommand SetCurrentTranslationHistoryCommand { get; private set; }
+        /// <summary>Gets the command that deletes the selected history row after confirmation.</summary>
+        public ICommand DeleteTranslationHistoryCommand { get; private set; }
+        /// <summary>Gets the command that clears all active-project history after confirmation.</summary>
+        public ICommand ClearTranslationHistoryCommand { get; private set; }
+
         /// <summary>Gets whether an active project is available.</summary>
         public bool HasProject => !string.IsNullOrWhiteSpace(_workspace.ProjectPath);
 
@@ -186,6 +227,36 @@ namespace PhoenixTranslator.ApplicationLayer
 
         /// <summary>Gets whether a revision is being opened and compared.</summary>
         public bool IsBusy => _isBusy;
+
+        /// <summary>Gets whether content-bearing history work is active.</summary>
+        public bool IsHistoryBusy => _isHistoryBusy;
+
+        /// <summary>Gets or sets the selected content-bearing history record.</summary>
+        public PreviewTranslationHistoryItem SelectedTranslationHistoryItem
+        {
+            get => _selectedTranslationHistoryItem;
+            set
+            {
+                if (ReferenceEquals(_selectedTranslationHistoryItem, value)) return;
+                _selectedTranslationHistoryItem = value;
+                OnPropertyChanged();
+                RaiseCommandAvailability();
+            }
+        }
+
+        /// <summary>Gets or sets text used to filter source, target, and entry identity in history.</summary>
+        public string TranslationHistorySearchText
+        {
+            get => _translationHistorySearchText;
+            set
+            {
+                string normalized = value ?? string.Empty;
+                if (string.Equals(_translationHistorySearchText, normalized, StringComparison.Ordinal)) return;
+                _translationHistorySearchText = normalized;
+                OnPropertyChanged();
+                RefreshTranslationHistoryFilter();
+            }
+        }
 
         /// <summary>Gets whether the most recent reuse action can be restored.</summary>
         public bool CanUndo => _undoSnapshots != null && _undoSnapshots.Count > 0;
@@ -285,6 +356,7 @@ namespace PhoenixTranslator.ApplicationLayer
         public void Dispose()
         {
             _comparisonCancellation?.Cancel();
+            _historyCancellation?.Cancel();
             _workspace.ProjectChanged -= WorkspaceProjectChanged;
             _shell.PropertyChanged -= ShellPropertyChanged;
             _previousProject?.Dispose();
@@ -458,6 +530,7 @@ namespace PhoenixTranslator.ApplicationLayer
             SelectedComparisonItem = null;
             _undoSnapshots = null;
             ReloadHistory();
+            ReloadTranslationHistory();
             OnPropertyChanged(nameof(HasProject));
             OnPropertyChanged(nameof(HasComparison));
             OnPropertyChanged(nameof(PreviousRevisionName));
@@ -492,6 +565,143 @@ namespace PhoenixTranslator.ApplicationLayer
             SelectedHistoryEntry = HistoryEntries.FirstOrDefault();
             OnPropertyChanged(nameof(HistoryEntries));
             OnPropertyChanged(nameof(HasHistory));
+        }
+
+        private async void ReloadTranslationHistory()
+        {
+            _historyCancellation?.Cancel();
+            var cancellation = new CancellationTokenSource();
+            _historyCancellation = cancellation;
+            SetHistoryBusy(true);
+            try
+            {
+                _allTranslationHistory = await _workspace.LoadTranslationHistoryAsync(cancellation.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
+                RefreshTranslationHistoryFilter();
+            }
+            catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+            {
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException ||
+                exception is InvalidOperationException || exception is ArgumentException)
+            {
+                _allTranslationHistory = new List<PreviewTranslationHistoryItem>();
+                RefreshTranslationHistoryFilter();
+                _shell.ShowNotification(PreviewShellNotificationSeverity.Warning, "TranslationHistory_Load_Failed");
+            }
+            finally
+            {
+                if (ReferenceEquals(_historyCancellation, cancellation))
+                {
+                    _historyCancellation = null;
+                    SetHistoryBusy(false);
+                }
+                cancellation.Dispose();
+            }
+        }
+
+        private async void RestoreTranslationHistory()
+        {
+            PreviewTranslationHistoryItem item = SelectedTranslationHistoryItem;
+            if (item == null) return;
+            bool reload = false;
+            SetHistoryBusy(true);
+            try
+            {
+                PreviewTranslationEntry restored = await _workspace.RestoreTranslationHistoryAsync(
+                    item.RowId, CancellationToken.None);
+                if (restored != null)
+                {
+                    _shell.ShowNotification(PreviewShellNotificationSeverity.Success, "TranslationHistory_Restored");
+                    reload = true;
+                }
+            }
+            catch (Exception exception) when (exception is IOException || exception is InvalidOperationException ||
+                exception is ArgumentException)
+            {
+                _shell.ShowNotification(PreviewShellNotificationSeverity.Error, "TranslationHistory_Operation_Failed");
+            }
+            finally
+            {
+                SetHistoryBusy(false);
+            }
+            if (reload) ReloadTranslationHistory();
+        }
+
+        private async void SetCurrentTranslationHistory()
+        {
+            PreviewTranslationHistoryItem item = SelectedTranslationHistoryItem;
+            if (item == null) return;
+            await ExecuteHistoryMutation(
+                () => _workspace.SetCurrentTranslationHistoryAsync(item.RowId),
+                "TranslationHistory_Current_Set");
+        }
+
+        private async void DeleteTranslationHistory()
+        {
+            PreviewTranslationHistoryItem item = SelectedTranslationHistoryItem;
+            if (item == null || !_confirmHistoryDelete()) return;
+            await ExecuteHistoryMutation(
+                () => _workspace.DeleteTranslationHistoryAsync(item.RowId),
+                "TranslationHistory_Deleted");
+        }
+
+        private async void ClearTranslationHistory()
+        {
+            int count = _allTranslationHistory.Count;
+            if (count == 0 || !_confirmHistoryClear(count)) return;
+            await ExecuteHistoryMutation(
+                () => _workspace.ClearTranslationHistoryAsync(),
+                "TranslationHistory_Cleared");
+        }
+
+        private async Task ExecuteHistoryMutation(Func<Task> operation, string successMessageId)
+        {
+            bool reload = false;
+            SetHistoryBusy(true);
+            try
+            {
+                await operation();
+                _shell.ShowNotification(PreviewShellNotificationSeverity.Success, successMessageId);
+                reload = true;
+            }
+            catch (Exception exception) when (exception is IOException || exception is InvalidOperationException ||
+                exception is ArgumentException)
+            {
+                _shell.ShowNotification(PreviewShellNotificationSeverity.Error, "TranslationHistory_Operation_Failed");
+            }
+            finally
+            {
+                SetHistoryBusy(false);
+            }
+            if (reload) ReloadTranslationHistory();
+        }
+
+        private void RefreshTranslationHistoryFilter()
+        {
+            PreviewTranslationHistoryItem previous = SelectedTranslationHistoryItem;
+            IEnumerable<PreviewTranslationHistoryItem> query = _allTranslationHistory;
+            if (!string.IsNullOrWhiteSpace(_translationHistorySearchText))
+            {
+                query = query.Where(item => Contains(item.EntryKey, _translationHistorySearchText) ||
+                    Contains(item.SourceText, _translationHistorySearchText) ||
+                    Contains(item.TargetText, _translationHistorySearchText));
+            }
+
+            TranslationHistoryEntries = query.Reverse().ToList();
+            OnPropertyChanged(nameof(TranslationHistoryEntries));
+            SelectedTranslationHistoryItem = TranslationHistoryEntries.Contains(previous)
+                ? previous
+                : TranslationHistoryEntries.FirstOrDefault();
+            RaiseCommandAvailability();
+        }
+
+        private void SetHistoryBusy(bool value)
+        {
+            if (_isHistoryBusy == value) return;
+            _isHistoryBusy = value;
+            OnPropertyChanged(nameof(IsHistoryBusy));
+            RaiseCommandAvailability();
         }
 
         private void AppendEntryHistory(string actionId, PreviewTranslationEntry entry)
@@ -582,6 +792,11 @@ namespace PhoenixTranslator.ApplicationLayer
             ((PreviewShellCommand)KeepCurrentCommand).RaiseCanExecuteChanged();
             ((PreviewShellCommand)UndoCommand).RaiseCanExecuteChanged();
             ((PreviewShellCommand)GoToEntryCommand).RaiseCanExecuteChanged();
+            ((PreviewShellCommand)RefreshTranslationHistoryCommand).RaiseCanExecuteChanged();
+            ((PreviewShellCommand)RestoreTranslationHistoryCommand).RaiseCanExecuteChanged();
+            ((PreviewShellCommand)SetCurrentTranslationHistoryCommand).RaiseCanExecuteChanged();
+            ((PreviewShellCommand)DeleteTranslationHistoryCommand).RaiseCanExecuteChanged();
+            ((PreviewShellCommand)ClearTranslationHistoryCommand).RaiseCanExecuteChanged();
             OnPropertyChanged(nameof(CanUndo));
         }
 

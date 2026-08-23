@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using PhoenixEngine;
+using PhoenixEngine.ADO;
+using PhoenixEngine.Engine.ADO;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
@@ -285,6 +287,129 @@ namespace PhoenixTranslator.ApplicationLayer
                 {
                     File.Delete(temporaryPath);
                 }
+            }
+        }
+
+        /// <summary>Clears selected engine caches for the active project and refreshes persisted storage.</summary>
+        /// <param name="clearProviderCache">Whether provider-produced cached targets are cleared.</param>
+        /// <param name="clearUserCache">Whether user-entered cached targets are cleared.</param>
+        /// <param name="cancellationToken">Cancels before and between cache operations.</param>
+        public void ClearTranslationCaches(
+            bool clearProviderCache,
+            bool clearUserCache,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            if (!clearProviderCache && !clearUserCache)
+            {
+                throw new ArgumentException("At least one translation cache must be selected.");
+            }
+
+            int fileKey = _modFile.P_Translator.GetFileUniqueKey();
+            cancellationToken.ThrowIfCancellationRequested();
+            if (clearProviderCache)
+            {
+                _modFile.P_Translator.ClearAICache();
+                CloudDBCache.ClearCloudCache(fileKey);
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            if (clearUserCache)
+            {
+                LocalDBCache.ClearLocalCache(fileKey);
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            Phoenix.Vacuum();
+        }
+
+        /// <summary>Loads the engine translation history for the active project and target language.</summary>
+        /// <param name="cancellationToken">Cancels normalization between engine records.</param>
+        /// <returns>The oldest-first content-bearing translation history records.</returns>
+        public IReadOnlyList<PreviewTranslationHistoryItem> LoadTranslationHistory(
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            int fileKey = _modFile.P_Translator.GetFileUniqueKey();
+            Dictionary<string, PreviewTranslationEntry> entries = Entries
+                .GroupBy(entry => entry.Key, StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            var result = new List<PreviewTranslationHistoryItem>();
+            foreach (var item in HistoryDBCache.GetHistoryItems(fileKey, (int)_modFile.P_Translator.To)
+                .OrderBy(item => item.Rowid))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                PreviewTranslationEntry entry;
+                entries.TryGetValue(item.Key, out entry);
+                result.Add(new PreviewTranslationHistoryItem(
+                    item.Rowid,
+                    item.Key,
+                    entry?.SourceText ?? string.Empty,
+                    item.CurrentText,
+                    item.IsCurrent == 1,
+                    item.Time));
+            }
+
+            return result;
+        }
+
+        /// <summary>Stages one historical engine target and marks its row current.</summary>
+        /// <param name="rowId">The engine history row identity.</param>
+        /// <param name="cancellationToken">Cancels before staging content.</param>
+        /// <returns>The updated normalized entry, or <see langword="null"/> when unavailable.</returns>
+        public PreviewTranslationEntry RestoreTranslationHistory(
+            int rowId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+            int fileKey = _modFile.P_Translator.GetFileUniqueKey();
+            var item = HistoryDBCache.IDToHistoryItem(fileKey, rowId);
+            if (item == null)
+            {
+                return null;
+            }
+
+            PreviewTranslationEntry entry = Entries.FirstOrDefault(candidate =>
+                string.Equals(candidate.Key, item.Key, StringComparison.Ordinal));
+            if (entry == null)
+            {
+                return null;
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            HistoryDBCache.SelectID(fileKey, rowId);
+            _modFile.P_Translator.AutoSetLink(
+                item.Key,
+                entry.SourceText,
+                new P_String(item.CurrentText, 0, item.RangeID));
+            entry.TargetText = item.CurrentText;
+            return entry;
+        }
+
+        /// <summary>Marks one engine translation history row current.</summary>
+        /// <param name="rowId">The engine history row identity.</param>
+        public void SetCurrentTranslationHistory(int rowId)
+        {
+            ThrowIfDisposed();
+            HistoryDBCache.SelectID(_modFile.P_Translator.GetFileUniqueKey(), rowId);
+        }
+
+        /// <summary>Deletes one engine translation history row.</summary>
+        /// <param name="rowId">The engine history row identity.</param>
+        public void DeleteTranslationHistory(int rowId)
+        {
+            ThrowIfDisposed();
+            HistoryDBCache.DeleteHistory(_modFile.P_Translator.GetFileUniqueKey(), rowId);
+        }
+
+        /// <summary>Clears all engine translation history for the active project.</summary>
+        public void ClearTranslationHistory()
+        {
+            ThrowIfDisposed();
+            if (!HistoryDBCache.ClearHistory(_modFile.P_Translator.GetFileUniqueKey()))
+            {
+                throw new IOException("The active project history could not be cleared.");
             }
         }
 

@@ -130,8 +130,18 @@
                         <TextBlock Foreground="{StaticResource PreviewBrushTextSecondary}" Text="{localization:PreviewMessage Advanced_Database_Description}" TextWrapping="Wrap" />
                         <Border Margin="0,18" Padding="14" Background="{StaticResource PreviewBrushSurfaceInteractive}" BorderBrush="{StaticResource PreviewBrushWarning}" BorderThickness="3,0,0,0">
                             <TextBlock Foreground="{StaticResource PreviewBrushTextPrimary}" Text="{localization:PreviewMessage Advanced_Database_MutationWarning}" TextWrapping="Wrap" /></Border>
-                        <StackPanel Orientation="Horizontal"><Button Margin="0,0,8,0" Style="{StaticResource PreviewButtonPrimary}" Command="{Binding OpenDatabaseReadOnlyCommand}" Content="{localization:PreviewMessage Advanced_Database_ReadOnly_Action}" />
-                            <Button Style="{StaticResource PreviewButtonDanger}" Command="{Binding OpenDatabaseMutationCommand}" Content="{localization:PreviewMessage Advanced_Database_Mutation_Action}" /></StackPanel>
+                        <DockPanel Margin="0,0,0,8"><TextBlock DockPanel.Dock="Right" Foreground="{StaticResource PreviewBrushAccentGold}" Text="{Binding DatabaseModeText}" />
+                            <TextBlock Foreground="{StaticResource PreviewBrushTextMuted}" Text="{localization:PreviewMessage Advanced_Database_Query_Label}" /></DockPanel>
+                        <TextBox Height="100" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"
+                                 Style="{StaticResource PreviewTextBox}" Text="{Binding DatabaseQuery, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Margin="0,12,0,0" Orientation="Horizontal"><Button Margin="0,0,8,0" Style="{StaticResource PreviewButtonSecondary}" Command="{Binding OpenDatabaseReadOnlyCommand}" Content="{localization:PreviewMessage Advanced_Database_ReadOnly_Action}" />
+                            <Button Margin="0,0,8,0" Style="{StaticResource PreviewButtonDanger}" Command="{Binding OpenDatabaseMutationCommand}" Content="{localization:PreviewMessage Advanced_Database_Mutation_Action}" />
+                            <Button Style="{StaticResource PreviewButtonPrimary}" Command="{Binding ExecuteDatabaseQueryCommand}" Content="{localization:PreviewMessage Advanced_Database_Execute_Action}" /></StackPanel>
+                        <ListBox Margin="0,14,0,0" MinHeight="160" MaxHeight="360" ItemsSource="{Binding DatabaseRows}"
+                                 Background="{StaticResource PreviewBrushSurfaceInteractive}" BorderBrush="{StaticResource PreviewBrushBorder}" BorderThickness="1"
+                                 ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemTemplate><DataTemplate><TextBlock Padding="8,5" FontFamily="Consolas" Foreground="{StaticResource PreviewBrushTextPrimary}" Text="{Binding DisplayText}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel></Border>
                 </StackPanel>
                 <StackPanel Visibility="{Binding IsTelemetryVisible, Converter={StaticResource BooleanToVisibility}}">

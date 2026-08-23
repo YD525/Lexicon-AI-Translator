@@ -16,7 +16,6 @@ namespace PhoenixTranslator.ApplicationLayer
     {
         private readonly IPreviewAdvancedToolsStore _store;
         private readonly Func<bool> _confirmDatabaseMutation;
-        private readonly Action<bool> _openDatabase;
         private readonly PreviewShellViewModel _shell;
         private PreviewAdvancedToolsPage _selectedPage;
         private PreviewPipelineEntry _selectedPipelineEntry;
@@ -24,17 +23,17 @@ namespace PhoenixTranslator.ApplicationLayer
         private string _statusText = string.Empty;
         private bool _isTesting;
         private bool _isTelemetryPaused;
+        private string _databaseQuery = "SELECT * FROM AdvancedDictionary";
+        private bool _isDatabaseMutationMode;
 
         internal PreviewAdvancedToolsViewModel(
             IPreviewAdvancedToolsStore store,
             PreviewShellViewModel shell,
-            Func<bool> confirmDatabaseMutation,
-            Action<bool> openDatabase)
+            Func<bool> confirmDatabaseMutation)
         {
             _store = store ?? throw new ArgumentNullException(nameof(store));
             _shell = shell ?? throw new ArgumentNullException(nameof(shell));
             _confirmDatabaseMutation = confirmDatabaseMutation ?? throw new ArgumentNullException(nameof(confirmDatabaseMutation));
-            _openDatabase = openDatabase ?? throw new ArgumentNullException(nameof(openDatabase));
             Pages = new[]
             {
                 PreviewAdvancedToolsPage.ProviderPipeline,
@@ -45,6 +44,7 @@ namespace PhoenixTranslator.ApplicationLayer
             };
             PipelineEntries = new ObservableCollection<PreviewPipelineEntry>();
             TokenUsage = new ObservableCollection<KeyValuePair<string, long>>();
+            DatabaseRows = new ObservableCollection<PreviewDatabaseResultRow>();
             CustomProvider = new PreviewCustomProviderDraft();
             CustomProvider.PropertyChanged += CustomProviderPropertyChanged;
             MoveUpCommand = new PreviewShellCommand(p => MoveSelected(-1), p => CanMove(-1));
@@ -54,8 +54,9 @@ namespace PhoenixTranslator.ApplicationLayer
             TestCustomProviderCommand = new PreviewShellCommand(async p => await TestCustomProviderAsync(), p => CanTestCustomProvider);
             CancelCustomProviderTestCommand = new PreviewShellCommand(p => CancelCustomProviderTest(), p => IsTesting);
             SaveCustomProviderCommand = new PreviewShellCommand(p => SaveCustomProvider(), p => IsCustomProviderValid && !IsTesting);
-            OpenDatabaseReadOnlyCommand = new PreviewShellCommand(p => OpenDatabase(false));
-            OpenDatabaseMutationCommand = new PreviewShellCommand(p => OpenDatabase(true));
+            OpenDatabaseReadOnlyCommand = new PreviewShellCommand(p => SetDatabaseMode(false));
+            OpenDatabaseMutationCommand = new PreviewShellCommand(p => SetDatabaseMode(true));
+            ExecuteDatabaseQueryCommand = new PreviewShellCommand(p => ExecuteDatabaseQuery(), p => CanExecuteDatabaseQuery);
             PauseTelemetryCommand = new PreviewShellCommand(p => ToggleTelemetryPause());
             ClearTelemetryCommand = new PreviewShellCommand(p => ClearTelemetry());
             RefreshTelemetryCommand = new PreviewShellCommand(p => RefreshTelemetry(), p => !IsTelemetryPaused);
@@ -67,6 +68,9 @@ namespace PhoenixTranslator.ApplicationLayer
         public IReadOnlyList<PreviewAdvancedToolsPage> Pages { get; private set; }
         public ObservableCollection<PreviewPipelineEntry> PipelineEntries { get; private set; }
         public ObservableCollection<KeyValuePair<string, long>> TokenUsage { get; private set; }
+
+        /// <summary>Gets the bounded rows returned by the last database statement.</summary>
+        public ObservableCollection<PreviewDatabaseResultRow> DatabaseRows { get; private set; }
         public PreviewCustomProviderDraft CustomProvider { get; private set; }
         public IReadOnlyList<string> ProviderGroups { get; } = new[] { "Cloud AI", "Local AI", "Traditional", "Interactive" };
 
@@ -95,6 +99,41 @@ namespace PhoenixTranslator.ApplicationLayer
         public bool IsCustomProviderValid => ValidateCustomProvider(CustomProvider) == null;
         public bool CanTestCustomProvider => IsCustomProviderValid && !IsTesting;
 
+        /// <summary>Gets whether explicitly confirmed mutation statements are currently allowed.</summary>
+        public bool IsDatabaseMutationMode
+        {
+            get => _isDatabaseMutationMode;
+            private set
+            {
+                _isDatabaseMutationMode = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DatabaseModeText));
+                OnPropertyChanged(nameof(CanExecuteDatabaseQuery));
+            }
+        }
+
+        /// <summary>Gets the localized database access mode.</summary>
+        public string DatabaseModeText => PreviewMessageCatalog.Get(
+            IsDatabaseMutationMode ? "Advanced_Database_Mode_Mutation" : "Advanced_Database_Mode_ReadOnly");
+
+        /// <summary>Gets or sets the staged database statement.</summary>
+        public string DatabaseQuery
+        {
+            get => _databaseQuery;
+            set
+            {
+                _databaseQuery = value ?? string.Empty;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanExecuteDatabaseQuery));
+                RaiseCommands();
+            }
+        }
+
+        /// <summary>Gets whether the staged statement can run in the active mode.</summary>
+        public bool CanExecuteDatabaseQuery => IsDatabaseMutationMode
+            ? !string.IsNullOrWhiteSpace(DatabaseQuery)
+            : PreviewDatabaseStatementGuard.IsReadOnly(DatabaseQuery);
+
         public ICommand MoveUpCommand { get; private set; }
         public ICommand MoveDownCommand { get; private set; }
         public ICommand ApplyPipelineCommand { get; private set; }
@@ -104,6 +143,7 @@ namespace PhoenixTranslator.ApplicationLayer
         public ICommand SaveCustomProviderCommand { get; private set; }
         public ICommand OpenDatabaseReadOnlyCommand { get; private set; }
         public ICommand OpenDatabaseMutationCommand { get; private set; }
+        public ICommand ExecuteDatabaseQueryCommand { get; private set; }
         public ICommand PauseTelemetryCommand { get; private set; }
         public ICommand ClearTelemetryCommand { get; private set; }
         public ICommand RefreshTelemetryCommand { get; private set; }
@@ -224,10 +264,29 @@ namespace PhoenixTranslator.ApplicationLayer
             }
         }
 
-        private void OpenDatabase(bool mutation)
+        private void SetDatabaseMode(bool mutation)
         {
             if (mutation && !_confirmDatabaseMutation()) return;
-            _openDatabase(!mutation);
+            IsDatabaseMutationMode = mutation;
+            StatusText = DatabaseModeText;
+            RaiseCommands();
+        }
+
+        private void ExecuteDatabaseQuery()
+        {
+            try
+            {
+                IReadOnlyList<PreviewDatabaseResultRow> rows = _store.ExecuteDatabaseQuery(
+                    DatabaseQuery,
+                    IsDatabaseMutationMode);
+                DatabaseRows.Clear();
+                foreach (PreviewDatabaseResultRow row in rows) DatabaseRows.Add(row);
+                StatusText = PreviewMessageCatalog.Format("Advanced_Database_Result", rows.Count);
+            }
+            catch (Exception)
+            {
+                StatusText = PreviewMessageCatalog.Get("Advanced_Database_Failed");
+            }
         }
 
         private void ToggleTelemetryPause()
@@ -261,7 +320,7 @@ namespace PhoenixTranslator.ApplicationLayer
         {
             foreach (PreviewShellCommand command in new[] { MoveUpCommand, MoveDownCommand, ApplyPipelineCommand,
                 TestCustomProviderCommand, CancelCustomProviderTestCommand, SaveCustomProviderCommand,
-                RefreshTelemetryCommand }.OfType<PreviewShellCommand>()) command.RaiseCanExecuteChanged();
+                ExecuteDatabaseQueryCommand, RefreshTelemetryCommand }.OfType<PreviewShellCommand>()) command.RaiseCanExecuteChanged();
         }
 
         private void CustomProviderPropertyChanged(object sender, PropertyChangedEventArgs e)

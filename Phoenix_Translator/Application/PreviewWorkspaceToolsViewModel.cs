@@ -127,6 +127,11 @@ namespace PhoenixTranslator.ApplicationLayer
         private readonly Action<string> _copyText;
         private readonly Action<bool> _busyChanged;
         private readonly PreviewTranslationTableService _tableService;
+        private readonly PreviewRamCacheService _ramCacheService;
+        private readonly Func<string> _chooseRamCacheImportPath;
+        private readonly Func<string> _chooseRamCacheExportPath;
+        private readonly Func<bool, bool, CancellationToken, Task> _clearTranslationCaches;
+        private readonly Func<bool, bool, bool> _confirmCacheClear;
         private readonly PreviewInteractiveExchangeService _interactiveService;
         private Dictionary<PreviewTranslationEntry, string> _undoTargets;
         private Dictionary<PreviewTranslationEntry, string> _pendingConversion;
@@ -142,6 +147,8 @@ namespace PhoenixTranslator.ApplicationLayer
         private PreviewWorkspaceToolScopeOption _selectedScope;
         private PreviewTerminologyEntry _selectedTerm;
         private CancellationTokenSource _cancellation;
+        private bool _clearProviderCache = true;
+        private bool _clearUserCache = true;
 
         /// <summary>Creates tools over the shared normalized workspace state and injected UI boundaries.</summary>
         /// <param name="getAllEntries">Gets the complete project entry set.</param>
@@ -155,6 +162,10 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <param name="convertToTraditional">Converts one value through the writing-variant provider.</param>
         /// <param name="copyText">Copies a manual provider request.</param>
         /// <param name="busyChanged">Notifies the parent workspace when long-running tool work changes state.</param>
+        /// <param name="chooseRamCacheImportPath">Selects a bounded legacy-compatible RamCache file.</param>
+        /// <param name="chooseRamCacheExportPath">Selects a new legacy-compatible RamCache destination.</param>
+        /// <param name="clearTranslationCaches">Clears selected active-project cache stores.</param>
+        /// <param name="confirmCacheClear">Confirms the selected destructive cache scope.</param>
         internal PreviewWorkspaceToolsViewModel(
             Func<IReadOnlyList<PreviewTranslationEntry>> getAllEntries,
             Func<IReadOnlyList<PreviewTranslationEntry>> getVisibleEntries,
@@ -166,7 +177,11 @@ namespace PhoenixTranslator.ApplicationLayer
             Func<string, CancellationToken, Task> exportProject,
             Func<string, CancellationToken, string> convertToTraditional,
             Action<string> copyText,
-            Action<bool> busyChanged = null)
+            Action<bool> busyChanged = null,
+            Func<string> chooseRamCacheImportPath = null,
+            Func<string> chooseRamCacheExportPath = null,
+            Func<bool, bool, CancellationToken, Task> clearTranslationCaches = null,
+            Func<bool, bool, bool> confirmCacheClear = null)
         {
             _getAllEntries = getAllEntries ?? throw new ArgumentNullException(nameof(getAllEntries));
             _getVisibleEntries = getVisibleEntries ?? throw new ArgumentNullException(nameof(getVisibleEntries));
@@ -181,6 +196,11 @@ namespace PhoenixTranslator.ApplicationLayer
             _copyText = copyText ?? (value => { });
             _busyChanged = busyChanged ?? (value => { });
             _tableService = new PreviewTranslationTableService();
+            _ramCacheService = new PreviewRamCacheService();
+            _chooseRamCacheImportPath = chooseRamCacheImportPath ?? (() => string.Empty);
+            _chooseRamCacheExportPath = chooseRamCacheExportPath ?? (() => string.Empty);
+            _clearTranslationCaches = clearTranslationCaches;
+            _confirmCacheClear = confirmCacheClear ?? ((provider, user) => false);
             _interactiveService = new PreviewInteractiveExchangeService();
             _findText = string.Empty;
             _replacementText = string.Empty;
@@ -221,6 +241,13 @@ namespace PhoenixTranslator.ApplicationLayer
             ExportTableCommand = new PreviewShellCommand(
                 parameter => ExportTable(),
                 parameter => _getAllEntries().Count > 0 && !IsBusy);
+            ImportRamCacheCommand = new PreviewShellCommand(parameter => ImportRamCache(), parameter => !IsBusy);
+            ExportRamCacheCommand = new PreviewShellCommand(
+                parameter => ExportRamCache(),
+                parameter => _getAllEntries().Count > 0 && !IsBusy);
+            ClearCachesCommand = new PreviewShellCommand(
+                parameter => ClearCaches(),
+                parameter => _clearTranslationCaches != null && (ClearProviderCache || ClearUserCache) && !IsBusy);
             ExportProjectCommand = new PreviewShellCommand(
                 parameter => ExportProject(),
                 parameter => _exportProject != null && !IsExportBlocked && !IsBusy);
@@ -269,6 +296,12 @@ namespace PhoenixTranslator.ApplicationLayer
         public ICommand ImportTableCommand { get; private set; }
         /// <summary>Gets the command that exports the normalized translation table.</summary>
         public ICommand ExportTableCommand { get; private set; }
+        /// <summary>Gets the command that imports draft targets from a compatible RamCache file.</summary>
+        public ICommand ImportRamCacheCommand { get; private set; }
+        /// <summary>Gets the command that exports a compatible RamCache file.</summary>
+        public ICommand ExportRamCacheCommand { get; private set; }
+        /// <summary>Gets the command that clears explicitly selected project cache stores.</summary>
+        public ICommand ClearCachesCommand { get; private set; }
         /// <summary>Gets the command that exports the translated project through its format writer.</summary>
         public ICommand ExportProjectCommand { get; private set; }
         /// <summary>Gets the command that prepares a writing-variant conversion preview.</summary>
@@ -547,6 +580,44 @@ namespace PhoenixTranslator.ApplicationLayer
             _tableService.Export(path, _getAllEntries());
         }
 
+        /// <summary>Gets or sets whether provider-produced project cache entries are cleared.</summary>
+        public bool ClearProviderCache
+        {
+            get => _clearProviderCache;
+            set
+            {
+                if (SetField(ref _clearProviderCache, value))
+                {
+                    RaiseCommands();
+                }
+            }
+        }
+
+        /// <summary>Gets or sets whether user-entered project cache entries are cleared.</summary>
+        public bool ClearUserCache
+        {
+            get => _clearUserCache;
+            set
+            {
+                if (SetField(ref _clearUserCache, value))
+                {
+                    RaiseCommands();
+                }
+            }
+        }
+
+        internal void ImportRamCache(string path)
+        {
+            Dictionary<PreviewTranslationEntry, string> changes =
+                _ramCacheService.ImportDraftTargets(path, _getAllEntries());
+            RecordMutation(changes, "Workspace_Tools_RamCacheImported");
+        }
+
+        internal void ExportRamCache(string path)
+        {
+            _ramCacheService.Export(path, _getAllEntries());
+        }
+
         private void AddSelectedTerm()
         {
             PreviewTranslationEntry entry = _getSelectedEntry();
@@ -736,6 +807,78 @@ namespace PhoenixTranslator.ApplicationLayer
             }
         }
 
+        private void ImportRamCache()
+        {
+            string path = _chooseRamCacheImportPath();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            try
+            {
+                ImportRamCache(path);
+            }
+            catch (Exception)
+            {
+                StatusText = PreviewMessageCatalog.Get("Workspace_Tools_OperationFailed");
+            }
+        }
+
+        private void ExportRamCache()
+        {
+            string path = _chooseRamCacheExportPath();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            try
+            {
+                ExportRamCache(path);
+                StatusText = PreviewMessageCatalog.Get("Workspace_Tools_RamCacheExported");
+            }
+            catch (Exception)
+            {
+                StatusText = PreviewMessageCatalog.Get("Workspace_Tools_OperationFailed");
+            }
+        }
+
+        private async void ClearCaches()
+        {
+            bool provider = ClearProviderCache;
+            bool user = ClearUserCache;
+            if ((!provider && !user) || !_confirmCacheClear(provider, user))
+            {
+                return;
+            }
+
+            var cancellation = new CancellationTokenSource();
+            _cancellation = cancellation;
+            IsBusy = true;
+            StatusText = PreviewMessageCatalog.Get("Workspace_Tools_CacheClearing");
+            try
+            {
+                await _clearTranslationCaches(provider, user, cancellation.Token);
+                StatusText = PreviewMessageCatalog.Get("Workspace_Tools_CacheCleared");
+            }
+            catch (OperationCanceledException)
+            {
+                StatusText = PreviewMessageCatalog.Get("Workspace_Tools_Cancelled");
+            }
+            catch (Exception)
+            {
+                StatusText = PreviewMessageCatalog.Get("Workspace_Tools_OperationFailed");
+            }
+            finally
+            {
+                cancellation.Dispose();
+                _cancellation = null;
+                IsBusy = false;
+                RaiseCommands();
+            }
+        }
+
         private void PrepareInteractive()
         {
             PreviewTranslationEntry entry = _getSelectedEntry();
@@ -828,7 +971,8 @@ namespace PhoenixTranslator.ApplicationLayer
             foreach (ICommand command in new[]
             {
                 ApplyReplaceCommand, UndoCommand, AddSelectedTermCommand, RemoveTermCommand,
-                ApplyTerminologyCommand, ImportTableCommand, ExportTableCommand, ExportProjectCommand,
+                ApplyTerminologyCommand, ImportTableCommand, ExportTableCommand, ImportRamCacheCommand,
+                ExportRamCacheCommand, ClearCachesCommand, ExportProjectCommand,
                 ConvertCommand, ApplyConversionCommand, PrepareInteractiveCommand, CopyInteractiveCommand,
                 ApplyInteractiveCommand, CancelCommand
             })

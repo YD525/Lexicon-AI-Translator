@@ -62,6 +62,11 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(ValidatesBoundedPreviewAssets), ValidatesBoundedPreviewAssets },
                 { nameof(PreviewsAppliesAndUndoesWorkspaceReplacement), PreviewsAppliesAndUndoesWorkspaceReplacement },
                 { nameof(RoundTripsBoundedTranslationTable), RoundTripsBoundedTranslationTable },
+                { nameof(RoundTripsWorkflowRolloutAndRecoversBackup), RoundTripsWorkflowRolloutAndRecoversBackup },
+                { nameof(RoutesDisabledWorkflowToLegacyFallback), RoutesDisabledWorkflowToLegacyFallback },
+                { nameof(RoundTripsBoundedRamCache), RoundTripsBoundedRamCache },
+                { nameof(ClearsOnlyConfirmedCacheScope), ClearsOnlyConfirmedCacheScope },
+                { nameof(ManagesTranslationHistoryThroughWorkspaceBoundary), ManagesTranslationHistoryThroughWorkspaceBoundary },
                 { nameof(ValidatesInteractiveProviderRequestIdentity), ValidatesInteractiveProviderRequestIdentity },
                 { nameof(StagesWritingVariantAndTracksExportReadiness), StagesWritingVariantAndTracksExportReadiness },
                 { nameof(AnalyzesMixedQualityFindings), AnalyzesMixedQualityFindings },
@@ -82,6 +87,7 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(ValidatesCustomProviderDrafts), ValidatesCustomProviderDrafts },
                 { nameof(CancelsCustomProviderConnectivityTest), CancelsCustomProviderConnectivityTest },
                 { nameof(GuardsReadOnlyDatabaseStatements), GuardsReadOnlyDatabaseStatements },
+                { nameof(ExecutesDatabaseStatementsInsideAdvancedWorkspace), ExecutesDatabaseStatementsInsideAdvancedWorkspace },
                 { nameof(ValidatesSemanticIconRegistry), ValidatesSemanticIconRegistry }
             };
             int failures = 0;
@@ -1158,6 +1164,148 @@ namespace PhoenixTranslator.PresetTests
             }
         }
 
+        private static void RoundTripsWorkflowRolloutAndRecoversBackup()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixRollout-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            try
+            {
+                string path = Path.Combine(directory, "rollout.xml");
+                var store = new PreviewWorkflowRolloutStore(path);
+                List<PreviewWorkflowOption> first = PreviewWorkflowRolloutStore.CreateDefaults().ToList();
+                first.Single(option => option.Workflow == PreviewWorkflow.History).IsEnabled = false;
+                store.Save(first);
+                List<PreviewWorkflowOption> second = PreviewWorkflowRolloutStore.CreateDefaults().ToList();
+                second.Single(option => option.Workflow == PreviewWorkflow.Quality).IsEnabled = false;
+                store.Save(second);
+                File.WriteAllText(path, "<invalid>");
+
+                IReadOnlyList<PreviewWorkflowOption> recovered = store.Load();
+                AssertEqual(false, recovered.Single(option => option.Workflow == PreviewWorkflow.History).IsEnabled,
+                    "A corrupt rollout file must recover the last known-good backup.");
+                AssertEqual(true, recovered.Single(option => option.Workflow == PreviewWorkflow.Quality).IsEnabled,
+                    "Backup recovery must not partially apply the corrupt primary state.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+
+        private static void RoutesDisabledWorkflowToLegacyFallback()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixRollout-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            try
+            {
+                string path = Path.Combine(directory, "rollout.xml");
+                var rollout = new PreviewWorkflowRolloutViewModel(new PreviewWorkflowRolloutStore(path));
+                rollout.Options.Single(option => option.Workflow == PreviewWorkflow.History).IsEnabled = false;
+                rollout.Apply();
+                int fallbackCalls = 0;
+                var shell = new PreviewShellViewModel(() => fallbackCalls++, rollout, new PreviewDiagnosticService());
+
+                shell.CurrentDestination = PreviewShellDestination.History;
+
+                AssertEqual(1, fallbackCalls, "A disabled workflow must invoke the compatible fallback once.");
+                AssertEqual(false, shell.IsHistoryUpdateWorkspaceVisible,
+                    "A disabled workflow must not render its preview surface.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+
+        private static void RoundTripsBoundedRamCache()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "PhoenixRamCache-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            try
+            {
+                string path = Path.Combine(directory, "cache.json");
+                var service = new PreviewRamCacheService();
+                PreviewTranslationEntry entry = CreateEntry("key-1", "Source", "Imported target");
+                service.Export(path, new[] { entry });
+                entry.TargetText = string.Empty;
+
+                Dictionary<PreviewTranslationEntry, string> changes = service.ImportDraftTargets(path, new[] { entry });
+
+                AssertEqual("Imported target", entry.TargetText, "RamCache import must match source and stable key.");
+                AssertEqual(string.Empty, changes[entry], "RamCache import must retain the prior target for undo.");
+            }
+            finally
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+
+        private static void ClearsOnlyConfirmedCacheScope()
+        {
+            bool confirmedProvider = false;
+            bool confirmedUser = false;
+            bool clearedProvider = false;
+            bool clearedUser = false;
+            var entries = new[] { CreateEntry("one", "Source", "Target") };
+            var tools = new PreviewWorkspaceToolsViewModel(
+                () => entries, () => entries, () => entries[0], () => { }, null, null, null, null, null, null,
+                null, null, null,
+                (provider, user, cancellationToken) =>
+                {
+                    clearedProvider = provider;
+                    clearedUser = user;
+                    return Task.FromResult(0);
+                },
+                (provider, user) =>
+                {
+                    confirmedProvider = provider;
+                    confirmedUser = user;
+                    return true;
+                });
+            tools.ClearProviderCache = true;
+            tools.ClearUserCache = false;
+
+            tools.ClearCachesCommand.Execute(null);
+            AssertEqual(true, SpinWait.SpinUntil(() => !tools.IsBusy, 2000),
+                "Confirmed cache clearing must complete asynchronously.");
+            AssertEqual(true, confirmedProvider, "Confirmation must name the selected provider-cache scope.");
+            AssertEqual(false, confirmedUser, "Confirmation must exclude unselected user-cache scope.");
+            AssertEqual(true, clearedProvider, "Only the confirmed provider cache may be cleared.");
+            AssertEqual(false, clearedUser, "The unconfirmed user cache must remain intact.");
+        }
+
+        private static void ManagesTranslationHistoryThroughWorkspaceBoundary()
+        {
+            PreviewTranslationEntry entry = CreateEntry("one", "Source", "Current target");
+            var project = new FakePreviewTranslationProject(new[] { entry });
+            project.TranslationHistory = new[]
+            {
+                new PreviewTranslationHistoryItem(7, "one", "Source", "Historical target", false, DateTime.UtcNow)
+            };
+            var shell = new PreviewShellViewModel(() => { });
+            var workspace = new PreviewTranslationWorkspaceViewModel(
+                () => project.Path, () => { }, shell, path => project);
+            try
+            {
+                workspace.OpenProjectAsync(project.Path).GetAwaiter().GetResult();
+                IReadOnlyList<PreviewTranslationHistoryItem> loaded = workspace
+                    .LoadTranslationHistoryAsync(CancellationToken.None).GetAwaiter().GetResult();
+                AssertEqual(1, loaded.Count, "History loading must cross the project boundary without a legacy window.");
+
+                workspace.RestoreTranslationHistoryAsync(7, CancellationToken.None).GetAwaiter().GetResult();
+                AssertEqual("Historical target", entry.TargetText,
+                    "History restoration must stage the selected target in the active workspace.");
+                workspace.SetCurrentTranslationHistoryAsync(7).GetAwaiter().GetResult();
+                AssertEqual(7, project.CurrentHistoryRowId, "Set current must preserve the selected persistent row.");
+                workspace.DeleteTranslationHistoryAsync(7).GetAwaiter().GetResult();
+                AssertEqual(0, project.TranslationHistory.Count, "Delete must remove only the selected history row.");
+            }
+            finally
+            {
+                workspace.Dispose();
+            }
+        }
+
         private static void ValidatesInteractiveProviderRequestIdentity()
         {
             var entries = new[] { CreateEntry("key-1", "Translate me", string.Empty) };
@@ -1670,7 +1818,7 @@ namespace PhoenixTranslator.PresetTests
         private static void StagesAndAppliesProviderPipeline()
         {
             var store = new RecordingAdvancedToolsStore();
-            var tools = new PreviewAdvancedToolsViewModel(store, new PreviewShellViewModel(() => { }), () => true, readOnly => { });
+            var tools = new PreviewAdvancedToolsViewModel(store, new PreviewShellViewModel(() => { }), () => true);
             PreviewPipelineEntry second = tools.PipelineEntries[1];
             tools.SelectedPipelineEntry = second;
             tools.MoveUpCommand.Execute(null);
@@ -1705,7 +1853,7 @@ namespace PhoenixTranslator.PresetTests
         private static void CancelsCustomProviderConnectivityTest()
         {
             var store = new RecordingAdvancedToolsStore { BlockProviderTest = true };
-            var tools = new PreviewAdvancedToolsViewModel(store, new PreviewShellViewModel(() => { }), () => true, readOnly => { });
+            var tools = new PreviewAdvancedToolsViewModel(store, new PreviewShellViewModel(() => { }), () => true);
             tools.CustomProvider.Name = "Fixture provider";
             tools.CustomProvider.Endpoint = "https://provider.invalid/v1";
             tools.CustomProvider.ResponseField = "translation";
@@ -1726,6 +1874,30 @@ namespace PhoenixTranslator.PresetTests
                 "A mutation must be rejected in read-only mode.");
             AssertEqual(false, PreviewDatabaseStatementGuard.IsReadOnly("SELECT * FROM Dictionary; DELETE FROM Dictionary"),
                 "A second statement must be rejected in read-only mode.");
+        }
+
+        private static void ExecutesDatabaseStatementsInsideAdvancedWorkspace()
+        {
+            var store = new RecordingAdvancedToolsStore();
+            int confirmations = 0;
+            var tools = new PreviewAdvancedToolsViewModel(
+                store,
+                new PreviewShellViewModel(() => { }),
+                () => { confirmations++; return true; });
+
+            tools.ExecuteDatabaseQueryCommand.Execute(null);
+            AssertEqual(false, store.LastDatabaseMutation,
+                "The embedded database workspace must start in read-only mode.");
+            AssertEqual(1, tools.DatabaseRows.Count,
+                "Bounded database results must render in the Advanced Tools workspace.");
+
+            tools.OpenDatabaseMutationCommand.Execute(null);
+            tools.DatabaseQuery = "DELETE FROM Fixture WHERE Rowid = 1";
+            tools.ExecuteDatabaseQueryCommand.Execute(null);
+            AssertEqual(1, confirmations, "Mutation mode must require one explicit destructive confirmation.");
+            AssertEqual(true, store.LastDatabaseMutation,
+                "Only the confirmed mode may cross the mutation boundary.");
+            tools.Dispose();
         }
 
         private static void ValidatesSemanticIconRegistry()
@@ -1857,6 +2029,61 @@ namespace PhoenixTranslator.PresetTests
                 ExportPath = path;
             }
 
+            public void ClearTranslationCaches(
+                bool clearProviderCache,
+                bool clearUserCache,
+                CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                ClearedProviderCache = clearProviderCache;
+                ClearedUserCache = clearUserCache;
+            }
+
+            internal bool ClearedProviderCache { get; private set; }
+
+            internal bool ClearedUserCache { get; private set; }
+
+            public IReadOnlyList<PreviewTranslationHistoryItem> LoadTranslationHistory(
+                CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                return TranslationHistory;
+            }
+
+            public PreviewTranslationEntry RestoreTranslationHistory(
+                int rowId,
+                CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                PreviewTranslationHistoryItem item = TranslationHistory.FirstOrDefault(entry => entry.RowId == rowId);
+                PreviewTranslationEntry projectEntry = Entries.FirstOrDefault(entry => entry.Key == item?.EntryKey);
+                if (projectEntry != null)
+                {
+                    projectEntry.TargetText = item.TargetText;
+                }
+                return projectEntry;
+            }
+
+            public void SetCurrentTranslationHistory(int rowId)
+            {
+                CurrentHistoryRowId = rowId;
+            }
+
+            public void DeleteTranslationHistory(int rowId)
+            {
+                TranslationHistory = TranslationHistory.Where(entry => entry.RowId != rowId).ToList();
+            }
+
+            public void ClearTranslationHistory()
+            {
+                TranslationHistory = new List<PreviewTranslationHistoryItem>();
+            }
+
+            internal IReadOnlyList<PreviewTranslationHistoryItem> TranslationHistory { get; set; } =
+                new List<PreviewTranslationHistoryItem>();
+
+            internal int CurrentHistoryRowId { get; private set; }
+
             public string ExportPath { get; private set; }
 
             public void Dispose()
@@ -1983,6 +2210,7 @@ namespace PhoenixTranslator.PresetTests
             internal int SavePipelineCalls { get; private set; }
             internal IReadOnlyList<PreviewPipelineEntry> SavedPipeline { get; private set; }
             internal bool BlockProviderTest { get; set; }
+            internal bool LastDatabaseMutation { get; private set; }
 
             public IReadOnlyList<PreviewPipelineEntry> LoadPipeline()
             {
@@ -2011,6 +2239,11 @@ namespace PhoenixTranslator.PresetTests
             }
 
             public void SaveCustomProvider(PreviewCustomProviderDraft draft) { }
+            public IReadOnlyList<PreviewDatabaseResultRow> ExecuteDatabaseQuery(string sql, bool allowMutation)
+            {
+                LastDatabaseMutation = allowMutation;
+                return new[] { new PreviewDatabaseResultRow("Fixture: value") };
+            }
             public IReadOnlyList<KeyValuePair<string, long>> ReadTokenUsage() { return new[] { new KeyValuePair<string, long>("Fixture", 12) }; }
             public void ClearTokenUsage() { }
         }

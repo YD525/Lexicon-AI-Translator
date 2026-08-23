@@ -22,6 +22,7 @@ namespace PhoenixTranslator.ApplicationLayer
         private readonly Func<bool> _confirmReset;
         private readonly Func<bool> _confirmDiscard;
         private readonly Action _openLegacyWorkspace;
+        private readonly PreviewWorkflowRolloutViewModel _rollout;
         private PreviewSettingsSnapshot _baseline;
         private PreviewSettingsSnapshot _settings;
         private PreviewSettingsCategoryOption _selectedCategory;
@@ -41,18 +42,21 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <param name="confirmReset">Confirms replacing staged values with defaults.</param>
         /// <param name="confirmDiscard">Confirms discarding unsaved values.</param>
         /// <param name="openLegacyWorkspace">Opens the explicit legacy fallback.</param>
+        /// <param name="rollout">Optionally stages independent preview-workflow routing.</param>
         internal PreviewSettingsViewModel(
             PreviewShellViewModel shell,
             IPreviewSettingsStore store,
             Func<bool> confirmReset,
             Func<bool> confirmDiscard,
-            Action openLegacyWorkspace)
+            Action openLegacyWorkspace,
+            PreviewWorkflowRolloutViewModel rollout = null)
         {
             _shell = shell ?? throw new ArgumentNullException(nameof(shell));
             _store = store ?? throw new ArgumentNullException(nameof(store));
             _confirmReset = confirmReset ?? throw new ArgumentNullException(nameof(confirmReset));
             _confirmDiscard = confirmDiscard ?? throw new ArgumentNullException(nameof(confirmDiscard));
             _openLegacyWorkspace = openLegacyWorkspace ?? throw new ArgumentNullException(nameof(openLegacyWorkspace));
+            _rollout = rollout;
             _searchText = string.Empty;
             _pendingProviderCredential = string.Empty;
             _pendingProxyPassword = string.Empty;
@@ -77,8 +81,14 @@ namespace PhoenixTranslator.ApplicationLayer
                 parameter => CancelProviderTest(),
                 parameter => IsTestingProvider);
             OpenLegacyWorkspaceCommand = new PreviewShellCommand(parameter => _openLegacyWorkspace());
+            OpenAdvancedToolsCommand = new PreviewShellCommand(
+                parameter => _shell.CurrentDestination = PreviewShellDestination.AdvancedTools);
 
             _shell.PropertyChanged += ShellPropertyChanged;
+            if (_rollout != null)
+            {
+                _rollout.PropertyChanged += RolloutPropertyChanged;
+            }
             Reload();
         }
 
@@ -119,6 +129,10 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <summary>Gets the staged non-secret settings.</summary>
         public PreviewSettingsSnapshot Settings => _settings;
 
+        /// <summary>Gets independently staged preview-workflow rollout choices.</summary>
+        public IReadOnlyList<PreviewWorkflowOption> RolloutOptions => _rollout?.Options ??
+            new List<PreviewWorkflowOption>();
+
         /// <summary>Gets the command that selects an intent category.</summary>
         public ICommand SelectCategoryCommand { get; private set; }
 
@@ -139,6 +153,9 @@ namespace PhoenixTranslator.ApplicationLayer
 
         /// <summary>Gets the command that opens the complete legacy settings fallback.</summary>
         public ICommand OpenLegacyWorkspaceCommand { get; private set; }
+
+        /// <summary>Gets the command that routes data and provider maintenance to Advanced Tools.</summary>
+        public ICommand OpenAdvancedToolsCommand { get; private set; }
 
         /// <summary>Gets or sets the global settings search.</summary>
         public string SearchText
@@ -216,7 +233,8 @@ namespace PhoenixTranslator.ApplicationLayer
 
         /// <summary>Gets whether staged values differ from the loaded baseline.</summary>
         public bool IsModified => _settings != null && (!_settings.HasSameValues(_baseline) ||
-            !string.IsNullOrEmpty(_pendingProviderCredential) || !string.IsNullOrEmpty(_pendingProxyPassword));
+            !string.IsNullOrEmpty(_pendingProviderCredential) || !string.IsNullOrEmpty(_pendingProxyPassword) ||
+            _rollout?.IsModified == true);
 
         /// <summary>Gets whether one or more staged values are invalid.</summary>
         public bool HasValidationErrors => ValidationMessages.Count > 0;
@@ -316,6 +334,10 @@ namespace PhoenixTranslator.ApplicationLayer
         {
             CancelProviderTest();
             _shell.PropertyChanged -= ShellPropertyChanged;
+            if (_rollout != null)
+            {
+                _rollout.PropertyChanged -= RolloutPropertyChanged;
+            }
             DetachSettings();
             ClearPendingSecrets();
         }
@@ -327,6 +349,7 @@ namespace PhoenixTranslator.ApplicationLayer
             _settings = _store.Load();
             _baseline = _settings.Clone();
             _settings.PropertyChanged += SettingsPropertyChanged;
+            _rollout?.Cancel();
             _selectedProvider = ProviderOptions.FirstOrDefault(option => option.Key == _settings.ProviderKey)
                 ?? ProviderOptions.FirstOrDefault();
             ClearPendingSecrets();
@@ -355,6 +378,7 @@ namespace PhoenixTranslator.ApplicationLayer
             try
             {
                 _store.Save(_settings.Clone(), _pendingProviderCredential, _pendingProxyPassword);
+                _rollout?.Apply();
                 Reload();
                 _shell.ShowNotification(PreviewShellNotificationSeverity.Success, "Settings_Apply_Succeeded");
             }
@@ -422,6 +446,14 @@ namespace PhoenixTranslator.ApplicationLayer
         {
             ClearProviderTestStatus();
             Validate();
+        }
+
+        private void RolloutPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(RolloutOptions));
+            OnPropertyChanged(nameof(IsModified));
+            OnPropertyChanged(nameof(CanApply));
+            RaiseCommandAvailability();
         }
 
         private async Task TestProviderAsync()

@@ -25,6 +25,7 @@ namespace PhoenixTranslator.UIManagement.Preview
         private readonly PreviewSettingsViewModel _settingsViewModel;
         private readonly PreviewAdvancedToolsViewModel _advancedToolsViewModel;
         private readonly PreviewDiagnosticService _diagnostics;
+        private readonly PreviewWorkflowRolloutViewModel _rolloutViewModel;
         private readonly IPreviewDialogService _dialogService;
         private readonly PreviewShellServicesViewModel _shellServicesViewModel;
 
@@ -46,7 +47,8 @@ namespace PhoenixTranslator.UIManagement.Preview
             _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
             _diagnostics.Record(PreviewDiagnosticSeverity.Information, "shell.opened");
             _dialogService = new WpfPreviewDialogService(() => this);
-            _shellViewModel = new PreviewShellViewModel(OpenLegacyWorkspace);
+            _rolloutViewModel = new PreviewWorkflowRolloutViewModel(new PreviewWorkflowRolloutStore());
+            _shellViewModel = new PreviewShellViewModel(OpenLegacyWorkspace, _rolloutViewModel, _diagnostics);
             _translationWorkspaceViewModel = new PreviewTranslationWorkspaceViewModel(
                 SelectPreviewProject,
                 OpenLegacyWorkspace,
@@ -57,7 +59,10 @@ namespace PhoenixTranslator.UIManagement.Preview
                 SelectTranslationTableExport,
                 SelectProjectExport,
                 ConvertToTraditional,
-                CopyWorkspaceText);
+                CopyWorkspaceText,
+                SelectRamCacheImport,
+                SelectRamCacheExport,
+                ConfirmCacheClear);
             _projectHubViewModel = new PreviewProjectHubViewModel(
                 _translationWorkspaceViewModel,
                 _shellViewModel,
@@ -85,18 +90,20 @@ namespace PhoenixTranslator.UIManagement.Preview
                 PreviewTranslationProject.Open,
                 ConfirmConflictReuse,
                 ConfirmBulkReuse,
-                OpenLegacyWorkspace);
+                OpenLegacyWorkspace,
+                ConfirmHistoryDelete,
+                ConfirmHistoryClear);
             _settingsViewModel = new PreviewSettingsViewModel(
                 _shellViewModel,
                 new LegacyPreviewSettingsStore(),
                 ConfirmSettingsReset,
                 ConfirmSettingsDiscard,
-                OpenLegacyWorkspace);
+                OpenLegacyWorkspace,
+                _rolloutViewModel);
             _advancedToolsViewModel = new PreviewAdvancedToolsViewModel(
                 new LegacyPreviewAdvancedToolsStore(),
                 _shellViewModel,
-                ConfirmDatabaseMutation,
-                OpenDatabase);
+                ConfirmDatabaseMutation);
             DataContext = _shellViewModel;
             ProjectHub.DataContext = _projectHubViewModel;
             TranslationWorkspace.DataContext = _translationWorkspaceViewModel;
@@ -173,6 +180,21 @@ namespace PhoenixTranslator.UIManagement.Preview
                 PreviewMessageCatalog.Get("Workspace_Tools_ExportTable_Title"),
                 PreviewMessageCatalog.Get("Workspace_Tools_Table_Filter"),
                 "translation-table.tsv");
+        }
+
+        private string SelectRamCacheImport()
+        {
+            return ShowOpenDialog(
+                PreviewMessageCatalog.Get("Workspace_Tools_ImportRamCache_Title"),
+                PreviewMessageCatalog.Get("Workspace_Tools_RamCache_Filter"));
+        }
+
+        private string SelectRamCacheExport()
+        {
+            return ShowSaveDialog(
+                PreviewMessageCatalog.Get("Workspace_Tools_ExportRamCache_Title"),
+                PreviewMessageCatalog.Get("Workspace_Tools_RamCache_Filter"),
+                "translation-cache.json");
         }
 
         private string SelectProjectExport()
@@ -284,13 +306,33 @@ namespace PhoenixTranslator.UIManagement.Preview
                 PreviewDialogSeverity.Destructive);
         }
 
-        private void OpenDatabase(bool isReadOnly)
+        private bool ConfirmCacheClear(bool clearProviderCache, bool clearUserCache)
         {
-            DeFine.CloseDataBaseView();
-            DeFine.DataBaseView = new DataBaseView();
-            DeFine.DataBaseView.SetReadOnlyMode(isReadOnly);
-            DeFine.DataBaseView.Owner = this;
-            DeFine.DataBaseView.Show();
+            string scope = clearProviderCache && clearUserCache
+                ? PreviewMessageCatalog.Get("Workspace_Tools_CacheScope_All")
+                : clearProviderCache
+                    ? PreviewMessageCatalog.Get("Workspace_Tools_CacheScope_Provider")
+                    : PreviewMessageCatalog.Get("Workspace_Tools_CacheScope_User");
+            return ShowConfirmation(
+                PreviewMessageCatalog.Format("Workspace_Tools_CacheClear_Confirmation", scope),
+                PreviewMessageCatalog.Get("Workspace_Tools_CacheClear_Title"),
+                PreviewDialogSeverity.Destructive);
+        }
+
+        private bool ConfirmHistoryDelete()
+        {
+            return ShowConfirmation(
+                PreviewMessageCatalog.Get("TranslationHistory_Delete_Confirmation"),
+                PreviewMessageCatalog.Get("TranslationHistory_Delete_ConfirmationTitle"),
+                PreviewDialogSeverity.Destructive);
+        }
+
+        private bool ConfirmHistoryClear(int count)
+        {
+            return ShowConfirmation(
+                PreviewMessageCatalog.Format("TranslationHistory_Clear_Confirmation", count),
+                PreviewMessageCatalog.Get("TranslationHistory_Clear_ConfirmationTitle"),
+                PreviewDialogSeverity.Destructive);
         }
 
         private void OpenLegacyWorkspace()
