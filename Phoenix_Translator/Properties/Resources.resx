@@ -226,9 +226,17 @@
   <data name="Settings_Providers_ApiKey_Stored" xml:space="preserve"><value>Stored securely</value><comment>Status shown instead of exposing a stored provider credential.</comment></data>
   <data name="Settings_Providers_Endpoint_Label" xml:space="preserve"><value>Endpoint</value><comment>Field label for a local or custom provider endpoint.</comment></data>
   <data name="Settings_Providers_Test_Action" xml:space="preserve"><value>Test provider</value><comment>Explicit action that tests staged provider settings without saving them.</comment></data>
+  <data name="Settings_Providers_Test_Cancel_Action" xml:space="preserve"><value>Cancel test</value><comment>Cancels the active provider connectivity test.</comment></data>
   <data name="Settings_Providers_Test_Running" xml:space="preserve"><value>Testing provider…</value><comment>Status while a provider test is running.</comment></data>
   <data name="Settings_Providers_Test_Succeeded" xml:space="preserve"><value>The provider responded successfully.</value><comment>Provider-test success message; does not imply settings were saved.</comment></data>
   <data name="Settings_Providers_Test_Failed" xml:space="preserve"><value>The provider test failed: {0}</value><comment>Safe provider-test failure. Placeholders: {0}=sanitized failure reason without credentials or private content.</comment></data>
+  <data name="Settings_Providers_Test_Cancelled" xml:space="preserve"><value>The provider test was cancelled.</value><comment>Status after the user cancels a provider test.</comment></data>
+  <data name="Settings_Providers_Test_Privacy" xml:space="preserve"><value>Tests authentication and availability only. No project or translation text is sent, and staged settings are not saved.</value><comment>Privacy boundary for provider connectivity tests.</comment></data>
+  <data name="Settings_Providers_Test_Reason_Authentication" xml:space="preserve"><value>The credential was not accepted.</value><comment>Sanitized provider-test authentication failure.</comment></data>
+  <data name="Settings_Providers_Test_Reason_TimedOut" xml:space="preserve"><value>The provider did not respond before the timeout.</value><comment>Sanitized provider-test timeout failure.</comment></data>
+  <data name="Settings_Providers_Test_Reason_Rejected" xml:space="preserve"><value>The provider rejected the availability request.</value><comment>Sanitized provider-test service failure.</comment></data>
+  <data name="Settings_Providers_Test_Reason_Unsupported" xml:space="preserve"><value>This provider requires the advanced provider manager for testing.</value><comment>Explanation when the central settings test does not support a custom or interactive provider.</comment></data>
+  <data name="Settings_Providers_Test_Reason_Unreachable" xml:space="preserve"><value>The provider could not be reached.</value><comment>Sanitized provider-test network failure.</comment></data>
   <data name="Settings_ProviderPipeline_Title" xml:space="preserve"><value>Provider pipeline</value><comment>Settings card heading for the ordered provider pipeline.</comment></data>
   <data name="Settings_ProviderPipeline_EditAdvanced_Action" xml:space="preserve"><value>Edit advanced pipeline</value><comment>Opens progressively disclosed provider-pipeline configuration.</comment></data>
   <data name="Settings_Modified_Hint" xml:space="preserve"><value>Changes are not applied until you choose Apply.</value><comment>Persistent settings footer hint while staged changes exist.</comment></data>
@@ -357,4 +365,81 @@
   <data name="Update_Undo_Completed" xml:space="preserve"><value>Restored {0} entries from before the last revision update.</value><comment>Update undo notification. Placeholder: exact restored entry count.</comment></data>
   <data name="Accessibility_History_Timeline_Name" xml:space="preserve"><value>Project revision timeline</value><comment>Accessible name for the history event list.</comment></data>
   <data name="Accessibility_Update_Comparison_Name" xml:space="preserve"><value>Project revision comparison</value><comment>Accessible name for the comparison result list.</comment></data>
+  <data name="Settings_Search_Placeholder" xml:space="preserve"><value>Search all settings, including legacy terms</value><comment>Global Settings Center search hint.</comment></data>
+  <data name="Settings_Category_General_Title" xml:space="preserve"><value>General</value><comment>Settings category for application defaults.</comment></data>
+  <data name="Settings_Category_General_Description" xml:space="preserve"><value>Choose language defaults and application-level behavior.</value><comment>General settings category description.</comment></data>
+  <data name="Settings_Category_Providers_Title" xml:space="preserve"><value>Providers</value><comment>Settings category for translation services.</comment></data>
+  <data name="Settings_Category_Providers_Description" xml:space="preserve"><value>Choose providers, models, credentials, and local endpoints.</value><comment>Provider settings category description.</comment></data>
+  <data name="Settings_Category_Translation_Title" xml:space="preserve"><value>Translation</value><comment>Settings category for translation behavior.</comment></data>
+  <data name="Settings_Category_Translation_Description" xml:space="preserve"><value>Control context, language detection, prompts, and protected placeholders.</value><comment>Translation settings category description.</comment></data>
+  <data name="Settings_Category_FilesAndFormats_Title" xml:space="preserve"><value>Files &amp; formats</value><comment>Settings category for project paths and format behavior.</comment></data>
+  <data name="Settings_Category_FilesAndFormats_Description" xml:space="preserve"><value>Configure game paths, ESP and PEX behavior, and format defaults.</value><comment>Files and formats settings category description.</comment></data>
+  <data name="Settings_Category_HistoryAndData_Title" xml:space="preserve"><value>History &amp; data</value><comment>Settings category for caches and translation data.</comment></data>
+  <data name="Settings_Category_HistoryAndData_Description" xml:space="preserve"><value>Control translation memory, database updates, caches, and retention routes.</value><comment>History and data settings category description.</comment></data>
+  <data name="Settings_Category_AppearanceAndAccessibility_Title" xml:space="preserve"><value>Appearance &amp; accessibility</value><comment>Settings category for visual and accessibility preferences.</comment></data>
+  <data name="Settings_Category_AppearanceAndAccessibility_Description" xml:space="preserve"><value>Choose interface language, density, text direction, and presentation defaults.</value><comment>Appearance and accessibility category description.</comment></data>
+  <data name="Settings_Category_Advanced_Title" xml:space="preserve"><value>Advanced</value><comment>Settings category for expert configuration.</comment></data>
+  <data name="Settings_Category_Advanced_Description" xml:space="preserve"><value>Configure proxies, concurrency, throttling, provider pipelines, and custom providers.</value><comment>Advanced settings category description.</comment></data>
+  <data name="Settings_Card_LanguageDefaults_Title" xml:space="preserve"><value>Language defaults</value><comment>General settings card title.</comment></data>
+  <data name="Settings_Field_SourceLanguage_Label" xml:space="preserve"><value>Source language</value><comment>Default source language field label.</comment></data>
+  <data name="Settings_Field_TargetLanguage_Label" xml:space="preserve"><value>Target language</value><comment>Default target language field label.</comment></data>
+  <data name="Settings_Field_Enabled_Label" xml:space="preserve"><value>Enable this provider</value><comment>Provider enabled toggle label.</comment></data>
+  <data name="Settings_Providers_CredentialReplace_Hint" xml:space="preserve"><value>Leave empty to keep the stored credential. New values are write-only.</value><comment>Provider credential privacy hint.</comment></data>
+  <data name="Settings_Dependency_NoProviders" xml:space="preserve"><value>No provider configuration is available. Open the legacy provider manager to create one.</value><comment>Explanation shown when provider settings are unavailable.</comment></data>
+  <data name="Settings_Dependency_ContextDisabled" xml:space="preserve"><value>Context length is available only while contextual translation is enabled.</value><comment>Explanation for the dependent context-length field.</comment></data>
+  <data name="Settings_Card_Context_Title" xml:space="preserve"><value>Context and language analysis</value><comment>Translation settings card title.</comment></data>
+  <data name="Settings_Field_ContextEnabled_Label" xml:space="preserve"><value>Use contextual translation</value><comment>Context enabled toggle label.</comment></data>
+  <data name="Settings_Field_ContextLimit_Label" xml:space="preserve"><value>Maximum context characters</value><comment>Context length field label.</comment></data>
+  <data name="Settings_Field_LanguageDetection_Label" xml:space="preserve"><value>Detect the source language automatically</value><comment>Language detection toggle label.</comment></data>
+  <data name="Settings_Card_Prompt_Title" xml:space="preserve"><value>Prompt and protected text</value><comment>Translation prompt settings card title.</comment></data>
+  <data name="Settings_Field_AdditionalPrompt_Label" xml:space="preserve"><value>Additional provider instructions</value><comment>Additional prompt field label.</comment></data>
+  <data name="Settings_Field_PlaceholderPattern_Label" xml:space="preserve"><value>Protected placeholder pattern</value><comment>Placeholder regular expression field label.</comment></data>
+  <data name="Settings_Card_GamePath_Title" xml:space="preserve"><value>Game and project files</value><comment>Files settings card title.</comment></data>
+  <data name="Settings_Field_GamePath_Label" xml:space="preserve"><value>Skyrim installation path</value><comment>Game path field label.</comment></data>
+  <data name="Settings_Field_ShowAssembly_Label" xml:space="preserve"><value>Show PEX assembly details</value><comment>PEX assembly toggle label.</comment></data>
+  <data name="Settings_Field_GenerateCSharp_Label" xml:space="preserve"><value>Generate C# view instead of Papyrus</value><comment>PEX code view toggle label.</comment></data>
+  <data name="Settings_Card_TranslationData_Title" xml:space="preserve"><value>Translation data</value><comment>History and data settings card title.</comment></data>
+  <data name="Settings_Field_AutoUpdateDatabase_Label" xml:space="preserve"><value>Update translation memory when string files are imported</value><comment>Automatic database update toggle label.</comment></data>
+  <data name="Settings_Field_GlobalSearch_Label" xml:space="preserve"><value>Search translation memory across projects</value><comment>Global translation memory search toggle label.</comment></data>
+  <data name="Settings_Data_OpenManager_Action" xml:space="preserve"><value>Open terminology and data manager</value><comment>Opens the legacy content manager during preview.</comment></data>
+  <data name="Settings_Card_Appearance_Title" xml:space="preserve"><value>Interface presentation</value><comment>Appearance settings card title.</comment></data>
+  <data name="Settings_Field_UiLanguage_Label" xml:space="preserve"><value>Interface language</value><comment>Interface language field label.</comment></data>
+  <data name="Settings_Field_Density_Label" xml:space="preserve"><value>Control density</value><comment>Compact or comfortable density field label.</comment></data>
+  <data name="Settings_Field_RightToLeft_Label" xml:space="preserve"><value>Use right-to-left target editors</value><comment>Right-to-left layout toggle label.</comment></data>
+  <data name="Settings_Restart_Hint" xml:space="preserve"><value>Some appearance changes take effect after restart.</value><comment>Restart guidance for appearance preferences.</comment></data>
+  <data name="Settings_Card_Proxy_Title" xml:space="preserve"><value>Network proxy</value><comment>Advanced proxy settings card title.</comment></data>
+  <data name="Settings_Field_ProxyUrl_Label" xml:space="preserve"><value>Proxy URL</value><comment>Proxy address field label.</comment></data>
+  <data name="Settings_Field_ProxyUser_Label" xml:space="preserve"><value>Proxy user name</value><comment>Proxy user field label.</comment></data>
+  <data name="Settings_Field_ProxyPassword_Label" xml:space="preserve"><value>Proxy password</value><comment>Write-only proxy password field label.</comment></data>
+  <data name="Settings_Card_Performance_Title" xml:space="preserve"><value>Concurrency and throttling</value><comment>Advanced performance settings card title.</comment></data>
+  <data name="Settings_Field_MaxThreads_Label" xml:space="preserve"><value>Maximum workers</value><comment>Maximum translation worker count field label.</comment></data>
+  <data name="Settings_Field_ThrottleRatio_Label" xml:space="preserve"><value>Throttling ratio</value><comment>Engine throttling ratio field label.</comment></data>
+  <data name="Settings_Field_ThrottleDelay_Label" xml:space="preserve"><value>Throttling delay in milliseconds</value><comment>Engine throttling delay field label.</comment></data>
+  <data name="Settings_Advanced_OpenPipeline_Action" xml:space="preserve"><value>Open provider pipeline and custom providers</value><comment>Opens advanced legacy provider tools during preview.</comment></data>
+  <data name="Settings_Action_Apply" xml:space="preserve"><value>Apply settings</value><comment>Persists every valid staged setting.</comment></data>
+  <data name="Settings_Action_Cancel" xml:space="preserve"><value>Cancel changes</value><comment>Discards every staged setting change.</comment></data>
+  <data name="Settings_Action_Reset" xml:space="preserve"><value>Reset to defaults</value><comment>Stages safe default values after confirmation.</comment></data>
+  <data name="Settings_Action_OpenLegacy" xml:space="preserve"><value>Open legacy settings</value><comment>Opens the complete legacy settings fallback.</comment></data>
+  <data name="Settings_State_Clean" xml:space="preserve"><value>All settings are applied</value><comment>Persistent clean settings state.</comment></data>
+  <data name="Settings_State_Modified" xml:space="preserve"><value>Settings have unapplied changes</value><comment>Persistent modified settings state.</comment></data>
+  <data name="Settings_State_Invalid" xml:space="preserve"><value>Correct invalid settings before applying</value><comment>Persistent invalid settings state.</comment></data>
+  <data name="Settings_Apply_Succeeded" xml:space="preserve"><value>Settings were applied successfully.</value><comment>Settings persistence success notification.</comment></data>
+  <data name="Settings_Apply_Failed" xml:space="preserve"><value>Settings could not be applied. Staged values remain available.</value><comment>Safe settings persistence failure notification.</comment></data>
+  <data name="Settings_Cancel_Completed" xml:space="preserve"><value>Unapplied settings were discarded.</value><comment>Settings cancellation notification.</comment></data>
+  <data name="Settings_Reset_ConfirmationTitle" xml:space="preserve"><value>Reset settings?</value><comment>Reset confirmation title.</comment></data>
+  <data name="Settings_Reset_Confirmation" xml:space="preserve"><value>Stage default values for ordinary settings? Stored credentials are preserved until you apply or cancel.</value><comment>Reset confirmation text.</comment></data>
+  <data name="Settings_Discard_ConfirmationTitle" xml:space="preserve"><value>Discard settings changes?</value><comment>Unsaved navigation confirmation title.</comment></data>
+  <data name="Settings_Discard_Confirmation" xml:space="preserve"><value>Leave Settings and discard every unapplied change?</value><comment>Unsaved navigation confirmation text.</comment></data>
+  <data name="Settings_Validation_IntegerRange" xml:space="preserve"><value>Context characters must be a whole number from {0} through {1}.</value><comment>Context validation. Placeholders: minimum and maximum.</comment></data>
+  <data name="Settings_Validation_ThreadRange" xml:space="preserve"><value>Maximum workers must be a whole number from {0} through {1}.</value><comment>Worker-count validation. Placeholders: minimum and maximum.</comment></data>
+  <data name="Settings_Validation_DelayRange" xml:space="preserve"><value>Throttling delay must be a whole number from {0} through {1} milliseconds.</value><comment>Throttle-delay validation. Placeholders: minimum and maximum.</comment></data>
+  <data name="Settings_Validation_ThrottleRatio" xml:space="preserve"><value>Throttling ratio must be a number from 0 through 1 using a decimal point.</value><comment>Throttle-ratio validation.</comment></data>
+  <data name="Settings_Validation_PortRange" xml:space="preserve"><value>Local provider port must be a whole number from {0} through {1}.</value><comment>Local port validation. Placeholders: minimum and maximum.</comment></data>
+  <data name="Settings_Validation_CredentialRequired" xml:space="preserve"><value>The enabled cloud provider requires a stored or newly entered credential.</value><comment>Provider credential validation.</comment></data>
+  <data name="Settings_Validation_CredentialLength" xml:space="preserve"><value>A credential exceeds the supported length limit.</value><comment>Bounded secret input validation.</comment></data>
+  <data name="Settings_Validation_ModelRequired" xml:space="preserve"><value>Select or enter a model for the configured provider.</value><comment>Provider model validation.</comment></data>
+  <data name="Settings_Validation_GamePath" xml:space="preserve"><value>The configured Skyrim path does not exist.</value><comment>Game path validation.</comment></data>
+  <data name="Settings_Validation_PlaceholderPattern" xml:space="preserve"><value>The protected placeholder pattern is not a valid regular expression.</value><comment>Placeholder regular expression validation.</comment></data>
+  <data name="Accessibility_Settings_CategoryList_Name" xml:space="preserve"><value>Settings categories</value><comment>Accessible name for central category navigation.</comment></data>
+  <data name="Accessibility_Settings_Validation_Name" xml:space="preserve"><value>Settings validation messages</value><comment>Accessible name for the validation message list.</comment></data>
 </root>

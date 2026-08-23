@@ -34,13 +34,6 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="HistoryComboBox" TargetType="ComboBox">
-                <Setter Property="MinHeight" Value="32" />
-                <Setter Property="Padding" Value="8,3" />
-                <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextPrimary}" />
-                <Setter Property="Background" Value="{StaticResource PreviewBrushSurfaceCanvas}" />
-                <Setter Property="BorderBrush" Value="{StaticResource PreviewBrushBorder}" />
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -144,7 +137,7 @@
                     <TextBox Style="{StaticResource PreviewTextBox}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="{localization:PreviewMessage Update_Search_Placeholder}"
                              AutomationProperties.Name="{localization:PreviewMessage Update_Search_Placeholder}" />
-                    <ComboBox Grid.Column="2" Style="{StaticResource HistoryComboBox}" ItemsSource="{Binding Filters}"
+                    <ComboBox Grid.Column="2" Style="{StaticResource PreviewComboBox}" ItemsSource="{Binding Filters}"
                               SelectedItem="{Binding SelectedFilter}"
                               AutomationProperties.Name="{localization:PreviewMessage Update_Filter_Name}" />
                     <StackPanel Grid.Column="4" Orientation="Horizontal">

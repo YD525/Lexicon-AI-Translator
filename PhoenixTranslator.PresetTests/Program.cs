@@ -7,6 +7,8 @@ using System.Linq;
 using System.Resources;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using PhoenixTranslator.ApplicationLayer;
@@ -44,7 +46,13 @@ namespace PhoenixTranslator.PresetTests
                 { nameof(ClassifiesProjectRevisionChanges), ClassifiesProjectRevisionChanges },
                 { nameof(PreservesReviewedTargetsAsConflicts), PreservesReviewedTargetsAsConflicts },
                 { nameof(PersistsPrivateRevisionHistory), PersistsPrivateRevisionHistory },
-                { nameof(AppliesAndUndoesExplicitRevisionReuse), AppliesAndUndoesExplicitRevisionReuse }
+                { nameof(AppliesAndUndoesExplicitRevisionReuse), AppliesAndUndoesExplicitRevisionReuse },
+                { nameof(StagesAndCancelsUnifiedSettings), StagesAndCancelsUnifiedSettings },
+                { nameof(ValidatesAndAppliesUnifiedSettings), ValidatesAndAppliesUnifiedSettings },
+                { nameof(SearchesSettingsByLegacyTerminology), SearchesSettingsByLegacyTerminology },
+                { nameof(ProtectsSettingsSecrets), ProtectsSettingsSecrets },
+                { nameof(TestsProviderWithoutSavingSettings), TestsProviderWithoutSavingSettings },
+                { nameof(ClearsStagedCredentialWhenProviderChanges), ClearsStagedCredentialWhenProviderChanges }
             };
             int failures = 0;
             foreach (KeyValuePair<string, Action> test in tests)
@@ -836,6 +844,134 @@ namespace PhoenixTranslator.PresetTests
             }
         }
 
+        private static void StagesAndCancelsUnifiedSettings()
+        {
+            var store = new RecordingPreviewSettingsStore();
+            var shell = new PreviewShellViewModel(() => { });
+            var settings = new PreviewSettingsViewModel(shell, store, () => true, () => true, () => { });
+
+            settings.Settings.ContextLimitText = "500";
+            AssertEqual(true, settings.IsModified,
+                "Editing one centralized setting must stage a modified state.");
+            AssertEqual(0, store.SaveCalls,
+                "Editing staged settings must not persist through legacy immediate-save handlers.");
+
+            settings.CancelCommand.Execute(null);
+            AssertEqual("200", settings.Settings.ContextLimitText,
+                "Cancel must restore the complete loaded snapshot.");
+            AssertEqual(false, settings.IsModified,
+                "Cancel must restore the clean state.");
+            AssertEqual(0, store.SaveCalls,
+                "Cancel must not persist any staged value.");
+            settings.Dispose();
+        }
+
+        private static void ValidatesAndAppliesUnifiedSettings()
+        {
+            var store = new RecordingPreviewSettingsStore();
+            var shell = new PreviewShellViewModel(() => { });
+            var settings = new PreviewSettingsViewModel(shell, store, () => true, () => true, () => { });
+
+            settings.Settings.MaxThreadCountText = "0";
+            AssertEqual(true, settings.HasValidationErrors,
+                "An invalid worker limit must be explained before persistence.");
+            settings.ApplyCommand.Execute(null);
+            AssertEqual(0, store.SaveCalls,
+                "Invalid settings must never reach persistence.");
+
+            settings.Settings.MaxThreadCountText = "4";
+            settings.Settings.EnableGlobalSearch = true;
+            settings.ApplyCommand.Execute(null);
+            AssertEqual(1, store.SaveCalls,
+                "One explicit Apply action must persist the complete valid snapshot exactly once.");
+            AssertEqual(true, store.Current.EnableGlobalSearch,
+                "Apply must persist staged values through the central store boundary.");
+            AssertEqual(false, settings.IsModified,
+                "Successful Apply must establish a new clean baseline.");
+            settings.Dispose();
+        }
+
+        private static void SearchesSettingsByLegacyTerminology()
+        {
+            var store = new RecordingPreviewSettingsStore();
+            var shell = new PreviewShellViewModel(() => { });
+            var settings = new PreviewSettingsViewModel(shell, store, () => true, () => true, () => { });
+
+            settings.SearchText = "node";
+            AssertEqual(1, settings.VisibleCategories.Count,
+                "Legacy provider-node terminology must resolve to one central category.");
+            AssertEqual(PreviewSettingsCategory.Providers, settings.VisibleCategories[0].Value,
+                "Provider nodes must resolve to Providers instead of another settings window.");
+
+            settings.SearchText = "dictionary";
+            AssertEqual(PreviewSettingsCategory.HistoryAndData, settings.VisibleCategories.Single().Value,
+                "Legacy dictionary terminology must route to History and data.");
+            settings.Dispose();
+        }
+
+        private static void ProtectsSettingsSecrets()
+        {
+            var store = new RecordingPreviewSettingsStore();
+            var shell = new PreviewShellViewModel(() => { });
+            var settings = new PreviewSettingsViewModel(shell, store, () => true, () => true, () => { });
+            const string secret = "private-provider-secret";
+
+            settings.StageProviderCredential(secret);
+            AssertEqual(false, settings.Settings.GetType().GetProperties()
+                    .Any(property => string.Equals(property.GetValue(settings.Settings) as string, secret, StringComparison.Ordinal)),
+                "A staged credential must not be exposed through bindable settings properties.");
+            AssertEqual(false, settings.ValidationMessages.Any(message => message.Contains(secret)),
+                "Validation output must never contain a staged credential.");
+
+            settings.Settings.EnableGlobalSearch = true;
+            settings.ApplyCommand.Execute(null);
+            AssertEqual(secret, store.LastProviderCredential,
+                "The write-only store boundary must receive the explicitly staged credential.");
+            AssertEqual(false, settings.Settings.GetType().GetProperties()
+                    .Any(property => string.Equals(property.GetValue(settings.Settings) as string, secret, StringComparison.Ordinal)),
+                "Reloaded settings must expose only credential presence, never its value.");
+            settings.Dispose();
+        }
+
+        private static void TestsProviderWithoutSavingSettings()
+        {
+            var store = new RecordingPreviewSettingsStore();
+            var shell = new PreviewShellViewModel(() => { });
+            var settings = new PreviewSettingsViewModel(shell, store, () => true, () => true, () => { });
+            const string secret = "staged-test-secret";
+
+            settings.StageProviderCredential(secret);
+            settings.TestProviderCommand.Execute(null);
+
+            AssertEqual(1, store.TestCalls,
+                "An explicit provider test must cross the connectivity boundary once.");
+            AssertEqual(0, store.SaveCalls,
+                "Testing staged provider settings must not persist them.");
+            AssertEqual(secret, store.LastTestCredential,
+                "The connectivity boundary must receive a staged credential without exposing it to binding.");
+            AssertEqual(PreviewMessageCatalog.Get("Settings_Providers_Test_Succeeded"), settings.ProviderTestStatusText,
+                "A successful provider test must produce a sanitized status.");
+            settings.Dispose();
+        }
+
+        private static void ClearsStagedCredentialWhenProviderChanges()
+        {
+            var store = new RecordingPreviewSettingsStore();
+            var shell = new PreviewShellViewModel(() => { });
+            var settings = new PreviewSettingsViewModel(shell, store, () => true, () => true, () => { });
+
+            settings.StageProviderCredential("credential-for-first-provider");
+            settings.SelectedProvider = settings.ProviderOptions[1];
+            settings.TestProviderCommand.Execute(null);
+
+            AssertEqual(0, store.TestCalls,
+                "A staged credential must not follow the user to another provider configuration.");
+            AssertEqual(true, settings.ProviderTestStatusText.Contains(
+                    PreviewMessageCatalog.Get("Settings_Validation_CredentialRequired")),
+                "The newly selected provider must require its own credential.");
+            settings.Dispose();
+        }
+
         private static TranslationPresetCoordinator CreateCoordinator(RecordingStore store)
         {
             return new TranslationPresetCoordinator(new TranslationPresetService(), store);
@@ -930,6 +1066,86 @@ namespace PhoenixTranslator.PresetTests
 
             public void Dispose()
             {
+            }
+        }
+
+        private sealed class RecordingPreviewSettingsStore : IPreviewSettingsStore
+        {
+            internal RecordingPreviewSettingsStore()
+            {
+                Current = new PreviewSettingsSnapshot
+                {
+                    ProviderKey = 1,
+                    ProviderModel = "test-model",
+                    ProviderEnabled = false,
+                    HasStoredCredential = true,
+                    LocalPortText = "1234",
+                    SourceLanguage = "English",
+                    TargetLanguage = "English",
+                    EnableLanguageDetection = true,
+                    EnableContext = true,
+                    ContextLimitText = "200",
+                    PlaceholderPattern = "<(.*?)>,",
+                    GenerateCSharp = true,
+                    UiLanguage = "English",
+                    Density = "Compact",
+                    MaxThreadCountText = "2",
+                    ThrottleRatioText = "0.7",
+                    ThrottleDelayText = "200"
+                };
+            }
+
+            internal PreviewSettingsSnapshot Current { get; private set; }
+            internal int SaveCalls { get; private set; }
+            internal int TestCalls { get; private set; }
+            internal string LastProviderCredential { get; private set; }
+            internal string LastTestCredential { get; private set; }
+
+            public IReadOnlyList<PreviewProviderOption> GetProviders()
+            {
+                return new[]
+                {
+                    new PreviewProviderOption(1, "Test provider", false, true, true, new[] { "test-model" }),
+                    new PreviewProviderOption(2, "Second provider", false, false, true, new[] { "other-model" })
+                };
+            }
+
+            public IReadOnlyList<string> GetLanguages()
+            {
+                return new[] { "English", "German" };
+            }
+
+            public PreviewSettingsSnapshot Load()
+            {
+                return Current.Clone();
+            }
+
+            public void Save(PreviewSettingsSnapshot settings, string providerCredential, string proxyPassword)
+            {
+                SaveCalls++;
+                Current = settings.Clone();
+                if (!string.IsNullOrWhiteSpace(providerCredential))
+                {
+                    LastProviderCredential = providerCredential;
+                    Current.HasStoredCredential = true;
+                }
+
+                if (!string.IsNullOrWhiteSpace(proxyPassword))
+                {
+                    Current.HasStoredProxyPassword = true;
+                }
+            }
+
+            public Task<PreviewProviderTestResult> TestProviderAsync(
+                PreviewSettingsSnapshot settings,
+                string providerCredential,
+                string proxyPassword,
+                CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                TestCalls++;
+                LastTestCredential = providerCredential;
+                return Task.FromResult(new PreviewProviderTestResult(PreviewProviderTestStatus.Succeeded));
             }
         }
     }

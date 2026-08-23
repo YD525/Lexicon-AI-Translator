@@ -9,58 +9,6 @@
                 <ResourceDictionary Source="/Themes/PreviewControlStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-            <Style x:Key="WorkspaceComboBox" TargetType="ComboBox">
-            <Setter Property="MinHeight" Value="32" />
-            <Setter Property="Padding" Value="8,3" />
-            <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextPrimary}" />
-            <Setter Property="Background" Value="{StaticResource PreviewBrushSurfaceCanvas}" />
-            <Setter Property="BorderBrush" Value="{StaticResource PreviewBrushBorder}" />
-            <Setter Property="FocusVisualStyle" Value="{StaticResource PreviewFocusVisual}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ComboBox">
-                        <Grid>
-                            <ToggleButton Focusable="False" Background="Transparent" BorderThickness="0"
-                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
-                                <ToggleButton.Template>
-                                    <ControlTemplate TargetType="ToggleButton">
-                                        <Border Background="{StaticResource PreviewBrushSurfaceCanvas}"
-                                                BorderBrush="{StaticResource PreviewBrushBorder}" BorderThickness="1"
-                                                CornerRadius="{StaticResource PreviewRadiusMedium}">
-                                            <Path Width="8" Height="5" Margin="0,0,10,0" HorizontalAlignment="Right"
-                                                  VerticalAlignment="Center" Fill="{StaticResource PreviewBrushTextSecondary}"
-                                                  Data="M 0 0 L 8 0 L 4 5 Z" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-                            <ContentPresenter Margin="10,0,28,0" VerticalAlignment="Center"
-                                              IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" />
-                            <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True"
-                                   IsOpen="{TemplateBinding IsDropDownOpen}">
-                                <Border MinWidth="{TemplateBinding ActualWidth}" MaxHeight="320"
-                                        Background="{StaticResource PreviewBrushSurfaceRaised}"
-                                        BorderBrush="{StaticResource PreviewBrushBorderStrong}" BorderThickness="1">
-                                    <ScrollViewer><ItemsPresenter /></ScrollViewer>
-                                </Border>
-                            </Popup>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            </Style>
-            <Style TargetType="ComboBoxItem">
-                <Setter Property="Padding" Value="10,6" />
-                <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextPrimary}" />
-                <Setter Property="Background" Value="{StaticResource PreviewBrushSurfaceRaised}" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Style.Triggers>
-                    <Trigger Property="IsHighlighted" Value="True">
-                        <Setter Property="Background" Value="{StaticResource PreviewBrushSurfaceInteractive}" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
             <Style x:Key="WorkspaceEntryItem" TargetType="ListBoxItem">
             <Setter Property="Padding" Value="12,8" />
             <Setter Property="Margin" Value="4,2" />
@@ -119,11 +67,11 @@
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="{localization:PreviewMessage Workspace_Search_Placeholder}"
                          AutomationProperties.Name="{localization:PreviewMessage Workspace_Search_Placeholder}" />
-                <ComboBox Grid.Column="2" Style="{StaticResource WorkspaceComboBox}"
+                <ComboBox Grid.Column="2" Style="{StaticResource PreviewComboBox}"
                           ItemsSource="{Binding StateFilters}" DisplayMemberPath="Label"
                           SelectedItem="{Binding SelectedStateFilter}"
                           AutomationProperties.Name="{localization:PreviewMessage Workspace_Filter_State_Name}" />
-                <ComboBox Grid.Column="4" Style="{StaticResource WorkspaceComboBox}"
+                <ComboBox Grid.Column="4" Style="{StaticResource PreviewComboBox}"
                           ItemsSource="{Binding TypeFilters}" SelectedItem="{Binding SelectedTypeFilter}"
                           AutomationProperties.Name="{localization:PreviewMessage Workspace_Filter_Type_Name}" />
                 <Button Grid.Column="6" Style="{StaticResource PreviewButtonSecondary}"
