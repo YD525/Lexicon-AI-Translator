@@ -62,6 +62,12 @@
     <Compile Include="..\Phoenix_Translator\Application\PreviewProjectComparison.cs">
       <Link>PreviewProjectComparison.cs</Link>
     </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewProjectHubViewModel.cs">
+      <Link>PreviewProjectHubViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Phoenix_Translator\Application\PreviewRecentProjectStore.cs">
+      <Link>PreviewRecentProjectStore.cs</Link>
+    </Compile>
     <Compile Include="..\Phoenix_Translator\Application\PreviewHistoryUpdateViewModel.cs">
       <Link>PreviewHistoryUpdateViewModel.cs</Link>
     </Compile>

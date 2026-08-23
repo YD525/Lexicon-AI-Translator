@@ -63,6 +63,7 @@ namespace PhoenixTranslator.ApplicationLayer
         private readonly Action _openLegacyWorkspace;
         private readonly PreviewShellViewModel _shell;
         private readonly Func<string, IPreviewTranslationProject> _openProject;
+        private readonly Func<string, Task<bool>> _requestProjectOpen;
         private readonly List<PreviewTranslationEntry> _allEntries = new List<PreviewTranslationEntry>();
         private readonly HashSet<PreviewTranslationEntry> _draftEntries = new HashSet<PreviewTranslationEntry>();
         private readonly HashSet<PreviewTranslationEntry> _modifiedEntries = new HashSet<PreviewTranslationEntry>();
@@ -85,16 +86,19 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <param name="openLegacyWorkspace">Opens the workflow-specific legacy fallback.</param>
         /// <param name="shell">The persistent shell status owner.</param>
         /// <param name="openProject">Opens the selected path through the parser boundary.</param>
+        /// <param name="requestProjectOpen">Optionally routes user-initiated opens through the Project Hub.</param>
         internal PreviewTranslationWorkspaceViewModel(
             Func<string> chooseProjectPath,
             Action openLegacyWorkspace,
             PreviewShellViewModel shell,
-            Func<string, IPreviewTranslationProject> openProject)
+            Func<string, IPreviewTranslationProject> openProject,
+            Func<string, Task<bool>> requestProjectOpen = null)
         {
             _chooseProjectPath = chooseProjectPath ?? throw new ArgumentNullException(nameof(chooseProjectPath));
             _openLegacyWorkspace = openLegacyWorkspace ?? throw new ArgumentNullException(nameof(openLegacyWorkspace));
             _shell = shell ?? throw new ArgumentNullException(nameof(shell));
             _openProject = openProject ?? throw new ArgumentNullException(nameof(openProject));
+            _requestProjectOpen = requestProjectOpen;
             _searchText = string.Empty;
             _operationText = PreviewMessageCatalog.Get("Common_State_Ready");
 
@@ -367,11 +371,11 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Opens and normalizes a selected project without blocking the UI thread.
         /// </summary>
         /// <param name="path">The selected private project path.</param>
-        internal async Task OpenProjectAsync(string path)
+        internal async Task<bool> OpenProjectAsync(string path)
         {
             if (string.IsNullOrWhiteSpace(path) || IsBusy)
             {
-                return;
+                return false;
             }
 
             BeginOperation(PreviewMessageCatalog.Get("Workspace_Project_Opening"), 0);
@@ -384,10 +388,12 @@ namespace PhoenixTranslator.ApplicationLayer
                 ReplaceEntries(openedProject.Entries);
                 _shell.SetProject(openedProject.DisplayName, false);
                 CompleteOperation();
+                return true;
             }
             catch
             {
                 FailOperation("Workspace_Project_OpenFailed");
+                return false;
             }
         }
 
@@ -545,7 +551,14 @@ namespace PhoenixTranslator.ApplicationLayer
 
         private async void OpenSelectedProject()
         {
-            await OpenProjectAsync(_chooseProjectPath());
+            string path = _chooseProjectPath();
+            if (_requestProjectOpen != null)
+            {
+                await _requestProjectOpen(path);
+                return;
+            }
+
+            await OpenProjectAsync(path);
         }
 
         private async void SaveProject()

@@ -195,6 +195,10 @@
                         </StackPanel>
                     </Grid>
                 </Border>
+                <preview:PreviewProjectHubView x:Name="ProjectHub" Grid.Row="2"
+                        Visibility="{Binding DataContext.IsProjectHubVisible,
+                            RelativeSource={RelativeSource AncestorType={x:Type Window}},
+                            Converter={StaticResource BooleanToVisibility}}" />
                 <preview:PreviewTranslationWorkspaceView x:Name="TranslationWorkspace" Grid.Row="2"
                         Visibility="{Binding DataContext.IsTranslationWorkspaceVisible,
                             RelativeSource={RelativeSource AncestorType={x:Type Window}},

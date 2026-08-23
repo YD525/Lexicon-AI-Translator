@@ -15,6 +15,7 @@ namespace PhoenixTranslator.UIManagement.Preview
     {
         private PhoenixGui _legacyWorkspace;
         private readonly PreviewShellViewModel _shellViewModel;
+        private readonly PreviewProjectHubViewModel _projectHubViewModel;
         private readonly PreviewTranslationWorkspaceViewModel _translationWorkspaceViewModel;
         private readonly PreviewReviewQualityViewModel _reviewQualityViewModel;
         private readonly PreviewHistoryUpdateViewModel _historyUpdateViewModel;
@@ -31,7 +32,15 @@ namespace PhoenixTranslator.UIManagement.Preview
                 SelectPreviewProject,
                 OpenLegacyWorkspace,
                 _shellViewModel,
-                PreviewTranslationProject.Open);
+                PreviewTranslationProject.Open,
+                OpenProjectFromWorkflowAsync);
+            _projectHubViewModel = new PreviewProjectHubViewModel(
+                _translationWorkspaceViewModel,
+                _shellViewModel,
+                SelectPreviewProject,
+                ConfirmProjectReplacement,
+                new PreviewRecentProjectStore(),
+                OpenLegacyWorkspace);
             _reviewQualityViewModel = new PreviewReviewQualityViewModel(
                 _shellViewModel,
                 _translationWorkspaceViewModel,
@@ -56,6 +65,7 @@ namespace PhoenixTranslator.UIManagement.Preview
                 ConfirmSettingsDiscard,
                 OpenLegacyWorkspace);
             DataContext = _shellViewModel;
+            ProjectHub.DataContext = _projectHubViewModel;
             TranslationWorkspace.DataContext = _translationWorkspaceViewModel;
             ReviewQualityWorkspace.DataContext = _reviewQualityViewModel;
             HistoryUpdateWorkspace.DataContext = _historyUpdateViewModel;
@@ -72,6 +82,22 @@ namespace PhoenixTranslator.UIManagement.Preview
                 MessageBoxButton.OKCancel,
                 MessageBoxImage.Warning,
                 MessageBoxResult.Cancel) == MessageBoxResult.OK;
+        }
+
+        private bool ConfirmProjectReplacement()
+        {
+            return ShowConfirmation(
+                this,
+                PreviewMessageCatalog.Get("Projects_Replace_Confirmation"),
+                PreviewMessageCatalog.Get("Projects_Replace_ConfirmationTitle"),
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel) == MessageBoxResult.OK;
+        }
+
+        private System.Threading.Tasks.Task<bool> OpenProjectFromWorkflowAsync(string path)
+        {
+            return _projectHubViewModel.OpenProjectAsync(path);
         }
 
         private string SelectPreviewProject()
@@ -206,6 +232,9 @@ namespace PhoenixTranslator.UIManagement.Preview
         {
             switch (_shellViewModel.CurrentDestination)
             {
+                case PreviewShellDestination.Projects:
+                    ProjectHub.FocusInitialControl();
+                    break;
                 case PreviewShellDestination.Translate:
                     TranslationWorkspace.FocusInitialControl();
                     break;
@@ -270,6 +299,7 @@ namespace PhoenixTranslator.UIManagement.Preview
 
             _settingsViewModel.Dispose();
             _shellViewModel.PropertyChanged -= ShellViewModelPropertyChanged;
+            _projectHubViewModel.Dispose();
             _historyUpdateViewModel.Dispose();
             _reviewQualityViewModel.Dispose();
             _translationWorkspaceViewModel.Dispose();
