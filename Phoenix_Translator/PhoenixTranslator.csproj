@@ -125,6 +125,9 @@
     <Compile Include="Application\PreviewSettingsViewModel.cs" />
     <Compile Include="Application\LegacyPreviewSettingsStore.cs" />
     <Compile Include="Application\PreviewShellCommand.cs" />
+    <Compile Include="Application\PreviewDialogService.cs" />
+    <Compile Include="Application\PreviewDiagnosticService.cs" />
+    <Compile Include="Application\PreviewShellServicesViewModel.cs" />
     <Compile Include="Application\PreviewShellViewModel.cs" />
     <Compile Include="Application\PreviewTranslationEntry.cs" />
     <Compile Include="Application\PreviewTranslationProject.cs" />
@@ -224,6 +227,13 @@
     <Compile Include="UIManagement\Preview\PreviewShellWindow.xaml.cs">
       <DependentUpon>PreviewShellWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIManagement\Preview\PreviewShellServicesView.xaml.cs">
+      <DependentUpon>PreviewShellServicesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIManagement\Preview\PreviewDialogWindow.xaml.cs">
+      <DependentUpon>PreviewDialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIManagement\Preview\WpfPreviewDialogService.cs" />
     <Compile Include="UIManagement\Preview\PreviewProjectHubView.xaml.cs">
       <DependentUpon>PreviewProjectHubView.xaml</DependentUpon>
     </Compile>
@@ -357,6 +367,14 @@
     <Page Include="UIManagement\Preview\PreviewShellWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIManagement\Preview\PreviewShellServicesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UIManagement\Preview\PreviewDialogWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UIManagement\Preview\PreviewProjectHubView.xaml">
       <SubType>Designer</SubType>

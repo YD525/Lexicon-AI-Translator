@@ -215,6 +215,9 @@
                         Visibility="{Binding DataContext.IsSettingsWorkspaceVisible,
                             RelativeSource={RelativeSource AncestorType={x:Type Window}},
                             Converter={StaticResource BooleanToVisibility}}" />
+                <preview:PreviewShellServicesView x:Name="ShellServicesWorkspace" Grid.Row="2"
+                        Panel.ZIndex="20"
+                        Visibility="{Binding IsShellServicesVisible, Converter={StaticResource BooleanToVisibility}}" />
             </Grid>
         </Grid>
 
@@ -229,6 +232,8 @@
                     <ColumnDefinition Width="24" />
                     <ColumnDefinition Width="220" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="8" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="16" />
                     <ColumnDefinition Width="Auto" />
@@ -246,7 +251,10 @@
                         Style="{StaticResource PreviewButtonSecondary}" Click="KeyboardHelpButton_Click"
                         Content="{localization:PreviewMessage Accessibility_KeyboardHelp_Action}"
                         AutomationProperties.HelpText="{localization:PreviewMessage Accessibility_KeyboardHelp_HelpText}" />
-                <TextBlock Grid.Column="8" VerticalAlignment="Center" Foreground="{StaticResource PreviewBrushTextMuted}"
+                <Button Grid.Column="8" Padding="8,2" Style="{StaticResource PreviewButtonSecondary}"
+                        Command="{Binding OpenShellServicesCommand}"
+                        Content="{localization:PreviewMessage ShellServices_Open_Action}" />
+                <TextBlock Grid.Column="10" VerticalAlignment="Center" Foreground="{StaticResource PreviewBrushTextMuted}"
                            Text="{localization:PreviewMessage Shell_Navigation_Shortcuts_Hint}" />
             </Grid>
         </Border>

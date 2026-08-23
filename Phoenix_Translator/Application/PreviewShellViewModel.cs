@@ -75,6 +75,7 @@ namespace PhoenixTranslator.ApplicationLayer
         private double _operationProgress;
         private string _notificationMessage;
         private PreviewShellNotificationSeverity _notificationSeverity;
+        private bool _isShellServicesVisible;
 
         /// <summary>
         /// Creates the initial no-project shell state.
@@ -102,6 +103,8 @@ namespace PhoenixTranslator.ApplicationLayer
             NavigateCommand = new PreviewShellCommand(NavigateFromParameter);
             OpenLegacyWorkspaceCommand = new PreviewShellCommand(parameter => _openLegacyWorkspace());
             DismissNotificationCommand = new PreviewShellCommand(parameter => ClearNotification());
+            OpenShellServicesCommand = new PreviewShellCommand(parameter => IsShellServicesVisible = true);
+            CloseShellServicesCommand = new PreviewShellCommand(parameter => IsShellServicesVisible = false);
         }
 
         /// <inheritdoc />
@@ -260,6 +263,28 @@ namespace PhoenixTranslator.ApplicationLayer
         /// Gets the command that dismisses the current non-blocking notification.
         /// </summary>
         public ICommand DismissNotificationCommand { get; private set; }
+
+        /// <summary>Gets the command that opens About, diagnostics, credits, and licenses.</summary>
+        public ICommand OpenShellServicesCommand { get; private set; }
+
+        /// <summary>Gets the command that returns from shell services to the active workflow.</summary>
+        public ICommand CloseShellServicesCommand { get; private set; }
+
+        /// <summary>Gets or sets whether shell services cover the active workflow.</summary>
+        public bool IsShellServicesVisible
+        {
+            get => _isShellServicesVisible;
+            set
+            {
+                if (_isShellServicesVisible == value)
+                {
+                    return;
+                }
+
+                _isShellServicesVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// Gets whether a non-blocking shell notification is visible.
