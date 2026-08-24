@@ -49,6 +49,43 @@
                 <Setter Property="Margin" Value="0,5,0,8" />
                 <Setter Property="Foreground" Value="{StaticResource PreviewBrushTextPrimary}" />
                 <Setter Property="FocusVisualStyle" Value="{StaticResource PreviewFocusVisual}" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="CheckBox">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Grid Width="20" Height="20" VerticalAlignment="Center">
+                                    <Border x:Name="Box"
+                                Width="20" Height="20"
+                                CornerRadius="5"
+                                BorderThickness="1.5"
+                                BorderBrush="{StaticResource PreviewBrushTextSecondary}"
+                                Background="{StaticResource PreviewBrushSurfacePrimary}" />
+                                    <Border x:Name="Dot"
+                                Width="9" Height="9"
+                                CornerRadius="2"
+                                Background="{StaticResource PreviewBrushAccentGold}"
+                                Opacity="0" />
+                                </Grid>
+                                <ContentPresenter Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       RecognizesAccessKey="True" />
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource PreviewBrushAccentGold}" />
+                                    <Setter TargetName="Dot" Property="Opacity" Value="1" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource PreviewBrushAccentGold}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.5" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
