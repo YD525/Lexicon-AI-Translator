@@ -14,7 +14,7 @@ namespace ModFileParser
 
         public int StringTableID;
         public int Score;
-        public string Original;
+        public string Source;
         public string Translated;
 
         public bool IsVar;
@@ -70,7 +70,7 @@ namespace ModFileParser
                   PexStringItemRef = x.PexStringItemRef,
                   StringTableID = x.StringTableID,
                   Score = x.Score,
-                  Original = x.Original,
+                  Source = x.Original,
                   Translated = x.Translated,
                   IsVar = x.IsVar,
                   VarOffset = x.VarOffset

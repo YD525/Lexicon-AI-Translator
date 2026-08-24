@@ -168,7 +168,7 @@ namespace PhoenixTranslator.UIManagement
 
         public Grid CreateLine(ModFile Mod, bool IsModify, double Height, BaseUnit Item)
         {
-            var FindDictionary = Mod.Lex_Dictionary.CheckDictionary(Item.Key);
+            var FindDictionary = Mod.OriginalDictionaryReader.CheckDictionary(Item.Key);
 
             if (FindDictionary != null)
             {
@@ -441,7 +441,7 @@ namespace PhoenixTranslator.UIManagement
                 // Update Translation Data And History Cache
                 if (Target != null)
                 {
-                    PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(Key, Target.SourceText,new P_String(OriginalText,1));
+                    PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(Key, Target.Source,new P_String(OriginalText,1));
 
                     bool IsCloud = false;
                     Target.SyncData(PhoenixApp.WorkWin.ActiveTab.Mod, ref IsCloud);

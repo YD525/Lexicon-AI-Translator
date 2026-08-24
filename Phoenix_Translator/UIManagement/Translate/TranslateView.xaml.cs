@@ -372,7 +372,7 @@ namespace PhoenixTranslator.UIManagement
 
         public bool CheckDictionary()
         {
-            return Mod.Lex_Dictionary.CheckDictionary();
+            return Mod.OriginalDictionaryReader.CheckDictionary();
         }
 
         public void SetLog(string Str)
@@ -462,8 +462,8 @@ namespace PhoenixTranslator.UIManagement
                         }
 
 
-                        FromStr.Text = TransListView.RealLines[TransListView.SelectLineID].SourceText;
-                        ToStr.Text = TransListView.RealLines[TransListView.SelectLineID].TransText;
+                        FromStr.Text = TransListView.RealLines[TransListView.SelectLineID].Source;
+                        ToStr.Text = TransListView.RealLines[TransListView.SelectLineID].Translated;
 
                         UIHelper.ShowButton(ApplyOTButton, true);
 
@@ -650,7 +650,7 @@ namespace PhoenixTranslator.UIManagement
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine("MCM", GetItem.Value.EditID, GetItem.Key, GetItem.Value.String,"", 999));
+                                TransListView.AddRowR(LineRenderer.CreateLine("MCM", GetItem.Value.EditID, GetItem.Key, GetItem.Value.Source, GetItem.Value.Translated, 999));
                             }));
                         }
 
@@ -683,7 +683,7 @@ namespace PhoenixTranslator.UIManagement
 
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine("Auto", P_Convert.ObjToStr(GetItem.Value.StringTableID), GetItem.Key, GetItem.Value.Original, "", GetItem.Value.Score));
+                                TransListView.AddRowR(LineRenderer.CreateLine("Auto", P_Convert.ObjToStr(GetItem.Value.StringTableID), GetItem.Key, GetItem.Value.Source, "", GetItem.Value.Score));
                             }));
                         }
 
@@ -696,7 +696,7 @@ namespace PhoenixTranslator.UIManagement
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine(GetItem.Type, "", GetItem.Key, GetItem.SourceText, GetItem.TransText, GetItem.Score));
+                                TransListView.AddRowR(LineRenderer.CreateLine(GetItem.Type, "", GetItem.Key, GetItem.Source, GetItem.Translated, GetItem.Score));
                             }));
                         }
 
@@ -968,13 +968,13 @@ namespace PhoenixTranslator.UIManagement
 
                     string GetKey = TransListView.RealLines[i].Key;
 
-                    string GetTransText = TransListView.RealLines[i].TransText;
+                    string GetTransText = TransListView.RealLines[i].Translated;
 
                     if (CanSetSource)
                     {
                         if (string.IsNullOrEmpty(GetTransText))
                         {
-                            GetTransText = TransListView.RealLines[i].SourceText;
+                            GetTransText = TransListView.RealLines[i].Source;
                         }
                     }
 
@@ -1054,9 +1054,9 @@ namespace PhoenixTranslator.UIManagement
                             {
                                 for (int i = 0; i < RealLines.Count; i++)
                                 {
-                                    if (RealLines[i].SourceText != RealLines[i].TransText)
+                                    if (RealLines[i].Source != RealLines[i].Translated)
                                     {
-                                        Mod.P_Translator.SetLink(RealLines[i].Key,new P_String(RealLines[i].TransText,0));
+                                        Mod.P_Translator.SetLink(RealLines[i].Key,new P_String(RealLines[i].Translated,0));
                                     }
                                 }
 
@@ -1122,7 +1122,7 @@ namespace PhoenixTranslator.UIManagement
                         CallFuncCount++;
                     }
 
-                    Mod.Lex_Dictionary.Dictionarys.Clear();
+                    Mod.OriginalDictionaryReader.Dictionary.Clear();
 
                     if (TransListView != null)
                     {
@@ -1182,8 +1182,8 @@ namespace PhoenixTranslator.UIManagement
                 for (int i = 0; i < TransListView.RealLines.Count; i++)
                 {
                     if ((TransListView.RealLines[i].Key != null && TransListView.RealLines[i].Key.Equals(SearchAny, ComparisonType)) ||
-                        IsTextMatch(TransListView.RealLines[i].SourceText) ||
-                        IsTextMatch(TransListView.RealLines[i].TransText))
+                        IsTextMatch(TransListView.RealLines[i].Source) ||
+                        IsTextMatch(TransListView.RealLines[i].Translated))
                     {
                         GetKey = TransListView.RealLines[i].Key;
 
@@ -1268,10 +1268,10 @@ namespace PhoenixTranslator.UIManagement
         {
             for (int i = 0; i < TransListView.RealLines.Count; i++)
             {
-                TransListView.RealLines[i].TransText = TransListView.RealLines[i].SourceText + "(" + i.ToString() + ")";
+                TransListView.RealLines[i].Translated = TransListView.RealLines[i].Source + "(" + i.ToString() + ")";
 
                 var Link = Mod.P_Translator.GetLink();
-                Link[TransListView.RealLines[i].Key] = new P_String(TransListView.RealLines[i].TransText,0);
+                Link[TransListView.RealLines[i].Key] = new P_String(TransListView.RealLines[i].Translated,0);
 
                 TransListView.RealLines[i].SyncUI(TransListView);
             }
@@ -1540,15 +1540,15 @@ namespace PhoenixTranslator.UIManagement
                     if (!IsNext)
                     {
                         NewText = GetHistoryItem.CurrentText;
-                        this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.SourceText, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
+                        this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.Source, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
                     }
                     else
                     {
                         NewText = GetHistoryItem.CurrentText;
-                        this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.SourceText, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
+                        this.Mod.P_Translator.AutoSetLink(GetHistoryItem.Key, Row.Source, new P_String(GetHistoryItem.CurrentText, 0, GetHistoryItem.RangeID));
                     }
 
-                    Row.TransText = NewText;
+                    Row.Translated = NewText;
 
                     UPDateKeys.Add(GetHistoryItem.Key);
                 }
@@ -1603,23 +1603,23 @@ namespace PhoenixTranslator.UIManagement
                         bool RefCloud = false;
                         GetGrid.SyncData(Mod, ref RefCloud);
 
-                        GetGrid.TransText = ToStr.Text;
+                        GetGrid.Translated = ToStr.Text;
 
                         try
                         {
-                            if (CloudDBCache.FindCache(Mod.P_Translator.GetFileUniqueKey(), GetGrid.Key, Mod.P_Translator.To).Equals(GetGrid.TransText))
+                            if (CloudDBCache.FindCache(Mod.P_Translator.GetFileUniqueKey(), GetGrid.Key, Mod.P_Translator.To).Equals(GetGrid.Translated))
                             {
                                 LocalDBCache.DeleteCache(Mod.P_Translator.GetFileUniqueKey(), GetGrid.Key, Mod.P_Translator.To);
 
                                 var Link = Mod.P_Translator.GetLink();
 
-                                Link[GetGrid.Key] =new P_String(GetGrid.TransText,1);
+                                Link[GetGrid.Key] =new P_String(GetGrid.Translated,1);
 
 
                             }
                             else
                             {
-                                Mod.P_Translator.AutoSetLink(GetGrid.Key, GetGrid.SourceText,new P_String(GetGrid.TransText,1));
+                                Mod.P_Translator.AutoSetLink(GetGrid.Key, GetGrid.Source,new P_String(GetGrid.Translated,1));
                             }
                         }
                         catch { }
@@ -1677,7 +1677,7 @@ namespace PhoenixTranslator.UIManagement
                             bool IsCloud = false;
                             QueryGrid.SyncData(Mod, ref IsCloud);
 
-                            if (QueryGrid.TransText.Length > 0)
+                            if (QueryGrid.Translated.Length > 0)
                             {
                                 CloudDBCache.DeleteCache(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, Mod.P_Translator.To);
                             }
@@ -1689,7 +1689,7 @@ namespace PhoenixTranslator.UIManagement
                                 Emotion = this.Mod.EspReader.QueryEmotion(this.Mod.EspReader.Records[QueryGrid.Key]);
                             }
 
-                            BaseUnit SetUnit = new BaseUnit(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.SourceText, QueryGrid.TransText, Emotion, 100);
+                            BaseUnit SetUnit = new BaseUnit(Mod.P_Translator.GetFileUniqueKey(), QueryGrid.Key, QueryGrid.Type, QueryGrid.Source, QueryGrid.Translated, Emotion, 100);
 
                             CanEditTransView(false);
 
@@ -1795,11 +1795,11 @@ namespace PhoenixTranslator.UIManagement
                 var GetLine = Lines[i];
                 Lines[i].SyncData(Mod, ref IsCloud);
 
-                if ((GetLine.SourceText + GetLine.RealSource).Trim().Length > 0)
+                if ((GetLine.Source + GetLine.RealSource).Trim().Length > 0)
                 {
-                    if (P_Language.DetectLanguageByLine(GetLine.SourceText) != Mod.P_Translator.To)
+                    if (P_Language.DetectLanguageByLine(GetLine.Source) != Mod.P_Translator.To)
                     {
-                        if (GetLine.TransText.Length == 0 && (new TranslationPreprocessor().IsOnlySymbolsAndSpaces(GetLine.SourceText + GetLine.RealSource)) == false)
+                        if (GetLine.Translated.Length == 0 && (new TranslationPreprocessor().IsOnlySymbolsAndSpaces(GetLine.Source + GetLine.RealSource)) == false)
                         {
                             if (Lines[i].Score > 0)
                             {
@@ -2295,7 +2295,7 @@ namespace PhoenixTranslator.UIManagement
                     Mod.Close();
 
                     TypeSelector.Items.Clear();
-                    Mod.Lex_Dictionary.Close();
+                    Mod.OriginalDictionaryReader.Close();
 
                     FromStringsFile.Visibility = Visibility.Collapsed;
 

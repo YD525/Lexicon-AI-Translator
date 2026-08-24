@@ -80,7 +80,7 @@ namespace PhoenixTranslator.SkyrimManagement
             {
                 foreach (var Get in MCM.Load(Path))
                 {
-                    if (Get.Value.String.Contains(Str))
+                    if (Get.Value.Source.Contains(Str))
                     {
                         MCM.Close();
                         return true;

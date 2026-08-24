@@ -103,7 +103,7 @@ namespace PhoenixTranslator
             {
                 if (Tab.Mod.GetRecords<PexStrings>().TryGetValue(Key, out var Record) == true)
                 {
-                    return Record.Original;
+                    return Record.Source;
                 }
             }
             else
@@ -111,7 +111,7 @@ namespace PhoenixTranslator
             {
                 if (Tab.Mod.GetRecords<MCMStrings>().TryGetValue(Key, out var Record) == true)
                 {
-                    return Record.String;
+                    return Record.Source;
                 }
             }
             else
@@ -374,9 +374,9 @@ namespace PhoenixTranslator
                     }
 
                     string NewText = HistoryItem.CurrentText;
-                    PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(HistoryItem.Key, Row.SourceText, new P_String(HistoryItem.CurrentText, 0, HistoryItem.RangeID));
+                    PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(HistoryItem.Key, Row.Source, new P_String(HistoryItem.CurrentText, 0, HistoryItem.RangeID));
 
-                    Row.TransText = NewText;
+                    Row.Translated = NewText;
 
                     for (int i = 0; i < PhoenixApp.WorkWin.ActiveTab.TransListView.Rows; i++)
                     {

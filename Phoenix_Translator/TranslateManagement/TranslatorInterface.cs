@@ -148,7 +148,7 @@ namespace PhoenixTranslator.TranslateManage
 
                                     if (QueryGrid != null)
                                     {
-                                        if (QueryGrid.TransText.Length == 0)
+                                        if (QueryGrid.Translated.Length == 0)
                                         {
                                             Sign.ControlSignal.Sign = 1;
                                             Sign.Data = Item;

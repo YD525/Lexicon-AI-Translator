@@ -932,7 +932,7 @@ namespace PhoenixTranslator
                     {
                         if (_Owner.ActiveTab.TransListView.RealLines.Count > i)
                         {
-                            P_Language.DetectLanguage(ref Detector, _Owner.ActiveTab.TransListView.RealLines[i].SourceText);
+                            P_Language.DetectLanguage(ref Detector, _Owner.ActiveTab.TransListView.RealLines[i].Source);
                         }
                     }
 

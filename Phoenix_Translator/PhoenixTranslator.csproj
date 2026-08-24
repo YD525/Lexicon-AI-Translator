@@ -150,7 +150,6 @@
     </Compile>
     <Compile Include="FileManagement\ZipHelper.cs" />
     <Compile Include="SkyrimManagement\BackupManager.cs" />
-    <Compile Include="SkyrimManagement\Base26Helper.cs" />
     <Compile Include="SkyrimManagement\ModStringSearcher.cs" />
     <Compile Include="UIManagement\BlockListView.cs" />
     <Compile Include="UIManagement\Main\CGView.xaml.cs">
@@ -198,8 +197,7 @@
     <Compile Include="SkyrimManagement\ModFile.cs" />
     <Compile Include="SkyrimManagement\RamCacheReader.cs" />
     <Compile Include="SkyrimManagement\StringsFileReader.cs" />
-    <Compile Include="SkyrimManagement\XmlReader.cs" />
-    <Compile Include="SkyrimManagement\YDDictionaryHelper.cs" />
+    <Compile Include="SkyrimManagement\OriginalDictionaryReader.cs" />
     <Compile Include="SplashWindow.xaml.cs">
       <DependentUpon>SplashWindow.xaml</DependentUpon>
     </Compile>

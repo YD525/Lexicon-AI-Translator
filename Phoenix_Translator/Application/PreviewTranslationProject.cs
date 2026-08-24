@@ -205,7 +205,7 @@ namespace PhoenixTranslator.ApplicationLayer
             ThrowIfDisposed();
             foreach (PreviewTranslationEntry entry in Entries)
             {
-                _modFile.Lex_Dictionary.UPDateTransText(entry.Key, entry.SourceText);
+                _modFile.OriginalDictionaryReader.UPDateTransText(entry.Key, entry.SourceText);
                 if (entry.IsModified)
                 {
                     _modFile.P_Translator.AutoSetLink(
@@ -440,8 +440,8 @@ namespace PhoenixTranslator.ApplicationLayer
                         return Data.Select(item => CreateEntry(item.Key,
                             "MCM",
                             item.Value.EditID, 
-                            item.Value.String, 
-                            string.Empty,
+                            item.Value.Source,
+                            item.Value.Translated,
                             100
                             )).ToList();
                     }
@@ -461,8 +461,8 @@ namespace PhoenixTranslator.ApplicationLayer
                         return modFile.RamCacheReader.RamLines.Select(item => CreateEntry(item.Key,
                             item.Type, 
                             item.Key, 
-                            item.SourceText,
-                            item.TransText,
+                            item.Source,
+                            item.Translated,
                             item.Score
                             )).ToList();
                     }
@@ -473,8 +473,8 @@ namespace PhoenixTranslator.ApplicationLayer
                         return Data.Select(item => CreateEntry(item.Key,
                         "PEX",
                         item.Value.StringTableID.ToString(),
-                        item.Value.Original,
-                        string.Empty,
+                        item.Value.Source,
+                        item.Value.Translated,
                         item.Value.Score
                         )).ToList();
                     }
@@ -482,9 +482,9 @@ namespace PhoenixTranslator.ApplicationLayer
                     {
                         var Data = modFile.GetRecords<RecordItem>();
                         return Data.Select(item => CreateEntry(item.Key,
-                            item.Value.ParentSig + " " + item.Value.ChildSig, //use `split(' ')` to extract the parent signature and child signature.
+                            item.Value.ParentSig + " " + item.Value.ChildSig,
                             item.Value.FormID,
-                            item.Value.String,
+                            item.Value.Source,
                             string.Empty,
                             100
                         )).ToList();

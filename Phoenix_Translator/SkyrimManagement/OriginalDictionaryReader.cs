@@ -2,47 +2,46 @@
 using System.IO;
 using System.Text;
 using PhoenixTranslator.SkyrimModManager;
-using PhoenixTranslator.TranslateManage;
 using Newtonsoft.Json;
 
 namespace PhoenixTranslator.SkyrimManage
 {
-    public class YDDictionaryFile
+    public class OriginalDictionary
     {
         public string ModName { get; set; } = "";
-        public List<YDDictionary> Dictionarys { get; set; } = new List<YDDictionary>();
+        public List<OriginalTextItem> Dictionary { get; set; } = new List<OriginalTextItem>();
     }
-    public class YDDictionary
+    public class OriginalTextItem
     {
         public string Key { get; set; } = "";
         public string OriginalText { get; set; } = "";
 
-        public YDDictionary()
+        public OriginalTextItem()
         { 
         
         }
 
-        public YDDictionary(string Key, string OriginalText)
+        public OriginalTextItem(string Key, string OriginalText)
         { 
            this.Key = Key;
            this.OriginalText = OriginalText;
         }
 
-        public YDDictionary(YDDictionary Item)
+        public OriginalTextItem(OriginalTextItem Item)
         {
             this.Key = Item.Key;
             this.OriginalText = Item.OriginalText;
         }
     }
-    public class LexDictionary
+    public class OriginalDictionaryReader
     {
-        public YDDictionaryFile CurrentFile = null;
-        public Dictionary<string, YDDictionary> Dictionarys = new Dictionary<string, YDDictionary>();
+        public OriginalDictionary CurrentFile = null;
+        public Dictionary<string, OriginalTextItem> Dictionary = new Dictionary<string, OriginalTextItem>();
 
         public void Close()
         {
-            CurrentFile = new YDDictionaryFile();
-            Dictionarys.Clear();
+            CurrentFile = new OriginalDictionary();
+            Dictionary.Clear();
             CurrentModName = string.Empty;
         }
 
@@ -68,8 +67,8 @@ namespace PhoenixTranslator.SkyrimManage
                     FakeGrid GetFakeGrid = View.RealLines[i];
 
                     string GetKey = GetFakeGrid.Key;
-                    string GetSourceText = GetFakeGrid.SourceText;
-                    var TargetText = GetFakeGrid.TransText;
+                    string GetSourceText = GetFakeGrid.Source;
+                    var TargetText = GetFakeGrid.Translated;
 
                     this.UPDateTransText(GetKey, GetSourceText);
 
@@ -84,12 +83,12 @@ namespace PhoenixTranslator.SkyrimManage
             string ModName = CurrentModName;
             string SetPath = PhoenixApp.GetFullPath(@"\Library\" + ModName) + ".Json";
 
-            CurrentFile = new YDDictionaryFile();
+            CurrentFile = new OriginalDictionary();
 
-            foreach (var Get in Dictionarys)
+            foreach (var Get in Dictionary)
             {
                 CurrentFile.ModName = ModName;
-                CurrentFile.Dictionarys.Add(Get.Value);
+                CurrentFile.Dictionary.Add(Get.Value);
             }
 
             if (File.Exists(SetPath))
@@ -106,30 +105,30 @@ namespace PhoenixTranslator.SkyrimManage
         public void ReadDictionary(string ModName)
         {
             CurrentModName = ModName;
-            Dictionarys.Clear();
+            Dictionary.Clear();
 
             string SetPath = PhoenixApp.GetFullPath(@"\Library\" + ModName) + ".Json";
             if (File.Exists(SetPath))
             {
                 string GetData = Encoding.UTF8.GetString(DataHelper.ReadFile(SetPath));
-                var GetClass = JsonConvert.DeserializeObject<YDDictionaryFile>(GetData);
+                var GetClass = JsonConvert.DeserializeObject<OriginalDictionary>(GetData);
                 if (GetClass != null)
                 {
                     CurrentFile = GetClass;
 
-                    foreach (var Get in CurrentFile.Dictionarys)
+                    foreach (var Get in CurrentFile.Dictionary)
                     {
-                        Dictionarys.Add(Get.Key,new YDDictionary(Get));
+                        Dictionary.Add(Get.Key,new OriginalTextItem(Get));
                     }
                 }
             }
         }
 
-        public YDDictionary CheckDictionary(string Key)
+        public OriginalTextItem CheckDictionary(string Key)
         {
-            if (Dictionarys.ContainsKey(Key))
+            if (Dictionary.ContainsKey(Key))
             { 
-               return Dictionarys[Key];
+               return Dictionary[Key];
             }
 
             return null;
@@ -137,14 +136,14 @@ namespace PhoenixTranslator.SkyrimManage
 
         public int UPDateTransText(string Key,string OriginalText)
         {   
-            if (Dictionarys.ContainsKey(Key))
+            if (Dictionary.ContainsKey(Key))
             {
-                Dictionarys[Key].OriginalText = OriginalText;
+                Dictionary[Key].OriginalText = OriginalText;
                 return 1;
             }
             else
             {
-                Dictionarys.Add(Key,new YDDictionary(Key,OriginalText));
+                Dictionary.Add(Key,new OriginalTextItem(Key,OriginalText));
                 return 2;
             }
         }

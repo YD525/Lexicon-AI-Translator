@@ -31,7 +31,7 @@ namespace PhoenixTranslator.SkyrimManagement
                     {
                         foreach (var Get in RamLines)
                         {
-                            TranslatorRef.GetLink().Add(Get.Key,new P_String(Get.TransText,0));
+                            TranslatorRef.GetLink().Add(Get.Key,new P_String(Get.Translated,0));
                         }
                     }
                 }

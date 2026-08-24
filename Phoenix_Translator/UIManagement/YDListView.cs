@@ -22,18 +22,20 @@ public class FakeGrid
     public double Height { get; set; } = 0;
     public string Type { get; set; } = "";
     public string Key { get; set; } = "";
-    public string SourceText { get; set; } = "";
+    public string Source { get; set; } = "";
+
     public string RealSource { get; set; } = "";
-    public string TransText { get; set; } = "";
+    public string Translated { get; set; } = "";
+
     public double Score { get; set; } = 0;
 
-    public FakeGrid(double Height, string Type, string Key, string SourceText, string TransText, double Score)
+    public FakeGrid(double Height, string Type, string Key, string Source, string Translated, double Score)
     {
         this.Height = Height;
         this.Type = Type;
         this.Key = Key;
-        this.SourceText = SourceText;
-        this.TransText = TransText;
+        this.Source = Source;
+        this.Translated = Translated;
         this.Score = Score;
     }
 
@@ -41,14 +43,14 @@ public class FakeGrid
     {
         if (this.RealSource.Length == 0)
         {
-            return this.SourceText;
+            return this.Source;
         }
 
         return this.RealSource;
     }
     public string GetSource()
     {
-        return this.SourceText;
+        return this.Source;
     }
 
     public void SyncUI(YDListView ListViewHandle)
@@ -61,8 +63,8 @@ public class FakeGrid
             {
                 ListViewHandle.Parent.Dispatcher.Invoke(new Action(() =>
                 {
-                    RowStyleWin.SetOriginal(ListViewHandle.VisibleRows[i].View,this.SourceText);
-                    RowStyleWin.SetTranslated(ListViewHandle.VisibleRows[i].View, this.TransText);
+                    RowStyleWin.SetOriginal(ListViewHandle.VisibleRows[i].View,this.Source);
+                    RowStyleWin.SetTranslated(ListViewHandle.VisibleRows[i].View, this.Translated);
 
                     CanExit = true;
                 }));
@@ -79,16 +81,16 @@ public class FakeGrid
     {
         bool FromDictionary = false;
 
-        var FindDictionary = Mod.Lex_Dictionary.CheckDictionary(this.Key);
+        var FindDictionary = Mod.OriginalDictionaryReader.CheckDictionary(this.Key);
 
         if (FindDictionary != null)
         {
             if (!string.IsNullOrEmpty(FindDictionary.OriginalText))
             {
-                if (this.SourceText != FindDictionary.OriginalText)
+                if (this.Source != FindDictionary.OriginalText)
                 {
-                    this.RealSource = this.SourceText;
-                    this.SourceText = FindDictionary.OriginalText;
+                    this.RealSource = this.Source;
+                    this.Source = FindDictionary.OriginalText;
                 }
 
                 FromDictionary = true;
@@ -99,19 +101,19 @@ public class FakeGrid
         {
             if (!string.IsNullOrEmpty(this.RealSource))
             {
-                if (this.SourceText != this.RealSource)
+                if (this.Source != this.RealSource)
                 {
-                    this.SourceText = this.RealSource;
+                    this.Source = this.RealSource;
                 }
             }
         }
 
         IsCloud = false;
-        var QueryResult = Mod.P_Translator.QueryTransData(this.Key,this.Type,this.SourceText,false);
+        var QueryResult = Mod.P_Translator.QueryTransData(this.Key,this.Type,this.Source, false);
 
         if (QueryResult != null)
         {
-            this.TransText = QueryResult.TransText;
+            this.Translated = QueryResult.TransText;
             IsCloud = QueryResult.FromCloud;
         }
     }
@@ -561,8 +563,8 @@ public class YDListView
 
                 Grid GetGrid = this.VisibleRows[i].View;
 
-                RowStyleWin.SetOriginal(GetGrid, this.VisibleRows[i].Data.SourceText);
-                RowStyleWin.SetTranslated(GetGrid, this.VisibleRows[i].Data.TransText);
+                RowStyleWin.SetOriginal(GetGrid, this.VisibleRows[i].Data.Source);
+                RowStyleWin.SetTranslated(GetGrid, this.VisibleRows[i].Data.Translated);
             }
         }));
     }
@@ -784,11 +786,11 @@ public class YDListView
 
         return RealLines
             .Where(Line =>
-                (!string.IsNullOrEmpty(Line.SourceText) &&
-                 Line.SourceText.IndexOf(Keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                (!string.IsNullOrEmpty(Line.Source) &&
+                 Line.Source.IndexOf(Keyword, StringComparison.OrdinalIgnoreCase) >= 0)
                 ||
-                (!string.IsNullOrEmpty(Line.TransText) &&
-                 Line.TransText.IndexOf(Keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                (!string.IsNullOrEmpty(Line.Translated) &&
+                 Line.Translated.IndexOf(Keyword, StringComparison.OrdinalIgnoreCase) >= 0)
                 ||
                 (!string.IsNullOrEmpty(Line.Key) &&
                 Line.Key.IndexOf(Keyword, StringComparison.OrdinalIgnoreCase) >= 0)
