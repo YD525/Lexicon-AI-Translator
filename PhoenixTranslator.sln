@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixTranslator", "Phoeni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixTranslator.PresetTests", "PhoenixTranslator.PresetTests\PhoenixTranslator.PresetTests.csproj", "{4BDAF33C-ECC7-4C72-8545-9266CA76A3D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phoenix.FileParser", "Phoenix.FileParser\Phoenix.FileParser.csproj", "{F6CE9616-4068-4A84-BBC9-06B5E545FCEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModFileParser", "Phoenix.FileParser\ModFileParser.csproj", "{F6CE9616-4068-4A84-BBC9-06B5E545FCEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

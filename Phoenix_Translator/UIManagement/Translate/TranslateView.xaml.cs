@@ -30,6 +30,7 @@ using PhoenixEngine;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Engine.ADO;
 using PhoenixTranslator.ApplicationLayer;
+using ModFileParser;
 
 namespace PhoenixTranslator.UIManagement
 {
@@ -547,14 +548,14 @@ namespace PhoenixTranslator.UIManagement
         {
             if (Mod.Type == GameFileType.ESP)
             {
-                Mod.EspReader.LoadStringsFile();
+                Mod.LoadStringsFile();
 
-                if (Mod.EspReader.FromStringsFile.Strings.Count > 0)
+                if (Mod.FromStringsFile.Strings.Count > 0)
                 {
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         FromStringsFile.Visibility = Visibility.Visible;
-                        UIHelper.SyncFromStringsFile(Mod.EspReader, TransListView);
+                        UIHelper.SyncFromStringsFile(Mod, TransListView);
                     }));
                 }
                 else
@@ -645,11 +646,11 @@ namespace PhoenixTranslator.UIManagement
                     else
                     if (Mod.Type == GameFileType.MCM)
                     {
-                        foreach (var GetItem in Mod.MCMReader.MCMItems)
+                        foreach (var GetItem in Mod.GetRecords<MCMStrings>())
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine(GetItem.Type, GetItem.EditorID, GetItem.Key, GetItem.SourceText, GetItem.GetTextIfTransR(Mod.P_Translator), 999));
+                                TransListView.AddRowR(LineRenderer.CreateLine("MCM", GetItem.Value.EditID, GetItem.Key, GetItem.Value.String,"", 999));
                             }));
                         }
 
@@ -664,27 +665,25 @@ namespace PhoenixTranslator.UIManagement
                             AutoSig = string.Empty;
                         }
 
-                        Mod.PexReader.SelectStrings();
-
-                        foreach (var GetItem in Mod.PexReader.Records)
+                        foreach (var GetItem in Mod.GetRecords<PexStrings>())
                         {
                             if (GetItem.Value.FunctionRef != null)
                             {
                                 int CalcLineIndex = GetItem.Value.FunctionRef.PscStartLineIndex;
 
-                                if (Mod.PexReader.PexLinks.ContainsKey(GetItem.Value.UniqueKey))
+                                if (Mod.PexReader.PexLinks.ContainsKey(GetItem.Key))
                                 {
-                                    Mod.PexReader.PexLinks[GetItem.Value.UniqueKey] = CalcLineIndex;
+                                    Mod.PexReader.PexLinks[GetItem.Key] = CalcLineIndex;
                                 }
                                 else
                                 {
-                                    Mod.PexReader.PexLinks.Add(GetItem.Value.UniqueKey, CalcLineIndex);
+                                    Mod.PexReader.PexLinks.Add(GetItem.Key, CalcLineIndex);
                                 }
                             }
 
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine("Auto", P_Convert.ObjToStr(GetItem.Value.StringTableID), GetItem.Value.UniqueKey, GetItem.Value.Original, "", GetItem.Value.Score));
+                                TransListView.AddRowR(LineRenderer.CreateLine("Auto", P_Convert.ObjToStr(GetItem.Value.StringTableID), GetItem.Key, GetItem.Value.Original, "", GetItem.Value.Score));
                             }));
                         }
 
@@ -706,11 +705,11 @@ namespace PhoenixTranslator.UIManagement
                     else
                     if (Mod.Type == GameFileType.XML)
                     {
-                        foreach (var GetItem in Mod.XmlReader.XmlItems)
+                        foreach (var GetItem in Mod.GetRecords<XmlStrings>())
                         {
                             this.Dispatcher.Invoke(new Action(() =>
                             {
-                                TransListView.AddRowR(LineRenderer.CreateLine(GetItem.Type, "", GetItem.Key, GetItem.SourceText, GetItem.TransText, 999));
+                                TransListView.AddRowR(LineRenderer.CreateLine("XML", GetItem.Value.EDID, GetItem.Key, GetItem.Value.Source, "", 999));
                             }));
                         }
 

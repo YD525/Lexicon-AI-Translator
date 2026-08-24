@@ -111,12 +111,12 @@ namespace PhoenixTranslator
 
             UpdateFollowPosition();
 
-            SetText(ModRef.PexReader.PSCCode);
+            SetText(ModRef.PexReader.Code);
         }
 
         public void SyncCode(string SearchText = "")
         {
-            SetText(ModRef.PexReader.PSCCode);
+            SetText(ModRef.PexReader.Code);
         }
 
 

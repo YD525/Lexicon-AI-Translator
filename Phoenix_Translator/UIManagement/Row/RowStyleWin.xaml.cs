@@ -11,9 +11,8 @@ using PhoenixEngine.Translate;
 using PhoenixEngine.Additional;
 using PhoenixEngine.Unit;
 using PhoenixEngine.Common;
-using PhoenixTranslator.TranslateManage;
-using System;
 using PhoenixEngine.Memory;
+using ModFileParser;
 
 namespace PhoenixTranslator.UIManagement
 {

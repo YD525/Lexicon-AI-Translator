@@ -26,8 +26,8 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
 using System.Windows.Threading;
-using PhoenixTranslator.UIManagement.Main;
 using PhoenixTranslator.UIManagement.Preview;
+using ModFileParser;
 
 namespace PhoenixTranslator
 {
@@ -1305,9 +1305,10 @@ namespace PhoenixTranslator
                     SCodeGenStyle.SelectedValue = SCodeGenStyle.Items[1];
                 }
 
-                EspReader TempEspReader = new EspReader(new Translator("", Languages.English, Languages.English, true));
+                EspReader TempEspReader = new EspReader();
+                TempEspReader.Create(-5,new PhoenixEngine.Memory.P_Dict<string, PhoenixEngine.Memory.P_String>());
 
-                EspFilterStr.Text = TempEspReader.GetFilterByStr(); //！
+                EspFilterStr.Text = TempEspReader.GetFilterByStr(); 
 
                 TempEspReader.Clear();
             }
@@ -1892,7 +1893,8 @@ namespace PhoenixTranslator
             PhoenixApp.SelfSetting.CustomFilterStr = string.Empty;
             PhoenixApp.SelfSetting.SaveConfig();
 
-            EspReader TempEspReader = new EspReader(new Translator("", Languages.English, Languages.English, true));
+            EspReader TempEspReader = new EspReader();
+            TempEspReader.Create(-6, new PhoenixEngine.Memory.P_Dict<string, PhoenixEngine.Memory.P_String>());
 
             EspFilterStr.Text = TempEspReader.GetFilterByStr();
 
@@ -1903,7 +1905,8 @@ namespace PhoenixTranslator
         {
             try
             {
-                EspReader TempEspReader = new EspReader(new Translator("", Languages.English, Languages.English, true));
+                EspReader TempEspReader = new EspReader();
+                TempEspReader.Create(-6,new PhoenixEngine.Memory.P_Dict<string, PhoenixEngine.Memory.P_String>());
 
                 var FilterDict = TempEspReader.ParseFilterString(EspFilterStr.Text);
 

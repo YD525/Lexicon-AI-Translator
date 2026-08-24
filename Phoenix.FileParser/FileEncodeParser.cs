@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Phoenix.FileParser
+namespace ModFileParser
 {
     public class FileEncodeParser
     {

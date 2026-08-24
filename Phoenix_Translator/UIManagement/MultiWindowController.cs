@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PhoenixTranslator.SkyrimManagement;
 using PhoenixEngine.Unit;
+using ModFileParser;
 
 namespace PhoenixTranslator.UIManagement
 {
@@ -320,8 +321,8 @@ namespace PhoenixTranslator.UIManagement
                                     if (Mod.PexReader.PexLinks.ContainsKey(SelectKey) && Text == "")
                                         Text = GetGrid.SourceText;
 
-                                    if (CodeWin.TextEditor.Text != Mod.PexReader.PSCCode)
-                                        CodeWin.TextEditor.Text = Mod.PexReader.PSCCode;
+                                    if (CodeWin.TextEditor.Text != Mod.PexReader.Code)
+                                        CodeWin.TextEditor.Text = Mod.PexReader.Code;
 
                                     _ = CodeWin.SelectLineFromIDEAsync(Mod.PexReader.PexLinks[SelectKey], Text);
 

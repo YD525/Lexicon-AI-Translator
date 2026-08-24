@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls;
+using ModFileParser;
 using PhoenixEngine;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine.ADO;
@@ -432,33 +434,61 @@ namespace PhoenixTranslator.ApplicationLayer
         {
             switch (modFile.Type)
             {
-                case GameFileType.MCM:
-                    return modFile.MCMReader.MCMItems.Select(item => CreateEntry(
-                        modFile, item.Key, item.Type, item.EditorID, item.SourceText, item.TransText, 100)).ToList();
-                case GameFileType.XML:
-                    return modFile.XmlReader.XmlItems.Select(item => CreateEntry(
-                        modFile, item.Key, item.Type, item.EditorID, item.SourceText, item.TransText, 100)).ToList();
-                case GameFileType.JSON:
-                    return modFile.RamCacheReader.RamLines.Select(item => CreateEntry(
-                        modFile, item.Key, item.Type, item.Key, item.SourceText, item.TransText, item.Score)).ToList();
-                case GameFileType.PEX:
-                    return modFile.PexReader.Records.Values.Select(item => CreateEntry(
-                        modFile,
-                        item.UniqueKey,
+                    case GameFileType.MCM:
+                    {
+                        var Data = modFile.GetRecords<MCMStrings>();
+                        return Data.Select(item => CreateEntry(item.Key,
+                            "MCM",
+                            item.Value.EditID, 
+                            item.Value.String, 
+                            string.Empty,
+                            100
+                            )).ToList();
+                    }
+                    case GameFileType.XML:
+                    {
+                        var Data = modFile.GetRecords<XmlStrings>();
+                        return Data.Select(item => CreateEntry(item.Key, 
+                            "XML", 
+                            item.Value.EDID, 
+                            item.Value.Source, 
+                            item.Value.Translated,
+                            100
+                            )).ToList();
+                    }
+                    case GameFileType.JSON:
+                    {
+                        return modFile.RamCacheReader.RamLines.Select(item => CreateEntry(item.Key,
+                            item.Type, 
+                            item.Key, 
+                            item.SourceText,
+                            item.TransText,
+                            item.Score
+                            )).ToList();
+                    }
+                    case GameFileType.PEX:
+                    {
+                        var Data = modFile.GetRecords<PexStrings>();
+
+                        return Data.Select(item => CreateEntry(item.Key,
                         "PEX",
-                        item.StringTableID.ToString(),
-                        item.Original,
+                        item.Value.StringTableID.ToString(),
+                        item.Value.Original,
                         string.Empty,
-                        item.Score)).ToList();
-                case GameFileType.ESP:
-                    return modFile.EspReader.Records.Values.Select(item => CreateEntry(
-                        modFile,
-                        item.UniqueKey,
-                        item.ParentSig,
-                        item.FormID,
-                        item.String,
-                        string.Empty,
-                        100)).ToList();
+                        item.Value.Score
+                        )).ToList();
+                    }
+                    case GameFileType.ESP:
+                    {
+                        var Data = modFile.GetRecords<RecordItem>();
+                        return Data.Select(item => CreateEntry(item.Key,
+                            item.Value.ParentSig + " " + item.Value.ChildSig, //use `split(' ')` to extract the parent signature and child signature.
+                            item.Value.FormID,
+                            item.Value.String,
+                            string.Empty,
+                            100
+                        )).ToList();
+                    }
                 default:
                     throw new InvalidDataException("The selected project format is unsupported.");
             }
@@ -501,8 +531,8 @@ namespace PhoenixTranslator.ApplicationLayer
             ref string code,
             ref string codeSource)
         {
-            PexStringItem item;
-            if (!_modFile.PexReader.Records.TryGetValue(entry.Key, out item))
+            PexStrings item;
+            if (!_modFile.GetRecords<PexStrings>().TryGetValue(entry.Key, out item))
             {
                 return;
             }
@@ -519,7 +549,7 @@ namespace PhoenixTranslator.ApplicationLayer
                     "PexInterface"));
             }
 
-            string decompiledCode = _modFile.PexReader.PSCCode ?? string.Empty;
+            string decompiledCode = _modFile.PexReader.Code ?? string.Empty;
             code = decompiledCode.Length <= MaximumCodeCharacters
                 ? decompiledCode
                 : decompiledCode.Substring(0, MaximumCodeCharacters);
@@ -643,16 +673,13 @@ namespace PhoenixTranslator.ApplicationLayer
         }
 
         private static PreviewTranslationEntry CreateEntry(
-            ModFile modFile,
             string key,
             string type,
             string record,
             string sourceText,
-            string fallbackTarget,
+            string targetText,
             double score)
         {
-            P_String linkedValue = modFile.P_Translator.GetLink()[key];
-            string targetText = linkedValue == null ? fallbackTarget : linkedValue.String;
             return new PreviewTranslationEntry(key, type, record, sourceText, targetText, score);
         }
 

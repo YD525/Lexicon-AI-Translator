@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using PhoenixEngine.Memory;
 
-namespace Phoenix.FileParser
+namespace ModFileParser
 {
     public struct MCMStrings
     {

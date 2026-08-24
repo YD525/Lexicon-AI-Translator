@@ -4,7 +4,7 @@ using PexInterface;
 using PhoenixEngine.Memory;
 using static PexInterface.PexHeuristicAnalysis;
 
-namespace Phoenix.FileParser
+namespace ModFileParser
 {
     public struct PexStrings
     {
@@ -12,6 +12,7 @@ namespace Phoenix.FileParser
 
         public PexStringExtend PexStringItemRef;
 
+        public int StringTableID;
         public int Score;
         public string Original;
         public string Translated;
@@ -67,6 +68,7 @@ namespace Phoenix.FileParser
               {
                   FunctionRef = x.FunctionRef,
                   PexStringItemRef = x.PexStringItemRef,
+                  StringTableID = x.StringTableID,
                   Score = x.Score,
                   Original = x.Original,
                   Translated = x.Translated,
