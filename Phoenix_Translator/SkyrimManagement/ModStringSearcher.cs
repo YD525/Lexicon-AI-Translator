@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using ModFileParser;
 using PhoenixEngine.Language;
 using PhoenixEngine.Translate;
-using PhoenixTranslator.SkyrimManage;
 
 namespace PhoenixTranslator.SkyrimManagement
 {
@@ -45,18 +45,19 @@ namespace PhoenixTranslator.SkyrimManagement
             Close();
             _Instance = new Translator("ModSearch", Languages.English, Languages.English, true);
 
-            Esp = new EspReader(_Instance);
+            Esp = new EspReader();
+            Esp.Create(0,new PhoenixEngine.Memory.P_Dict<string, PhoenixEngine.Memory.P_String>());
             Pex = new PexReader();
-            MCM = new MCMReader(_Instance);
+            Pex.Create(0, new PhoenixEngine.Memory.P_Dict<string, PhoenixEngine.Memory.P_String>());
+            MCM = new MCMReader();
+            MCM.Create(0, new PhoenixEngine.Memory.P_Dict<string, PhoenixEngine.Memory.P_String>());
         }
 
         public bool Contains(string Path, string Str)
         {
             if (Path.EndsWith(".esp") || Path.EndsWith(".esm") || Path.EndsWith(".esl"))
             {
-                Esp.LoadEsp(Path);
-
-                foreach (var Get in Esp.SelectSig("ALL"))
+                foreach (var Get in Esp.Load(Path))
                 {
                     if (Get.Value.String.Contains(Str))
                     {
@@ -68,25 +69,18 @@ namespace PhoenixTranslator.SkyrimManagement
             else
             if (Path.EndsWith(".pex"))
             {
-                Pex.LoadPex(Path);
-
-                foreach (var Get in Pex.Records)
+                Pex.Load(CodeGenStyle.Papyrus, true, Path);
+                if (Pex.Code.Contains(Str))
                 {
-                    if (Get.Value.Original.Contains(Str))
-                    {
-                        Pex.Close();
-                        return true;
-                    }
+                    return true;
                 }
             }
             else
             if (Path.EndsWith(".txt"))
             {
-                MCM.LoadMCM(Path);
-
-                foreach (var Get in MCM.Lines)
+                foreach (var Get in MCM.Load(Path))
                 {
-                    if (Get.Contains(Str))
+                    if (Get.Value.String.Contains(Str))
                     {
                         MCM.Close();
                         return true;

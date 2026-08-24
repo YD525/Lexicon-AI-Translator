@@ -18,6 +18,7 @@ using PhoenixEngine;
 using PhoenixEngine.P_Delegate;
 using PhoenixEngine.Common;
 using PhoenixTranslator.ApplicationLayer;
+using ModFileParser;
 
 namespace PhoenixTranslator
 {

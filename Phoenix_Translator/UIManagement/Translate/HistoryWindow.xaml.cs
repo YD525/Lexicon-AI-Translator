@@ -10,9 +10,7 @@ using PhoenixTranslator.UIManagement;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
-using System.Threading;
-using PhoenixTranslator.SkyrimManage;
-using PhoenixTranslator.SkyrimManagement;
+using ModFileParser;
 
 namespace PhoenixTranslator
 {
@@ -95,7 +93,7 @@ namespace PhoenixTranslator
 
             if (Tab?.Mod.Type == SkyrimManagement.GameFileType.ESP)
             {
-                if (Tab.Mod.EspReader?.Records.TryGetValue(Key, out var Record) == true)
+                if (Tab.Mod.GetRecords<RecordItem>().TryGetValue(Key, out var Record) == true)
                 {
                     return Record.String;
                 }
@@ -103,7 +101,7 @@ namespace PhoenixTranslator
             else
             if (Tab?.Mod.Type == SkyrimManagement.GameFileType.PEX)
             {
-                if (Tab.Mod.PexReader.Records.TryGetValue(Key, out var Record) == true)
+                if (Tab.Mod.GetRecords<PexStrings>().TryGetValue(Key, out var Record) == true)
                 {
                     return Record.Original;
                 }
@@ -111,19 +109,17 @@ namespace PhoenixTranslator
             else
             if (Tab?.Mod.Type == SkyrimManagement.GameFileType.MCM)
             {
-                MCMItem Item = Tab.Mod.MCMReader.MCMItems.FirstOrDefault(x => x.Key == Key);
-                if (Item != null)
+                if (Tab.Mod.GetRecords<MCMStrings>().TryGetValue(Key, out var Record) == true)
                 {
-                    return Item.SourceText;
+                    return Record.String;
                 }
             }
             else
             if (Tab?.Mod.Type == SkyrimManagement.GameFileType.XML)
             {
-                XmlItem Item = Tab.Mod.XmlReader.XmlItems.FirstOrDefault(x => x.Key == Key);
-                if (Item != null)
+                if (Tab.Mod.GetRecords<XmlStrings>().TryGetValue(Key, out var Record) == true)
                 {
-                    return Item.SourceText;
+                    return Record.Source;
                 }
             }
 

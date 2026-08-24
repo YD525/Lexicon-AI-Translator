@@ -1,6 +1,6 @@
 ﻿using PhoenixEngine.Memory;
 
-namespace Phoenix.FileParser
+namespace ModFileParser
 { 
     public interface IModReader <T>
     {

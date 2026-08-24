@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 using PhoenixEngine.Memory;
 
-namespace Phoenix.FileParser
+namespace ModFileParser
 {
     public struct XmlStrings
     {
@@ -54,7 +54,7 @@ namespace Phoenix.FileParser
                     REC = (string)x.Element("REC"),
                     RECID = x.Element("REC")?.Attribute("id")?.Value,
                     Source = (string)x.Element("Source"),
-                    Translated = "",
+                    Translated = _LinkRef[$"{FileUniqueKey}_{(string)x.Element("REC")?.Attribute("id")}_{(string)x.Element("EDID")}_{(string)x.Element("REC")}"].String,
                     Dest = (string)x.Element("Dest")
                 }
                 );

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PhoenixTranslator.TranslateManage;
+using ModFileParser;
 using PhoenixEngine.Translate;
 
 namespace PhoenixTranslator.SkyrimManagement

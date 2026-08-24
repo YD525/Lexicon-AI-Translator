@@ -8,7 +8,6 @@ using PhoenixTranslator.FileManagement;
 using PhoenixTranslator.SkyrimManage;
 using PhoenixTranslator.TranslateManage;
 using PhoenixTranslator.UIManagement;
-using PhoenixEngine;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine;
 using PhoenixEngine.Engine.ADO;
@@ -17,8 +16,9 @@ using PhoenixEngine.Memory;
 using PhoenixEngine.Request;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
-using static PexInterface.PexHeuristicAnalysis;
 using PhoenixTranslator.ApplicationLayer;
+using ModFileParser;
+using PhoenixEngine;
 
 namespace PhoenixTranslator.SkyrimManagement
 {
@@ -35,12 +35,17 @@ namespace PhoenixTranslator.SkyrimManagement
         public string Path = "";
         public string FileName = "";
         public GameFileType Type = GameFileType.Null;
+
         public RamCacheReader RamCacheReader = null;
+
+        public StringsFileReader FromStringsFile = null;
+        public StringsFileReader ToStringsFile = null;
         public EspReader EspReader = null;
+
         public PexReader PexReader = null;
         public MCMReader MCMReader = null;
 
-        public R_XmlReader XmlReader = null;
+        public XmlReader XmlReader = null;
 
         public Dictionary<string, ManagedDialContext> DialNodeCache = new Dictionary<string, ManagedDialContext>();
 
@@ -72,7 +77,8 @@ namespace PhoenixTranslator.SkyrimManagement
                 if (Path.ToLower().EndsWith(".xml"))
                 {
                     this.Type = GameFileType.XML;
-                    XmlReader = new R_XmlReader(P_Translator);
+                    XmlReader = new XmlReader();
+                    XmlReader.Create(P_Translator.GetFileUniqueKey(), P_Translator.GetLink());
                 }
                 else
                 if (Path.ToLower().EndsWith(".json"))
@@ -85,18 +91,21 @@ namespace PhoenixTranslator.SkyrimManagement
                 {
                     this.Type = GameFileType.PEX;
                     PexReader = new PexReader();
+                    PexReader.Create(P_Translator.GetFileUniqueKey(), P_Translator.GetLink());
                 }
                 else
                 if (Path.ToLower().EndsWith(".txt"))
                 {
                     this.Type = GameFileType.MCM;
-                    MCMReader = new MCMReader(P_Translator);
+                    MCMReader = new MCMReader();
+                    MCMReader.Create(P_Translator.GetFileUniqueKey(), P_Translator.GetLink());
                 }
                 else
                 if (Path.ToLower().EndsWith(".esp") || Path.ToLower().EndsWith(".esm") || Path.ToLower().EndsWith(".esl"))
                 {
                     this.Type = GameFileType.ESP;
-                    EspReader = new EspReader(P_Translator);
+                    EspReader = new EspReader();
+                    EspReader.Create(P_Translator.GetFileUniqueKey(), P_Translator.GetLink());
                 }
             }
 
@@ -197,6 +206,21 @@ namespace PhoenixTranslator.SkyrimManagement
             }
         }
 
+        public void LoadStringsFile()
+        {
+            FromStringsFile = new StringsFileReader();
+            ToStringsFile = new StringsFileReader();
+
+            FromStringsFile.LoadStringsFiles(this.Path, P_Translator.From);
+            ToStringsFile.LoadStringsFiles(this.Path, P_Translator.To);
+        }
+
+        private object _DataRef = null;
+        public Dictionary<string,T> GetRecords<T>()
+        {
+            return (Dictionary<string, T>)_DataRef;
+        }
+
         public void Load()
         {
             if (File.Exists(this.Path))
@@ -211,7 +235,7 @@ namespace PhoenixTranslator.SkyrimManagement
                 {
                     case GameFileType.XML:
                         {
-                            XmlReader.Load(this.Path);
+                            _DataRef = XmlReader.Load(this.Path);
                             State = GameFileState.Load;
                         }
                         break;
@@ -223,19 +247,20 @@ namespace PhoenixTranslator.SkyrimManagement
                         break;
                     case GameFileType.ESP:
                         {
-                            EspReader.LoadEsp(this.Path);
+                            _DataRef = EspReader.Load(this.Path);
+                            LoadStringsFile();
                             State = GameFileState.Load;
                         }
                         break;
                     case GameFileType.PEX:
                         {
-                            PexReader.LoadPex(this.Path);
+                            _DataRef = PexReader.Load(PhoenixApp.SelfSetting.GenCSharp?CodeGenStyle.CSharp:CodeGenStyle.Papyrus,PhoenixApp.SelfSetting.ShowAssembly,this.Path);
                             State = GameFileState.Load;
                         }
                         break;
                     case GameFileType.MCM:
                         {
-                            MCMReader.LoadMCM(this.Path);
+                            _DataRef = MCMReader.Load(this.Path);
                             State = GameFileState.Load;
                         }
                         break;
@@ -311,16 +336,8 @@ namespace PhoenixTranslator.SkyrimManagement
                     SyncListView(true);
                 }
 
-                bool EspIsCreate = false;
-
                 switch (this.Type)
                 {
-                    case GameFileType.XML:
-                        {
-                            XmlReader.Save(this.Path);
-                            State = GameFileState.Save;
-                        }
-                        break;
                     case GameFileType.JSON:
                         {
                             if (!RamCacheReader.Save(this, this.Path))
@@ -331,76 +348,50 @@ namespace PhoenixTranslator.SkyrimManagement
                             State = GameFileState.Save;
                         }
                         break;
-                    case GameFileType.ESP:
+                    case GameFileType.XML:
                         {
-                            int ModifyCount = EspReader.SaveEsp(this.Path + ".Temp");
-
-                            if (!File.Exists(this.Path + ".Temp"))
+                            int ModifyCount = 0;
+                            if (!XmlReader.Save(ref ModifyCount))
                             {
                                 RestoreBackup();
+                                MessageBox.Show("Build Xml Error!");
                             }
-                            else
+                            State = GameFileState.Save;
+                        }
+                        break;
+                    case GameFileType.ESP:
+                        {
+                            int ModifyCount = 0;
+                            if (!EspReader.Save(ref ModifyCount))
                             {
-                                if (new FileInfo(this.Path + ".Temp").Length == 0)
-                                {
-                                    RestoreBackup();
-                                }
-                                else
-                                {
-                                    EspIsCreate = true;
-                                }
+                                RestoreBackup();
+                                MessageBox.Show("Build Esp Error!");
                             }
-
                             State = GameFileState.Save;
                         }
                         break;
                     case GameFileType.PEX:
                         {
-                            PexReader.Interface.Core.GetStrings(out List<PexStringItem> Strings);
-
-                            int TranslateCount = 0;
-
-                            for (int i = 0; i < Strings.Count; i++)
+                            int ModifyCount = 0;
+                            if (!PexReader.Save(ref ModifyCount))
                             {
-                                var StringItem = Strings[i];
-                                StringItem.Translated = this.P_Translator.GetLink(StringItem.UniqueKey);
-                                if (StringItem.Translated.Length > 0)
-                                {
-                                    TranslateCount++;
-                                }
-                            }
-
-                            if (TranslateCount > 0)
-                            {
-                                PexReader.Interface.Core.SavePex(this.Path, out int SaveState).Close();
-
-                                if (SaveState > 0 == false)
-                                {
-                                    RestoreBackup();
-                                    MessageBox.Show("Build Script Error!");
-                                }
-                            }
+                                RestoreBackup();
+                                MessageBox.Show("Build Pex Error!");
+                            }                        
                             State = GameFileState.Save;
                         }
                         break;
                     case GameFileType.MCM:
                         {
-                            MCMReader.SaveMCMConfig(this.Path);
+                            int ModifyCount = 0;
+                            if (!MCMReader.Save(ref ModifyCount))
+                            {
+                                RestoreBackup();
+                                MessageBox.Show("Build MCM Error!");
+                            }
                             State = GameFileState.Save;
                         }
                         break;
-                }
-
-                if (this.Type == GameFileType.ESP)
-                {
-                    if (EspIsCreate)
-                    {
-                        if (File.Exists(this.Path + ".Temp") && File.Exists(this.Path))
-                        {
-                            File.Delete(this.Path);
-                            File.Move(this.Path + ".Temp", this.Path);
-                        }
-                    }
                 }
 
                 if (this.ListView != null)
@@ -782,7 +773,7 @@ namespace PhoenixTranslator.SkyrimManagement
 
                     if (IsEsp)
                     {
-                        var GetTrans = EspReader.ToStringsFile.QueryData(Row.Key);
+                        var GetTrans = this.ToStringsFile?.QueryData(Row.Key);
 
                         if (GetTrans != null)
                         {

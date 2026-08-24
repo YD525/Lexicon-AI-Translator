@@ -20,6 +20,7 @@ using PhoenixEngine.Translate;
 using PhoenixEngine;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Unit;
+using ModFileParser;
 
 namespace PhoenixTranslator.UIManage
 {
@@ -191,8 +192,13 @@ namespace PhoenixTranslator.UIManage
             return MainGrid;
         }
 
-        public static void SyncFromStringsFile(EspReader EspInstance, YDListView View)
+        public static void SyncFromStringsFile(ModFile Mod, YDListView View)
         {
+            if (Mod.EspReader == null)
+            {
+                return;
+            }
+
             var CanVasHandle = View.GetMainCanvas();
             CanVasHandle.Dispatcher.Invoke(new Action(() =>
             {
@@ -203,12 +209,12 @@ namespace PhoenixTranslator.UIManage
             {
                 var Line = View.RealLines[i];
 
-                if (EspInstance.Records.ContainsKey(Line.Key))
+                if (Mod.EspReader.Records.ContainsKey(Line.Key))
                 {
-                    var GetRealRecord = EspInstance.Records[Line.Key];
-                    if (EspInstance.FromStringsFile.Strings.ContainsKey(GetRealRecord.StringID))
+                    var GetRealRecord = Mod.EspReader.Records[Line.Key];
+                    if (Mod.FromStringsFile.Strings.ContainsKey(GetRealRecord.StringID))
                     {
-                        View.RealLines[i].SourceText = EspInstance.FromStringsFile.Strings[GetRealRecord.StringID].Value;
+                        View.RealLines[i].SourceText = Mod.FromStringsFile.Strings[GetRealRecord.StringID].Value;
                         View.RealLines[i].RealSource = string.Empty;
                         View.RealLines[i].SyncUI(View);
                     }
@@ -408,7 +414,7 @@ namespace PhoenixTranslator.UIManage
 
                 string xaml = XamlWriter.Save(source);
                 StringReader stringReader = new StringReader(xaml);
-                XmlReader xmlReader = XmlReader.Create(stringReader);
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(stringReader);
 
                 return (T)XamlReader.Load(xmlReader);
             }

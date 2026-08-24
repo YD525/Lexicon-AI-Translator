@@ -7,7 +7,7 @@ using System.Text;
 using PhoenixEngine.Common;
 using PhoenixEngine.Memory;
 
-namespace Phoenix.FileParser
+namespace ModFileParser
 {
     // ============================================================
     //  Data transfer objects  (unchanged from original)

@@ -75,6 +75,9 @@
       <HintPath>$(DependencyRoot)\PexInterface.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Phoenix.FileParser">
+      <HintPath>..\Phoenix.FileParser\bin\Debug\Phoenix.FileParser.dll</HintPath>
+    </Reference>
     <Reference Include="PhoenixEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(DependencyRoot)\PhoenixEngine\PhoenixEngine.dll</HintPath>
@@ -149,7 +152,6 @@
     <Compile Include="SkyrimManagement\BackupManager.cs" />
     <Compile Include="SkyrimManagement\Base26Helper.cs" />
     <Compile Include="SkyrimManagement\ModStringSearcher.cs" />
-    <Compile Include="SkyrimManagement\PexReader.cs" />
     <Compile Include="UIManagement\BlockListView.cs" />
     <Compile Include="UIManagement\Main\CGView.xaml.cs">
       <DependentUpon>CGView.xaml</DependentUpon>
@@ -193,11 +195,8 @@
       <DependentUpon>SearchText.xaml</DependentUpon>
     </Compile>
     <Compile Include="SkyrimManagement\DSDConverter.cs" />
-    <Compile Include="SkyrimManagement\EspReader.cs" />
-    <Compile Include="SkyrimManagement\MCMReader.cs" />
     <Compile Include="SkyrimManagement\ModFile.cs" />
     <Compile Include="SkyrimManagement\RamCacheReader.cs" />
-    <Compile Include="SkyrimManagement\SkyrimHelper.cs" />
     <Compile Include="SkyrimManagement\StringsFileReader.cs" />
     <Compile Include="SkyrimManagement\XmlReader.cs" />
     <Compile Include="SkyrimManagement\YDDictionaryHelper.cs" />
