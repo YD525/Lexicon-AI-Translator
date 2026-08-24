@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using PhoenixEngine.Language;
 using PhoenixEngine.Translate;
 using PhoenixTranslator.SkyrimManage;
@@ -10,17 +11,24 @@ namespace PhoenixTranslator.SkyrimManagement
     {
         public string ModPath = "";
         public string ModName = "";
+        public long ModID = 0;
        
         public List<string> AvailableFiles = new List<string>();
         public SkyrimMod()
         { 
         
         }
-        public SkyrimMod(string ModPath, string ModName,  List<string> AvailableFiles)
+        public SkyrimMod(string ModPath, string ModName,  List<string> AvailableFiles, long ModID)
         {
             this.ModPath = ModPath;
             this.ModName = ModName;
             this.AvailableFiles = AvailableFiles;
+
+            this.ModID = ModID;
+        }
+        public string GetUrl()
+        {
+            return string.Format("https://www.nexusmods.com/skyrimspecialedition/mods/{0}", this.ModID);
         }
     }
 
@@ -127,27 +135,27 @@ namespace PhoenixTranslator.SkyrimManagement
             List<SkyrimMod> Mods = new List<SkyrimMod>();
             if (Directory.Exists(TargetPath))
             {
-                if (!IsMod(TargetPath, out string CModName, out List<string> CAvailableFiles))
+                if (!IsMod(TargetPath, out string CModName, out List<string> CAvailableFiles,out long CModID))
                 {
                     foreach (var GetChildPath in Directory.GetDirectories(TargetPath))
                     {
                         //To ensure performance, only one level of the directory is scanned.
-                        if (IsMod(GetChildPath, out string ModName, out List<string> AvailableFiles))
+                        if (IsMod(GetChildPath, out string ModName, out List<string> AvailableFiles,out long ModID))
                         {
-                            Mods.Add(new SkyrimMod(GetChildPath,ModName,AvailableFiles));
+                            Mods.Add(new SkyrimMod(GetChildPath,ModName,AvailableFiles,ModID));
                         }
                     }
                 }
                 else
                 {
-                    Mods.Add(new SkyrimMod(TargetPath,CModName,CAvailableFiles));
+                    Mods.Add(new SkyrimMod(TargetPath,CModName,CAvailableFiles,CModID));
                 }
             }
 
             return Mods;
         }
 
-        public bool IsMod(string ModPath, out string ModName, out List<string> AvailableFiles)
+        public bool IsMod(string ModPath, out string ModName, out List<string> AvailableFiles,out long ModID)
         {
             AvailableFiles = new List<string>();
             ModName = string.Empty;
@@ -212,8 +220,24 @@ namespace PhoenixTranslator.SkyrimManagement
             if (IsMod)
             {
                 ModName = Path.GetFileName(ModPath);
-            }
 
+                string Content = File.ReadAllText(Path.Combine(ModPath, "meta.ini"));
+
+                Match Match = Regex.Match(Content, @"(?m)^\s*modid\s*=\s*(\d+)\s*$");
+
+                if (Match.Success)
+                {
+                    ModID = int.Parse(Match.Groups[1].Value);
+                }
+                else
+                {
+                    ModID = -1;
+                }
+            }
+            else
+            {
+                ModID = 0;
+            }
             return IsMod;
         }
     }

@@ -93,7 +93,7 @@ namespace PhoenixTranslator
                 });
                 SetLogMessage("Startup_Launching");
                 _diagnostics.Record(PreviewDiagnosticSeverity.Information, "startup.initialization.succeeded");
-                Main = new PreviewShellWindow(_diagnostics);
+                Main = new ChooseLayout(_diagnostics);
                 Main.Show();
                 _startupSucceeded = true;
                 Close();
