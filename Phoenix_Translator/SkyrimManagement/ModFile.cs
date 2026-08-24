@@ -18,6 +18,7 @@ using PhoenixEngine.Request;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
 using static PexInterface.PexHeuristicAnalysis;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator.SkyrimManagement
 {
@@ -415,10 +416,12 @@ namespace PhoenixTranslator.SkyrimManagement
                         this.Win._Parent?.RemoveTab(this.Path);
                         MessageBoxExtend.Show(
                         this.Win._Parent,
+                        "Msg",
                         "File saved successfully:\r\n" +
                         this.Path +
                         "\r\n\r\nRollback backup file created:\r\n" +
-                        BackupManagePath
+                        BackupManagePath,
+                        PreviewDialogSeverity.Information
                         );
                         this.Win._Parent?.LoadFile(this.Path);
                     }));

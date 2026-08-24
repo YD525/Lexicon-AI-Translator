@@ -11,6 +11,7 @@ using PhoenixEngine;
 using PhoenixEngine.Common;
 using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator.UIManagement
 {
@@ -110,7 +111,7 @@ namespace PhoenixTranslator.UIManagement
                 string GetUrl = P_Convert.ObjToStr((sender as Label).Content);
                 if (GetUrl.Length > 0)
                 {
-                    if (MessageBoxExtend.Show(PhoenixApp.WorkWin, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?", MsgAction.YesNo, MsgType.Info) > 0)
+                    if (MessageBoxExtend.Show(PhoenixApp.WorkWin, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?", PreviewDialogSeverity.Information, true))
                     {
                         ExplorerHelper.OpenUrl(GetUrl);
                     }
@@ -600,8 +601,8 @@ namespace PhoenixTranslator.UIManagement
 
         private void PlatformConfigStyleWin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var State = MessageBoxExtend.Show(PhoenixApp.WorkWin, "Delete Platform", "Are you sure you want to delete this platform? Deleting it will result in the loss of all configuration settings related to this platform.", MsgAction.YesNo, MsgType.Info);
-            if (State > 0)
+            bool Confirm = MessageBoxExtend.Show(PhoenixApp.WorkWin, "Delete Platform", "Are you sure you want to delete this platform? Deleting it will result in the loss of all configuration settings related to this platform.",PreviewDialogSeverity.Warning,true);
+            if (Confirm)
             {
                 int GetID = P_Convert.ObjToInt(((sender as Border).Tag as Border).Tag);
 

@@ -596,7 +596,7 @@ namespace PhoenixTranslator
 
                     if (GetStr.Contains("__P") || Rowid == 0)
                     {
-                        MessageBoxExtend.Show(this, "Protective placeholders need to be disabled in EngineConfig.");
+                        MessageBoxExtend.Show(this,"Msg","Protective placeholders need to be disabled in EngineConfig.",PreviewDialogSeverity.Warning);
                     }
                     else
                     {

@@ -255,9 +255,9 @@ namespace PhoenixTranslator
                      this,
                      "Confirm Clear All",
                      $"Delete all {_AllRecords.Count} history records?\nThis cannot be undone.",
-                     MsgAction.YesNo,
-                     MsgType.Waring
-                 ) > 0)
+                     ApplicationLayer.PreviewDialogSeverity.Warning,
+                     true
+                 ))
             {
                 try
                 {

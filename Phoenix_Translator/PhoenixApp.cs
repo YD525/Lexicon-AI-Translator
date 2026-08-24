@@ -12,12 +12,25 @@ using PhoenixEngine.Language;
 using PhoenixEngine.ADO;
 using PhoenixEngine.Engine.ADO;
 using PhoenixTranslator.ApplicationLayer;
+using PhoenixTranslator.UIManagement.Preview;
 
 namespace PhoenixTranslator
 {
     public enum GameNames
     {
         Skyrim = 0
+    }
+    public static class MessageBoxExtend
+    {
+        static MessageBoxExtend()
+        { 
+        
+        }
+        internal static bool Show(Window Win,string Tittle,string Message, PreviewDialogSeverity Severity, bool RequiresConfirmation = false)
+        {
+            WpfPreviewDialogService DialogService = new WpfPreviewDialogService(() => Win);
+            return DialogService.Show(new PreviewDialogRequest(Tittle, Message, PreviewDialogSeverity.Error, RequiresConfirmation));
+        }
     }
     public class PhoenixApp
     {
@@ -147,12 +160,12 @@ namespace PhoenixTranslator
                     {
                         if (PhoenixApp.DataBaseView != null)
                         {
-                            MessageBoxExtend.Show(PhoenixApp.DataBaseView, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                            MessageBoxExtend.Show(PhoenixApp.DataBaseView, "SQL", ErrorMsg, PreviewDialogSeverity.Error);
                         }
                         else
                         if (PhoenixApp.WorkWin != null)
                         {
-                            MessageBoxExtend.Show(PhoenixApp.WorkWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                            MessageBoxExtend.Show(PhoenixApp.WorkWin, "SQL", ErrorMsg, PreviewDialogSeverity.Error);
                         }
                     }));
             });
