@@ -51,7 +51,7 @@ namespace PhoenixTranslator
 
         private void RunClassic()
         {
-            DeFine.WorkWin = new PhoenixGui();
+            DeFine.WorkWin = new PhoenixGui(_diagnostics);
             DeFine.CurrentLayout = DeFine.WorkWin;
             DeFine.WorkWin.Show();
 

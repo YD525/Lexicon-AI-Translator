@@ -27,6 +27,7 @@ using PhoenixEngine.Platform;
 using PhoenixEngine.Translate;
 using System.Windows.Threading;
 using PhoenixTranslator.UIManagement.Main;
+using PhoenixTranslator.UIManagement.Preview;
 
 namespace PhoenixTranslator
 {
@@ -37,13 +38,15 @@ namespace PhoenixTranslator
     {
         private readonly TranslationPresetCoordinator _translationPresetCoordinator;
         private bool _isUpdatingTranslationPresetControls;
-
-        public PhoenixGui()
+        private readonly PreviewDiagnosticService _diagnostics;
+        internal PhoenixGui(PreviewDiagnosticService diagnostics)
         {
             _translationPresetCoordinator = new TranslationPresetCoordinator(
                 new TranslationPresetService(),
                 new LegacyTranslationPresetStore());
             InitializeComponent();
+
+            _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
         }
 
         private PageSwitcher InfoPage = null;
@@ -315,9 +318,13 @@ namespace PhoenixTranslator
             }
         }
 
+        public bool CanExit = true;
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            DeFine.CloseAny();
+            if (CanExit)
+            {
+                DeFine.CloseAny();
+            }
         }
 
         private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -1493,22 +1500,6 @@ namespace PhoenixTranslator
                 UILanguageHelper.ChangeLanguage(DeFine.GlobalLocalSetting.CurrentUILanguage);
             }
         }
-        private void ChangeTechDarkBlue(object sender, MouseButtonEventArgs e)
-        {
-            DeFine.GlobalLocalSetting.Style = 1;
-            DeFine.GlobalLocalSetting.SaveConfig();
-
-            MessageBoxExtend.Show(this, "The theme is set successfully and will take effect after restarting the software.");
-        }
-
-        private void ChangePurpleStyle(object sender, MouseButtonEventArgs e)
-        {
-            DeFine.GlobalLocalSetting.Style = 2;
-            DeFine.GlobalLocalSetting.SaveConfig();
-
-            MessageBoxExtend.Show(this, "The theme is set successfully and will take effect after restarting the software.");
-        }
-
         private void AutoUpdateStringsFileToDatabase_Click(object sender, RoutedEventArgs e)
         {
             if (AutoUpdateStringsFileToDatabase.IsChecked == true)
@@ -1959,9 +1950,24 @@ namespace PhoenixTranslator
 
 
 
+
+
         #endregion
 
+        private void ChangeToModern(object sender, MouseButtonEventArgs e)
+        {
+            if (PhoenixTabs.Items.Count > 0)
+            {
+                MessageBoxExtend.Show(this, "There are files in the workspace. Please clear the workspace before switching layouts.");
+            }
+            else
+            {
+                DeFine.CurrentLayout = new PreviewShellWindow(_diagnostics);
+                DeFine.CurrentLayout.Show();
 
-       
+                this.CanExit = false;
+                this.Close();
+            }
+        }
     }
 }

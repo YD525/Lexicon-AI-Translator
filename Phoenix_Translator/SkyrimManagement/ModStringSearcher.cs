@@ -221,23 +221,33 @@ namespace PhoenixTranslator.SkyrimManagement
             {
                 ModName = Path.GetFileName(ModPath);
 
-                string Content = File.ReadAllText(Path.Combine(ModPath, "meta.ini"));
+                string MetaPath = Path.Combine(ModPath, "meta.ini");
 
-                Match Match = Regex.Match(Content, @"(?m)^\s*modid\s*=\s*(\d+)\s*$");
-
-                if (Match.Success)
+                if (File.Exists(MetaPath))
                 {
-                    ModID = int.Parse(Match.Groups[1].Value);
+                    string Content = File.ReadAllText(MetaPath);
+
+                    Match Match = Regex.Match(Content, @"(?m)^\s*modid\s*=\s*(\d+)\s*$");
+
+                    if (Match.Success)
+                    {
+                        ModID = int.Parse(Match.Groups[1].Value);
+                    }
+                    else
+                    {
+                        ModID = -1;
+                    }
                 }
                 else
                 {
-                    ModID = -1;
+                    ModID = -2;
                 }
             }
             else
             {
                 ModID = 0;
             }
+
             return IsMod;
         }
     }

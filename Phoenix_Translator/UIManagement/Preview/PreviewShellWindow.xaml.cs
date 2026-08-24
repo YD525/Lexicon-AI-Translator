@@ -339,7 +339,8 @@ namespace PhoenixTranslator.UIManagement.Preview
         {
             if (_legacyWorkspace == null)
             {
-                _legacyWorkspace = new PhoenixGui();
+                _legacyWorkspace = new PhoenixGui(_diagnostics);
+                DeFine.WorkWin = _legacyWorkspace;
                 _legacyWorkspace.Closed += LegacyWorkspaceClosed;
                 _legacyWorkspace.Show();
             }

@@ -913,12 +913,14 @@ SelectionChanged="PhoenixTabs_SelectionChanged" VerticalAlignment="Stretch" Marg
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <Ellipse Width="7" Height="7" Fill="{StaticResource SettingAccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Theme" Style="{StaticResource SettingSectionTitle}"/>
+                                                        <TextBlock Text="Workflow layout" Style="{StaticResource SettingSectionTitle}"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <!--<Border Width="130" Height="34" CornerRadius="5" Background="{StaticResource SettingAccentBrush}" Cursor="Hand" PreviewMouseDown="ChangeTechDarkBlue">
-                                                            <TextBlock Text="Gold Style" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>-->
+
+                                                        <Border Width="130" Height="34" CornerRadius="5" Background="#FF454545"  Cursor="Hand" PreviewMouseDown="ChangeToModern">
+                                                            <TextBlock Text="Modern" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
