@@ -23,12 +23,12 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <inheritdoc />
         public IReadOnlyList<PreviewProviderOption> GetProviders()
         {
-            if (Phoenix.Config?.PlatformConfigs == null)
+            if (PhoenixApp.EngineSetting?.PlatformConfigs == null)
             {
                 return new List<PreviewProviderOption>();
             }
 
-            return Phoenix.Config.PlatformConfigs
+            return PhoenixApp.EngineSetting.PlatformConfigs
                 .OrderBy(pair => GetProviderName(pair.Key, pair.Value), StringComparer.CurrentCultureIgnoreCase)
                 .Select(pair => new PreviewProviderOption(
                     pair.Key,
@@ -52,7 +52,7 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <inheritdoc />
         public PreviewSettingsSnapshot Load()
         {
-            if (Phoenix.Config == null)
+            if (PhoenixApp.EngineSetting == null)
             {
                 throw new InvalidOperationException("Engine configuration is not initialized.");
             }
@@ -68,29 +68,29 @@ namespace PhoenixTranslator.ApplicationLayer
                 HasStoredCredential = provider?.ApiKeys?.Any(key => !string.IsNullOrWhiteSpace(key)) == true,
                 LocalPortText = (provider?.LocalPort > 0 ? provider.LocalPort : 1234)
                     .ToString(CultureInfo.InvariantCulture),
-                SourceLanguage = DeFine.GlobalLocalSetting.SourceLanguage.ToString(),
-                TargetLanguage = DeFine.GlobalLocalSetting.TargetLanguage.ToString(),
-                EnableLanguageDetection = DeFine.GlobalLocalSetting.EnableLanguageDetect,
-                EnableContext = Phoenix.Config.ContextEnable,
-                ContextLimitText = Phoenix.Config.ContextLimit.ToString(CultureInfo.InvariantCulture),
-                AdditionalPrompt = Phoenix.Config.UserCustomAIPrompt ?? string.Empty,
-                PlaceholderPattern = DeFine.GlobalLocalSetting.P_Placeholders ?? string.Empty,
-                GamePath = DeFine.GlobalLocalSetting.SkyrimPath ?? string.Empty,
-                ShowAssembly = DeFine.GlobalLocalSetting.ShowAssembly,
-                GenerateCSharp = DeFine.GlobalLocalSetting.GenCSharp,
-                AutoUpdateDatabase = DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase,
-                EnableGlobalSearch = Phoenix.Config.EnableGlobalSearch,
-                UiLanguage = DeFine.GlobalLocalSetting.CurrentUILanguage.ToString(),
-                Density = string.IsNullOrWhiteSpace(DeFine.GlobalLocalSetting.UiDensity)
+                SourceLanguage = PhoenixApp.SelfSetting.SourceLanguage.ToString(),
+                TargetLanguage = PhoenixApp.SelfSetting.TargetLanguage.ToString(),
+                EnableLanguageDetection = PhoenixApp.SelfSetting.EnableLanguageDetect,
+                EnableContext = PhoenixApp.EngineSetting.ContextEnable,
+                ContextLimitText = PhoenixApp.EngineSetting.ContextLimit.ToString(CultureInfo.InvariantCulture),
+                AdditionalPrompt = PhoenixApp.EngineSetting.UserCustomAIPrompt ?? string.Empty,
+                PlaceholderPattern = PhoenixApp.SelfSetting.P_Placeholders ?? string.Empty,
+                GamePath = PhoenixApp.SelfSetting.SkyrimPath ?? string.Empty,
+                ShowAssembly = PhoenixApp.SelfSetting.ShowAssembly,
+                GenerateCSharp = PhoenixApp.SelfSetting.GenCSharp,
+                AutoUpdateDatabase = PhoenixApp.SelfSetting.AutoUpdateStringsFileToDatabase,
+                EnableGlobalSearch = PhoenixApp.EngineSetting.EnableGlobalSearch,
+                UiLanguage = PhoenixApp.SelfSetting.CurrentUILanguage.ToString(),
+                Density = string.IsNullOrWhiteSpace(PhoenixApp.SelfSetting.UiDensity)
                     ? "Compact"
-                    : DeFine.GlobalLocalSetting.UiDensity,
-                RightToLeft = DeFine.GlobalLocalSetting.TextDisplay == TextLayout.RTL,
-                ProxyUrl = Phoenix.Config.ProxyUrl ?? string.Empty,
-                ProxyUserName = Phoenix.Config.ProxyUserName ?? string.Empty,
-                HasStoredProxyPassword = !string.IsNullOrEmpty(Phoenix.Config.ProxyPassword),
-                MaxThreadCountText = Phoenix.Config.MaxThreadCount.ToString(CultureInfo.InvariantCulture),
-                ThrottleRatioText = Phoenix.Config.ThrottleRatio.ToString(CultureInfo.InvariantCulture),
-                ThrottleDelayText = Phoenix.Config.ThrottleDelayMs.ToString(CultureInfo.InvariantCulture)
+                    : PhoenixApp.SelfSetting.UiDensity,
+                RightToLeft = PhoenixApp.SelfSetting.TextDisplay == TextLayout.RTL,
+                ProxyUrl = PhoenixApp.EngineSetting.ProxyUrl ?? string.Empty,
+                ProxyUserName = PhoenixApp.EngineSetting.ProxyUserName ?? string.Empty,
+                HasStoredProxyPassword = !string.IsNullOrEmpty(PhoenixApp.EngineSetting.ProxyPassword),
+                MaxThreadCountText = PhoenixApp.EngineSetting.MaxThreadCount.ToString(CultureInfo.InvariantCulture),
+                ThrottleRatioText = PhoenixApp.EngineSetting.ThrottleRatio.ToString(CultureInfo.InvariantCulture),
+                ThrottleDelayText = PhoenixApp.EngineSetting.ThrottleDelayMs.ToString(CultureInfo.InvariantCulture)
             };
         }
 
@@ -124,43 +124,43 @@ namespace PhoenixTranslator.ApplicationLayer
             Languages language;
             if (Enum.TryParse(settings.SourceLanguage, out language))
             {
-                DeFine.GlobalLocalSetting.SourceLanguage = language;
+                PhoenixApp.SelfSetting.SourceLanguage = language;
             }
 
             if (Enum.TryParse(settings.TargetLanguage, out language))
             {
-                DeFine.GlobalLocalSetting.TargetLanguage = language;
+                PhoenixApp.SelfSetting.TargetLanguage = language;
             }
 
             if (Enum.TryParse(settings.UiLanguage, out language))
             {
-                DeFine.GlobalLocalSetting.CurrentUILanguage = language;
+                PhoenixApp.SelfSetting.CurrentUILanguage = language;
             }
 
-            DeFine.GlobalLocalSetting.EnableLanguageDetect = settings.EnableLanguageDetection;
-            DeFine.GlobalLocalSetting.P_Placeholders = settings.PlaceholderPattern;
-            DeFine.GlobalLocalSetting.SkyrimPath = settings.GamePath;
-            DeFine.GlobalLocalSetting.ShowAssembly = settings.ShowAssembly;
-            DeFine.GlobalLocalSetting.GenCSharp = settings.GenerateCSharp;
-            DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase = settings.AutoUpdateDatabase;
-            DeFine.GlobalLocalSetting.UiDensity = settings.Density;
-            DeFine.GlobalLocalSetting.TextDisplay = settings.RightToLeft ? TextLayout.RTL : TextLayout.LTR;
+            PhoenixApp.SelfSetting.EnableLanguageDetect = settings.EnableLanguageDetection;
+            PhoenixApp.SelfSetting.P_Placeholders = settings.PlaceholderPattern;
+            PhoenixApp.SelfSetting.SkyrimPath = settings.GamePath;
+            PhoenixApp.SelfSetting.ShowAssembly = settings.ShowAssembly;
+            PhoenixApp.SelfSetting.GenCSharp = settings.GenerateCSharp;
+            PhoenixApp.SelfSetting.AutoUpdateStringsFileToDatabase = settings.AutoUpdateDatabase;
+            PhoenixApp.SelfSetting.UiDensity = settings.Density;
+            PhoenixApp.SelfSetting.TextDisplay = settings.RightToLeft ? TextLayout.RTL : TextLayout.LTR;
 
-            Phoenix.Config.ContextEnable = settings.EnableContext;
-            Phoenix.Config.ContextLimit = int.Parse(settings.ContextLimitText, CultureInfo.InvariantCulture);
-            Phoenix.Config.UserCustomAIPrompt = settings.AdditionalPrompt.Trim();
-            Phoenix.Config.EnableGlobalSearch = settings.EnableGlobalSearch;
-            Phoenix.Config.ProxyUrl = settings.ProxyUrl.Trim();
-            Phoenix.Config.ProxyUserName = settings.ProxyUserName.Trim();
+            PhoenixApp.EngineSetting.ContextEnable = settings.EnableContext;
+            PhoenixApp.EngineSetting.ContextLimit = int.Parse(settings.ContextLimitText, CultureInfo.InvariantCulture);
+            PhoenixApp.EngineSetting.UserCustomAIPrompt = settings.AdditionalPrompt.Trim();
+            PhoenixApp.EngineSetting.EnableGlobalSearch = settings.EnableGlobalSearch;
+            PhoenixApp.EngineSetting.ProxyUrl = settings.ProxyUrl.Trim();
+            PhoenixApp.EngineSetting.ProxyUserName = settings.ProxyUserName.Trim();
             if (!string.IsNullOrEmpty(proxyPassword))
             {
-                Phoenix.Config.ProxyPassword = proxyPassword;
+                PhoenixApp.EngineSetting.ProxyPassword = proxyPassword;
             }
 
-            Phoenix.Config.MaxThreadCount = int.Parse(settings.MaxThreadCountText, CultureInfo.InvariantCulture);
-            Phoenix.Config.ThrottleRatio = double.Parse(settings.ThrottleRatioText, CultureInfo.InvariantCulture);
-            Phoenix.Config.ThrottleDelayMs = int.Parse(settings.ThrottleDelayText, CultureInfo.InvariantCulture);
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.EngineSetting.MaxThreadCount = int.Parse(settings.MaxThreadCountText, CultureInfo.InvariantCulture);
+            PhoenixApp.EngineSetting.ThrottleRatio = double.Parse(settings.ThrottleRatioText, CultureInfo.InvariantCulture);
+            PhoenixApp.EngineSetting.ThrottleDelayMs = int.Parse(settings.ThrottleDelayText, CultureInfo.InvariantCulture);
+            PhoenixApp.SelfSetting.SaveConfig();
         }
 
         /// <inheritdoc />
@@ -321,7 +321,7 @@ namespace PhoenixTranslator.ApplicationLayer
 
             var proxy = new WebProxy(new Uri(settings.ProxyUrl, UriKind.Absolute));
             string password = string.IsNullOrEmpty(stagedProxyPassword)
-                ? Phoenix.Config?.ProxyPassword ?? string.Empty
+                ? PhoenixApp.EngineSetting?.ProxyPassword ?? string.Empty
                 : stagedProxyPassword;
             if (!string.IsNullOrWhiteSpace(settings.ProxyUserName) || !string.IsNullOrEmpty(password))
             {
@@ -348,13 +348,13 @@ namespace PhoenixTranslator.ApplicationLayer
 
         private static PlatformConfig GetProvider(int key)
         {
-            if (Phoenix.Config?.PlatformConfigs == null)
+            if (PhoenixApp.EngineSetting?.PlatformConfigs == null)
             {
                 return null;
             }
 
             PlatformConfig provider;
-            return Phoenix.Config.PlatformConfigs.TryGetValue(key, out provider) ? provider : null;
+            return PhoenixApp.EngineSetting.PlatformConfigs.TryGetValue(key, out provider) ? provider : null;
         }
 
         private static string GetProviderName(int key, PlatformConfig provider)

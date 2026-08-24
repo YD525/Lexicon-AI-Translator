@@ -49,7 +49,7 @@ namespace PhoenixTranslator.SkyrimManage
         public bool CheckDictionary()
         {
             string ModName = CurrentModName;
-            string SetPath = DeFine.GetFullPath(@"\Library\" + ModName + ".Json");
+            string SetPath = PhoenixApp.GetFullPath(@"\Library\" + ModName + ".Json");
             if (File.Exists(SetPath))
             {
                 return true;
@@ -82,7 +82,7 @@ namespace PhoenixTranslator.SkyrimManage
         public void CreateDictionary()
         {
             string ModName = CurrentModName;
-            string SetPath = DeFine.GetFullPath(@"\Library\" + ModName) + ".Json";
+            string SetPath = PhoenixApp.GetFullPath(@"\Library\" + ModName) + ".Json";
 
             CurrentFile = new YDDictionaryFile();
 
@@ -108,7 +108,7 @@ namespace PhoenixTranslator.SkyrimManage
             CurrentModName = ModName;
             Dictionarys.Clear();
 
-            string SetPath = DeFine.GetFullPath(@"\Library\" + ModName) + ".Json";
+            string SetPath = PhoenixApp.GetFullPath(@"\Library\" + ModName) + ".Json";
             if (File.Exists(SetPath))
             {
                 string GetData = Encoding.UTF8.GetString(DataHelper.ReadFile(SetPath));

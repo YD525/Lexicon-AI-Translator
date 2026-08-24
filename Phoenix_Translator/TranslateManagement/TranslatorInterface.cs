@@ -18,7 +18,7 @@ namespace PhoenixTranslator.TranslateManage
         {
             HumanTranslationApi.WaitHumanInput += new AwaitHumanTranslationHandler((Send) => 
             {
-                if (DeFine.WorkWin == null)
+                if (PhoenixApp.WorkWin == null)
                 {
                     return string.Empty;
                 }
@@ -28,7 +28,7 @@ namespace PhoenixTranslator.TranslateManage
                 Application.Current.Dispatcher.Invoke(new Action(() => 
                 {
                     NInteractiveView = new InteractiveView();
-                    NInteractiveView.Owner = DeFine.WorkWin;
+                    NInteractiveView.Owner = PhoenixApp.WorkWin;
                     NInteractiveView.SetSend(Send);
                 }));
 
@@ -110,9 +110,9 @@ namespace PhoenixTranslator.TranslateManage
                         LogHelper.SetOutputLog(GetCall.Platform.ToString() + "->\n" + GetCall.ReceiveString);
                     }
 
-                    if (DeFine.ChartDataRef != null)
+                    if (PhoenixApp.ChartDataRef != null)
                     {
-                        DeFine.ChartDataRef.SetCurrent(Length);
+                        PhoenixApp.ChartDataRef.SetCurrent(Length);
                     }
                 }
             }));
@@ -130,14 +130,14 @@ namespace PhoenixTranslator.TranslateManage
                 UnitContext<BaseUnit> Sign = new UnitContext<BaseUnit>();
                 Sign.Data = null;
 
-                DeFine.WorkWin.Dispatcher.Invoke(new Action(() => {
-                    if (DeFine.WorkWin != null)
+                PhoenixApp.WorkWin.Dispatcher.Invoke(new Action(() => {
+                    if (PhoenixApp.WorkWin != null)
                     {
-                        for (int i = 0; i < DeFine.WorkWin.TabViews.Children.Count; i++)
+                        for (int i = 0; i < PhoenixApp.WorkWin.TabViews.Children.Count; i++)
                         {
-                            if (DeFine.WorkWin.TabViews.Children[i] is TranslateView)
+                            if (PhoenixApp.WorkWin.TabViews.Children[i] is TranslateView)
                             {
-                                var Mod = (DeFine.WorkWin.TabViews.Children[i] as TranslateView).Mod;
+                                var Mod = (PhoenixApp.WorkWin.TabViews.Children[i] as TranslateView).Mod;
 
                                 if (Mod.Path.Equals(ID))//The reason for using the file path as the primary key ID is that a user cannot translate two pieces of content with the same path at the same time, and there are also limitations in the outer layer I implemented..
                                 {
@@ -260,11 +260,11 @@ namespace PhoenixTranslator.TranslateManage
 
         public static void LogCall(string Log)
         {
-            if (DeFine.WorkWin != null)
+            if (PhoenixApp.WorkWin != null)
             {
-                DeFine.WorkWin.Dispatcher.Invoke(new Action(() =>
+                PhoenixApp.WorkWin.Dispatcher.Invoke(new Action(() =>
                 {
-                    DeFine.WorkWin.MainLog.Text = Log;
+                    PhoenixApp.WorkWin.MainLog.Text = Log;
                 }));
             }
         }

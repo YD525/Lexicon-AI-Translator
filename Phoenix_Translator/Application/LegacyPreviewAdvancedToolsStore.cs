@@ -21,12 +21,12 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <inheritdoc />
         public IReadOnlyList<PreviewPipelineEntry> LoadPipeline()
         {
-            if (Phoenix.Config?.PlatformConfigs == null)
+            if (PhoenixApp.EngineSetting?.PlatformConfigs == null)
             {
                 return new List<PreviewPipelineEntry>();
             }
 
-            return Phoenix.Config.PlatformConfigs.Select(pair => new PreviewPipelineEntry(
+            return PhoenixApp.EngineSetting.PlatformConfigs.Select(pair => new PreviewPipelineEntry(
                 pair.Key,
                 GetName(pair.Key, pair.Value),
                 GetGroup(pair.Value),
@@ -38,7 +38,7 @@ namespace PhoenixTranslator.ApplicationLayer
         public void SavePipeline(IReadOnlyList<PreviewPipelineEntry> entries)
         {
             if (entries == null) throw new ArgumentNullException(nameof(entries));
-            Dictionary<int, PlatformConfig> current = Phoenix.Config.PlatformConfigs;
+            Dictionary<int, PlatformConfig> current = PhoenixApp.EngineSetting.PlatformConfigs;
             if (current == null || entries.Count != current.Count || entries.Any(entry => !current.ContainsKey(entry.Key)))
             {
                 throw new InvalidOperationException("The provider pipeline changed while edits were staged.");
@@ -51,7 +51,7 @@ namespace PhoenixTranslator.ApplicationLayer
                 config.Enable = entry.IsEnabled;
                 ordered.Add(entry.Key, config);
             }
-            Phoenix.Config.PlatformConfigs = ordered;
+            PhoenixApp.EngineSetting.PlatformConfigs = ordered;
             Phoenix.SaveConfig();
         }
 
@@ -87,8 +87,8 @@ namespace PhoenixTranslator.ApplicationLayer
         public void SaveCustomProvider(PreviewCustomProviderDraft draft)
         {
             if (draft == null) throw new ArgumentNullException(nameof(draft));
-            int key = Phoenix.Config.PlatformConfigs.Count == 0 ? 1 : Phoenix.Config.PlatformConfigs.Keys.Max() + 1;
-            while (Phoenix.Config.PlatformConfigs.ContainsKey(key)) key++;
+            int key = PhoenixApp.EngineSetting.PlatformConfigs.Count == 0 ? 1 : PhoenixApp.EngineSetting.PlatformConfigs.Keys.Max() + 1;
+            while (PhoenixApp.EngineSetting.PlatformConfigs.ContainsKey(key)) key++;
             var custom = new CustomPlatformInFo
             {
                 CustomID = key,
@@ -107,7 +107,7 @@ namespace PhoenixTranslator.ApplicationLayer
             custom.Url_Tags = CreateTags(request.GetUrlKeyValues());
             custom.Header_Tags = CreateTags(request.GetHeaderKeyValues());
             custom.PayLoad_Tags = CreateTags(request.GetPayLoadKeyValues());
-            Phoenix.Config.PlatformConfigs.Add(key, new PlatformConfig(PlatformType.CustomPlatform)
+            PhoenixApp.EngineSetting.PlatformConfigs.Add(key, new PlatformConfig(PlatformType.CustomPlatform)
             {
                 Enable = false,
                 Model = draft.Model?.Trim() ?? string.Empty,
@@ -144,23 +144,23 @@ namespace PhoenixTranslator.ApplicationLayer
         {
             return new[]
             {
-                Pair("ChatGPT", DeFine.GlobalLocalSetting.ChatGPTTokenUsage),
-                Pair("Gemini", DeFine.GlobalLocalSetting.GeminiTokenUsage),
-                Pair("Cohere", DeFine.GlobalLocalSetting.CohereTokenUsage),
-                Pair("DeepSeek", DeFine.GlobalLocalSetting.DeepSeekTokenUsage),
-                Pair("Local AI", DeFine.GlobalLocalSetting.LocalAITokenUsage)
+                Pair("ChatGPT", PhoenixApp.SelfSetting.ChatGPTTokenUsage),
+                Pair("Gemini", PhoenixApp.SelfSetting.GeminiTokenUsage),
+                Pair("Cohere", PhoenixApp.SelfSetting.CohereTokenUsage),
+                Pair("DeepSeek", PhoenixApp.SelfSetting.DeepSeekTokenUsage),
+                Pair("Local AI", PhoenixApp.SelfSetting.LocalAITokenUsage)
             };
         }
 
         /// <inheritdoc />
         public void ClearTokenUsage()
         {
-            DeFine.GlobalLocalSetting.ChatGPTTokenUsage = 0;
-            DeFine.GlobalLocalSetting.GeminiTokenUsage = 0;
-            DeFine.GlobalLocalSetting.CohereTokenUsage = 0;
-            DeFine.GlobalLocalSetting.DeepSeekTokenUsage = 0;
-            DeFine.GlobalLocalSetting.LocalAITokenUsage = 0;
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.ChatGPTTokenUsage = 0;
+            PhoenixApp.SelfSetting.GeminiTokenUsage = 0;
+            PhoenixApp.SelfSetting.CohereTokenUsage = 0;
+            PhoenixApp.SelfSetting.DeepSeekTokenUsage = 0;
+            PhoenixApp.SelfSetting.LocalAITokenUsage = 0;
+            PhoenixApp.SelfSetting.SaveConfig();
         }
 
         private static HttpClient CreateProviderProbeClient()

@@ -16,25 +16,25 @@ namespace PhoenixTranslator.UIManagement
 
         public static void SetInputLog(string Text)
         {
-            if (DeFine.WorkWin != null)
+            if (PhoenixApp.WorkWin != null)
             {
-                SetLog(DeFine.WorkWin.InputLog, Text);
+                SetLog(PhoenixApp.WorkWin.InputLog, Text);
             }
         }
 
         public static void SetOutputLog(string Text)
         {
-            if (DeFine.WorkWin != null)
+            if (PhoenixApp.WorkWin != null)
             {
-                SetLog(DeFine.WorkWin.OutputLog, Text);
+                SetLog(PhoenixApp.WorkWin.OutputLog, Text);
             }
         }
 
         public static void SetMainLog(string Text)
         {
-            if (DeFine.WorkWin != null)
+            if (PhoenixApp.WorkWin != null)
             {
-                SetLog(DeFine.WorkWin.MainLog, Text);
+                SetLog(PhoenixApp.WorkWin.MainLog, Text);
             }
         }
     }

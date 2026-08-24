@@ -270,9 +270,9 @@ namespace PhoenixTranslator
                 var DetectLang = P_Language.DetectLanguageByLine(SourceStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
-                    if (DeFine.WorkWin.ActiveTab.Mod.P_Translator.From == Languages.SimplifiedChinese || DeFine.WorkWin.ActiveTab.Mod.P_Translator.From == Languages.TraditionalChinese)
+                    if (PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.From == Languages.SimplifiedChinese || PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.From == Languages.TraditionalChinese)
                     {
-                        DetectLang = DeFine.WorkWin.ActiveTab.Mod.P_Translator.From;
+                        DetectLang = PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.From;
                     }
                 }
 
@@ -287,9 +287,9 @@ namespace PhoenixTranslator
                 var DetectLang = P_Language.DetectLanguageByLine(TargetStr.Text);
                 if (DetectLang == Languages.SimplifiedChinese || DetectLang == Languages.TraditionalChinese)
                 {
-                    if (DeFine.WorkWin.ActiveTab.Mod.P_Translator.To == Languages.SimplifiedChinese || DeFine.WorkWin.ActiveTab.Mod.P_Translator.To == Languages.TraditionalChinese)
+                    if (PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.To == Languages.SimplifiedChinese || PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.To == Languages.TraditionalChinese)
                     {
-                        DetectLang = DeFine.WorkWin.ActiveTab.Mod.P_Translator.To;
+                        DetectLang = PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.To;
                     }
                 }
                 To.SelectedValue = DetectLang.ToString();
@@ -364,17 +364,17 @@ namespace PhoenixTranslator
                 FilterFrom = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            if (DeFine.WorkWin.ActiveTab != null)
+            if (PhoenixApp.WorkWin.ActiveTab != null)
             {
-                DeFine.WorkWin.ActiveTab.Mod.P_Translator.From = FilterFrom;
+                PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.From = FilterFrom;
             }
 
             if (_Owner != null)
             {
                 if (_Owner.ActiveTab != null)
                 {
-                    DeFine.GlobalLocalSetting.SourceLanguage = FilterFrom;
-                    DeFine.GlobalLocalSetting.SaveConfig();
+                    PhoenixApp.SelfSetting.SourceLanguage = FilterFrom;
+                    PhoenixApp.SelfSetting.SaveConfig();
                 }
             }    
 
@@ -395,17 +395,17 @@ namespace PhoenixTranslator
                 FilterTo = (Languages)Enum.Parse(typeof(Languages), GetLang.Trim());
             }
 
-            if (DeFine.WorkWin.ActiveTab != null)
+            if (PhoenixApp.WorkWin.ActiveTab != null)
             {
-                DeFine.WorkWin.ActiveTab.Mod.P_Translator.To = FilterTo;
+                PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.To = FilterTo;
             }
 
             if (_Owner != null)
             {
                 if (_Owner.ActiveTab != null)
                 {
-                    DeFine.GlobalLocalSetting.TargetLanguage = FilterTo;
-                    DeFine.GlobalLocalSetting.SaveConfig();
+                    PhoenixApp.SelfSetting.TargetLanguage = FilterTo;
+                    PhoenixApp.SelfSetting.SaveConfig();
                 }
             }
 
@@ -544,7 +544,7 @@ namespace PhoenixTranslator
             if (GetBtnContent.Equals("Execute"))
             {
                 AutoID++;
-                DeFine.WorkWin.ActiveTab.Mod.MakeReady();
+                PhoenixApp.WorkWin.ActiveTab.Mod.MakeReady();
 
                 if (FilterFrom != Languages.Null && FilterTo != Languages.Null)
                 {
@@ -564,7 +564,7 @@ namespace PhoenixTranslator
                         }));
                         bool CanSleep = false;
 
-                        var GetResult = DeFine.WorkWin.ActiveTab.Mod.P_Translator.Translate(NewUnit,default,false);
+                        var GetResult = PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.Translate(NewUnit,default,false);
 
                         this.Dispatcher.Invoke(new Action(() =>
                         {
@@ -650,7 +650,7 @@ namespace PhoenixTranslator
                     ProcessWin.Visibility = Visibility.Visible;
                 }));
 
-                string SetOutPutPath = DeFine.GetFullPath(@"\Cache\Output.json");
+                string SetOutPutPath = PhoenixApp.GetFullPath(@"\Cache\Output.json");
 
                 if (File.Exists(SetOutPutPath))
                     File.Delete(SetOutPutPath);
@@ -907,7 +907,7 @@ namespace PhoenixTranslator
 
         private void OpenDataBase(object sender, MouseButtonEventArgs e)
         {
-            DeFine.CloseDataBaseView();
+            PhoenixApp.CloseDataBaseView();
 
             //Results are capped at 100,000 rows via LIMIT to prevent memory exhaustion, as databases may scale to GB/TB levels. This tool is intended for SQL-proficient users to manually execute conditional queries for specific records or perform bulk modifications across multiple entries using custom SQL logic.
             //Select * From AdvancedDictionary Where Source Like '%[pagebreak]%' or  Source Like '%<font' (I just threw this together to match the content of all the books.) - > Compared to using regular expressions for pattern matching, utilizing the `LIKE` and `GLOB` commands in SQL operates directly at the database engine level, enabling millisecond-level query performance.
@@ -915,7 +915,7 @@ namespace PhoenixTranslator
             int? sourceLanguage = translator == null ? (int?)null : (int)translator.From;
             int? targetLanguage = translator == null ? (int?)null : (int)translator.To;
 
-            DeFine.OpenDataBaseView(
+            PhoenixApp.OpenDataBaseView(
                 this,
                 AdvancedDictionaryQueryBuilder.Build(sourceLanguage, targetLanguage));
         }

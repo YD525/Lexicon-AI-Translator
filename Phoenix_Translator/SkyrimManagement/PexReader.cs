@@ -23,12 +23,12 @@ namespace PhoenixTranslator.SkyrimManagement
         {
             CodeGenStyle AutoStyle = CodeGenStyle.Papyrus;
 
-            if (DeFine.GlobalLocalSetting.GenCSharp)
+            if (PhoenixApp.SelfSetting.GenCSharp)
             {
                 AutoStyle = CodeGenStyle.CSharp;
             }
 
-            Interface.Core.LoadPex(Path).ReadStrings().GetPsc(out this.PSCCode, DeFine.GlobalLocalSetting.ShowAssembly, AutoStyle).AnalysisStrings();
+            Interface.Core.LoadPex(Path).ReadStrings().GetPsc(out this.PSCCode, PhoenixApp.SelfSetting.ShowAssembly, AutoStyle).AnalysisStrings();
 
             SelectStrings();
         }

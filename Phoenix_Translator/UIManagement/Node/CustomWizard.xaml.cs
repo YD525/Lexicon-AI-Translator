@@ -149,7 +149,7 @@ namespace PhoenixTranslator
                 {
                     CustomPlatform = new CustomPlatformInFo();
                     TestCustomCore = new CustomReqCore();
-                    CustomPlatform.CustomID = Phoenix.Config.PlatformConfigs.Count + 1;
+                    CustomPlatform.CustomID = PhoenixApp.EngineSetting.PlatformConfigs.Count + 1;
                 }
 
                 CustomPlatform.Name = PlatformName.Text;
@@ -436,9 +436,9 @@ namespace PhoenixTranslator
 
             NPlatformConfig.CustomInFo = CustomPlatform;
 
-            if (!Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
+            if (!PhoenixApp.EngineSetting.PlatformConfigs.ContainsKey(TestID))
             {
-                Phoenix.Config.PlatformConfigs.Add(TestID, NPlatformConfig);
+                PhoenixApp.EngineSetting.PlatformConfigs.Add(TestID, NPlatformConfig);
             }
             else
             {
@@ -446,9 +446,9 @@ namespace PhoenixTranslator
             }
 
             BaseUnit TestUnit = new BaseUnit(-525, "525", "", "Test Line", "", "", 100);
-            var UnitGroup = new Translator("-1", DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, false).ToUnitGroup(TestUnit);
-            Languages From = DeFine.GlobalLocalSetting.SourceLanguage;
-            Languages To = DeFine.GlobalLocalSetting.TargetLanguage;
+            var UnitGroup = new Translator("-1", PhoenixApp.SelfSetting.SourceLanguage, PhoenixApp.SelfSetting.TargetLanguage, false).ToUnitGroup(TestUnit);
+            Languages From = PhoenixApp.SelfSetting.SourceLanguage;
+            Languages To = PhoenixApp.SelfSetting.TargetLanguage;
 
             if (From == To)
             {
@@ -464,7 +464,7 @@ namespace PhoenixTranslator
                         {
                             AICall GenAICall = new AICall();
                             CustomLocalAIApi NCustomLocalAIApi = new CustomLocalAIApi();
-                            NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config);
+                            NCustomLocalAIApi.Init(TestID, new AITranslationMemory(), PhoenixApp.EngineSetting);
 
                             NCustomLocalAIApi.Model = Model;
 
@@ -489,7 +489,7 @@ namespace PhoenixTranslator
                         {
                             AICall GenAICall = new AICall();
                             CustomAIApi NCustomAIApi = new CustomAIApi();
-                            NCustomAIApi.Init(TestID, new AITranslationMemory(), Phoenix.Config, ProxyCenter.CurrentProxy);
+                            NCustomAIApi.Init(TestID, new AITranslationMemory(), PhoenixApp.EngineSetting, ProxyCenter.CurrentProxy);
 
                             NCustomAIApi.Model = Model;
 
@@ -515,7 +515,7 @@ namespace PhoenixTranslator
                         {
                             PlatformCall GenPlatformCall = new PlatformCall();
                             CustomApi NCustomApi = new CustomApi();
-                            NCustomApi.Init(TestID, Phoenix.Config, ProxyCenter.CurrentProxy);
+                            NCustomApi.Init(TestID, PhoenixApp.EngineSetting, ProxyCenter.CurrentProxy);
 
                             NCustomApi.QuickTrans(
                                 ApiKey,
@@ -539,9 +539,9 @@ namespace PhoenixTranslator
                 MessageBoxExtend.Show(this, Ex.Message);
             }
 
-            if (Phoenix.Config.PlatformConfigs.ContainsKey(TestID))
+            if (PhoenixApp.EngineSetting.PlatformConfigs.ContainsKey(TestID))
             {
-                Phoenix.Config.PlatformConfigs.Remove(TestID);
+                PhoenixApp.EngineSetting.PlatformConfigs.Remove(TestID);
             }
         }
 
@@ -616,15 +616,15 @@ namespace PhoenixTranslator
 
             NPlatformConfig.ApiKeys.Add(ApiKey);
 
-            while (Phoenix.Config.PlatformConfigs.ContainsKey(CustomPlatform.CustomID))
+            while (PhoenixApp.EngineSetting.PlatformConfigs.ContainsKey(CustomPlatform.CustomID))
             {
-                CustomPlatform.CustomID = Phoenix.Config.PlatformConfigs.Count + 1;
+                CustomPlatform.CustomID = PhoenixApp.EngineSetting.PlatformConfigs.Count + 1;
             }
 
             NPlatformConfig.Model = Model;
             NPlatformConfig.CustomInFo = CustomPlatform;
 
-            Phoenix.Config.PlatformConfigs.Add(CustomPlatform.CustomID, NPlatformConfig);
+            PhoenixApp.EngineSetting.PlatformConfigs.Add(CustomPlatform.CustomID, NPlatformConfig);
             Phoenix.SaveConfig();
 
             ClearValue();

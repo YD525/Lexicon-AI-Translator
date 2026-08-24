@@ -19,7 +19,7 @@ namespace PhoenixTranslator
     {
         Skyrim = 0
     }
-    public class DeFine
+    public class PhoenixApp
     {
         public static bool CanUpdateChart = false;
         public static int GlobalRequestTimeOut = 5000;
@@ -36,8 +36,20 @@ namespace PhoenixTranslator
 
         public static string BackupPath = @"\BackUpData\";
 
-        public static string CurrentVersion = typeof(DeFine).Assembly.GetName().Version.ToString();
-        public static LocalSetting GlobalLocalSetting = new LocalSetting();
+        public static string CurrentVersion = typeof(PhoenixApp).Assembly.GetName().Version.ToString();
+        public static LocalSetting SelfSetting = new LocalSetting();
+
+        public static EngineConfigJson EngineSetting
+        {
+            get 
+            {
+                return Phoenix.Config;
+            }
+            set
+            { 
+               Phoenix.Config = value;
+            }
+        }
 
         public static RowStyleWin RowStyleWin = new RowStyleWin();
         public static NodeStyleWin NodeStyleWin = new NodeStyleWin();
@@ -80,7 +92,7 @@ namespace PhoenixTranslator
         public static void CloseAny()
         {
             Phoenix.SaveConfig();
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.SaveConfig();
             Environment.Exit(0);
         }
 
@@ -106,22 +118,22 @@ namespace PhoenixTranslator
 
         public static void PrepareFileDirectory()
         {
-            if (!Directory.Exists(DeFine.GetFullPath(@"\Library")))
+            if (!Directory.Exists(PhoenixApp.GetFullPath(@"\Library")))
             {
-                Directory.CreateDirectory(DeFine.GetFullPath(@"\Library"));
+                Directory.CreateDirectory(PhoenixApp.GetFullPath(@"\Library"));
             }
-            if (!Directory.Exists(DeFine.GetFullPath(@"\Cache")))
+            if (!Directory.Exists(PhoenixApp.GetFullPath(@"\Cache")))
             {
-                Directory.CreateDirectory(DeFine.GetFullPath(@"\Cache"));
+                Directory.CreateDirectory(PhoenixApp.GetFullPath(@"\Cache"));
             }
-            if (!File.Exists(DeFine.GetFullPath(@"\setting.config")))
+            if (!File.Exists(PhoenixApp.GetFullPath(@"\setting.config")))
             {
                 var CreatNewLocalSetting = new LocalSetting();
                 CreatNewLocalSetting.SaveConfig();
             }
-            if (!Directory.Exists(DeFine.GetFullPath(@"\CorePlugins")))
+            if (!Directory.Exists(PhoenixApp.GetFullPath(@"\CorePlugins")))
             {
-                Directory.CreateDirectory(DeFine.GetFullPath(@"\CorePlugins"));
+                Directory.CreateDirectory(PhoenixApp.GetFullPath(@"\CorePlugins"));
             }
         }
 
@@ -133,14 +145,14 @@ namespace PhoenixTranslator
                 lock (ErrorReportLocker)
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        if (DeFine.DataBaseView != null)
+                        if (PhoenixApp.DataBaseView != null)
                         {
-                            MessageBoxExtend.Show(DeFine.DataBaseView, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                            MessageBoxExtend.Show(PhoenixApp.DataBaseView, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
                         }
                         else
-                        if (DeFine.WorkWin != null)
+                        if (PhoenixApp.WorkWin != null)
                         {
-                            MessageBoxExtend.Show(DeFine.WorkWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
+                            MessageBoxExtend.Show(PhoenixApp.WorkWin, "SQL", ErrorMsg, MsgAction.Null, MsgType.Waring);
                         }
                     }));
             });
@@ -149,9 +161,9 @@ namespace PhoenixTranslator
         {
             if (Win != null)
             {
-                DeFine.WorkWin = Win;
+                PhoenixApp.WorkWin = Win;
 
-                PlatformConfigStyleWin = new PlatformConfigStyleWin(DeFine.WorkWin);
+                PlatformConfigStyleWin = new PlatformConfigStyleWin(PhoenixApp.WorkWin);
 
                 ChartDataRef = new ChartData();
 
@@ -225,9 +237,9 @@ namespace PhoenixTranslator
         {
             try
             {
-                if (File.Exists(DeFine.GetFullPath(@"\setting.config")))
+                if (File.Exists(PhoenixApp.GetFullPath(@"\setting.config")))
                 {
-                    var GetStr = Encoding.UTF8.GetString(DataHelper.ReadFile(DeFine.GetFullPath(@"\setting.config")));
+                    var GetStr = Encoding.UTF8.GetString(DataHelper.ReadFile(PhoenixApp.GetFullPath(@"\setting.config")));
                     if (GetStr.Trim().Length > 0)
                     {
                         var GetSetting = JsonConvert.DeserializeObject<LocalSetting>(GetStr);
@@ -283,7 +295,7 @@ namespace PhoenixTranslator
                     {
                         LocalSetting CopySetting = this;
                         var GetSettingContent = JsonConvert.SerializeObject(CopySetting);
-                        DataHelper.WriteFile(DeFine.GetFullPath(@"\setting.config"), Encoding.UTF8.GetBytes(GetSettingContent));
+                        DataHelper.WriteFile(PhoenixApp.GetFullPath(@"\setting.config"), Encoding.UTF8.GetBytes(GetSettingContent));
                     }
                 }
             }
@@ -295,7 +307,7 @@ namespace PhoenixTranslator
             LocalSetting CopySetting = this;
             var GetSettingContent = JsonConvert.SerializeObject(CopySetting, Formatting.Indented);
 
-            DataHelper.WriteFile(DeFine.GetFullPath(@"\setting.config"), Encoding.UTF8.GetBytes(GetSettingContent));
+            DataHelper.WriteFile(PhoenixApp.GetFullPath(@"\setting.config"), Encoding.UTF8.GetBytes(GetSettingContent));
 
             Phoenix.SaveConfig();
         }

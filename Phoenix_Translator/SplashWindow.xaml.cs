@@ -31,7 +31,7 @@ namespace PhoenixTranslator
         {
             if (!_startupSucceeded)
             {
-                DeFine.CloseAny();
+                PhoenixApp.CloseAny();
             }
         }
 
@@ -67,7 +67,7 @@ namespace PhoenixTranslator
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Version.Content = DeFine.CurrentVersion;
+            Version.Content = PhoenixApp.CurrentVersion;
             await InitializeAsync();
         }
 
@@ -85,10 +85,10 @@ namespace PhoenixTranslator
             _diagnostics.Record(PreviewDiagnosticSeverity.Information, "startup.initialization.started");
             try
             {
-                string applicationPath = DeFine.GetFullPath(@"\");
+                string applicationPath = PhoenixApp.GetFullPath(@"\");
                 await Task.Run(() =>
                 {
-                    DeFine.PrepareFileDirectory();
+                    PhoenixApp.PrepareFileDirectory();
                     Phoenix.Init(applicationPath, step => SetLogMessage(GetStartupMessageId(step)));
                 });
                 SetLogMessage("Startup_Launching");

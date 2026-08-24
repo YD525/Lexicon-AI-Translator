@@ -59,7 +59,7 @@ namespace PhoenixTranslator.SkyrimManagement
             this.CanRestored = false;
 
             //Although each tag has its own independent translator, there's only one Node selection view on the interface. This means multiple instances use a single configuration file. Furthermore, the current thread count must be calculated by adding up the number of running instances, and so on. I suddenly realized, what about the thread limit in the settings interface? It limits the number of threads for a single instance. Therefore, to be on the safe side, this version will only allow one translation to run simultaneously for now.
-            this.P_Translator = new Translator(Path, DeFine.GlobalLocalSetting.SourceLanguage, DeFine.GlobalLocalSetting.TargetLanguage, true);
+            this.P_Translator = new Translator(Path, PhoenixApp.SelfSetting.SourceLanguage, PhoenixApp.SelfSetting.TargetLanguage, true);
 
             if (System.IO.File.Exists(Path))
             {
@@ -279,7 +279,7 @@ namespace PhoenixTranslator.SkyrimManagement
 
                 var Link = this.P_Translator.GetLink();
 
-                if (DeFine.GlobalLocalSetting.UseFullPunctuationJa)
+                if (PhoenixApp.SelfSetting.UseFullPunctuationJa)
                 {
                     Link.CheckLinks(new Action<string, P_String, bool>((string Key, P_String Value, bool Unique) =>
                     {
@@ -290,7 +290,7 @@ namespace PhoenixTranslator.SkyrimManagement
                     }));
                 }
                 else
-                if (DeFine.GlobalLocalSetting.UseFullPunctuation)
+                if (PhoenixApp.SelfSetting.UseFullPunctuation)
                 {
                     Link.CheckLinks(new Action<string, P_String, bool>((string Key, P_String Value, bool Unique) =>
                     {
@@ -707,7 +707,7 @@ namespace PhoenixTranslator.SkyrimManagement
                     IsEsp = true;
                 }
 
-                if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
+                if (PhoenixApp.SelfSetting.AutoUpdateStringsFileToDatabase)
                 {
                     if (IsEsp)
                     {
@@ -756,7 +756,7 @@ namespace PhoenixTranslator.SkyrimManagement
 
                     if (Row.Type.Equals("BOOK"))
                     {
-                        if (Row.Key.EndsWith("DESC") && !DeFine.GlobalLocalSetting.CanTranslateBook)
+                        if (Row.Key.EndsWith("DESC") && !PhoenixApp.SelfSetting.CanTranslateBook)
                         {
                             if (EngineEvents.SetDataCall != null)
                             {
@@ -871,13 +871,13 @@ namespace PhoenixTranslator.SkyrimManagement
 
         public void MakeReady()
         {
-            Phoenix.Config.ProtectedPatterns.Clear();
+            PhoenixApp.EngineSetting.ProtectedPatterns.Clear();
 
-            foreach (var GetStr in DeFine.GlobalLocalSetting.P_Placeholders.Split(','))
+            foreach (var GetStr in PhoenixApp.SelfSetting.P_Placeholders.Split(','))
             {
                 if (GetStr.Trim().Length > 0)
                 {
-                    Phoenix.Config.ProtectedPatterns.Add(GetStr);
+                    PhoenixApp.EngineSetting.ProtectedPatterns.Add(GetStr);
                 }
             }
 
@@ -951,7 +951,7 @@ namespace PhoenixTranslator.SkyrimManagement
                         return;
                     }
 
-                    if (Phoenix.Config.AutoSetThreadLimit)
+                    if (PhoenixApp.EngineSetting.AutoSetThreadLimit)
                     {
                         Phoenix.SyncTrdCount();
                     }

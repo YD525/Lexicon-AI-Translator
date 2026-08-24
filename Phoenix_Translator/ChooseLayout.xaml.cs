@@ -19,22 +19,22 @@ namespace PhoenixTranslator
         private readonly PreviewDiagnosticService _diagnostics;
         internal ChooseLayout(PreviewDiagnosticService diagnostics)
         {
-            DeFine.GlobalLocalSetting.ReadConfig();
+            PhoenixApp.SelfSetting.ReadConfig();
             _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
 
 
-            if (DeFine.GlobalLocalSetting.Layout == PhoenixLayout.Null)
+            if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Null)
             {
                 InitializeComponent();
             }
             else
             {
-                if (DeFine.GlobalLocalSetting.Layout == PhoenixLayout.Modern)
+                if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Modern)
                 {
                     RunModern();
                 }
                 else
-                if (DeFine.GlobalLocalSetting.Layout == PhoenixLayout.Classic)
+                if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Classic)
                 {
                     RunClassic();
                 }
@@ -43,35 +43,35 @@ namespace PhoenixTranslator
 
         private void RunModern()
         {
-            DeFine.CurrentLayout = new PreviewShellWindow(_diagnostics);
-            DeFine.CurrentLayout.Show();
+            PhoenixApp.CurrentLayout = new PreviewShellWindow(_diagnostics);
+            PhoenixApp.CurrentLayout.Show();
 
             this.Close();
         }
 
         private void RunClassic()
         {
-            DeFine.WorkWin = new PhoenixGui(_diagnostics);
-            DeFine.CurrentLayout = DeFine.WorkWin;
-            DeFine.WorkWin.Show();
+            PhoenixApp.WorkWin = new PhoenixGui(_diagnostics);
+            PhoenixApp.CurrentLayout = PhoenixApp.WorkWin;
+            PhoenixApp.WorkWin.Show();
 
             this.Close();
         }
 
         private void Modern_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DeFine.GlobalLocalSetting.Layout = PhoenixLayout.Modern;
+            PhoenixApp.SelfSetting.Layout = PhoenixLayout.Modern;
             RunModern();
         }
         private void Classic_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DeFine.GlobalLocalSetting.Layout = PhoenixLayout.Classic;
+            PhoenixApp.SelfSetting.Layout = PhoenixLayout.Classic;
             RunClassic();
         }
 
         private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DeFine.CloseAny();
+            PhoenixApp.CloseAny();
         }
 
         private void Modern_MouseEnter(object sender, MouseEventArgs e)

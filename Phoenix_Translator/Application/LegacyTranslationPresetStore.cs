@@ -9,19 +9,19 @@ namespace PhoenixTranslator.ApplicationLayer
         /// <inheritdoc />
         public TranslationPreset Preset
         {
-            get => DeFine.GlobalLocalSetting.Preset;
-            set => DeFine.GlobalLocalSetting.Preset = value;
+            get => PhoenixApp.SelfSetting.Preset;
+            set => PhoenixApp.SelfSetting.Preset = value;
         }
 
         /// <inheritdoc />
         public TranslationPresetSettings ReadSettings()
         {
             return new TranslationPresetSettings(
-                Phoenix.Config.ContextLimit,
-                Phoenix.Config.BucketLengthLimit,
-                Phoenix.Config.PreserveConversationContext,
-                Phoenix.Config.ForceContextDeduplication,
-                Phoenix.Config.StrictLinkBucketPurity);
+                PhoenixApp.EngineSetting.ContextLimit,
+                PhoenixApp.EngineSetting.BucketLengthLimit,
+                PhoenixApp.EngineSetting.PreserveConversationContext,
+                PhoenixApp.EngineSetting.ForceContextDeduplication,
+                PhoenixApp.EngineSetting.StrictLinkBucketPurity);
         }
 
         /// <inheritdoc />
@@ -32,17 +32,17 @@ namespace PhoenixTranslator.ApplicationLayer
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            Phoenix.Config.ContextLimit = settings.ContextLimit;
-            Phoenix.Config.BucketLengthLimit = settings.BucketLengthLimit;
-            Phoenix.Config.PreserveConversationContext = settings.PreserveConversationContext;
-            Phoenix.Config.ForceContextDeduplication = settings.ForceContextDeduplication;
-            Phoenix.Config.StrictLinkBucketPurity = settings.StrictLinkBucketPurity;
+            PhoenixApp.EngineSetting.ContextLimit = settings.ContextLimit;
+            PhoenixApp.EngineSetting.BucketLengthLimit = settings.BucketLengthLimit;
+            PhoenixApp.EngineSetting.PreserveConversationContext = settings.PreserveConversationContext;
+            PhoenixApp.EngineSetting.ForceContextDeduplication = settings.ForceContextDeduplication;
+            PhoenixApp.EngineSetting.StrictLinkBucketPurity = settings.StrictLinkBucketPurity;
         }
 
         /// <inheritdoc />
         public void Save()
         {
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.SaveConfig();
         }
     }
 }
