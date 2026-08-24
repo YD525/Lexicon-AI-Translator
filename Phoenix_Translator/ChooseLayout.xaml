@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PhoenixTranslator"
         Style="{DynamicResource DefWin}"
         mc:Ignorable="d"
-        Title="Select Layout" Height="380" Width="640" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+        Title="Select Layout" Height="380" Width="640" WindowStartupLocation="CenterScreen">
     <Border Background="#FF282828" CornerRadius="12" MouseDown="WinHead_MouseLeftButtonDown">
         <Grid>
             <Grid Panel.ZIndex="999">

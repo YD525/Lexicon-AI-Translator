@@ -22,23 +22,9 @@ namespace PhoenixTranslator
             PhoenixApp.SelfSetting.ReadConfig();
             _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
 
+            InitializeComponent();
 
-            if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Null)
-            {
-                InitializeComponent();
-            }
-            else
-            {
-                if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Modern)
-                {
-                    RunModern();
-                }
-                else
-                if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Classic)
-                {
-                    RunClassic();
-                }
-            }
+          
         }
 
         private void RunModern()
@@ -112,11 +98,29 @@ namespace PhoenixTranslator
                 }
             }));
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        public void AutoShow()
         {
+            this.Hide();
+
             ChangeState(ModernState, ModernIsReady);
             ChangeState(ClassicState, ClassicIsReady);
+
+            if (PhoenixApp.SelfSetting.Layout != PhoenixLayout.Null)
+            {
+                if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Modern)
+                {
+                    RunModern();
+                }
+                else
+                if (PhoenixApp.SelfSetting.Layout == PhoenixLayout.Classic)
+                {
+                    RunClassic();
+                }
+            }
+            else
+            {
+                this.Show();
+            }
         }
 
         public bool IsLeftMouseDown = false;
