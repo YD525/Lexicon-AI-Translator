@@ -242,6 +242,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource PreviewBrushBorder}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource PreviewFocusVisual}" />
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
