@@ -287,9 +287,9 @@ namespace PhoenixTranslator.UIManagement
                                             {
                                                 var Line = Mod.ListView.RealLines[i];
                                                 if (Line.Key == SelectKey) continue;
-                                                if (Line.RealSource.Length < Keyword.Length && Line.SourceText.Length < Keyword.Length) continue;
+                                                if (Line.RealSource.Length < Keyword.Length && Line.Source.Length < Keyword.Length) continue;
 
-                                                if (Line.RealSource.Contains(Keyword) || Line.SourceText.Contains(Keyword))
+                                                if (Line.RealSource.Contains(Keyword) || Line.Source.Contains(Keyword))
                                                 {
                                                     Records.Add(Mod.EspReader.Records[Line.Key]);
                                                 }
@@ -319,7 +319,7 @@ namespace PhoenixTranslator.UIManagement
                                     var GetGrid = Mod.ListView.KeyToFakeGrid(SelectKey);
                                     string Text = GetGrid.RealSource;
                                     if (Mod.PexReader.PexLinks.ContainsKey(SelectKey) && Text == "")
-                                        Text = GetGrid.SourceText;
+                                        Text = GetGrid.Source;
 
                                     if (CodeWin.TextEditor.Text != Mod.PexReader.Code)
                                         CodeWin.TextEditor.Text = Mod.PexReader.Code;

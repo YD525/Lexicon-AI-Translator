@@ -178,12 +178,12 @@ namespace PhoenixTranslator.UIManage
             bool IsModify = false;
             if (Item.RealSource.Length > 0)
             {
-                if (Item.RealSource != Item.SourceText)
+                if (Item.RealSource != Item.Source)
                 {
                     IsModify = true;
                 }
             }
-            return CreateLine(File,IsModify, Item.Height, Item.Type, Item.Key, Item.SourceText, Item.TransText,"",Item.Score);
+            return CreateLine(File,IsModify, Item.Height, Item.Type, Item.Key, Item.Source, Item.Translated,"",Item.Score);
         }
 
         public static Grid CreateLine(ModFile Mod,bool IsModify,double Height, string Type, string Key, string SourceText, string TransText, string Emotion, double Score)
@@ -214,7 +214,7 @@ namespace PhoenixTranslator.UIManage
                     var GetRealRecord = Mod.EspReader.Records[Line.Key];
                     if (Mod.FromStringsFile.Strings.ContainsKey(GetRealRecord.StringID))
                     {
-                        View.RealLines[i].SourceText = Mod.FromStringsFile.Strings[GetRealRecord.StringID].Value;
+                        View.RealLines[i].Source = Mod.FromStringsFile.Strings[GetRealRecord.StringID].Value;
                         View.RealLines[i].RealSource = string.Empty;
                         View.RealLines[i].SyncUI(View);
                     }

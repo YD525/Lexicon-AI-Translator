@@ -579,6 +579,19 @@ namespace ModFileParser
         public string ChildSig = "";
         public string UniqueKey = "";
         public string String = "";
+
+        public string Source
+        {
+            get 
+            {
+                return this.String;
+            }
+            set
+            { 
+                
+            }
+        }
+
         public int ParentIndex = 0;
         public int SubIndex = 0;
         public int OccurrenceIndex = 0;

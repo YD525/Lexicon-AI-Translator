@@ -427,13 +427,13 @@ namespace PhoenixTranslator
                 TextLine.Foreground = HighlightTextBrush; 
             }
 
-            if (GetFakeGrid.TransText.Length == 0)
+            if (GetFakeGrid.Translated.Length == 0)
             {
                 TextLine.Text = Source;
             }
             else
             {
-                TextLine.Text = Source + " -> " + GetFakeGrid.TransText;
+                TextLine.Text = Source + " -> " + GetFakeGrid.Translated;
             }
 
             ContentPanel.Children.Add(TextLine);
@@ -511,13 +511,13 @@ namespace PhoenixTranslator
                     TextLine.Foreground = HighlightTextBrush;  
                 }
 
-                if (GetFakeGrid.TransText.Length == 0)
+                if (GetFakeGrid.Translated.Length == 0)
                 {
                     TextLine.Text = Source;
                 }
                 else
                 {
-                    TextLine.Text = Source + " -> " + GetFakeGrid.TransText;
+                    TextLine.Text = Source + " -> " + GetFakeGrid.Translated;
                 }
 
                 ContentPanel.Children.Add(TextLine);

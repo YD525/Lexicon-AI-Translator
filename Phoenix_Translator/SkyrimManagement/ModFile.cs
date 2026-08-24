@@ -49,7 +49,7 @@ namespace PhoenixTranslator.SkyrimManagement
 
         public Dictionary<string, ManagedDialContext> DialNodeCache = new Dictionary<string, ManagedDialContext>();
 
-        public LexDictionary Lex_Dictionary = new LexDictionary();
+        public OriginalDictionaryReader OriginalDictionaryReader = new OriginalDictionaryReader();
 
         public Translator P_Translator = null;
         public YDListView ListView = null;
@@ -72,7 +72,7 @@ namespace PhoenixTranslator.SkyrimManagement
                 this.Path = Path;
                 this.FileName = Path.Substring(Path.LastIndexOf(@"\") + @"\".Length);
 
-                Lex_Dictionary.ReadDictionary(this.FileName);
+                OriginalDictionaryReader.ReadDictionary(this.FileName);
 
                 if (Path.ToLower().EndsWith(".xml"))
                 {
@@ -126,14 +126,14 @@ namespace PhoenixTranslator.SkyrimManagement
 
                                 ID = HistoryDBCache.AddHistory(
                                 new HistoryItem(this.P_Translator.GetFileUniqueKey(), Key, (int)this.P_Translator.To,
-                                GetRow.TransText,
+                                GetRow.Translated,
                                 0,
                                 DateTime.Now,
                                 ""
                                 ));
 
                                 HistoryDBCache.CheckPreviousHistoryItem(ID, this.P_Translator.GetFileUniqueKey(),
-                                    (int)this.P_Translator.To, Key, GetRow.TransText, out int TargetID);
+                                    (int)this.P_Translator.To, Key, GetRow.Translated, out int TargetID);
                                 if (TargetID > 0)
                                 {
                                     HistoryDBCache.DeleteHistory(this.P_Translator.GetFileUniqueKey(), TargetID);
@@ -229,7 +229,7 @@ namespace PhoenixTranslator.SkyrimManagement
 
                 this.P_Translator.LoadFile(this.Path);
 
-                this.Lex_Dictionary.ReadDictionary(this.FileName);
+                this.OriginalDictionaryReader.ReadDictionary(this.FileName);
 
                 switch (this.Type)
                 {
@@ -280,13 +280,13 @@ namespace PhoenixTranslator.SkyrimManagement
 
                     string GetKey = ListView.RealLines[i].Key;
 
-                    string GetTransText = ListView.RealLines[i].TransText;
+                    string GetTransText = ListView.RealLines[i].Translated;
 
                     if (CanSetSource)
                     {
                         if (string.IsNullOrEmpty(GetTransText))
                         {
-                            GetTransText = ListView.RealLines[i].SourceText;
+                            GetTransText = ListView.RealLines[i].Source;
                         }
                     }
 
@@ -396,9 +396,9 @@ namespace PhoenixTranslator.SkyrimManagement
 
                 if (this.ListView != null)
                 {
-                    Lex_Dictionary.WriteDictionary(this.ListView);
+                    OriginalDictionaryReader.WriteDictionary(this.ListView);
                 }
-                Lex_Dictionary.CreateDictionary();
+                OriginalDictionaryReader.CreateDictionary();
 
                 if (this.Win != null)
                 {
@@ -423,7 +423,7 @@ namespace PhoenixTranslator.SkyrimManagement
         public void Close()
         {
             DialNodeCache.Clear();
-            Lex_Dictionary.Close();
+            OriginalDictionaryReader.Close();
 
             switch (this.Type)
             {
@@ -481,7 +481,7 @@ namespace PhoenixTranslator.SkyrimManagement
 
                     if (QueryGrid != null)
                     {
-                        if (QueryGrid.TransText.Length == 0)
+                        if (QueryGrid.Translated.Length == 0)
                         {
                             bool IsCloud = false;
                             QueryGrid.SyncData(this, ref IsCloud);
@@ -510,7 +510,7 @@ namespace PhoenixTranslator.SkyrimManagement
             {
                 var Row = ListView.RealLines[i];
 
-                if (Row.TransText.Length > 0)
+                if (Row.Translated.Length > 0)
                 {
                     TranslateCount++;
                 }
@@ -689,9 +689,9 @@ namespace PhoenixTranslator.SkyrimManagement
 
                 if (!HasAddAIMemory)
                 {
-                    if (!string.IsNullOrEmpty(Row.TransText))
+                    if (!string.IsNullOrEmpty(Row.Translated))
                     {
-                        P_Translator.AddAIMemory(Row.GetSource(), Row.TransText);
+                        P_Translator.AddAIMemory(Row.GetSource(), Row.Translated);
                     }
                 }
 
@@ -709,7 +709,7 @@ namespace PhoenixTranslator.SkyrimManagement
                         {
                             var GetRecord = EspReader.Records[Row.Key];
 
-                            if (GetRecord.StringID > 0 && Row.TransText.Length > 0)
+                            if (GetRecord.StringID > 0 && Row.Translated.Length > 0)
                             {
                                 string AutoType = Row.Type;
 
@@ -727,7 +727,7 @@ namespace PhoenixTranslator.SkyrimManagement
                                     string.Empty,//The rule applies to all files.
                                     AutoType,//Automatically determine the type of the current term
                                     Row.GetRealSource(),//Get the source text corresponding to stringsfile id
-                                    Row.TransText,//Get the translation content
+                                    Row.Translated,//Get the translation content
                                     P_Translator.From,//Get source language
                                     P_Translator.To,//Get target language
                                     1,//Use full-word matching
@@ -744,7 +744,7 @@ namespace PhoenixTranslator.SkyrimManagement
                     }
                 }
 
-                if (Row.TransText.Trim().Length == 0)
+                if (Row.Translated.Trim().Length == 0)
                 {
                     bool CanSet = true;
 
@@ -787,7 +787,7 @@ namespace PhoenixTranslator.SkyrimManagement
                             var GetFakeGrid = ListView.KeyToFakeGrid(Row.Key);
                             if (GetFakeGrid != null)
                             {
-                                Row.TransText = GetTrans.Value;
+                                Row.Translated = GetTrans.Value;
 
                                 Row.SyncUI(ListView);
                             }
@@ -853,7 +853,7 @@ namespace PhoenixTranslator.SkyrimManagement
                             }
 
                             BaseUnits.Add(new BaseUnit(P_Translator.GetFileUniqueKey(),
-                            Row.Key, Row.Type, Row.SourceText, Row.TransText, Emotion, Row.Score));
+                            Row.Key, Row.Type, Row.Source, Row.Translated, Emotion, Row.Score));
                         }
                     }
                 }
@@ -964,9 +964,9 @@ namespace PhoenixTranslator.SkyrimManagement
                             bool IsCloud = false;
                             Row.SyncData(this, ref IsCloud);
 
-                            if (!string.IsNullOrEmpty(Row.TransText))
+                            if (!string.IsNullOrEmpty(Row.Translated))
                             {
-                                P_Translator.AddAIMemory(Row.GetSource(), Row.TransText);
+                                P_Translator.AddAIMemory(Row.GetSource(), Row.Translated);
                             }
                         }
 

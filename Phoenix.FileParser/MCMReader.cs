@@ -8,7 +8,8 @@ namespace ModFileParser
     public struct MCMStrings
     {
         public string EditID;
-        public string String;
+        public string Source;
+        public string Translated;
     }
     public class MCMReader : IModReader<Dictionary<string, MCMStrings>>
     {
@@ -150,7 +151,8 @@ namespace ModFileParser
                     Data[Key] = new MCMStrings()
                     {
                         EditID = GetEditorID,
-                        String = GetSourceValue
+                        Source = GetSourceValue,
+                        Translated = _LinkRef[Key].String
                     };
                 }
             }

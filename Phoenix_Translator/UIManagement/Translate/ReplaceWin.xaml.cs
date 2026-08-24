@@ -66,13 +66,13 @@ namespace PhoenixTranslator
                                 bool IsCloud = false;
                                 GetRow.SyncData(_Owner.Mod, ref IsCloud);
 
-                                if (GetRow.SourceText.Contains(SourceStr.Text))
+                                if (GetRow.Source.Contains(SourceStr.Text))
                                 {
-                                    string GetNewTrans = GetRow.SourceText.Replace(SourceStr.Text, TargetStr.Text);
+                                    string GetNewTrans = GetRow.Source.Replace(SourceStr.Text, TargetStr.Text);
 
-                                    GetRow.TransText = GetNewTrans;
+                                    GetRow.Translated = GetNewTrans;
 
-                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,1,GenRangeID));
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.Source, new P_String(GetRow.Translated,1,GenRangeID));
 
                                     GetRow.SyncUI(_Owner.TransListView);
                                 }
@@ -100,13 +100,13 @@ namespace PhoenixTranslator
                                 bool IsCloud = false;
                                 GetRow.SyncData(_Owner.Mod,ref IsCloud);
 
-                                if (GetRow.TransText.Contains(SourceStr.Text))
+                                if (GetRow.Translated.Contains(SourceStr.Text))
                                 {
-                                    string GetNewTrans = GetRow.TransText.Replace(SourceStr.Text, TargetStr.Text);
+                                    string GetNewTrans = GetRow.Translated.Replace(SourceStr.Text, TargetStr.Text);
 
-                                    GetRow.TransText = GetNewTrans;
+                                    GetRow.Translated = GetNewTrans;
 
-                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.SourceText, new P_String(GetRow.TransText,1,GenRangeID));
+                                    _Owner.Mod.P_Translator.AutoSetLink(GetRow.Key, GetRow.Source, new P_String(GetRow.Translated,1,GenRangeID));
 
                                     GetRow.SyncUI(_Owner.TransListView);
                                 }

@@ -60,12 +60,12 @@ namespace PhoenixTranslator
                         continue;
                     }
 
-                    string Source = _Owner.TransListView.RealLines[i].SourceText;
+                    string Source = _Owner.TransListView.RealLines[i].Source;
 
                     bool IsCloud = false;
                     _Owner.TransListView.RealLines[i].SyncData(this._Owner.Mod, ref IsCloud);
 
-                    if (_Owner.TransListView.RealLines[i].TransText.Length == 0)
+                    if (_Owner.TransListView.RealLines[i].Translated.Length == 0)
                     {
                         Total++;
                     }
@@ -79,18 +79,18 @@ namespace PhoenixTranslator
                         continue;
                     }
 
-                    string Source = _Owner.TransListView.RealLines[i].SourceText;
+                    string Source = _Owner.TransListView.RealLines[i].Source;
 
                     bool IsCloud = false;
                     _Owner.TransListView.RealLines[i].SyncData(this._Owner.Mod,ref IsCloud);
 
-                    if (_Owner.TransListView.RealLines[i].TransText.Length == 0)
+                    if (_Owner.TransListView.RealLines[i].Translated.Length == 0)
                     {
                         Current++;
 
                         var Result = ChineseVariantMap.SimplifiedToTraditionalByReq(Source);
 
-                        _Owner.TransListView.RealLines[i].TransText = Result;
+                        _Owner.TransListView.RealLines[i].Translated = Result;
 
                         var Key = _Owner.TransListView.RealLines[i].Key;
 
