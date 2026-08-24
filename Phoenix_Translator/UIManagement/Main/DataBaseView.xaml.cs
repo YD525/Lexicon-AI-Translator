@@ -679,8 +679,8 @@ namespace PhoenixTranslator
 
         private static readonly Dictionary<string, Func<string>> BracketDefaults = new Dictionary<string, Func<string>>
         {
-            ["From"] = () => ((int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.From).ToString(),
-            ["To"] = () => ((int)DeFine.WorkWin.ActiveTab.Mod.P_Translator.To).ToString(),
+            ["From"] = () => ((int)PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.From).ToString(),
+            ["To"] = () => ((int)PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.To).ToString(),
         };
 
         private string[] ResolveColumns(string TableOrAlias)

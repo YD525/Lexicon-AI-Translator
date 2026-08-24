@@ -340,7 +340,8 @@ namespace PhoenixTranslator.UIManagement.Preview
             if (_legacyWorkspace == null)
             {
                 _legacyWorkspace = new PhoenixGui(_diagnostics);
-                DeFine.WorkWin = _legacyWorkspace;
+                PhoenixApp.WorkWin = _legacyWorkspace;
+                PhoenixApp.SelfSetting.Layout = PhoenixLayout.Classic;//Update the configuration file; the Classic layout will be selected on the next startup.
                 _legacyWorkspace.Closed += LegacyWorkspaceClosed;
                 _legacyWorkspace.Show();
             }
@@ -483,7 +484,7 @@ namespace PhoenixTranslator.UIManagement.Preview
             _historyUpdateViewModel.Dispose();
             _reviewQualityViewModel.Dispose();
             _translationWorkspaceViewModel.Dispose();
-            DeFine.CloseAny();
+            PhoenixApp.CloseAny();
         }
     }
 }

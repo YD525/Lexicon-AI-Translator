@@ -69,11 +69,11 @@ namespace PhoenixTranslator.UIManagement
                 {
                     var SourceFilterStr = Mod.EspReader.GetFilterByStr();
 
-                    if (DeFine.GlobalLocalSetting.CustomFilterStr.Trim().Length > 0)
+                    if (PhoenixApp.SelfSetting.CustomFilterStr.Trim().Length > 0)
                     {
-                        if (SourceFilterStr.ToUpper() != DeFine.GlobalLocalSetting.CustomFilterStr.ToUpper())
+                        if (SourceFilterStr.ToUpper() != PhoenixApp.SelfSetting.CustomFilterStr.ToUpper())
                         {
-                            var FilterDict = Mod.EspReader.ParseFilterString(DeFine.GlobalLocalSetting.CustomFilterStr);
+                            var FilterDict = Mod.EspReader.ParseFilterString(PhoenixApp.SelfSetting.CustomFilterStr);
                             Mod.EspReader.SetFilter(FilterDict);
                         }
                     }
@@ -96,8 +96,8 @@ namespace PhoenixTranslator.UIManagement
 
                 Mod.SetListView(TransListView);
 
-                this.Mod.P_Translator.From = DeFine.GlobalLocalSetting.SourceLanguage;
-                this.Mod.P_Translator.To = DeFine.GlobalLocalSetting.TargetLanguage;
+                this.Mod.P_Translator.From = PhoenixApp.SelfSetting.SourceLanguage;
+                this.Mod.P_Translator.To = PhoenixApp.SelfSetting.TargetLanguage;
 
                 this.ReloadStringsFile();
 
@@ -190,11 +190,11 @@ namespace PhoenixTranslator.UIManagement
                 {
                     _SyncTimer.Stop();
 
-                    if (DeFine.WorkWin != null)
-                        if (DefWindowWidth != DeFine.WorkWin.ActualWidth)
+                    if (PhoenixApp.WorkWin != null)
+                        if (DefWindowWidth != PhoenixApp.WorkWin.ActualWidth)
                         {
                             TransListView.HotReload();
-                            DefWindowWidth = DeFine.WorkWin.ActualWidth;
+                            DefWindowWidth = PhoenixApp.WorkWin.ActualWidth;
                         }
                 };
             }
@@ -272,7 +272,7 @@ namespace PhoenixTranslator.UIManagement
         {
             InitIDE();
 
-            if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
+            if (PhoenixApp.SelfSetting.ViewMode == "Normal")
             {
                 EnableNormalModel();
 
@@ -283,7 +283,7 @@ namespace PhoenixTranslator.UIManagement
                 EmptyFromAndToText();
             }
 
-            if (DeFine.GlobalLocalSetting.CanClearCloudTranslationCache)
+            if (PhoenixApp.SelfSetting.CanClearCloudTranslationCache)
             {
                 CloudTranslationCache.IsChecked = true;
             }
@@ -292,7 +292,7 @@ namespace PhoenixTranslator.UIManagement
                 CloudTranslationCache.IsChecked = false;
             }
 
-            if (DeFine.GlobalLocalSetting.CanClearUserInputTranslationCache)
+            if (PhoenixApp.SelfSetting.CanClearUserInputTranslationCache)
             {
                 UserTranslationCache.IsChecked = true;
             }
@@ -301,7 +301,7 @@ namespace PhoenixTranslator.UIManagement
                 UserTranslationCache.IsChecked = false;
             }
 
-            if (DeFine.GlobalLocalSetting.AutoSpeak)
+            if (PhoenixApp.SelfSetting.AutoSpeak)
             {
                 AutoSpeak.IsChecked = true;
             }
@@ -310,14 +310,14 @@ namespace PhoenixTranslator.UIManagement
                 AutoSpeak.IsChecked = false;
             }
 
-            if (DeFine.GlobalLocalSetting.TableAuto)
+            if (PhoenixApp.SelfSetting.TableAuto)
             {
                 SetHotKeyDot(true);
                 NextAutoEnable = 1;
                 _AutoLoop = true;
             }
 
-            if (DeFine.GlobalLocalSetting.WordCompletion)
+            if (PhoenixApp.SelfSetting.WordCompletion)
             {
                 AutoWordCompletion.IsChecked = true;
             }
@@ -326,7 +326,7 @@ namespace PhoenixTranslator.UIManagement
                 AutoWordCompletion.IsChecked = false;
             }
 
-            if (DeFine.WordCompleter == null)
+            if (PhoenixApp.WordCompleter == null)
             {
                 HideWordCompletion();
             }
@@ -470,7 +470,7 @@ namespace PhoenixTranslator.UIManagement
                             UIHelper.ShowButton(CancelOTButton, true);
                         }
 
-                        if (DeFine.GlobalLocalSetting.AutoSpeak)
+                        if (PhoenixApp.SelfSetting.AutoSpeak)
                         {
                             SpeechHelper.TryPlaySound(this.Mod.P_Translator.From,FromStr.Text, true);
                         }
@@ -528,9 +528,9 @@ namespace PhoenixTranslator.UIManagement
         public void AutoShowTraditional()
         {
             bool IsVisible = false;
-            if (DeFine.GlobalLocalSetting.SourceLanguage == Languages.SimplifiedChinese || DeFine.GlobalLocalSetting.SourceLanguage == Languages.TraditionalChinese)
+            if (PhoenixApp.SelfSetting.SourceLanguage == Languages.SimplifiedChinese || PhoenixApp.SelfSetting.SourceLanguage == Languages.TraditionalChinese)
             {
-                if (DeFine.GlobalLocalSetting.SourceLanguage == Languages.TraditionalChinese || DeFine.GlobalLocalSetting.SourceLanguage == Languages.SimplifiedChinese)
+                if (PhoenixApp.SelfSetting.SourceLanguage == Languages.TraditionalChinese || PhoenixApp.SelfSetting.SourceLanguage == Languages.SimplifiedChinese)
                 {
                     Traditional.Visibility = Visibility.Visible;
                     IsVisible = true;
@@ -818,7 +818,7 @@ namespace PhoenixTranslator.UIManagement
                                             return;
                                         }
 
-                                        if (Phoenix.Config.GetPlatformData(LMStudio.Type).Enable)
+                                        if (PhoenixApp.EngineSetting.GetPlatformData(LMStudio.Type).Enable)
                                         {
                                             LMStudio.CurrentModel = string.Empty;
                                         }
@@ -881,11 +881,11 @@ namespace PhoenixTranslator.UIManagement
         {
             if (AutoSpeak.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.AutoSpeak = true;
+                PhoenixApp.SelfSetting.AutoSpeak = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.AutoSpeak = false;
+                PhoenixApp.SelfSetting.AutoSpeak = false;
             }
         }
 
@@ -907,16 +907,16 @@ namespace PhoenixTranslator.UIManagement
                 SetHotKeyDot(true);
                 NextAutoEnable = 1;
 
-                DeFine.GlobalLocalSetting.TableAuto = true;
-                DeFine.GlobalLocalSetting.SaveConfig();
+                PhoenixApp.SelfSetting.TableAuto = true;
+                PhoenixApp.SelfSetting.SaveConfig();
             }
             else
             {
                 SetHotKeyDot(false);
                 NextAutoEnable = 0;
 
-                DeFine.GlobalLocalSetting.TableAuto = false;
-                DeFine.GlobalLocalSetting.SaveConfig();
+                PhoenixApp.SelfSetting.TableAuto = false;
+                PhoenixApp.SelfSetting.SaveConfig();
             }
 
             e.Handled = true;
@@ -1013,21 +1013,21 @@ namespace PhoenixTranslator.UIManagement
 
         private void GridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            DeFine.GlobalLocalSetting.WritingAreaHeight = WritingArea.Height.Value;
+            PhoenixApp.SelfSetting.WritingAreaHeight = WritingArea.Height.Value;
         }
 
         private void AutoWordCompletion_Click(object sender, RoutedEventArgs e)
         {
             if (AutoWordCompletion.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.WordCompletion = true;
+                PhoenixApp.SelfSetting.WordCompletion = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.WordCompletion = false;
+                PhoenixApp.SelfSetting.WordCompletion = false;
             }
 
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.SaveConfig();
         }
 
         private void ImportRamCache_Click(object sender, RoutedEventArgs e)
@@ -1113,7 +1113,7 @@ namespace PhoenixTranslator.UIManagement
                 {
                     int CallFuncCount = 0;
 
-                    string SetPath = DeFine.GetFullPath(@"\Library\" + Mod.P_Translator.LastLoadFileName + ".Json");
+                    string SetPath = PhoenixApp.GetFullPath(@"\Library\" + Mod.P_Translator.LastLoadFileName + ".Json");
 
                     if (File.Exists(SetPath))
                     {
@@ -1448,7 +1448,7 @@ namespace PhoenixTranslator.UIManagement
             {
                 e.Handled = true;
 
-                if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
+                if (PhoenixApp.SelfSetting.ViewMode == "Normal")
                 {
                     ApplyTranslatedText();
                     ReSetHistoryPointer();
@@ -1461,7 +1461,7 @@ namespace PhoenixTranslator.UIManagement
             {
                 e.Handled = true;
 
-                if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
+                if (PhoenixApp.SelfSetting.ViewMode == "Normal")
                 {
                     if (!Phoenix.CheckAvailableNodes())
                     {
@@ -1859,7 +1859,7 @@ namespace PhoenixTranslator.UIManagement
 
         public void EnableNormalModel()
         {
-            DeFine.GlobalLocalSetting.ViewMode = "Normal";
+            PhoenixApp.SelfSetting.ViewMode = "Normal";
             NormalModel.Style = (Style)this.FindResource("ModelSelected");
             QuickModel.Style = (Style)this.FindResource("ModelUnSelected");
 
@@ -1868,7 +1868,7 @@ namespace PhoenixTranslator.UIManagement
 
             ReloadData(true, true);
 
-            double AutoHeight = DeFine.GlobalLocalSetting.WritingAreaHeight;
+            double AutoHeight = PhoenixApp.SelfSetting.WritingAreaHeight;
 
             if (AutoHeight < 100)
             {
@@ -1880,7 +1880,7 @@ namespace PhoenixTranslator.UIManagement
 
         public void EnableQuickModel()
         {
-            DeFine.GlobalLocalSetting.ViewMode = "Quick";
+            PhoenixApp.SelfSetting.ViewMode = "Quick";
             NormalModel.Style = (Style)this.FindResource("ModelUnSelected");
             QuickModel.Style = (Style)this.FindResource("ModelSelected");
 
@@ -2050,11 +2050,11 @@ namespace PhoenixTranslator.UIManagement
         {
             if (UserTranslationCache.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.CanClearUserInputTranslationCache = true;
+                PhoenixApp.SelfSetting.CanClearUserInputTranslationCache = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.CanClearUserInputTranslationCache = false;
+                PhoenixApp.SelfSetting.CanClearUserInputTranslationCache = false;
             }
 
             CheckCanClearCache(out bool Check);
@@ -2064,11 +2064,11 @@ namespace PhoenixTranslator.UIManagement
         {
             if (CloudTranslationCache.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.CanClearCloudTranslationCache = true;
+                PhoenixApp.SelfSetting.CanClearCloudTranslationCache = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.CanClearCloudTranslationCache = false;
+                PhoenixApp.SelfSetting.CanClearCloudTranslationCache = false;
             }
 
             CheckCanClearCache(out bool Check);
@@ -2169,24 +2169,24 @@ namespace PhoenixTranslator.UIManagement
 
                                 if (SingleTrans)
                                 {
-                                    ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", Current + 1, Phoenix.Config.MaxThreadCount + 1);
+                                    ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", Current + 1, PhoenixApp.EngineSetting.MaxThreadCount + 1);
                                 }
                                 else
                                 {
-                                    ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", Current, Phoenix.Config.MaxThreadCount);
+                                    ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", Current, PhoenixApp.EngineSetting.MaxThreadCount);
                                 }
                             }
                             else
                             if (BatchCore.IsWorking && BatchCore.IsStopped)
                             {
-                                ThreadInFo.Content = string.Format("Thread(Current:0,Max:{0})", Phoenix.Config.MaxThreadCount);
+                                ThreadInFo.Content = string.Format("Thread(Current:0,Max:{0})", PhoenixApp.EngineSetting.MaxThreadCount);
                             }
                         }
                         else
                         {
                             if (SingleTrans)
                             {
-                                ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", 1, Phoenix.Config.MaxThreadCount + 1);
+                                ThreadInFo.Content = string.Format("Thread(Current:{0},Max:{1})", 1, PhoenixApp.EngineSetting.MaxThreadCount + 1);
                             }
                         }
 

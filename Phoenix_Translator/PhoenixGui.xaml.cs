@@ -56,7 +56,7 @@ namespace PhoenixTranslator
         {
             new ModFileDialog().Show();
 
-            DeFine.Init(this);
+            PhoenixApp.Init(this);
 
             TranslatorInterface.Init();
 
@@ -68,28 +68,28 @@ namespace PhoenixTranslator
             UIHelper.SyncNodes(Nodes);
 
             //If you like anime, you can place a CG.png in the program's installation directory, making sure the dimensions are correct. It will display an anime character at the top of the software.
-            string CheckCGPath = DeFine.GetFullPath(@"\CG.png");
+            string CheckCGPath = PhoenixApp.GetFullPath(@"\CG.png");
             if (File.Exists(CheckCGPath))
             {
-                DeFine.CG = new CGView();
-                DeFine.CG.Hide();
-                DeFine.CG.CG.Source = new BitmapImage(new Uri(CheckCGPath));
+                PhoenixApp.CG = new CGView();
+                PhoenixApp.CG.Hide();
+                PhoenixApp.CG.CG.Source = new BitmapImage(new Uri(CheckCGPath));
 
-                DeFine.CG.Owner = this;
-                DeFine.CG.Show();
+                PhoenixApp.CG.Owner = this;
+                PhoenixApp.CG.Show();
                 SyncCGLocation();
             }
 
             YDChart.SetAction(
               new Action<RealtimeLineChart>((Ref) =>
               {
-                  Ref.PushValue(DeFine.ChartDataRef.GetCurrent());
+                  Ref.PushValue(PhoenixApp.ChartDataRef.GetCurrent());
               }),
               new Action<RealtimeLineChart>((Ref) =>
               {
-                  Ref.PushValue(DeFine.ChartDataRef.Total);
+                  Ref.PushValue(PhoenixApp.ChartDataRef.Total);
               }),
-              DeFine.ChartDataRef
+              PhoenixApp.ChartDataRef
              );
 
             EngineEvents.SetBookTranslateCallback += BookTransCallBack;
@@ -128,7 +128,7 @@ namespace PhoenixTranslator
                 TranslateConfigView.SFrom.SelectedValue = Languages.English.ToString();
             }
 
-            TranslateConfigView.STo.SelectedValue = DeFine.GlobalLocalSetting.TargetLanguage.ToString();
+            TranslateConfigView.STo.SelectedValue = PhoenixApp.SelfSetting.TargetLanguage.ToString();
         }
 
         public void BookTransCallBack(string Key, string CurrentText)
@@ -145,10 +145,10 @@ namespace PhoenixTranslator
 
         public void SyncCGLocation()
         {
-            if (DeFine.CG != null)
+            if (PhoenixApp.CG != null)
             {
-                DeFine.CG.Top = (this.Top - DeFine.CG.ActualHeight) + 1;
-                DeFine.CG.Left = this.Left + 100;
+                PhoenixApp.CG.Top = (this.Top - PhoenixApp.CG.ActualHeight) + 1;
+                PhoenixApp.CG.Left = this.Left + 100;
             }
         }
 
@@ -323,13 +323,13 @@ namespace PhoenixTranslator
         {
             if (CanExit)
             {
-                DeFine.CloseAny();
+                PhoenixApp.CloseAny();
             }
         }
 
         private void Close_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DeFine.CloseAny();
+            PhoenixApp.CloseAny();
         }
 
         #endregion
@@ -390,7 +390,7 @@ namespace PhoenixTranslator
                             YDChart.Stop();
                             PageIndex = 0;
                             StartLexGlowLoop();
-                            PhoenixVer.Content = DeFine.CurrentVersion;
+                            PhoenixVer.Content = PhoenixApp.CurrentVersion;
                             EngineVer.Content = Phoenix.Version;
                             PEXAnalysisVer.Content = PexHeuristicAnalysis.Version;
                             PEXReaderVer.Content = PexInterop.Version;
@@ -1120,33 +1120,33 @@ namespace PhoenixTranslator
             List<PlatformConfig> LocalAIs = new List<PlatformConfig>();
             List<PlatformConfig> TraditionalPlatforms = new List<PlatformConfig>();
 
-            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
             {
-                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+                var Key = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
 
-                if (Phoenix.Config.PlatformConfigs[Key].CustomInFo != null)
+                if (PhoenixApp.EngineSetting.PlatformConfigs[Key].CustomInFo != null)
                 {
-                    if (Phoenix.Config.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.CloudAI)
+                    if (PhoenixApp.EngineSetting.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.CloudAI)
                     {
-                        CloudAIs.Add(Phoenix.Config.PlatformConfigs[Key]);
+                        CloudAIs.Add(PhoenixApp.EngineSetting.PlatformConfigs[Key]);
                     }
                     else
-                    if (Phoenix.Config.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.LocalAI)
+                    if (PhoenixApp.EngineSetting.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.LocalAI)
                     {
-                        LocalAIs.Add(Phoenix.Config.PlatformConfigs[Key]);
+                        LocalAIs.Add(PhoenixApp.EngineSetting.PlatformConfigs[Key]);
                     }
                     else
-                    if (Phoenix.Config.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.Traditional)
+                    if (PhoenixApp.EngineSetting.PlatformConfigs[Key].CustomInFo.Type == CustomPlatformType.Traditional)
                     {
-                        TraditionalPlatforms.Add(Phoenix.Config.PlatformConfigs[Key]);
+                        TraditionalPlatforms.Add(PhoenixApp.EngineSetting.PlatformConfigs[Key]);
                     }
                 }
             }
 
-            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
             {
-                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                var GetPlatform = Phoenix.Config.PlatformConfigs[Key];
+                var Key = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                var GetPlatform = PhoenixApp.EngineSetting.PlatformConfigs[Key];
 
                 if (GetPlatform.Platform == PlatformType.ChatGpt ||
                    GetPlatform.Platform == PlatformType.Gemini ||
@@ -1165,7 +1165,7 @@ namespace PhoenixTranslator
                                     Models.Add("gpt-4.1-mini");
                                     Models.Add("gpt-4o-mini");
 
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(0, "ChatGpt", "https://platform.openai.com/api-keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
+                                    KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenCloudAIConfig(0, "ChatGpt", "https://platform.openai.com/api-keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
                                 }
                                 break;
                             case PlatformType.Gemini:
@@ -1174,7 +1174,7 @@ namespace PhoenixTranslator
                                     Models.Add("gemini-2.5-flash");
                                     Models.Add("gemini-2.0-flash");
 
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(0, "Gemini", "https://aistudio.google.com/apikey", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
+                                    KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenCloudAIConfig(0, "Gemini", "https://aistudio.google.com/apikey", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
                                 }
                                 break;
                             case PlatformType.DeepSeek:
@@ -1182,7 +1182,7 @@ namespace PhoenixTranslator
                                     List<string> Models = new List<string>();
                                     Models.Add("deepseek-v4-pro");
 
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(0, "DeepSeek", "https://platform.deepseek.com/api_keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
+                                    KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenCloudAIConfig(0, "DeepSeek", "https://platform.deepseek.com/api_keys", true, GetPlatform.ApiKeys, GetPlatform.Model, CustomPlatformType.CloudAI, Models));
                                 }
                                 break;
                         }
@@ -1192,13 +1192,13 @@ namespace PhoenixTranslator
 
             foreach (var CustomPlatform in CloudAIs)
             {
-                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenCloudAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatform.Model, CustomPlatformType.CloudAI, new List<string>() { CustomPlatform.Model }));
+                KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenCloudAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatform.Model, CustomPlatformType.CloudAI, new List<string>() { CustomPlatform.Model }));
             }
 
-            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
             {
-                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                var GetPlatform = Phoenix.Config.PlatformConfigs[Key];
+                var Key = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                var GetPlatform = PhoenixApp.EngineSetting.PlatformConfigs[Key];
 
                 if (GetPlatform.Platform == PlatformType.LMLocalAI)
                 {
@@ -1208,7 +1208,7 @@ namespace PhoenixTranslator
                         {
                             case PlatformType.LMLocalAI:
                                 {
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(0, "LM Studio", "https://lmstudio.ai/docs/developer", true, GetPlatform.LocalPort, LMStudio.CurrentModel, CustomPlatformType.LocalAI));
+                                    KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenLocalAIConfig(0, "LM Studio", "https://lmstudio.ai/docs/developer", true, GetPlatform.LocalPort, LMStudio.CurrentModel, CustomPlatformType.LocalAI));
                                 }
                                 break;
                         }
@@ -1218,13 +1218,13 @@ namespace PhoenixTranslator
 
             foreach (var CustomPlatform in LocalAIs)
             {
-                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenLocalAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.LocalPort, CustomPlatform.Model, CustomPlatformType.LocalAI));
+                KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenLocalAIConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.LocalPort, CustomPlatform.Model, CustomPlatformType.LocalAI));
             }
 
-            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
             {
-                var Key = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                var GetPlatform = Phoenix.Config.PlatformConfigs[Key];
+                var Key = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                var GetPlatform = PhoenixApp.EngineSetting.PlatformConfigs[Key];
 
                 if (GetPlatform.Platform == PlatformType.DeepL)
                 {
@@ -1234,7 +1234,7 @@ namespace PhoenixTranslator
                         {
                             case PlatformType.DeepL:
                                 {
-                                    KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenTraditionalConfig(0, "DeepL", "https://www.deepl.com/your-account/keys", true, GetPlatform.ApiKeys, CustomPlatformType.Traditional));
+                                    KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenTraditionalConfig(0, "DeepL", "https://www.deepl.com/your-account/keys", true, GetPlatform.ApiKeys, CustomPlatformType.Traditional));
                                 }
                                 break;
                         }
@@ -1244,7 +1244,7 @@ namespace PhoenixTranslator
 
             foreach (var CustomPlatform in TraditionalPlatforms)
             {
-                KeyConfigBlocks.Children.Add(DeFine.PlatformConfigStyleWin.GenTraditionalConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatformType.Traditional));
+                KeyConfigBlocks.Children.Add(PhoenixApp.PlatformConfigStyleWin.GenTraditionalConfig(CustomPlatform.CustomInFo.CustomID, CustomPlatform.CustomInFo.Name, string.Empty, false, CustomPlatform.ApiKeys, CustomPlatformType.Traditional));
             }
         }
 
@@ -1253,18 +1253,18 @@ namespace PhoenixTranslator
         {
             if (Name.Equals("Request And ApiKey Configs"))
             {
-                var PhoenixConfig = Phoenix.Config;
+                var PhoenixConfig = PhoenixApp.EngineSetting;
 
-                SProxyUrl.Text = Phoenix.Config.ProxyUrl;
-                SProxyUserName.Text = Phoenix.Config.ProxyUserName;
-                SProxyPassword.Text = Phoenix.Config.ProxyPassword;
+                SProxyUrl.Text = PhoenixApp.EngineSetting.ProxyUrl;
+                SProxyUserName.Text = PhoenixApp.EngineSetting.ProxyUserName;
+                SProxyPassword.Text = PhoenixApp.EngineSetting.ProxyPassword;
 
                 SyncPlatformConfig();
             }
             else
             if (Name.Equals("AI Configs"))
             {
-                SAIKeyword.Text = Phoenix.Config.UserCustomAIPrompt;
+                SAIKeyword.Text = PhoenixApp.EngineSetting.UserCustomAIPrompt;
             }
             else
             if (Name.Equals("Game Configs"))
@@ -1272,9 +1272,9 @@ namespace PhoenixTranslator
                 SGame.Items.Clear();
                 SGame.Items.Add(GameNames.Skyrim.ToString());
 
-                SGame.SelectedValue = DeFine.GlobalLocalSetting.GameType.ToString();
+                SGame.SelectedValue = PhoenixApp.SelfSetting.GameType.ToString();
 
-                if (DeFine.GlobalLocalSetting.ShowAssembly)
+                if (PhoenixApp.SelfSetting.ShowAssembly)
                 {
                     SShowAssembly.IsChecked = true;
                 }
@@ -1288,7 +1288,7 @@ namespace PhoenixTranslator
                 SCodeGenStyle.Items.Add("CSharp");
                 SCodeGenStyle.Items.Add("Papyrus");
 
-                if (DeFine.GlobalLocalSetting.GenCSharp)
+                if (PhoenixApp.SelfSetting.GenCSharp)
                 {
                     SCodeGenStyle.SelectedValue = SCodeGenStyle.Items[0];
                 }
@@ -1306,7 +1306,7 @@ namespace PhoenixTranslator
             else
             if (Name.Equals("UI Configs"))
             {
-                if (DeFine.GlobalLocalSetting.TextDisplay == TextLayout.RTL)
+                if (PhoenixApp.SelfSetting.TextDisplay == TextLayout.RTL)
                 {
                     RTLEnable.IsChecked = true;
                 }
@@ -1320,7 +1320,7 @@ namespace PhoenixTranslator
             {
                 LoadTranslationPresetControls();
 
-                if (Phoenix.Config.ContextEnable)
+                if (PhoenixApp.EngineSetting.ContextEnable)
                 {
                     SContextEnable.IsChecked = true;
                 }
@@ -1329,13 +1329,13 @@ namespace PhoenixTranslator
                     SContextEnable.IsChecked = false;
                 }
 
-                SThrottlingRatio.Text = Phoenix.Config.ThrottleRatio.ToString();
+                SThrottlingRatio.Text = PhoenixApp.EngineSetting.ThrottleRatio.ToString();
 
-                SRotationDelay.Text = Phoenix.Config.ThrottleDelayMs.ToString();
+                SRotationDelay.Text = PhoenixApp.EngineSetting.ThrottleDelayMs.ToString();
 
-                SMaxThread.Text = Phoenix.Config.MaxThreadCount.ToString();
+                SMaxThread.Text = PhoenixApp.EngineSetting.MaxThreadCount.ToString();
 
-                if (DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase)
+                if (PhoenixApp.SelfSetting.AutoUpdateStringsFileToDatabase)
                 {
                     AutoUpdateStringsFileToDatabase.IsChecked = true;
                 }
@@ -1344,7 +1344,7 @@ namespace PhoenixTranslator
                     AutoUpdateStringsFileToDatabase.IsChecked = false;
                 }
 
-                if (Phoenix.Config.EnableGlobalSearch)
+                if (PhoenixApp.EngineSetting.EnableGlobalSearch)
                 {
                     GlobalSearch.IsChecked = true;
                 }
@@ -1353,7 +1353,7 @@ namespace PhoenixTranslator
                     GlobalSearch.IsChecked = false;
                 }
 
-                if (DeFine.GlobalLocalSetting.EnableLanguageDetect)
+                if (PhoenixApp.SelfSetting.EnableLanguageDetect)
                 {
                     SEnableLanguageDetect.IsChecked = true;
                 }
@@ -1362,9 +1362,9 @@ namespace PhoenixTranslator
                     SEnableLanguageDetect.IsChecked = false;
                 }
 
-                P_Placeholders.Text = DeFine.GlobalLocalSetting.P_Placeholders;
+                P_Placeholders.Text = PhoenixApp.SelfSetting.P_Placeholders;
 
-                if (DeFine.GlobalLocalSetting.CanTranslateBook)
+                if (PhoenixApp.SelfSetting.CanTranslateBook)
                 {
                     CanTranslateBook.IsChecked = true;
                 }
@@ -1373,7 +1373,7 @@ namespace PhoenixTranslator
                     CanTranslateBook.IsChecked = false;
                 }
 
-                if (DeFine.GlobalLocalSetting.UseFullPunctuation)
+                if (PhoenixApp.SelfSetting.UseFullPunctuation)
                 {
                     UseFullPunctuation.IsChecked = true;
                 }
@@ -1382,7 +1382,7 @@ namespace PhoenixTranslator
                     UseFullPunctuation.IsChecked = false;
                 }
 
-                if (DeFine.GlobalLocalSetting.UseFullPunctuationJa)
+                if (PhoenixApp.SelfSetting.UseFullPunctuationJa)
                 {
                     UseFullPunctuationJa.IsChecked = true;
                 }
@@ -1496,33 +1496,33 @@ namespace PhoenixTranslator
             string GetValue = P_Convert.ObjToStr(UILanguages.SelectedValue);
             if (GetValue.Length > 0)
             {
-                DeFine.GlobalLocalSetting.CurrentUILanguage = (Languages)Enum.Parse(typeof(Languages), GetValue);
-                UILanguageHelper.ChangeLanguage(DeFine.GlobalLocalSetting.CurrentUILanguage);
+                PhoenixApp.SelfSetting.CurrentUILanguage = (Languages)Enum.Parse(typeof(Languages), GetValue);
+                UILanguageHelper.ChangeLanguage(PhoenixApp.SelfSetting.CurrentUILanguage);
             }
         }
         private void AutoUpdateStringsFileToDatabase_Click(object sender, RoutedEventArgs e)
         {
             if (AutoUpdateStringsFileToDatabase.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase = true;
+                PhoenixApp.SelfSetting.AutoUpdateStringsFileToDatabase = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.AutoUpdateStringsFileToDatabase = false;
+                PhoenixApp.SelfSetting.AutoUpdateStringsFileToDatabase = false;
             }
 
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.SaveConfig();
         }
 
         private void EnableGlobalSearch_Click(object sender, RoutedEventArgs e)
         {
             if (GlobalSearch.IsChecked == true)
             {
-                Phoenix.Config.EnableGlobalSearch = true;
+                PhoenixApp.EngineSetting.EnableGlobalSearch = true;
             }
             else
             {
-                Phoenix.Config.EnableGlobalSearch = false;
+                PhoenixApp.EngineSetting.EnableGlobalSearch = false;
             }
 
             Phoenix.SaveConfig();
@@ -1532,18 +1532,18 @@ namespace PhoenixTranslator
         {
             if (SEnableLanguageDetect.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.EnableLanguageDetect = true;
+                PhoenixApp.SelfSetting.EnableLanguageDetect = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.EnableLanguageDetect = false;
+                PhoenixApp.SelfSetting.EnableLanguageDetect = false;
             }
         }
 
         private void P_Placeholders_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DeFine.GlobalLocalSetting.P_Placeholders = P_Placeholders.Text;
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.P_Placeholders = P_Placeholders.Text;
+            PhoenixApp.SelfSetting.SaveConfig();
         }
         private void SCodeGenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1551,11 +1551,11 @@ namespace PhoenixTranslator
             if (GetValue.Length > 0)
                 if (GetValue.Equals("CSharp"))
                 {
-                    DeFine.GlobalLocalSetting.GenCSharp = true;
+                    PhoenixApp.SelfSetting.GenCSharp = true;
                 }
                 else
                 {
-                    DeFine.GlobalLocalSetting.GenCSharp = false;
+                    PhoenixApp.SelfSetting.GenCSharp = false;
                 }
         }
 
@@ -1563,29 +1563,29 @@ namespace PhoenixTranslator
         {
             if (SShowAssembly.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.ShowAssembly = true;
+                PhoenixApp.SelfSetting.ShowAssembly = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.ShowAssembly = false;
+                PhoenixApp.SelfSetting.ShowAssembly = false;
             }
 
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.SaveConfig();
         }
 
         private void SProxyUrl_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ProxyUrl = SProxyUrl.Text;
+            PhoenixApp.EngineSetting.ProxyUrl = SProxyUrl.Text;
         }
 
         private void SProxyUserName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ProxyUserName = SProxyUserName.Text;
+            PhoenixApp.EngineSetting.ProxyUserName = SProxyUserName.Text;
         }
 
         private void SProxyPassword_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ProxyPassword = SProxyPassword.Text;
+            PhoenixApp.EngineSetting.ProxyPassword = SProxyPassword.Text;
         }
 
         private void SContextLimit_TextChanged(object sender, TextChangedEventArgs e)
@@ -1613,18 +1613,18 @@ namespace PhoenixTranslator
 
         private void SAIKeyword_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.UserCustomAIPrompt = SAIKeyword.Text.Trim();
+            PhoenixApp.EngineSetting.UserCustomAIPrompt = SAIKeyword.Text.Trim();
         }
 
         private void SContextEnable_Click(object sender, RoutedEventArgs e)
         {
             if (SContextEnable.IsChecked == true)
             {
-                Phoenix.Config.ContextEnable = true;
+                PhoenixApp.EngineSetting.ContextEnable = true;
             }
             else
             {
-                Phoenix.Config.ContextEnable = false;
+                PhoenixApp.EngineSetting.ContextEnable = false;
             }
         }
 
@@ -1633,18 +1633,18 @@ namespace PhoenixTranslator
             string GetName = P_Convert.ObjToStr(SGame.SelectedValue);
             if (GetName.Trim().Length > 0)
             {
-                DeFine.GlobalLocalSetting.GameType = (GameNames)Enum.Parse(typeof(GameNames), GetName);
+                PhoenixApp.SelfSetting.GameType = (GameNames)Enum.Parse(typeof(GameNames), GetName);
             }
         }
         public void SaveApiKey(PlatformType Type, string KeysStr)
         {
-            for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+            for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
             {
-                int GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
+                int GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
 
-                if (Phoenix.Config.PlatformConfigs[GetKey].Platform == Type)
+                if (PhoenixApp.EngineSetting.PlatformConfigs[GetKey].Platform == Type)
                 {
-                    Phoenix.Config.PlatformConfigs[GetKey].ApiKeys = Phoenix.Config.KeysStrToArray(KeysStr);
+                    PhoenixApp.EngineSetting.PlatformConfigs[GetKey].ApiKeys = PhoenixApp.EngineSetting.KeysStrToArray(KeysStr);
                     break;
                 }
             }
@@ -1653,22 +1653,22 @@ namespace PhoenixTranslator
         }
         private void SThrottlingRatio_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ThrottleRatio = P_Convert.ObjToDouble(SThrottlingRatio.Text);
+            PhoenixApp.EngineSetting.ThrottleRatio = P_Convert.ObjToDouble(SThrottlingRatio.Text);
         }
         private void SRotationDelay_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.ThrottleDelayMs = P_Convert.ObjToInt(SRotationDelay.Text);
+            PhoenixApp.EngineSetting.ThrottleDelayMs = P_Convert.ObjToInt(SRotationDelay.Text);
         }
 
         private void SMaxThread_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Phoenix.Config.MaxThreadCount = P_Convert.ObjToInt(SMaxThread.Text);
+            PhoenixApp.EngineSetting.MaxThreadCount = P_Convert.ObjToInt(SMaxThread.Text);
 
             if (ActiveTab?.Mod?.P_Translator != null)
             {
                 if (ActiveTab.Mod.P_Translator.GetBatchCore() != null)
                 {
-                    ActiveTab.Mod.P_Translator.GetBatchCore().AutoThreadLimit = Phoenix.Config.MaxThreadCount;
+                    ActiveTab.Mod.P_Translator.GetBatchCore().AutoThreadLimit = PhoenixApp.EngineSetting.MaxThreadCount;
                 }
             }
         }
@@ -1835,11 +1835,11 @@ namespace PhoenixTranslator
         {
             if (RTLEnable.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.TextDisplay = TextLayout.RTL;
+                PhoenixApp.SelfSetting.TextDisplay = TextLayout.RTL;
             }
             else
             {
-                DeFine.GlobalLocalSetting.TextDisplay = TextLayout.LTR;
+                PhoenixApp.SelfSetting.TextDisplay = TextLayout.LTR;
             }
         }
 
@@ -1847,11 +1847,11 @@ namespace PhoenixTranslator
         {
             if (CanTranslateBook.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.CanTranslateBook = true;
+                PhoenixApp.SelfSetting.CanTranslateBook = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.CanTranslateBook = false;
+                PhoenixApp.SelfSetting.CanTranslateBook = false;
             }
         }
 
@@ -1859,11 +1859,11 @@ namespace PhoenixTranslator
         {
             if (UseFullPunctuation.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.UseFullPunctuation = true;
+                PhoenixApp.SelfSetting.UseFullPunctuation = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.UseFullPunctuation = false;
+                PhoenixApp.SelfSetting.UseFullPunctuation = false;
             }
         }
 
@@ -1871,18 +1871,18 @@ namespace PhoenixTranslator
         {
             if (UseFullPunctuationJa.IsChecked == true)
             {
-                DeFine.GlobalLocalSetting.UseFullPunctuationJa = true;
+                PhoenixApp.SelfSetting.UseFullPunctuationJa = true;
             }
             else
             {
-                DeFine.GlobalLocalSetting.UseFullPunctuationJa = false;
+                PhoenixApp.SelfSetting.UseFullPunctuationJa = false;
             }
         }
 
         private void ReSetFilter(object sender, MouseButtonEventArgs e)
         {
-            DeFine.GlobalLocalSetting.CustomFilterStr = string.Empty;
-            DeFine.GlobalLocalSetting.SaveConfig();
+            PhoenixApp.SelfSetting.CustomFilterStr = string.Empty;
+            PhoenixApp.SelfSetting.SaveConfig();
 
             EspReader TempEspReader = new EspReader(new Translator("", Languages.English, Languages.English, true));
 
@@ -1905,8 +1905,8 @@ namespace PhoenixTranslator
                 {
                     if (FilterDict.Count > 0)
                     {
-                        DeFine.GlobalLocalSetting.CustomFilterStr = EspFilterStr.Text;
-                        DeFine.GlobalLocalSetting.SaveConfig();
+                        PhoenixApp.SelfSetting.CustomFilterStr = EspFilterStr.Text;
+                        PhoenixApp.SelfSetting.SaveConfig();
                     }
                 }
 
@@ -1962,8 +1962,10 @@ namespace PhoenixTranslator
             }
             else
             {
-                DeFine.CurrentLayout = new PreviewShellWindow(_diagnostics);
-                DeFine.CurrentLayout.Show();
+                PhoenixApp.CurrentLayout = new PreviewShellWindow(_diagnostics);
+                PhoenixApp.CurrentLayout.Show();
+
+                PhoenixApp.SelfSetting.Layout = PhoenixLayout.Modern;//Update the configuration file; the Modern layout will be selected on the next startup.
 
                 this.CanExit = false;
                 this.Close();

@@ -41,7 +41,7 @@ namespace PhoenixTranslator.UIManagement
             TittleLab.Content = PlatformName;
 
             Ellipse GetShape = GetTittlePanel.Children[1] as Ellipse;
-            GetShape.Fill = new SolidColorBrush(DeFine.NodeStyleWin.GetNodeColor(CustomType));
+            GetShape.Fill = new SolidColorBrush(PhoenixApp.NodeStyleWin.GetNodeColor(CustomType));
 
             if (Document.Length == 0)
             {
@@ -110,7 +110,7 @@ namespace PhoenixTranslator.UIManagement
                 string GetUrl = P_Convert.ObjToStr((sender as Label).Content);
                 if (GetUrl.Length > 0)
                 {
-                    if (MessageBoxExtend.Show(DeFine.WorkWin, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?", MsgAction.YesNo, MsgType.Info) > 0)
+                    if (MessageBoxExtend.Show(PhoenixApp.WorkWin, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?", MsgAction.YesNo, MsgType.Info) > 0)
                     {
                         ExplorerHelper.OpenUrl(GetUrl);
                     }
@@ -133,7 +133,7 @@ namespace PhoenixTranslator.UIManagement
             TittleLab.Content = PlatformName;
 
             Ellipse GetShape = GetTittlePanel.Children[1] as Ellipse;
-            GetShape.Fill = new SolidColorBrush(DeFine.NodeStyleWin.GetNodeColor(CustomType));
+            GetShape.Fill = new SolidColorBrush(PhoenixApp.NodeStyleWin.GetNodeColor(CustomType));
 
             if (Document.Length == 0)
             {
@@ -183,7 +183,7 @@ namespace PhoenixTranslator.UIManagement
             TittleLab.Content = PlatformName;
 
             Ellipse GetShape = GetTittlePanel.Children[1] as Ellipse;
-            GetShape.Fill = new SolidColorBrush(DeFine.NodeStyleWin.GetNodeColor(CustomType));
+            GetShape.Fill = new SolidColorBrush(PhoenixApp.NodeStyleWin.GetNodeColor(CustomType));
 
             if (Document.Length == 0)
             {
@@ -230,7 +230,7 @@ namespace PhoenixTranslator.UIManagement
                 var SetIndex = 3 + 1;
                 CheckBox IsFreeCheck = ((Body.Children[0] as Grid).Children[0] as StackPanel).Children[SetIndex] as CheckBox;
                 IsFreeCheck.Click += IsFreeCheck_Click;
-                if (Phoenix.Config.GetPlatformData(PlatformType.DeepL).IsFree)
+                if (PhoenixApp.EngineSetting.GetPlatformData(PlatformType.DeepL).IsFree)
                 {
                     IsFreeCheck.IsChecked = true;
                 }
@@ -247,11 +247,11 @@ namespace PhoenixTranslator.UIManagement
             int Key = (int)PlatformType.DeepL;
             if (GetCheck.IsChecked == true)
             {
-                Phoenix.Config.PlatformConfigs[Key].IsFree = true;
+                PhoenixApp.EngineSetting.PlatformConfigs[Key].IsFree = true;
             }
             else
             {
-                Phoenix.Config.PlatformConfigs[Key].IsFree = false;
+                PhoenixApp.EngineSetting.PlatformConfigs[Key].IsFree = false;
             }
 
             Phoenix.SaveConfig();
@@ -287,10 +287,10 @@ namespace PhoenixTranslator.UIManagement
             {
                 if (GetCustomID <= 0)
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
                         if (GetPlatformName == "ChatGpt" && Config.Platform == PlatformType.ChatGpt && Config.CustomInFo == null)
                         {
                             Config.Model = GetModel;
@@ -324,10 +324,10 @@ namespace PhoenixTranslator.UIManagement
                 }
                 else
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
                         if (Config.CustomInFo != null && Config.CustomInFo.CustomID.Equals(GetCustomID))
                         {
                             Config.Model = GetModel;
@@ -363,27 +363,27 @@ namespace PhoenixTranslator.UIManagement
             {
                 if (GetCustomID <= 0)
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
 
                         if (GetPlatformName == "LM Studio" && Config.Platform == PlatformType.LMLocalAI && Config.CustomInFo == null)
                         {
-                            Phoenix.Config.PlatformConfigs[GetKey].LocalPort = GetPort;
+                            PhoenixApp.EngineSetting.PlatformConfigs[GetKey].LocalPort = GetPort;
                             break;
                         }
                     }
                 }
                 else
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
                         if (Config.CustomInFo != null && Config.CustomInFo.CustomID.Equals(GetCustomID))
                         {
-                            Phoenix.Config.PlatformConfigs[GetKey].LocalPort = GetPort;
+                            PhoenixApp.EngineSetting.PlatformConfigs[GetKey].LocalPort = GetPort;
                             break;
                         }
                     }
@@ -416,10 +416,10 @@ namespace PhoenixTranslator.UIManagement
             {
                 if (GetCustomID <= 0)
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
                         if (GetPlatformName == "ChatGpt" && Config.Platform == PlatformType.ChatGpt && Config.CustomInFo == null)
                         {
                             if (!Config.ApiKeys.Contains(GetApiKey))
@@ -475,10 +475,10 @@ namespace PhoenixTranslator.UIManagement
                 }
                 else
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
                         if (Config.CustomInFo != null && Config.CustomInFo.CustomID.Equals(GetCustomID))
                         {
                             if (!Config.ApiKeys.Contains(GetApiKey))
@@ -519,10 +519,10 @@ namespace PhoenixTranslator.UIManagement
             {
                 if (GetCustomID <= 0)
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
                         if (GetPlatformName == "ChatGpt" && Config.Platform == PlatformType.ChatGpt && Config.CustomInFo == null)
                         {
                             if (Config.ApiKeys.Contains(GetApiKey))
@@ -578,10 +578,10 @@ namespace PhoenixTranslator.UIManagement
                 }
                 else
                 {
-                    for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                    for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                     {
-                        var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                        var Config = Phoenix.Config.PlatformConfigs[GetKey];
+                        var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                        var Config = PhoenixApp.EngineSetting.PlatformConfigs[GetKey];
                         if (Config.CustomInFo != null && Config.CustomInFo.CustomID.Equals(GetCustomID))
                         {
                             if (Config.ApiKeys.Contains(GetApiKey))
@@ -600,21 +600,21 @@ namespace PhoenixTranslator.UIManagement
 
         private void PlatformConfigStyleWin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var State = MessageBoxExtend.Show(DeFine.WorkWin, "Delete Platform", "Are you sure you want to delete this platform? Deleting it will result in the loss of all configuration settings related to this platform.", MsgAction.YesNo, MsgType.Info);
+            var State = MessageBoxExtend.Show(PhoenixApp.WorkWin, "Delete Platform", "Are you sure you want to delete this platform? Deleting it will result in the loss of all configuration settings related to this platform.", MsgAction.YesNo, MsgType.Info);
             if (State > 0)
             {
                 int GetID = P_Convert.ObjToInt(((sender as Border).Tag as Border).Tag);
 
-                for (int i = 0; i < Phoenix.Config.PlatformConfigs.Count; i++)
+                for (int i = 0; i < PhoenixApp.EngineSetting.PlatformConfigs.Count; i++)
                 {
-                    var GetKey = Phoenix.Config.PlatformConfigs.ElementAt(i).Key;
-                    if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo != null)
+                    var GetKey = PhoenixApp.EngineSetting.PlatformConfigs.ElementAt(i).Key;
+                    if (PhoenixApp.EngineSetting.PlatformConfigs[GetKey].CustomInFo != null)
                     {
-                        if (Phoenix.Config.PlatformConfigs[GetKey].CustomInFo.CustomID.Equals(GetID))
+                        if (PhoenixApp.EngineSetting.PlatformConfigs[GetKey].CustomInFo.CustomID.Equals(GetID))
                         {
-                            Phoenix.Config.PlatformConfigs.Remove(GetKey);
+                            PhoenixApp.EngineSetting.PlatformConfigs.Remove(GetKey);
                             Phoenix.SaveConfig();
-                            DeFine.WorkWin.SyncPlatformConfig();
+                            PhoenixApp.WorkWin.SyncPlatformConfig();
                             UIHelper.SyncNodes(_Owner.Nodes);
                             break;
                         }

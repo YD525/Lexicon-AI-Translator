@@ -356,7 +356,7 @@ namespace PhoenixTranslator.UIManagement
 
             GetTranslated.TextArea.Caret.CaretBrush = Brushes.Orange;
 
-            if (DeFine.GlobalLocalSetting.ViewMode == "Normal")
+            if (PhoenixApp.SelfSetting.ViewMode == "Normal")
             {
                 MainGrid.Cursor = Cursors.Hand;
                 GetKey.Cursor = Cursors.Hand;
@@ -410,7 +410,7 @@ namespace PhoenixTranslator.UIManagement
             Box.HorizontalAlignment = HorizontalAlignment.Stretch;
             Box.VerticalContentAlignment = VerticalAlignment.Center;
 
-            if (DeFine.GlobalLocalSetting.TextDisplay == UIManage.TextLayout.RTL)
+            if (PhoenixApp.SelfSetting.TextDisplay == UIManage.TextLayout.RTL)
             {
                 Box.FlowDirection = FlowDirection.RightToLeft;
             }
@@ -428,27 +428,27 @@ namespace PhoenixTranslator.UIManagement
         public void SaveText(TextEditor RTB)
         {
             // Skip if In Normal View Mode Or Working Window / TransViewList Is Null
-            if (DeFine.GlobalLocalSetting.ViewMode == "Normal" ||
-                DeFine.WorkWin == null ||
-                DeFine.WorkWin.ActiveTab == null) return;
+            if (PhoenixApp.SelfSetting.ViewMode == "Normal" ||
+                PhoenixApp.WorkWin == null ||
+                PhoenixApp.WorkWin.ActiveTab == null) return;
             try
             {
                 string OriginalText = RTB.Text;
 
                 // Get Key And Target Grid
                 string Key = P_Convert.ObjToStr(RTB.Tag);
-                var Target = DeFine.WorkWin.ActiveTab.TransListView.KeyToFakeGrid(Key);
+                var Target = PhoenixApp.WorkWin.ActiveTab.TransListView.KeyToFakeGrid(Key);
 
                 // Update Translation Data And History Cache
                 if (Target != null)
                 {
-                    DeFine.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(Key, Target.SourceText,new P_String(OriginalText,1));
+                    PhoenixApp.WorkWin.ActiveTab.Mod.P_Translator.AutoSetLink(Key, Target.SourceText,new P_String(OriginalText,1));
 
                     bool IsCloud = false;
-                    Target.SyncData(DeFine.WorkWin.ActiveTab.Mod, ref IsCloud);
+                    Target.SyncData(PhoenixApp.WorkWin.ActiveTab.Mod, ref IsCloud);
 
                     TranslateView.CurrentHistory?.RefreshData();
-                    DeFine.WorkWin.ActiveTab.ReSetHistoryPointer();
+                    PhoenixApp.WorkWin.ActiveTab.ReSetHistoryPointer();
                 }
 
                 // Apply LTR Or RTL Layout

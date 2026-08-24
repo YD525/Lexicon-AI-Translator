@@ -137,7 +137,7 @@ namespace PhoenixTranslator.SkyrimManagement
                         exception);
                 }
 
-                MessageBoxExtend.Show(DeFine.WorkWin, "This XML file format is not supported.");
+                MessageBoxExtend.Show(PhoenixApp.WorkWin, "This XML file format is not supported.");
             }
         }
 
