@@ -6,6 +6,7 @@ using PhoenixTranslator.SkyrimModManager;
 using PhoenixEngine.Common;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Translate;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator.SkyrimManagement
 {
@@ -137,7 +138,7 @@ namespace PhoenixTranslator.SkyrimManagement
                         exception);
                 }
 
-                MessageBoxExtend.Show(PhoenixApp.WorkWin, "This XML file format is not supported.");
+                MessageBoxExtend.Show(PhoenixApp.WorkWin, "Msg","This XML file format is not supported.", PreviewDialogSeverity.Error);
             }
         }
 

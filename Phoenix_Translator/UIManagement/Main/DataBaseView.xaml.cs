@@ -16,6 +16,7 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System.Linq;
 using PhoenixTranslator.IDEManagement;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator
 {
@@ -501,7 +502,7 @@ namespace PhoenixTranslator
         {
             if (CurrentRowid != 0)
             {
-                if (MessageBoxExtend.Show(this, "Msg", "The currently selected row will be deleted. Are you sure you want to continue?", MsgAction.YesNo, MsgType.Waring) > 0)
+                if (MessageBoxExtend.Show(this, "Msg", "The currently selected row will be deleted. Are you sure you want to continue?", PreviewDialogSeverity.Information, true))
                 {
                     Phoenix.LocalDB.P_ExecuteQuery($"Delete From {_TableName} Where Rowid = {CurrentRowid}");
                     RunQuery();

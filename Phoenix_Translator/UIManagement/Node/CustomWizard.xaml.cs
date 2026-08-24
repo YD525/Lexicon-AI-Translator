@@ -19,6 +19,7 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine.Request;
 using PhoenixEngine.Translate;
 using PhoenixEngine.Unit;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator
 {
@@ -156,12 +157,12 @@ namespace PhoenixTranslator
 
                 if (CustomPlatform.Name.Length == 0)
                 {
-                    MessageBoxExtend.Show(this, "Please set the platform name.");
+                    MessageBoxExtend.Show(this,"Msg", "Please set the platform name.",PreviewDialogSeverity.Information);
                     return;
                 }
                 if (CurrentPlatformType.Length == 0)
                 {
-                    MessageBoxExtend.Show(this, "Please select the platform type.");
+                    MessageBoxExtend.Show(this,"Msg","Please select the platform type.",PreviewDialogSeverity.Information);
                     return;
                 }
 
@@ -201,7 +202,7 @@ namespace PhoenixTranslator
             {
                 if (CurrentResponse.Length == 0)
                 {
-                    MessageBoxExtend.Show(this, "Please click TestCall first to ensure the API returns a normal response.");
+                    MessageBoxExtend.Show(this,"Msg", "Please click TestCall first to ensure the API returns a normal response.",PreviewDialogSeverity.Warning);
                     return;
                 }
             }
@@ -239,7 +240,7 @@ namespace PhoenixTranslator
                             {
                                 QueryRule.FieldName = GetItem.Key;
                                 FieldName.Content = string.Format("FieldName:{0}", GetItem.Key);
-                                MessageBoxExtend.Show(this, "The fields have been automatically retrieved; please click Finish to end this wizard.");
+                                MessageBoxExtend.Show(this,"Msg", "The fields have been automatically retrieved; please click Finish to end this wizard.",PreviewDialogSeverity.Information);
                             }
                         }
 
@@ -482,7 +483,7 @@ namespace PhoenixTranslator
                             Response.Text = GenAICall.ReceiveString;
                             CurrentResponse = GenAICall.ReceiveString;
 
-                            MessageBoxExtend.Show(this, CurrentResponse);
+                            MessageBoxExtend.Show(this,"Msg", CurrentResponse,PreviewDialogSeverity.Information);
                         }
                         break;
                     case "Cloud AI":
@@ -508,7 +509,7 @@ namespace PhoenixTranslator
                             Response.Text = GenAICall.ReceiveString;
                             CurrentResponse = GenAICall.ReceiveString;
 
-                            MessageBoxExtend.Show(this, CurrentResponse);
+                            MessageBoxExtend.Show(this,"Msg",CurrentResponse,PreviewDialogSeverity.Information);
                         }
                         break;
                     case "Traditional":
@@ -528,7 +529,7 @@ namespace PhoenixTranslator
                             Response.Text = GenPlatformCall.ReceiveString;
                             CurrentResponse = GenPlatformCall.ReceiveString;
 
-                            MessageBoxExtend.Show(this, CurrentResponse);
+                            MessageBoxExtend.Show(this,"Msg",CurrentResponse,PreviewDialogSeverity.Information);
                         }
                         break;
                 }
@@ -536,7 +537,7 @@ namespace PhoenixTranslator
             }
             catch (Exception Ex)
             {
-                MessageBoxExtend.Show(this, Ex.Message);
+                MessageBoxExtend.Show(this,"Msg",Ex.Message,PreviewDialogSeverity.Error);
             }
 
             if (PhoenixApp.EngineSetting.PlatformConfigs.ContainsKey(TestID))
@@ -603,7 +604,7 @@ namespace PhoenixTranslator
                 TransStr = CurrentResponse.StringDivision(QueryRule.LeftStr, QueryRule.RightStr);
             }
 
-            MessageBoxExtend.Show(this, TransStr);
+            MessageBoxExtend.Show(this,"Msg",TransStr,PreviewDialogSeverity.Information);
         }
 
         private void FinishBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)

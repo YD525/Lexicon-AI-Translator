@@ -29,6 +29,7 @@ using PhoenixEngine.Platform.LocalAI;
 using PhoenixEngine;
 using PhoenixEngine.Memory;
 using PhoenixEngine.Engine.ADO;
+using PhoenixTranslator.ApplicationLayer;
 
 namespace PhoenixTranslator.UIManagement
 {
@@ -797,7 +798,7 @@ namespace PhoenixTranslator.UIManagement
                                     {
                                         if (Mod.P_Translator.From == Mod.P_Translator.To)
                                         {
-                                            MessageBoxExtend.Show(this._Parent, "The source language and target language cannot be the same!");
+                                            MessageBoxExtend.Show(this._Parent,"Msg", "The source language and target language cannot be the same!",PreviewDialogSeverity.Warning);
                                             CallSuccess = false;
 
                                             ShowLocalEngineSettingView();
@@ -806,7 +807,7 @@ namespace PhoenixTranslator.UIManagement
 
                                         if (!Phoenix.CheckAvailableNodes())
                                         {
-                                            MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
+                                            MessageBoxExtend.Show(this._Parent, "Msg", "Please enable at least one translation platform node.",PreviewDialogSeverity.Warning);
                                             CallSuccess = false;
 
                                             if (!_Parent.IsNodeExpanded)
@@ -873,7 +874,7 @@ namespace PhoenixTranslator.UIManagement
             }
             if (!CallSuccess)
             {
-                MessageBoxExtend.Show(this._Parent, "Batch translation is not possible at the current state.\nPlease wait until the file loading is finished.");
+                MessageBoxExtend.Show(this._Parent,"Msg", "Batch translation is not possible at the current state.\nPlease wait until the file loading is finished.",PreviewDialogSeverity.Information);
             }
         }
 
@@ -952,7 +953,7 @@ namespace PhoenixTranslator.UIManagement
                 }
                 else
                 {
-                    MessageBoxExtend.Show(this._Parent, "The current file does not support exporting to DSD format.");
+                    MessageBoxExtend.Show(this._Parent,"Msg", "The current file does not support exporting to DSD format.", ApplicationLayer.PreviewDialogSeverity.Information);
                 }
             }
         }
@@ -1092,7 +1093,7 @@ namespace PhoenixTranslator.UIManagement
 
         private void RefreshDictionary_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (MessageBoxExtend.Show(this._Parent, "Msg", "Are you sure you want to refresh the original text record? Doing so will lose the mod's original text information.", MsgAction.YesNo, MsgType.Info) <= 0)
+            if (MessageBoxExtend.Show(this._Parent, "Msg", "Are you sure you want to refresh the original text record? Doing so will lose the mod's original text information.", PreviewDialogSeverity.Warning) == false)
             {
                 return;
             }
@@ -1129,7 +1130,7 @@ namespace PhoenixTranslator.UIManagement
                         TransListView.QuickRefresh(Mod);
                     }
 
-                    MessageBoxExtend.Show(this._Parent, "Original source text has been refreshed from the current file.");
+                    MessageBoxExtend.Show(this._Parent,"Msg", "Original source text has been refreshed from the current file.", ApplicationLayer.PreviewDialogSeverity.Information);
                 }
 
                 RefreshButton.Dispatcher.Invoke(new Action(() =>
@@ -1307,7 +1308,7 @@ namespace PhoenixTranslator.UIManagement
         {
             if (Mod.State != GameFileState.Load)
             {
-                MessageBoxExtend.Show(this._Parent, "Only currently open files can have their cache cleared.");
+                MessageBoxExtend.Show(this._Parent, "Msg","Only currently open files can have their cache cleared.", ApplicationLayer.PreviewDialogSeverity.Information);
                 return;
             }
 
@@ -1465,7 +1466,7 @@ namespace PhoenixTranslator.UIManagement
                 {
                     if (!Phoenix.CheckAvailableNodes())
                     {
-                        MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
+                        MessageBoxExtend.Show(this._Parent,"Msg", "Please enable at least one translation platform node.", PreviewDialogSeverity.Warning);
                         return;
                     }
 
@@ -1645,7 +1646,7 @@ namespace PhoenixTranslator.UIManagement
         {
             if (!Phoenix.CheckAvailableNodes())
             {
-                MessageBoxExtend.Show(this._Parent, "Please enable at least one translation platform node.");
+                MessageBoxExtend.Show(this._Parent,"Msg","Please enable at least one translation platform node.", ApplicationLayer.PreviewDialogSeverity.Information);
                 return;
             }
 
@@ -1961,7 +1962,7 @@ namespace PhoenixTranslator.UIManagement
             CheckCanClearCache(out bool Check);
             if (Check)
             {
-                if (MessageBoxExtend.Show(this._Parent, "Waring", "Are you sure you want to clear the database records? Doing so will lose all translated content. (Note: Under no circumstances should you click this button arbitrarily.)", MsgAction.YesNo, MsgType.Waring) <= 0)
+                if (MessageBoxExtend.Show(this._Parent, "Waring", "Are you sure you want to clear the database records? Doing so will lose all translated content. (Note: Under no circumstances should you click this button arbitrarily.)",PreviewDialogSeverity.Warning) == false)
                 {
                     return;
                 }
@@ -2357,7 +2358,7 @@ namespace PhoenixTranslator.UIManagement
                     }
                     catch (Exception Ex)
                     {
-                        MessageBoxExtend.Show(this._Parent, "Error Saving File", Ex.Message, MsgAction.Yes, MsgType.Waring);
+                        MessageBoxExtend.Show(this._Parent, "Error Saving File", Ex.Message,PreviewDialogSeverity.Error);
                     }
                 }
 

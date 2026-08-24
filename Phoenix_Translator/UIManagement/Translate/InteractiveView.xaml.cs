@@ -78,7 +78,7 @@ namespace PhoenixTranslator
             }
             else
             {
-                MessageBoxExtend.Show(this, "The current content Request ID verification failed!");
+                MessageBoxExtend.Show(this,"Msg", "The current content Request ID verification failed!",ApplicationLayer.PreviewDialogSeverity.Warning);
                 this.RecvStr.Text = string.Empty;
             }
         }

@@ -180,9 +180,6 @@
     <Compile Include="UIManagement\Main\TranslateConfig.xaml.cs">
       <DependentUpon>TranslateConfig.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIManagement\Main\MessageBoxExtend.xaml.cs">
-      <DependentUpon>MessageBoxExtend.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UIManagement\Translate\NPCFinder.xaml.cs">
       <DependentUpon>NPCFinder.xaml</DependentUpon>
     </Compile>
@@ -317,10 +314,6 @@
     <Compile Include="FileManagement\DataHelper.cs" />
     <Compile Include="FileManagement\ExplorerHelper.cs" />
     <Compile Include="IDEManagement\RichBorderWidthConverter.cs" />
-    <Page Include="UIManagement\Main\MessageBoxExtend.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UIManagement\Translate\NPCFinder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -443,6 +436,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="IDERule\Lua.xshd" />
     <EmbeddedResource Include="IDERule\TextStyle.xshd" />

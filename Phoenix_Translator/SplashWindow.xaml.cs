@@ -96,6 +96,7 @@ namespace PhoenixTranslator
                 Main = new ChooseLayout(_diagnostics);
                 (Main as ChooseLayout).AutoShow();
                 _startupSucceeded = true;
+
                 Close();
             }
             catch (Exception exception)

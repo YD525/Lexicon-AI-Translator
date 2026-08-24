@@ -54,56 +54,65 @@ namespace PhoenixTranslator
         public TranslateConfig TranslateConfigView = null;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            new ModFileDialog().Show();
-
-            PhoenixApp.Init(this);
-
-            TranslatorInterface.Init();
-
-            InfoPage = new PageSwitcher(this, InFoPages);
-            MainPage = new PageSwitcher(this, Views);
-
-            ShowView("TransHub");
-
-            UIHelper.SyncNodes(Nodes);
-
-            //If you like anime, you can place a CG.png in the program's installation directory, making sure the dimensions are correct. It will display an anime character at the top of the software.
-            string CheckCGPath = PhoenixApp.GetFullPath(@"\CG.png");
-            if (File.Exists(CheckCGPath))
+            try
             {
-                PhoenixApp.CG = new CGView();
-                PhoenixApp.CG.Hide();
-                PhoenixApp.CG.CG.Source = new BitmapImage(new Uri(CheckCGPath));
+                throw new Exception("Test");
+                new ModFileDialog().Show();
 
-                PhoenixApp.CG.Owner = this;
-                PhoenixApp.CG.Show();
-                SyncCGLocation();
+                PhoenixApp.Init(this);
+
+                TranslatorInterface.Init();
+
+                InfoPage = new PageSwitcher(this, InFoPages);
+                MainPage = new PageSwitcher(this, Views);
+
+                ShowView("TransHub");
+
+                UIHelper.SyncNodes(Nodes);
+
+                //If you like anime, you can place a CG.png in the program's installation directory, making sure the dimensions are correct. It will display an anime character at the top of the software.
+                string CheckCGPath = PhoenixApp.GetFullPath(@"\CG.png");
+                if (File.Exists(CheckCGPath))
+                {
+                    PhoenixApp.CG = new CGView();
+                    PhoenixApp.CG.Hide();
+                    PhoenixApp.CG.CG.Source = new BitmapImage(new Uri(CheckCGPath));
+
+                    PhoenixApp.CG.Owner = this;
+                    PhoenixApp.CG.Show();
+                    SyncCGLocation();
+                }
+
+                YDChart.SetAction(
+                  new Action<RealtimeLineChart>((Ref) =>
+                  {
+                      Ref.PushValue(PhoenixApp.ChartDataRef.GetCurrent());
+                  }),
+                  new Action<RealtimeLineChart>((Ref) =>
+                  {
+                      Ref.PushValue(PhoenixApp.ChartDataRef.Total);
+                  }),
+                  PhoenixApp.ChartDataRef
+                 );
+
+                EngineEvents.SetBookTranslateCallback += BookTransCallBack;
+
+                SelectFristSettingNav();
+                InfoPage.SwitchPageByHorizontal(0);
+
+                if (TranslateConfigView == null)
+                {
+                    TranslateConfigView = new TranslateConfig(this);
+                    TranslateConfigView.Hide();
+                }
+
+                LastSetLogButton = InputLogButton;
             }
-
-            YDChart.SetAction(
-              new Action<RealtimeLineChart>((Ref) =>
-              {
-                  Ref.PushValue(PhoenixApp.ChartDataRef.GetCurrent());
-              }),
-              new Action<RealtimeLineChart>((Ref) =>
-              {
-                  Ref.PushValue(PhoenixApp.ChartDataRef.Total);
-              }),
-              PhoenixApp.ChartDataRef
-             );
-
-            EngineEvents.SetBookTranslateCallback += BookTransCallBack;
-
-            SelectFristSettingNav();
-            InfoPage.SwitchPageByHorizontal(0);
-
-            if (TranslateConfigView == null)
+            catch (Exception Ex)
             {
-                TranslateConfigView = new TranslateConfig(this);
-                TranslateConfigView.Hide();
+                WpfPreviewDialogService DialogService = new WpfPreviewDialogService(() => this);
+                DialogService.Show(new PreviewDialogRequest("Error",Ex.Message,PreviewDialogSeverity.Error,false));
             }
-
-            LastSetLogButton = InputLogButton;
         }
 
         private void ShowTranslateConfigView(object sender, MouseButtonEventArgs e)
@@ -219,7 +228,7 @@ namespace PhoenixTranslator
 
             if (GetUrl.Length > 0)
             {
-                if (MessageBoxExtend.Show(this, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?", MsgAction.YesNo, MsgType.Info) > 0)
+                if (MessageBoxExtend.Show(this, "Prompt", "Do you want to open your default browser and visit\n " + GetUrl + "\n?",PreviewDialogSeverity.Information,true))
                 {
                     ExplorerHelper.OpenUrl(GetUrl);
                 }
@@ -1914,7 +1923,7 @@ namespace PhoenixTranslator
             }
             catch
             {
-                MessageBoxExtend.Show(this, "The string used to set the filter is incorrect.");
+                MessageBoxExtend.Show(this,"Msg", "The string used to set the filter is incorrect.",PreviewDialogSeverity.Warning);
             }
         }
 
@@ -1958,7 +1967,7 @@ namespace PhoenixTranslator
         {
             if (PhoenixTabs.Items.Count > 0)
             {
-                MessageBoxExtend.Show(this, "There are files in the workspace. Please clear the workspace before switching layouts.");
+                MessageBoxExtend.Show(this,"Msg","There are files in the workspace. Please clear the workspace before switching layouts.",PreviewDialogSeverity.Warning);
             }
             else
             {
