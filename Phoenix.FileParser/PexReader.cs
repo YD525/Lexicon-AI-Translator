@@ -102,12 +102,17 @@ namespace ModFileParser
 
             if (TranslateCount > 0)
             {
-                _Document.Core.SavePex(this.CurrentPath, out int SaveState).Close();
-
-                return true;
+                try 
+                {
+                    _Document.Core.SavePex(this.CurrentPath, out int SaveState).Close();
+                }
+                catch 
+                {
+                    return false;
+                }
             }
 
-            return false;
+            return true;
         }
 
         public PexHeuristicAnalysis GetData()

@@ -52,7 +52,7 @@ namespace ModFileParser
 
         public void Close()
         {
-
+            _Document.Clear();
         }
 
         private static byte[] ReadFile(string Path)
@@ -200,8 +200,6 @@ namespace ModFileParser
             {
                 return false;
             }
-
-            Close();
         }
     }
 }
