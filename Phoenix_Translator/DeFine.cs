@@ -47,6 +47,7 @@ namespace PhoenixTranslator
         public static DataBaseView DataBaseView = null;
 
         public static PhoenixGui WorkWin = null;
+        public static Window CurrentLayout = null;
 
         public static CGView CG = null;
 
@@ -160,6 +161,11 @@ namespace PhoenixTranslator
         }
     }
 
+    public enum PhoenixLayout
+    {
+       Null = 0, Modern = 1, Classic = 2
+    }
+
     public class LocalSetting
     {
         /// <summary>Provides the explicitly selected translation configuration preset.</summary>
@@ -212,6 +218,8 @@ namespace PhoenixTranslator
         public bool WordCompletion { get; set; } = true;
 
         public string CustomFilterStr { get; set; } = "";
+
+        public PhoenixLayout Layout { get; set; } = PhoenixLayout.Null;
 
         public void ReadConfig()
         {
@@ -267,6 +275,8 @@ namespace PhoenixTranslator
                             this.WordCompletion = GetSetting.WordCompletion;
 
                             this.CustomFilterStr = GetSetting.CustomFilterStr;
+
+                            this.Layout = GetSetting.Layout;
                         }
                     }
                     else

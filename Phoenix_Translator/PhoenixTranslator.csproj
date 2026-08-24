@@ -142,6 +142,9 @@
     <Compile Include="Application\PreviewWorkspaceToolServices.cs" />
     <Compile Include="Application\LegacyTranslationPresetStore.cs" />
     <Compile Include="Application\TranslationPresetService.cs" />
+    <Compile Include="ChooseLayout.xaml.cs">
+      <DependentUpon>ChooseLayout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileManagement\ZipHelper.cs" />
     <Compile Include="SkyrimManagement\BackupManager.cs" />
     <Compile Include="SkyrimManagement\Base26Helper.cs" />
@@ -267,6 +270,10 @@
       <DependentUpon>MainChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="YDControls\RealtimeLineChart.cs" />
+    <Page Include="ChooseLayout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UIManagement\Main\CGView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

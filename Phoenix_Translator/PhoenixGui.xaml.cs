@@ -55,8 +55,6 @@ namespace PhoenixTranslator
 
             DeFine.Init(this);
 
-            DeFine.GlobalLocalSetting.ReadConfig();
-
             TranslatorInterface.Init();
 
             InfoPage = new PageSwitcher(this, InFoPages);
