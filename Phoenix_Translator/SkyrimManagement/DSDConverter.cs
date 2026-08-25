@@ -1,18 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ModFileParser;
+using Newtonsoft.Json;
 using PhoenixEngine.Translate;
 
 namespace PhoenixTranslator.SkyrimManagement
 {
     public class DSDConverter
     {
-        public static string Version = "1.0";
+        public static string Version = "1.1";
         public class DSDItem
         {
             public string editor_id { get; set; } = "";
             public string form_id { get; set; } = "";
-            public int index { get; set; } = 0;//Oh no, I just suddenly thought of a problem.
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public int ?index { get; set; } = null;//Oh no, I just suddenly thought of a problem.
             public string type { get; set; } = "";
             public string original { get; set; } = "";
             public string @string { get; set; } = "";
@@ -49,6 +52,7 @@ namespace PhoenixTranslator.SkyrimManagement
                         NDSDItem.type = Record.ParentSig + " " + Record.ChildSig;
                         NDSDItem.original = Record.String;
                         NDSDItem.@string = GetTransData;
+                        NDSDItem.index = Record.DSDIndex;
                         DSDItems.Add(NDSDItem);
                     }
                 }

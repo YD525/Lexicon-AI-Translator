@@ -68,15 +68,15 @@
     <Reference Include="ICSharpCode.AvalonEdit, Version=6.3.1.120, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.6.3.1.120\lib\net462\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="ModFileParser">
+      <HintPath>..\Phoenix.FileParser\bin\Debug\ModFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.4.5.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PexInterface">
       <HintPath>$(DependencyRoot)\PexInterface.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Phoenix.FileParser">
-      <HintPath>..\Phoenix.FileParser\bin\Debug\Phoenix.FileParser.dll</HintPath>
     </Reference>
     <Reference Include="PhoenixEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
