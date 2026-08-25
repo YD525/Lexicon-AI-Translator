@@ -12,7 +12,7 @@ namespace PhoenixTranslator.SkyrimManagement
         {
             public string editor_id { get; set; } = "";
             public string form_id { get; set; } = "";
-            public int index { get; set; } = 1;
+            public int index { get; set; } = 0;//Oh no, I just suddenly thought of a problem.
             public string type { get; set; } = "";
             public string original { get; set; } = "";
             public string @string { get; set; } = "";
