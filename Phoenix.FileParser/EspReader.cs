@@ -21,6 +21,7 @@ namespace ModFileParser
         public string Content { get; set; }
         public int OccurrenceIndex { get; set; }
         public int Index { get; set; }
+        public int? DSDIndex { get; set; }
     }
 
     public class EspRecordInfo
@@ -158,6 +159,9 @@ namespace ModFileParser
         public static extern int C_SubRecordData_GetIndex(IntPtr sub);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int C_SubRecordData_GetDSDIndex(IntPtr sub);
+
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern int C_SubRecordData_GetStringUtf8(IntPtr sub, byte[] buffer, int bufferSize);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -180,11 +184,11 @@ namespace ModFileParser
         // Modify
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool C_ModifySubRecordByOffset(IntPtr handle, int isCell, int recordOffset, int subOffset, IntPtr newUtf8Data);
+        public static extern int C_ModifySubRecordByOffset(IntPtr handle, int isCell, int recordOffset, int subOffset, IntPtr newUtf8Data);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool C_ModifySubRecord(IntPtr handle, uint formID, IntPtr recordSig, IntPtr subSig, int occurrenceIndex, int globalIndex, IntPtr newUtf8Data);
+        public static extern int C_ModifySubRecord(IntPtr handle, uint formID, IntPtr recordSig, IntPtr subSig, int occurrenceIndex, int globalIndex, IntPtr newUtf8Data);
 
         // Character tracker
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -434,6 +438,17 @@ namespace ModFileParser
                         SubRecord.OccurrenceIndex = C_SubRecordData_GetOccurrenceIndex(SubRecordPtr);
                         SubRecord.Index = C_SubRecordData_GetIndex(SubRecordPtr);
 
+                        var GetDSDIndex = C_SubRecordData_GetDSDIndex(SubRecordPtr);
+
+                        if (GetDSDIndex >= 0)
+                        {
+                            SubRecord.DSDIndex = GetDSDIndex;
+                        }
+                        else
+                        {
+                            SubRecord.DSDIndex = null;
+                        }
+
                         int DataSize = C_SubRecordData_GetDataSize(SubRecordPtr);
                         if (DataSize > 0)
                         {
@@ -477,12 +492,20 @@ namespace ModFileParser
                 PtrNewData = StringToUtf8Ptr(NewUtf8Data ?? "");
                 if (IsCell)
                 {
-                    return C_ModifySubRecordByOffset(Instance, 1, ParentIndex, SubIndex, PtrNewData);
+                    if (C_ModifySubRecordByOffset(Instance, 1, ParentIndex, SubIndex, PtrNewData)>0)
+                    {
+                        return true;
+                    }
                 }
                 else
                 {
-                    return C_ModifySubRecordByOffset(Instance, 0, ParentIndex, SubIndex, PtrNewData);
+                    if (C_ModifySubRecordByOffset(Instance, 0, ParentIndex, SubIndex, PtrNewData) > 0)
+                    {
+                        return true;
+                    }
                 }
+
+                return false;
             }
             finally
             {
@@ -579,6 +602,7 @@ namespace ModFileParser
         public string ChildSig = "";
         public string UniqueKey = "";
         public string String = "";
+        public int? DSDIndex = null;
 
         public string Source
         {
@@ -801,7 +825,7 @@ namespace ModFileParser
 
                 int State = EspNative.C_ReadEsp(_Instance, Path);
 
-                if (State >= 0)
+                if (State > 0)
                 {
                     CurrentPath = Path;
 
@@ -1183,7 +1207,8 @@ namespace ModFileParser
                                 String = Sub.Content,
                                 ParentIndex = GetRecord.Index,
                                 SubIndex = Sub.Index,
-                                OccurrenceIndex = Sub.OccurrenceIndex
+                                OccurrenceIndex = Sub.OccurrenceIndex,
+                                DSDIndex = Sub.DSDIndex
                             };
 
                             if (InfoToCharacter != null && InfoToCharacter.TryGetValue(RealFormID, out var MatchedChar))
