@@ -74,7 +74,19 @@ namespace PhoenixTranslator.UIManagement.Preview
         /// <summary>Represents refreshing current data.</summary>
         Refresh,
         /// <summary>Represents a document or file.</summary>
-        Document
+        Document,
+        /// <summary>
+        /// Icons used to represent folders
+        /// </summary>
+        Folder,
+        /// <summary>
+        /// An icon used to represent a file.
+        /// </summary>
+        File,
+        /// <summary>
+        /// Icons used to represent statistical charts.
+        /// </summary>
+        Chart
     }
 
     /// <summary>Renders one semantic icon from the embedded Fluent font subset with a text fallback.</summary>

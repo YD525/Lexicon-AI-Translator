@@ -6,8 +6,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using PhoenixTranslator.SkyrimManagement;
 using PhoenixTranslator.UIManage;
+using PhoenixTranslator.UIManagement;
 
-namespace PhoenixTranslator.UIManagement.Main
+namespace PhoenixTranslator
 {
     /// <summary>
     /// Interaction logic for ModFileDialog.xaml

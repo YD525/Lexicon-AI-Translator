@@ -1,9 +1,9 @@
-﻿<Window x:Class="PhoenixTranslator.UIManagement.Main.ModFileDialog"
+﻿<Window x:Class="PhoenixTranslator.ModFileDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PhoenixTranslator.UIManagement.Main"
+        xmlns:local="clr-namespace:PhoenixTranslator"
         Style="{DynamicResource DefWin}"
         mc:Ignorable="d"
         Title="ModFileDialog" Height="650" Width="800" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
@@ -62,7 +62,36 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid Grid.Row="0" Grid.Column="0" Margin="5">
+                        <Border CornerRadius="9" Background="#FF484848">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.7*"/>
+                                    <RowDefinition Height="0.3*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0">
+                                    <Viewbox Width="80" Height="80" Stretch="Uniform" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Canvas Width="1024" Height="1024">
+                                            <Path Data="M1024 336v512c0 70.7-57.3 128-128 128H128C57.3 976 0 918.7 0 848V112c0-35.4 28.7-64 64-64h287.1c20.7 0 40.1 10 52.1 26.8l76 106.4c12 16.8 31.4 26.8 52.1 26.8H896c70.7 0 128 57.3 128 128z" Fill="#A0A0A0" IsHitTestVisible="False"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Grid>
+
+                                <Border Grid.Row="1" CornerRadius="0 0 9 9" Background="White">
+                                    <Grid>
+
+                                        <Label Foreground="Black" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            XXX
+                                        </Label>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+
+                    <Grid Grid.Row="0" Grid.Column="1" Margin="5">
                         <Border CornerRadius="9" Background="#FF484848">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -86,7 +115,7 @@
                                         </Grid.RowDefinitions>
 
                                         <Label Foreground="Black" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            XXX.esp 
+                                            XXX.esp
                                         </Label>
 
                                         <Label Foreground="Black" Grid.Row="1" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center">
