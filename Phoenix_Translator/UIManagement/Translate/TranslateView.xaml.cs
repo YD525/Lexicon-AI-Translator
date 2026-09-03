@@ -1096,16 +1096,16 @@ namespace PhoenixTranslator.UIManagement
             {
                 return;
             }
-            if (P_Convert.ObjToStr(RefreshButton.Content).Equals("Refreshing..."))
+            if (!RefreshDictionary.IsEnabled)
             {
                 return;
             }
 
             new Thread(() =>
             {
-                RefreshButton.Dispatcher.Invoke(new Action(() =>
+                RefreshDictionary.Dispatcher.Invoke(new Action(() =>
                 {
-                    RefreshButton.Content = "Refreshing...";
+                    RefreshDictionary.IsEnabled = false;
                 }));
                 var FileUniqueKey = Mod.P_Translator.GetFileUniqueKey();
 
@@ -1132,9 +1132,9 @@ namespace PhoenixTranslator.UIManagement
                     MessageBoxExtend.Show(this._Parent,"Msg", "Original source text has been refreshed from the current file.", ApplicationLayer.PreviewDialogSeverity.Information);
                 }
 
-                RefreshButton.Dispatcher.Invoke(new Action(() =>
+                RefreshDictionary.Dispatcher.Invoke(new Action(() =>
                 {
-                    RefreshButton.Content = "Refresh";
+                    RefreshDictionary.IsEnabled = true;
                 }));
             }).Start();
         }

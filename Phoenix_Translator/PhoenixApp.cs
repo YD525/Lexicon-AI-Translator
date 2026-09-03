@@ -28,8 +28,12 @@ namespace PhoenixTranslator
         }
         internal static bool Show(Window Win,string Tittle,string Message, PreviewDialogSeverity Severity, bool RequiresConfirmation = false)
         {
-            WpfPreviewDialogService DialogService = new WpfPreviewDialogService(() => Win);
-            return DialogService.Show(new PreviewDialogRequest(Tittle, Message, PreviewDialogSeverity.Error, RequiresConfirmation));
+            bool Result = false;
+            Win.Dispatcher.Invoke(new Action(() => {
+                WpfPreviewDialogService DialogService = new WpfPreviewDialogService(() => Win);
+                Result = DialogService.Show(new PreviewDialogRequest(Tittle, Message, Severity, RequiresConfirmation));
+            }));
+            return Result;
         }
     }
     public class PhoenixApp

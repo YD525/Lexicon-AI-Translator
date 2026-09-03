@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:preview="clr-namespace:PhoenixTranslator.UIManagement.Preview"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:local="clr-namespace:PhoenixTranslator.UIManagement"
              mc:Ignorable="d" 
@@ -223,9 +224,7 @@
                         </Label>
                     </Border>
                     <Border Name="RefreshDictionary" Style="{DynamicResource ButtonStyle}" Height="22" VerticalAlignment="Center" PreviewMouseDown="RefreshDictionary_PreviewMouseDown">
-                        <Label Style="{DynamicResource ButtonFont}" Name="RefreshButton" VerticalAlignment="Center" Padding="8 0 8 0">
-                            Refresh
-                        </Label>
+                        <preview:PreviewIcon Icon="Refresh" FontSize="15" Foreground="White" Padding="5"/>
                     </Border>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Column="3" HorizontalAlignment="Center">
