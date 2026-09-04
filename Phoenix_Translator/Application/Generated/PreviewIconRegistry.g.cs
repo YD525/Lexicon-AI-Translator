@@ -39,11 +39,9 @@ namespace PhoenixTranslator.UIManagement.Preview
             { PreviewIconName.Pause, new PreviewIconDefinition(62882, "Pause", "ic_fluent_pause_24_regular", "=") },
             { PreviewIconName.Resume, new PreviewIconDefinition(62982, "Resume", "ic_fluent_play_24_regular", ">") },
             { PreviewIconName.Refresh, new PreviewIconDefinition(61758, "Refresh", "ic_fluent_arrow_clockwise_24_regular", "R") },
-            
-            //These two icons need to be created separately into a ttf file, and I'm not very familiar with how ttf files are packaged.
-            //{ PreviewIconName.Folder, new PreviewIconDefinition(??, "Folder", "ic_fluent_document_24_regular", "D") },
-            //{ PreviewIconName.File, new PreviewIconDefinition(??, "File", "ic_fluent_document_24_regular", "?") },
-            //{ PreviewIconName.Chart, new PreviewIconDefinition(??, "File", "ic_fluent_document_24_regular", "?") },
+            { PreviewIconName.Document, new PreviewIconDefinition(62329, "Document", "ic_fluent_document_24_regular", "D") },
+            { PreviewIconName.AddFile, new PreviewIconDefinition(58588, "AddFile", "ic_fluent_document_add_24_regular", "?") },
+            { PreviewIconName.Chart, new PreviewIconDefinition(58619, "Chart", "ic_fluent_document_flowchart_24_regular", "?") },
         };
     }
 }
