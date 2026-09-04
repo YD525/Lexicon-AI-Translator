@@ -30,5 +30,7 @@
   { "semantic": "Pause", "upstream": "ic_fluent_pause_24_regular", "fallback": "=" },
   { "semantic": "Resume", "upstream": "ic_fluent_play_24_regular", "fallback": ">" },
   { "semantic": "Refresh", "upstream": "ic_fluent_arrow_clockwise_24_regular", "fallback": "R" },
-  { "semantic": "Document", "upstream": "ic_fluent_document_24_regular", "fallback": "D" }
+  { "semantic": "Document", "upstream": "ic_fluent_document_24_regular", "fallback": "D" },
+  { "semantic": "AddFile", "upstream": "ic_fluent_document_add_24_regular", "fallback": "?" },
+  { "semantic": "Chart", "upstream": "ic_fluent_document_flowchart_24_regular", "fallback": "?" }
 ]
